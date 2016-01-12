@@ -33,7 +33,7 @@ GIT
       resque-pool (~> 0.3)
 
 PATH
-  remote: /home/spr7b/Work/sufia
+  remote: ../
   specs:
     sufia (7.0.0.beta1)
       activerecord-import (~> 0.5)
@@ -549,7 +549,7 @@ GEM
     rspec-expectations (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
-    rspec-mocks (3.4.0)
+    rspec-mocks (3.4.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-rails (3.4.0)

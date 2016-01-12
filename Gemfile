@@ -54,7 +54,7 @@ group :development do
   gem 'binding_of_caller'
 end
 
-        gem 'sufia', :path => '/home/spr7b/Work/sufia'
+gem 'sufia', :path => '../'
 
 gem 'rsolr', '~> 1.0.6'
 gem 'devise'
