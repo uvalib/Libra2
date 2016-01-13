@@ -1,8 +1,8 @@
 development:
-  host: localhost
+  host: docker2.lib.virginia.edu
   port: 6379
 test:
-  host: localhost
+  host: docker2.lib.virginia.edu
   port: 6379
 production:
   host: localhost
