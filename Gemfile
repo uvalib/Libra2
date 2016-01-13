@@ -44,7 +44,13 @@ end
 
         # Use this file to reference specific commits of gems.
 
-gem 'curation_concerns', github: 'projecthydra-labs/curation_concerns', branch: 'master'
+#gem 'curation_concerns', github: 'projecthydra-labs/curation_concerns', branch: 'master'
+# Sha-1 from Jan 13, 2016
+gem 'curation_concerns', github: 'projecthydra-labs/curation_concerns', ref: '2a91ac53a092a0e4bd0a6a0805209daac1e04892'
+
+#gem 'sufia', :path => '../'
+# Sha-1 from Jan 13, 2016
+gem 'sufia', github: 'projecthydra/sufia', ref: '6cbdafeebb146f5a9911547fffe08931f0617a5a'
 
 # Required for doing pagination inside an engine. See https://github.com/amatsuda/kaminari/pull/322
 gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'
@@ -53,8 +59,6 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
 end
-
-gem 'sufia', :path => '../'
 
 gem 'rsolr', '~> 1.0.6'
 gem 'devise'
