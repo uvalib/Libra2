@@ -18,7 +18,7 @@ RUN yum -y install nodejs
 
 # dont change often so move them here
 EXPOSE 3000
-CMD scripts/entry.sh
+CMD /bin/bash -l -c "scripts/entry.sh"
 
 # create work directory
 ENV APP_HOME /libra2
