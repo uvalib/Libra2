@@ -38,7 +38,7 @@ namespace :travis_ci do
     task prep: :environment do
       WebMock.disable!
       Rake::Task["jetty:clean"].invoke
-      Rake::Task["sufia:jetty:config"].invoke
+      Rake::Task["curation_concerns:jetty:config"].invoke
       Rake::Task["db:migrate"].invoke
     end
 
