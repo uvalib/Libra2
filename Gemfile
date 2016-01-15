@@ -67,3 +67,17 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'jettywrapper'
 end
+
+group :test do
+  gem 'database_cleaner'
+  gem 'factory_girl'
+  gem 'fakeweb'
+  gem 'webrat'
+  gem 'poltergeist'
+  gem 'equivalent-xml'
+  gem 'fuubar'
+  gem 'vcr'
+  gem 'webmock'
+  gem 'rspec-activemodel-mocks'
+
+end
