@@ -1,0 +1,89 @@
+#==============================================================================
+# .travis.yml
+#
+# Defines parameters of a build on Travis CI server (https://travis-ci.org/).
+#
+# Extensive (and excellent) documentation for Travis can be found here:
+# http://docs.travis-ci.com/user/getting-started/
+# http://docs.travis-ci.com/user/customizing-the-build/
+#
+# Every branch on the github project must have a .travis.yml file in order for
+# the Travis CI server to know what to build within the github project.
+# The branches to run are specified in this file.
+#==============================================================================
+
+language: ruby
+cache: bundler
+bundler_args: --without development debug
+sudo: false
+
+# Determines which version of Ruby to use.
+rvm:
+  - 2.2.2
+
+# Environment variables on the virtual machine and build matrix.
+# http://docs.travis-ci.com/user/environment-variables/
+# http://docs.travis-ci.com/user/customizing-the-build/#Build-Matrix
+env:
+  global:
+    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+    - JS=true
+  matrix:
+    - TEST_SUITE=mainfeatures
+
+# Set the build to finish as soon as one of the jobs in the matrix fails.
+# http://docs.travis-ci.com/user/customizing-the-build/#Fast-Finishing
+matrix:
+  fast_finish: true
+
+# Specify which of Travis's built-in services to run.
+services:
+  - redis-server
+
+# Additional dependencies to set up on the virtual machine.
+# See http://docs.travis-ci.com/user/installing-dependencies/.
+before_install:
+  - jdk_switcher use oraclejdk8
+  - # Get and extract FITS (curl "dash capital O" option) and make sure it's executable
+  - cd vendor
+  - curl -O http://projects.iq.harvard.edu/files/fits/files/fits-0.8.5.zip
+  - unzip fits-0.8.5.zip
+  - chmod +x fits-0.8.5/fits.sh
+  - rm fits-0.8.5.zip
+  - cd ..
+  - export PATH="$PATH:$(pwd)/vendor/fits-0.8.5"
+  - fits.sh -version
+
+# Set which branches to test.
+# http://docs.travis-ci.com/user/customizing-the-build/#Building-Specific-Branches
+branches:
+  only:
+    - develop
+
+# Actions to perform before running the test script on the build matrix.
+before_script:
+  - redis-cli info
+  - test "$TRAVIS_BRANCH" == 'feature/railtie' && export LOADER_LOGGING='color' || true
+
+# The test script steps.
+script:
+  - bundle exec rake travis_ci:$TEST_SUITE
+
+after_success:
+  - ': after_success'
+
+after_failure:
+  - ': after_failure'
+
+after_script:
+  - ': after_script'
+
+# Specify who gets notified when a build fails or succeeds.
+# See http://docs.travis-ci.com/user/notifications/.
+notifications:
+  email:
+    on_success: "change"
+    on_failure: "always"
+    recipients:
+      - "spr7b@virginia.edu"
+ 
