@@ -14,7 +14,7 @@ task all_works: :environment do |t, args|
    end
 end
 
-desc "List my works; provide depositor name"
+desc "List my works; optionally provide depositor name"
 task my_works: :environment do |t, args|
 
   who = ARGV[ 1 ]
@@ -28,22 +28,27 @@ task my_works: :environment do |t, args|
 
 end
 
-desc "Create new generic work"
+desc "Create new generic work; optionally provide depositor name"
 task new_work: :environment do |t, args|
+
+  who = ARGV[ 1 ]
+  who = default_email if who.nil?
 
   time = Time.now
   upload_set = UploadSet.find_or_create( SecureRandom.uuid )
-  user = User.find_by_email( default_email )
-  title = "Generated title for #{default_email} at #{time}"
-  description = "Description for #{default_email} at #{time}"
+  user = User.find_by_email( who )
+  title = "Generated title for #{who} at #{time}"
+  description = "Description for #{who} at #{time}"
 
   GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
     w.apply_depositor_metadata(user)
-    w.creator << default_email
+    w.creator << who
     w.date_uploaded = CurationConcerns::TimeService.time_in_utc
     w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     w.description << description
   end
+
+  task who.to_sym do ; end
 
 end
 
