@@ -29,9 +29,10 @@ module Internal
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
-    # Look in the lib/libra2 namespace for views - this lets us override views/partials from the gem directories
+    # Look in the lib/libra2 namespace for stuff - this lets us override views/partials from the gem directories
     # without cluttering up the root/app tree.
     paths[ 'app/views' ] << "lib/libra2/app/views"
+    paths[ 'lib/tasks' ] << "lib/libra2/tasks"
 
   end
 end
