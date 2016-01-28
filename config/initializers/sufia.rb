@@ -113,7 +113,7 @@ Sufia.config do |config|
   # Specify the prefix for Redis keys:
   # config.redis_namespace = "sufia"
 
-  # Specify the path to the file characterization tool: 
+  # Specify the path to the file characterization tool:
   config.fits_path = "#{Rails.application.root}/tools/fits/fits.sh"
 
   # Specify how many seconds back from the current time that we should show by default of the user's activity on the user's dashboard
