@@ -5,6 +5,7 @@
 namespace :libra2 do
 
   default_email = "dpg3k@virginia.edu"
+  default_file = "data/dave_small.jpg"
 
 desc "List all works"
 task all_works: :environment do |t, args|
@@ -40,14 +41,27 @@ task new_work: :environment do |t, args|
   title = "Generated title for #{who} at #{time}"
   description = "Description for #{who} at #{time}"
 
-  GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
+  work = GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
+
+    # generic work attributes
     w.apply_depositor_metadata(user)
     w.creator << who
     w.date_uploaded = CurationConcerns::TimeService.time_in_utc
     w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     w.description << description
+
+    w
   end
 
+  # create an associated file
+  filename = copy_sourcefile( default_file )
+  def user.directory
+    "#{File::SEPARATOR}tmp"
+  end
+  service = Sufia::IngestLocalFileService.new( user )
+  service.ingest_local_file( [ File.basename( filename ) ], work.id )
+
+  puts "Created new work (#{title})"
   task who.to_sym do ; end
 
 end
@@ -60,6 +74,13 @@ def dump_work( work )
   #  puts work.upload_set.inspect
   #end
 
+end
+
+def copy_sourcefile( source_file )
+
+  dest_file = "#{File::SEPARATOR}tmp#{File::SEPARATOR}#{SecureRandom.hex( 5 )}.jpg"
+  FileUtils.cp( source_file, dest_file )
+  dest_file
 end
 
 end   # namespace
