@@ -59,6 +59,7 @@ before_install:
 branches:
   only:
     - develop
+    - developSufia_CI_tests
 
 # Actions to perform before running the test script on the build matrix.
 before_script:
