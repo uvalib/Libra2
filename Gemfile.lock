@@ -8,34 +8,9 @@ GIT
       activesupport (>= 3.0.0)
 
 GIT
-  remote: git://github.com/projecthydra-labs/curation_concerns.git
-  revision: 2a91ac53a092a0e4bd0a6a0805209daac1e04892
-  ref: 2a91ac53a092a0e4bd0a6a0805209daac1e04892
-  specs:
-    curation_concerns (0.5.0)
-      blacklight_advanced_search (>= 5.1.4, < 6.0)
-      breadcrumbs_on_rails (~> 2.3)
-      curation_concerns-models (= 0.5.0)
-      hydra-editor (~> 1.1)
-      hydra-head (~> 9.0)
-      jquery-ui-rails
-      rails_autolink
-      simple_form (~> 3.1)
-    curation_concerns-models (0.5.0)
-      active_attr
-      active_fedora-noid (~> 1.0)
-      hydra-collections (~> 6.0.0)
-      hydra-head (~> 9.3)
-      hydra-works (~> 0.6)
-      qa (~> 0.5)
-      redlock (~> 0.1.2)
-      resque (~> 1.23)
-      resque-pool (~> 0.3)
-
-GIT
   remote: git://github.com/projecthydra/sufia.git
-  revision: 6cbdafeebb146f5a9911547fffe08931f0617a5a
-  ref: 6cbdafeebb146f5a9911547fffe08931f0617a5a
+  revision: 59ab636a2250ffb980fd5ea68fdf505bb7e545ea
+  branch: master
   specs:
     sufia (7.0.0.beta1)
       activerecord-import (~> 0.5)
@@ -44,11 +19,12 @@ GIT
       blacklight-gallery (~> 0.1)
       browse-everything (~> 0.4)
       carrierwave (~> 0.9)
-      curation_concerns (~> 0.4)
+      curation_concerns (~> 0.5)
       daemons (~> 1.1)
       font-awesome-rails (~> 4.2)
-      google-api-client (~> 0.7)
+      google-api-client (~> 0.7, < 0.9)
       hydra-batch-edit (~> 1.1)
+      hydra-head (< 9.6.0)
       json-schema
       legato (~> 0.3)
       mail_form (~> 1.5)
@@ -84,7 +60,7 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    active-fedora (9.7.0)
+    active-fedora (9.7.1)
       active-triples (~> 0.7.1)
       activesupport (>= 4.1.0)
       deprecation
@@ -94,19 +70,19 @@ GEM
       om (~> 3.1)
       rdf-rdfxml (~> 1.1)
       rsolr (~> 1.0.10)
-    active-triples (0.7.3)
+    active-triples (0.7.4)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       deprecation (~> 0.1)
       linkeddata (~> 1.1)
       rdf (~> 1.1)
-    active_attr (0.8.5)
-      activemodel (>= 3.0.2, < 5.0)
-      activesupport (>= 3.0.2, < 5.0)
+    active_attr (0.9.0)
+      activemodel (>= 3.0.2, < 5.1)
+      activesupport (>= 3.0.2, < 5.1)
     active_fedora-noid (1.0.3)
       active-fedora (~> 9.7)
       noid (~> 0.7)
-    activefedora-aggregation (0.8.0)
+    activefedora-aggregation (0.8.1)
       active-fedora (~> 9.5)
       activesupport
       rdf (~> 1.1, >= 1.1.17.1)
@@ -121,7 +97,7 @@ GEM
       activemodel (= 4.2.5)
       activesupport (= 4.2.5)
       arel (~> 6.0)
-    activerecord-import (0.10.0)
+    activerecord-import (0.11.0)
       activerecord (>= 3.0)
     activeresource (4.0.0)
       activemodel (~> 4.0)
@@ -136,11 +112,12 @@ GEM
     acts_as_follower (0.2.1)
     addressable (2.3.8)
     arel (6.0.3)
+    ast (2.2.0)
     autoparse (0.3.3)
       addressable (>= 2.3.1)
       extlib (>= 0.9.15)
       multi_json (>= 1.0.0)
-    autoprefixer-rails (6.2.3)
+    autoprefixer-rails (6.3.1)
       execjs
       json
     bcp47 (0.3.3)
@@ -152,15 +129,15 @@ GEM
       rack (>= 0.9.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    blacklight (5.17.2)
+    blacklight (5.18.0)
       bootstrap-sass (~> 3.2)
       deprecation
       kaminari (>= 0.15)
       nokogiri (~> 1.6)
       rails (>= 3.2.6, < 5)
       rsolr (~> 1.0.11)
-    blacklight-gallery (0.4.0)
-      blacklight (~> 5.12)
+    blacklight-gallery (0.4.1)
+      blacklight (>= 5.12, < 7)
       bootstrap-sass (~> 3.0)
       openseadragon (>= 0.2.0)
       rails
@@ -186,7 +163,8 @@ GEM
     builder (3.2.2)
     byebug (8.2.1)
     cancancan (1.13.1)
-    capybara (2.5.0)
+    capybara (2.6.2)
+      addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
@@ -209,14 +187,40 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     concurrent-ruby (1.0.0)
+    coveralls (0.8.10)
+      json (~> 1.8)
+      rest-client (>= 1.6.8, < 2)
+      simplecov (~> 0.11.0)
+      term-ansicolor (~> 1.3)
+      thor (~> 0.19.1)
+      tins (~> 1.6.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
+    curation_concerns (0.5.0)
+      blacklight_advanced_search (>= 5.1.4, < 6.0)
+      breadcrumbs_on_rails (~> 2.3)
+      curation_concerns-models (= 0.5.0)
+      hydra-editor (~> 1.1)
+      hydra-head (~> 9.0)
+      jquery-ui-rails
+      rails_autolink
+      simple_form (~> 3.1)
+    curation_concerns-models (0.5.0)
+      active_attr
+      active_fedora-noid (~> 1.0)
+      hydra-collections (~> 6.0.0)
+      hydra-head (~> 9.3)
+      hydra-works (~> 0.6)
+      qa (~> 0.5)
+      redlock (~> 0.1.2)
+      resque (~> 1.23)
+      resque-pool (~> 0.3)
     daemons (1.2.3)
     database_cleaner (1.5.1)
     debug_inspector (0.0.2)
     deprecation (0.2.2)
       activesupport
-    devise (3.5.3)
+    devise (3.5.5)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
@@ -226,7 +230,8 @@ GEM
     devise-guests (0.5.0)
       devise
     diff-lcs (1.2.5)
-    domain_name (0.5.25)
+    docile (1.1.5)
+    domain_name (0.5.20160128)
       unf (>= 0.0.5, < 1.0.0)
     dropbox-sdk (1.6.5)
       json
@@ -318,7 +323,7 @@ GEM
       deprecation
       mime-types (< 3)
       mini_magick (>= 3.2, < 5)
-    hydra-editor (1.1.1)
+    hydra-editor (1.2.0)
       active-fedora (>= 9.0.0)
       cancancan (~> 1.8)
       rails (~> 4.1)
@@ -329,7 +334,7 @@ GEM
       hydra-access-controls (= 9.5.0)
       hydra-core (= 9.5.0)
       rails (>= 3.2.6)
-    hydra-pcdm (0.3.1)
+    hydra-pcdm (0.3.2)
       active-fedora (~> 9.6)
       activefedora-aggregation (~> 0.6)
       mime-types (>= 1)
@@ -338,6 +343,12 @@ GEM
       hydra-file_characterization (~> 0.3, >= 0.3.3)
       hydra-pcdm (~> 0.3)
     i18n (0.7.0)
+    jasmine (2.4.0)
+      jasmine-core (~> 2.4)
+      phantomjs
+      rack (>= 1.2.1)
+      rake
+    jasmine-core (2.4.1)
     jbuilder (2.4.0)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
@@ -408,11 +419,15 @@ GEM
       foreigner (>= 0.9.1)
       rails (>= 3.2.0)
     memoist (0.14.0)
+    mida (0.3.9)
+      addressable (~> 2.3.8)
+      blankslate (= 3.1.3)
+      nokogiri (>= 1.6)
     mime-types (2.99)
     mimemagic (0.3.1)
     mini_magick (4.3.6)
     mini_portile2 (2.0.0)
-    minitest (5.8.3)
+    minitest (5.8.4)
     mono_logger (1.1.0)
     multi_json (1.11.2)
     multi_xml (0.5.5)
@@ -422,7 +437,7 @@ GEM
     net-http-persistent (2.9.4)
     netrc (0.11.0)
     noid (0.8.0)
-    nokogiri (1.6.7.1)
+    nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     nom-xml (0.5.4)
       activesupport (>= 3.2.18)
@@ -444,14 +459,18 @@ GEM
       rails (> 3.2.0)
     orm_adapter (0.5.0)
     os (0.9.6)
+    parser (2.3.0.2)
+      ast (~> 2.2)
     parslet (1.7.1)
       blankslate (>= 2.0, <= 4.0)
+    phantomjs (2.1.1.0)
     poltergeist (1.8.1)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
       multi_json (~> 1.0)
       websocket-driver (>= 0.2.0)
     posix-spawn (0.3.11)
+    powerpack (0.1.1)
     qa (0.5.0)
       activerecord-import
       deprecation
@@ -480,7 +499,7 @@ GEM
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6.0)
       rails-deprecated_sanitizer (>= 1.0.1)
-    rails-html-sanitizer (1.0.2)
+    rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
     rails-observers (0.1.2)
       activemodel (~> 4.0)
@@ -491,6 +510,7 @@ GEM
       activesupport (= 4.2.5)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
+    rainbow (2.1.0)
     rake (10.5.0)
     rdf (1.99.1)
       link_header (~> 0.0, >= 0.0.8)
@@ -572,19 +592,22 @@ GEM
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
       rspec-mocks (~> 3.4.0)
-    rspec-activemodel-mocks (1.0.2)
+    rspec-activemodel-mocks (1.0.3)
       activemodel (>= 3.0)
       activesupport (>= 3.0)
       rspec-mocks (>= 2.99, < 4.0)
-    rspec-core (3.4.1)
+    rspec-core (3.4.2)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
+    rspec-its (1.2.0)
+      rspec-core (>= 3.0.0)
+      rspec-expectations (>= 3.0.0)
     rspec-mocks (3.4.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
-    rspec-rails (3.4.0)
+    rspec-rails (3.4.1)
       actionpack (>= 3.0, < 4.3)
       activesupport (>= 3.0, < 4.3)
       railties (>= 3.0, < 4.3)
@@ -593,6 +616,12 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    rubocop (0.36.0)
+      parser (>= 2.3.0.0, < 3.0)
+      powerpack (~> 0.1)
+      rainbow (>= 1.99.1, < 3.0)
+      ruby-progressbar (~> 1.7)
+    rubocop-rspec (1.3.1)
     ruby-box (1.15.0)
       addressable
       json
@@ -621,8 +650,13 @@ GEM
     simple_form (3.1.1)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
-    sinatra (1.4.6)
-      rack (~> 1.4)
+    simplecov (0.11.1)
+      docile (~> 1.1.0)
+      json (~> 1.8)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.0)
+    sinatra (1.4.7)
+      rack (~> 1.5)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
     skydrive (1.2.0)
@@ -651,17 +685,20 @@ GEM
     sprockets (3.5.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
-    sprockets-rails (3.0.0)
+    sprockets-rails (3.0.1)
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.3.11)
     stomp (1.3.4)
     sxp (0.1.5)
+    term-ansicolor (1.3.2)
+      tins (~> 1.0)
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.2)
-    tinymce-rails (4.3.2)
+    tins (1.6.0)
+    tinymce-rails (4.3.3)
       railties (>= 3.1.1)
     tinymce-rails-imageupload (4.0.16.beta)
       railties (>= 3.2, < 5)
@@ -679,7 +716,7 @@ GEM
     vcr (3.0.1)
     vegas (0.1.11)
       rack (>= 1.0.0)
-    warden (1.2.4)
+    warden (1.2.5)
       rack (>= 1.0)
     webmock (1.22.6)
       addressable (>= 2.3.6)
@@ -706,8 +743,10 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   byebug
+  capybara
   coffee-rails (~> 4.1.0)
-  curation_concerns!
+  coveralls
+  curation_concerns (= 0.5.0)
   database_cleaner
   devise
   devise-guests (~> 0.3)
@@ -715,17 +754,23 @@ DEPENDENCIES
   factory_girl
   fakeweb
   fuubar
+  jasmine
   jbuilder (~> 2.0)
   jettywrapper
   jquery-rails
   kaminari!
+  mida (~> 0.3)
   poltergeist
   rails (= 4.2.5)
   rsolr (~> 1.0.6)
   rspec-activemodel-mocks
+  rspec-its
   rspec-rails
+  rubocop
+  rubocop-rspec
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
+  simplecov
   sqlite3
   sufia!
   turbolinks

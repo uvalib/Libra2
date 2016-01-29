@@ -1,0 +1,2 @@
+rvm_gemset_create_on_use_flag=1
+rvm use ruby-2.2.2@Libra2
