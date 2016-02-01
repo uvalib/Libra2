@@ -79,7 +79,6 @@ task create: :environment do |t, args|
     w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     w.description << description
 
-    w
   end
 
   # create an associated file
@@ -107,7 +106,7 @@ end
 
 def copy_sourcefile( source_file )
 
-  dest_file = "#{File::SEPARATOR}tmp#{File::SEPARATOR}#{SecureRandom.hex( 5 )}.jpg"
+  dest_file = "#{File::SEPARATOR}tmp#{File::SEPARATOR}#{SecureRandom.hex( 5 )}#{File.extname( source_file )}"
   FileUtils.cp( source_file, dest_file )
   dest_file
 end
