@@ -29,7 +29,7 @@ namespace :travis_ci do
     # travis_ci:features
     desc "Run feature tests in the feature directory"
     RSpec::Core::RakeTask.new(:features) do |t|
-      t.pattern = FileList['spec/**/*_spec.rb']
+      t.pattern = FileList['spec{,/features/**}/*_spec.rb']
       t.rspec_opts = ['--color', '--backtrace', '--format Fuubar']
     end
 
