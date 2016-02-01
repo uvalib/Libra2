@@ -8,7 +8,7 @@ namespace :libra2 do
   default_file = "data/dave_small.jpg"
 
 desc "List all works"
-task all_works: :environment do |t, args|
+task list_all: :environment do |t, args|
 
    GenericWork.all.each do |generic_work|
       dump_work( generic_work )
@@ -16,7 +16,7 @@ task all_works: :environment do |t, args|
 end
 
 desc "List my works; optionally provide depositor name"
-task my_works: :environment do |t, args|
+task list_my: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_email if who.nil?
@@ -29,8 +29,37 @@ task my_works: :environment do |t, args|
 
 end
 
+desc "Delete all works"
+task del_all: :environment do |t, args|
+
+  count = 0
+  GenericWork.all.each do |generic_work|
+     count += 1
+     generic_work.destroy
+  end
+  puts "Deleted #{count} work(s)"
+
+end
+
+desc "Delete my works; optionally provide depositor name"
+task del_my: :environment do |t, args|
+
+   who = ARGV[ 1 ]
+   who = default_email if who.nil?
+   count = 0
+
+   GenericWork.all.each do |generic_work|
+     count += 1 if generic_work.depositor == who
+     generic_work.destroy if generic_work.depositor == who
+   end
+
+   puts "Deleted #{count} work(s)"
+   task who.to_sym do ; end
+
+end
+
 desc "Create new generic work; optionally provide depositor name"
-task new_work: :environment do |t, args|
+task create: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_email if who.nil?
