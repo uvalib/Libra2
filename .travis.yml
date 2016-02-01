@@ -86,4 +86,4 @@ notifications:
     on_failure: "always"
     recipients:
       - "spr7b@virginia.edu"
-      - "dpg3k@virginia.edu"
+
