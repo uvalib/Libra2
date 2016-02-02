@@ -42,10 +42,11 @@ module Internal
 
     # Look in the app namespace for stuff - this lets us override without cluttering up the root/app tree.
     paths[ 'app/controllers' ] << "lib/#{app_namespace}/app/controllers"
-    paths[ 'app/views' ] << "lib/#{app_namespace}/app/views"
+    paths[ 'app/helpers' ] << "lib/#{app_namespace}/app/helpers"
     paths[ 'app/models' ] << "lib/#{app_namespace}/app/models"
+    paths[ 'app/views' ] << "lib/#{app_namespace}/app/views"
     paths[ 'lib/tasks' ] << "lib/#{app_namespace}/tasks"
-    paths[ 'config' ] << "lib/#{app_namespace}/config"
+    paths[ 'config/routes.rb' ] << "lib/#{app_namespace}/config/routes.rb"
 
   end
 end
