@@ -32,6 +32,7 @@ module Internal
     # Look in the lib/libra2 namespace for stuff - this lets us override views/partials from the gem directories
     # without cluttering up the root/app tree.
     paths[ 'app/views' ] << "lib/libra2/app/views"
+    paths[ 'app/models' ] << "lib/libra2/app/models"
     paths[ 'lib/tasks' ] << "lib/libra2/tasks"
 
   end
