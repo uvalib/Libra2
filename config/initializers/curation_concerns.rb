@@ -1,4 +1,6 @@
 CurationConcerns.configure do |config|
+  # Injected via `rails g curation_concerns:work Thesis`
+  config.register_curation_concern :thesis
   # Injected via `rails g curation_concerns:work GenericWork`
   config.register_curation_concern :generic_work
   config.fits_to_desc_mapping = {

@@ -8,7 +8,14 @@ Bundler.require(*Rails.groups)
 
 module Internal
   class Application < Rails::Application
-    
+
+    #
+    # We introduce several namespaces in order to partition rails components clearly and stay out of the base app namespace
+    # which will be subject to changes from the sufia folks.
+    #
+    shared_namespace = "uva"
+    app_namespace = "libra2"
+
     config.generators do |g|
       g.test_framework :rspec, :spec => true
     end
@@ -29,11 +36,17 @@ module Internal
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
-    # Look in the lib/libra2 namespace for stuff - this lets us override views/partials from the gem directories
-    # without cluttering up the root/app tree.
-    paths[ 'app/views' ] << "lib/libra2/app/views"
-    paths[ 'app/models' ] << "lib/libra2/app/models"
-    paths[ 'lib/tasks' ] << "lib/libra2/tasks"
+    # Look in the global namespace for stuff - this lets us override without cluttering up the root/app tree.
+    # this namespace is used for global look & feel; anything that can be shared between Virgo and Libra
+    paths[ 'lib/assets' ] << "lib/#{shared_namespace}/assets"
+
+    # Look in the app namespace for stuff - this lets us override without cluttering up the root/app tree.
+    paths[ 'app/controllers' ] << "lib/#{app_namespace}/app/controllers"
+    paths[ 'app/views' ] << "lib/#{app_namespace}/app/views"
+    paths[ 'app/models' ] << "lib/#{app_namespace}/app/models"
+    paths[ 'app/models/concerns' ] << "lib/#{app_namespace}/app/models/concerns"
+    paths[ 'lib/tasks' ] << "lib/#{app_namespace}/tasks"
+    paths[ 'config' ] << "lib/#{app_namespace}/config"
 
   end
 end
