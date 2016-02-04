@@ -16,6 +16,7 @@ CurationConcerns.configure do |config|
     'Conference Proceeding' => 'Conference Proceeding',
     'Dataset' => 'Dataset',
     'Dissertation' => 'Dissertation',
+    'Fourth Year Thesis' => 'Fourth Year Thesis',
     'Image' => 'Image',
     'Journal' => 'Journal',
     'Map or Cartographic Material' => 'Map or Cartographic Material',

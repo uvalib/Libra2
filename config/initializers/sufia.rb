@@ -44,6 +44,7 @@ Sufia.config do |config|
     "Conference Proceeding" => "http://schema.org/ScholarlyArticle",
     "Dataset" => "http://schema.org/Dataset",
     "Dissertation" => "http://schema.org/ScholarlyArticle",
+    "Fourth Year Thesis" => "http://schema.org/ScholarlyArticle",
     "Image" => "http://schema.org/ImageObject",
     "Journal" => "http://schema.org/CreativeWork",
     "Map or Cartographic Material" => "http://schema.org/Map",
