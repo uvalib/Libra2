@@ -78,6 +78,8 @@ task create: :environment do |t, args|
     w.date_uploaded = CurationConcerns::TimeService.time_in_utc
     w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     w.description << description
+    w.work_type = 'generic_work'
+    w.draft = 'false'
 
   end
 
@@ -90,6 +92,36 @@ task create: :environment do |t, args|
   service.ingest_local_file( [ File.basename( filename ) ], work.id )
 
   puts "Created new work (#{title})"
+  task who.to_sym do ; end
+
+end
+
+desc "Create new thesis; libra2:create_thesis <jdoe@virginia.edu>"
+task create_thesis: :environment do |t, args|
+
+  who = ARGV[ 1 ]
+  who = default_email if who.nil?
+
+  time = Time.now
+  upload_set = UploadSet.find_or_create( SecureRandom.uuid )
+  user = User.find_by_email( who )
+  title = "THESIS Generated title for #{who} at #{time}"
+  description = "THESIS Description for #{who} at #{time}"
+
+  work = GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
+
+    # generic work attributes
+    w.apply_depositor_metadata(user)
+    w.creator << who
+    w.date_uploaded = CurationConcerns::TimeService.time_in_utc
+    w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+    w.description << description
+    w.work_type = 'thesis'
+    w.draft = 'true'
+
+  end
+
+  puts "Created new THESIS (#{title})"
   task who.to_sym do ; end
 
 end
