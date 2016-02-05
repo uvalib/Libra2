@@ -46,6 +46,7 @@ module Internal
     paths[ 'app/models' ] << "lib/#{app_namespace}/app/models"
     paths[ 'app/views' ] << "lib/#{app_namespace}/app/views"
     paths[ 'lib/tasks' ] << "lib/#{app_namespace}/tasks"
+    paths[ 'config/locales' ] << "lib/#{app_namespace}/config/locales"
     paths[ 'config/routes.rb' ] << "lib/#{app_namespace}/config/routes.rb"
 
   end
