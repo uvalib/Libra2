@@ -13,11 +13,11 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: libra2_test
-  username: libra2
-  password:
-
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+  database: db/test.sqlite3
+  
 production:
   <<: *default
   host: mysql.lib.virginia.edu
