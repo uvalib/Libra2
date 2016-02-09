@@ -1,4 +1,6 @@
-tmp
-jetty
-spec
-log
+tmp/*
+jetty/*
+spec/*
+log/*
+test/*
+solr_config/*
