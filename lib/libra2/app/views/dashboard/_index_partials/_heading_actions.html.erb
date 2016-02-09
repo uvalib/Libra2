@@ -1,0 +1,25 @@
+<div class="col-xs-12 heading-row">
+  <% if can?(:create, GenericWork) %>
+    <div class="col-xs-6 col-sm-2 heading-tile">
+      <%= link_to new_curation_concerns_generic_work_path do %>
+          <span class="glyphicon glyphicon-upload"></span>
+          <%= I18n.t("sufia.dashboard.create_work") %>
+      <% end %>
+    </div>
+  <% end %>
+  <div class="col-xs-6 col-sm-2 heading-tile">
+    <%= link_to sufia.dashboard_works_path  do %>
+        <span class="glyphicon glyphicon-eye-open"></span>
+        <%= t("sufia.dashboard.view_works") %>
+    <% end %>
+  </div>
+
+  <% if can?(:create, FileSet) %>
+    <div class="col-xs-6 col-sm-2 heading-tile">
+      <%= link_to sufia.new_curation_concerns_file_set_path do %>
+          <span class="glyphicon glyphicon-upload"></span>
+          <%= t("sufia.dashboard.upload") %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
