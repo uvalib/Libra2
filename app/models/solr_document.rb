@@ -30,4 +30,13 @@ class SolrDocument
   # Do content negotiation for AF models. 
 
   use_extension( Hydra::ContentNegotiation )
+
+  def work_type
+    self[Solrizer.solr_name('work_type')]
+  end
+
+  def draft
+    self[Solrizer.solr_name('draft')]
+  end
+
 end
