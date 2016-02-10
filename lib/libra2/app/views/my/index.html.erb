@@ -9,14 +9,11 @@
   <%= render partial: 'scripts', formats: [:js] %>
 <% end %>
 
-<h1 class="sr-only">My Works, Highlights</h1>
+<h1 class="sr-only">My Works</h1>
 <ul class="nav nav-tabs" id="my_nav" role="navigation">
   <span class="sr-only">You are currently listing your <%= @selected_tab.pluralize %> .  You have <%= @response.docs.count %> <%= @selected_tab.pluralize(@response.docs.count)%> </span>
   <li class="<%= "active" if @selected_tab == 'works' %>">
     <%= link_to t('sufia.dashboard.my.works'), sufia.dashboard_works_path %>
-  </li>
-  <li class="<%= "active" if @selected_tab == 'highlighted' %>">
-    <%= link_to t('sufia.dashboard.my.highlights'), sufia.dashboard_highlights_path %>
   </li>
 </ul>
 
