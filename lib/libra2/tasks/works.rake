@@ -5,7 +5,7 @@
 namespace :libra2 do
 
   default_email = "dpg3k@virginia.edu"
-  default_file = "data/dave_small.jpg"
+  sample_file = "data/sample.pdf"
 
 desc "List all works"
 task list_all: :environment do |t, args|
@@ -64,11 +64,11 @@ task create: :environment do |t, args|
   who = ARGV[ 1 ]
   who = default_email if who.nil?
 
-  time = Time.now
-  upload_set = UploadSet.find_or_create( SecureRandom.uuid )
+  id = SecureRandom.uuid
+  upload_set = UploadSet.find_or_create( id )
   user = User.find_by_email( who )
-  title = "Generated title for #{who} at #{time}"
-  description = "Description for #{who} at #{time}"
+  title = "Example generic work title (#{id})"
+  description = "Example generic work description (#{id})"
 
   work = GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
 
@@ -83,13 +83,17 @@ task create: :environment do |t, args|
 
   end
 
-  # create an associated file
-  filename = copy_sourcefile( default_file )
   def user.directory
     "#{File::SEPARATOR}tmp"
   end
+
   service = Sufia::IngestLocalFileService.new( user )
-  service.ingest_local_file( [ File.basename( filename ) ], work.id )
+  2.times do
+    filename = get_an_image( )
+    print "uploading image... "
+    service.ingest_local_file( [ File.basename( filename ) ], work.id )
+    puts "done"
+  end
 
   puts "Created new work (#{title})"
   task who.to_sym do ; end
@@ -102,11 +106,11 @@ task create_thesis: :environment do |t, args|
   who = ARGV[ 1 ]
   who = default_email if who.nil?
 
-  time = Time.now
-  upload_set = UploadSet.find_or_create( SecureRandom.uuid )
+  id = SecureRandom.uuid
+  upload_set = UploadSet.find_or_create( id )
   user = User.find_by_email( who )
-  title = "THESIS Generated title for #{who} at #{time}"
-  description = "THESIS Description for #{who} at #{time}"
+  title = "Example thesis title (#{id})"
+  description = "Example thesis description (#{id})"
 
   work = GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
 
@@ -120,6 +124,16 @@ task create_thesis: :environment do |t, args|
     w.draft = 'true'
 
   end
+
+  def user.directory
+    "#{File::SEPARATOR}tmp"
+  end
+
+  service = Sufia::IngestLocalFileService.new( user )
+  filename = copy_sourcefile( sample_file )
+  print "uploading pdf... "
+  service.ingest_local_file( [ File.basename( filename ) ], work.id )
+  puts "done"
 
   puts "Created new THESIS (#{title})"
   task who.to_sym do ; end
@@ -136,11 +150,29 @@ def dump_work( work )
 
 end
 
+# download a random cat image to be used for the item
+def get_an_image( )
+
+  print "getting image... "
+
+  dest_file = "#{File::SEPARATOR}tmp#{File::SEPARATOR}#{SecureRandom.hex( 5 )}.jpg"
+  Net::HTTP.start( "lorempixel.com" ) do |http|
+    resp = http.get("/640/480/cats/")
+    open( dest_file, "wb" ) do |file|
+      file.write( resp.body )
+    end
+  end
+  puts "done"
+  dest_file
+
+end
+
 def copy_sourcefile( source_file )
 
   dest_file = "#{File::SEPARATOR}tmp#{File::SEPARATOR}#{SecureRandom.hex( 5 )}#{File.extname( source_file )}"
   FileUtils.cp( source_file, dest_file )
   dest_file
+
 end
 
 end   # namespace
