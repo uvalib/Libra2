@@ -6,6 +6,10 @@ class GenericWork < ActiveFedora::Base
   include Sufia::WorkBehavior
   validates :title, presence: { message: 'Your work must have a title.' }
 
+  # work type definitions
+  WORK_TYPE_GENERIC = 'generic_work'.freeze
+  WORK_TYPE_THESIS = 'thesis'.freeze
+
   # Custom Metadata
   #
   # work_type - Currently either a 'thesis' or a 'generic_work'.
