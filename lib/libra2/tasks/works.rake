@@ -6,6 +6,7 @@ namespace :libra2 do
 
   default_email = "dpg3k@virginia.edu"
   sample_file = "data/sample.pdf"
+  default_datafile = "data/bulk.data"
 
 desc "List all works"
 task list_all: :environment do |t, args|
@@ -58,30 +59,62 @@ task del_my: :environment do |t, args|
 
 end
 
+desc "Bulk create generic works; must specify filename containing details"
+task bulk: :environment do |t, args|
+
+  filename = ARGV[ 1 ]
+  filename = default_datafile if filename.nil?
+
+  title = ''
+  description = ''
+  who = ''
+  
+  count = 0
+  number = 0
+
+  File.open( filename ).each do |line|
+    number += 1
+    line = line.strip
+
+    title = line if ( number % 3 ) == 1
+    description = line if ( number % 3 ) == 2
+    who = line if ( number % 3 ) == 0
+
+    if number % 3 == 0
+      puts "#{title}, #{description}, #{who}"
+
+      user = User.find_by_email( who )
+      work = create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description )
+      def user.directory
+        "#{File::SEPARATOR}tmp"
+      end
+
+      service = Sufia::IngestLocalFileService.new( user )
+      filename = get_an_image( )
+      upload_file( service, filename, work.id )
+
+      count += 1
+    end
+
+  end
+
+  puts "Created #{count} work(s)"
+  task filename.to_sym do ; end
+
+end
+
 desc "Create new generic work; optionally provide depositor name"
 task create: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_email if who.nil?
 
-  id = SecureRandom.uuid
-  upload_set = UploadSet.find_or_create( id )
   user = User.find_by_email( who )
+  id = Time.now.nsec
   title = "Example generic work title (#{id})"
   description = "Example generic work description (#{id})"
 
-  work = GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
-
-    # generic work attributes
-    w.apply_depositor_metadata(user)
-    w.creator << who
-    w.date_uploaded = CurationConcerns::TimeService.time_in_utc
-    w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-    w.description << description
-    w.work_type = 'generic_work'
-    w.draft = 'false'
-
-  end
+  work = create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description )
 
   def user.directory
     "#{File::SEPARATOR}tmp"
@@ -90,40 +123,26 @@ task create: :environment do |t, args|
   service = Sufia::IngestLocalFileService.new( user )
   2.times do
     filename = get_an_image( )
-    print "uploading image... "
-    service.ingest_local_file( [ File.basename( filename ) ], work.id )
-    puts "done"
+    upload_file( service, filename, work.id )
   end
 
-  puts "Created new work (#{title})"
+  puts "Created work (#{title})"
   task who.to_sym do ; end
 
 end
 
-desc "Create new thesis; libra2:create_thesis <jdoe@virginia.edu>"
+desc "Create new thesis; libra2:create_thesis; optionally provide depositor name"
 task create_thesis: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_email if who.nil?
 
-  id = SecureRandom.uuid
-  upload_set = UploadSet.find_or_create( id )
   user = User.find_by_email( who )
+  id = Time.now.nsec
   title = "Example thesis title (#{id})"
   description = "Example thesis description (#{id})"
 
-  work = GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
-
-    # generic work attributes
-    w.apply_depositor_metadata(user)
-    w.creator << who
-    w.date_uploaded = CurationConcerns::TimeService.time_in_utc
-    w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-    w.description << description
-    w.work_type = 'thesis'
-    w.draft = 'true'
-
-  end
+  work = create_generic_work( GenericWork::WORK_TYPE_THESIS, user, title, description )
 
   def user.directory
     "#{File::SEPARATOR}tmp"
@@ -131,12 +150,40 @@ task create_thesis: :environment do |t, args|
 
   service = Sufia::IngestLocalFileService.new( user )
   filename = copy_sourcefile( sample_file )
-  print "uploading pdf... "
-  service.ingest_local_file( [ File.basename( filename ) ], work.id )
-  puts "done"
+  upload_file( service, filename, work.id )
 
-  puts "Created new THESIS (#{title})"
+  puts "Created thesis (#{title})"
   task who.to_sym do ; end
+
+end
+
+def create_generic_work( work_type, user, title, description )
+
+  id = SecureRandom.uuid
+  upload_set = UploadSet.find_or_create( id )
+
+  work = GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
+
+    # generic work attributes
+    w.apply_depositor_metadata(user)
+    w.creator << user.email
+    w.date_uploaded = CurationConcerns::TimeService.time_in_utc
+    w.visibility = work_type == GenericWork::WORK_TYPE_THESIS ? Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE :
+        Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+    w.description << description
+    w.work_type = work_type
+    w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
+
+  end
+
+  return work
+end
+
+def upload_file( uploader, filename, work_id )
+
+  print "uploading #{filename}... "
+  uploader.ingest_local_file( [ File.basename( filename ) ], work_id )
+  puts "done"
 
 end
 
