@@ -66,7 +66,10 @@ CurationConcerns.configure do |config|
   # config.persistent_hostpath = 'http://localhost/files/'
 
   # Location on local file system where derivatives will be stored.
-  # config.derivatives_path = File.join(Rails.root, 'tmp', 'derivatives')
+  config.derivatives_path = File.join( Rails.root, 'uploads', 'derivatives' )
+
+  # Location on local file system where uploads will be stored.
+  config.working_path = File.join( Rails.root, 'uploads', 'original' )
 
   # If you have ffmpeg installed and want to transcode audio and video uncomment this line
   # config.enable_ffmpeg = true
