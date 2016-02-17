@@ -1,12 +1,12 @@
 #
-#
+# Some helper tasks to create and delete works
 #
 
 namespace :libra2 do
 
-  default_email = "dpg3k@virginia.edu"
-  sample_file = "data/sample.pdf"
-  default_datafile = "data/bulk.data"
+default_user = "dpg3k@virginia.edu"
+sample_file = "data/sample.pdf"
+default_bulkfile = "data/bulk.data"
 
 desc "List all works"
 task list_all: :environment do |t, args|
@@ -20,7 +20,7 @@ desc "List my works; optionally provide depositor name"
 task list_my: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = default_email if who.nil?
+  who = default_user if who.nil?
 
   GenericWork.all.each do |generic_work|
     dump_work( generic_work ) if generic_work.depositor == who
@@ -46,7 +46,7 @@ desc "Delete my works; optionally provide depositor name"
 task del_my: :environment do |t, args|
 
    who = ARGV[ 1 ]
-   who = default_email if who.nil?
+   who = default_user if who.nil?
    count = 0
 
    GenericWork.all.each do |generic_work|
@@ -60,10 +60,10 @@ task del_my: :environment do |t, args|
 end
 
 desc "Bulk create generic works; must specify filename containing details"
-task bulk: :environment do |t, args|
+task bulk_create_work: :environment do |t, args|
 
   filename = ARGV[ 1 ]
-  filename = default_datafile if filename.nil?
+  filename = default_bulkfile if filename.nil?
 
   title = ''
   description = ''
@@ -104,10 +104,10 @@ task bulk: :environment do |t, args|
 end
 
 desc "Create new generic work; optionally provide depositor name"
-task create: :environment do |t, args|
+task create_work: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = default_email if who.nil?
+  who = default_user if who.nil?
 
   user = User.find_by_email( who )
   id = Time.now.nsec
@@ -131,11 +131,11 @@ task create: :environment do |t, args|
 
 end
 
-desc "Create new thesis; libra2:create_thesis; optionally provide depositor name"
+desc "Create new thesis; optionally provide depositor name"
 task create_thesis: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = default_email if who.nil?
+  who = default_user if who.nil?
 
   user = User.find_by_email( who )
   id = Time.now.nsec
