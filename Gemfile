@@ -32,9 +32,6 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-# use mysql instead of sqlite
-gem 'mysql2'
-
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -45,15 +42,7 @@ group :development do
   # gem 'web-console', '~> 2.0'
 end
 
-        # Use this file to reference specific commits of gems.
-
-#gem 'curation_concerns', github: 'projecthydra-labs/curation_concerns', branch: 'master'
-# Sha-1 from Jan 13, 2016
-gem 'curation_concerns', github: 'projecthydra-labs/curation_concerns', ref: '2a91ac53a092a0e4bd0a6a0805209daac1e04892'
-
-#gem 'sufia', :path => '../'
-# Sha-1 from Jan 13, 2016
-gem 'sufia', github: 'projecthydra/sufia', ref: '6cbdafeebb146f5a9911547fffe08931f0617a5a'
+# Use this file to reference specific commits of gems.
 
 # Required for doing pagination inside an engine. See https://github.com/amatsuda/kaminari/pull/322
 gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'
@@ -63,24 +52,18 @@ group :development do
   gem 'binding_of_caller'
 end
 
+#gem 'sufia', github: 'projecthydra/sufia', branch: 'master'
+gem 'sufia', github: 'projecthydra/sufia', ref: '50b3ca9391e557cf457c16cb7041c254e218f15f'
+
+gem 'solr_wrapper', '>= 0.3'
 gem 'rsolr', '~> 1.0.6'
+gem 'globalid'
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 group :development, :test do
-  gem 'rspec-rails'
-  gem 'jettywrapper'
+  gem 'fcrepo_wrapper'
 end
 
-group :test do
-  gem 'database_cleaner'
-  gem 'factory_girl'
-  gem 'fakeweb'
-  gem 'webrat'
-  gem 'poltergeist'
-  gem 'equivalent-xml'
-  gem 'fuubar'
-  gem 'vcr'
-  gem 'webmock'
-  gem 'rspec-activemodel-mocks'
-
+group :development, :test do
+  gem 'rspec-rails'
 end
