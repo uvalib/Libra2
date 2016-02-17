@@ -55,6 +55,9 @@ end
 #gem 'sufia', github: 'projecthydra/sufia', branch: 'master'
 gem 'sufia', github: 'projecthydra/sufia', ref: '50b3ca9391e557cf457c16cb7041c254e218f15f'
 
+# prep to use mysql instead of sqlite
+gem 'mysql2'
+
 gem 'solr_wrapper', '>= 0.3'
 gem 'rsolr', '~> 1.0.6'
 gem 'globalid'
