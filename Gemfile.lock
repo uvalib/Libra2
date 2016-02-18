@@ -38,6 +38,14 @@ GIT
       tinymce-rails-imageupload (~> 4.0.16.beta)
       yaml_db (~> 0.2)
 
+PATH
+  remote: vendor/hydra-works-0.6.0
+  specs:
+    hydra-works (0.6.0)
+      hydra-derivatives (~> 3.0)
+      hydra-file_characterization (~> 0.3, >= 0.3.3)
+      hydra-pcdm (~> 0.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -316,10 +324,6 @@ GEM
       active-fedora (~> 9.6)
       activefedora-aggregation (~> 0.6)
       mime-types (>= 1)
-    hydra-works (0.6.0)
-      hydra-derivatives (~> 3.0)
-      hydra-file_characterization (~> 0.3, >= 0.3.3)
-      hydra-pcdm (~> 0.3)
     i18n (0.7.0)
     jbuilder (2.4.1)
       activesupport (>= 3.0.0, < 5.1)
@@ -667,6 +671,7 @@ DEPENDENCIES
   devise-guests (~> 0.3)
   fcrepo_wrapper
   globalid
+  hydra-works (= 0.6.0)!
   jbuilder (~> 2.0)
   jquery-rails
   kaminari!
