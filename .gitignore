@@ -24,5 +24,6 @@
 
 /fits.log
 
-/.ruby-gemset
-/.ruby-version
+/fcrepo4-data
+/env.set
+/env.unset
