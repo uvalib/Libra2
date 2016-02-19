@@ -9,7 +9,7 @@ sample_file = "data/sample.pdf"
 default_bulkfile = "data/bulk.data"
 
 desc "List all works"
-task list_all: :environment do |t, args|
+task list_all_works: :environment do |t, args|
 
    GenericWork.all.each do |generic_work|
       dump_work( generic_work )
@@ -17,7 +17,7 @@ task list_all: :environment do |t, args|
 end
 
 desc "List my works; optionally provide depositor name"
-task list_my: :environment do |t, args|
+task list_my_works: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_user if who.nil?
@@ -31,7 +31,7 @@ task list_my: :environment do |t, args|
 end
 
 desc "Delete all works"
-task del_all: :environment do |t, args|
+task del_all_works: :environment do |t, args|
 
   count = 0
   GenericWork.all.each do |generic_work|
@@ -43,7 +43,7 @@ task del_all: :environment do |t, args|
 end
 
 desc "Delete my works; optionally provide depositor name"
-task del_my: :environment do |t, args|
+task del_my_works: :environment do |t, args|
 
    who = ARGV[ 1 ]
    who = default_user if who.nil?

@@ -5,7 +5,7 @@
 namespace :libra2 do
 
 desc "Delete all users"
-task del_users: :environment do |t, args|
+task del_all_users: :environment do |t, args|
 
   count = 0
   User.all.each do |user|
@@ -14,6 +14,22 @@ task del_users: :environment do |t, args|
   end
   puts "Deleted #{count} user(s)"
 
+end
+
+desc "Delete specified user; provide email"
+task del_user: :environment do |t, args|
+
+  who = ARGV[ 1 ]
+
+  user = User.find_by_email( who )
+  if user
+     user.destroy
+     puts "Deleted #{who}"
+  else
+    puts "User #{who} does not exist"
+  end
+
+  task who.to_sym do ; end
 end
 
 desc "Create new user; provide name and email"
@@ -35,6 +51,15 @@ task create_user: :environment do |t, args|
 
      task name.to_sym do ; end
      task email.to_sym do ; end
+  end
+
+end
+
+desc "List all users"
+task list_all_users: :environment do |t, args|
+
+  User.all.each do |user|
+    puts user.email
   end
 
 end
