@@ -96,7 +96,10 @@ Sufia.config do |config|
   # config.persistent_hostpath = 'http://localhost/files/'
 
   # If you have ffmpeg installed and want to transcode audio and video uncomment this line
-  # config.enable_ffmpeg = true
+  config.enable_ffmpeg = true
+
+  # Specify the path to the ffmpeg tool:
+  config.ffmpeg_path = "#{Rails.application.root}/tools/ffmpeg-3.0-64bit-static/ffmpeg"
 
   # Sufia uses NOIDs for files and collections instead of Fedora UUIDs
   # where NOID = 10-character string and UUID = 32-character string w/ hyphens
@@ -116,7 +119,7 @@ Sufia.config do |config|
   # config.redis_namespace = "sufia"
 
   # Specify the path to the file characterization tool:
-  config.fits_path = "#{Rails.application.root}/tools/fits/fits.sh"
+  config.fits_path = "#{Rails.application.root}/tools/fits-0.6.2/fits.sh"
 
   # Specify how many seconds back from the current time that we should show by default of the user's activity on the user's dashboard
   # config.activity_to_show_default_seconds_since_now = 24*60*60

@@ -20,3 +20,10 @@
 /doc
 /public/system
 /public/uploads
+/uploads
+
+/fits.log
+
+/fcrepo4-data
+/env.set
+/env.unset

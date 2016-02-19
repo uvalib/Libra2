@@ -41,7 +41,7 @@ module Internal
     paths[ 'lib/assets' ] << "lib/#{shared_namespace}/assets"
 
     # Look in the app namespace for stuff - this lets us override without cluttering up the root/app tree.
-    paths[ 'app/controllers' ] << "lib/#{app_namespace}/app/controllers"
+    #paths[ 'app/controllers' ] << "lib/#{app_namespace}/app/controllers"
     paths[ 'app/views' ] << "lib/#{app_namespace}/app/views"
     paths[ 'app/models' ] << "lib/#{app_namespace}/app/models"
     paths[ 'app/helpers' ] << "lib/#{app_namespace}/app/helpers"
