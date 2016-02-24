@@ -2,6 +2,8 @@
 # Some helper tasks to create and delete works
 #
 
+require "#{Rails.root}/lib/libra2/lib/entityid/entity_id_client"
+
 namespace :libra2 do
 
 default_user = "dpg3k@virginia.edu"
@@ -173,7 +175,11 @@ def create_generic_work( work_type, user, title, description )
     w.description << description
     w.work_type = work_type
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
-    #w.identifier << "123456"
+
+    print "getting DOI..."
+    status, id = Libra2::EntityIdClient.newid( w )
+    w.identifier << id if Libra2::EntityIdClient.ok?( status )
+    puts "done"
 
   end
 
