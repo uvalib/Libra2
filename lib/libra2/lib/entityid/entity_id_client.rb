@@ -8,11 +8,7 @@ module Libra2
      end
 
      def self.configuration
-       if @configuration.nil?
-         @configuration = YAML.load_file( "#{Rails.application.root}/lib/libra2/config/entityid.yml" )
-         @configuration = @configuration[ Rails.env ]
-       end
-       @configuration
+       @configuration ||= EntityIdClient.load_config
      end
 
      def self.newid( work )
@@ -74,19 +70,40 @@ module Libra2
      end
 
      def self.shoulder
-       EntityIdClient.configuration[ 'shoulder' ]
+       EntityIdClient.configuration[ :shoulder ]
      end
 
      def self.authtoken
-       EntityIdClient.configuration[ 'authtoken' ]
+       EntityIdClient.configuration[ :authtoken ]
      end
 
      def self.url
-       EntityIdClient.configuration[ 'url' ]
+       EntityIdClient.configuration[ :url ]
      end
 
      def self.timeout
-       EntityIdClient.configuration[ 'timeout' ]
+       EntityIdClient.configuration[ :timeout ]
      end
+
+     def self.load_config
+
+       filename = "entityid.yml"
+       fullname = "#{Rails.application.root}/lib/libra2/config/#{filename}"
+       begin
+         config_erb = ERB.new( IO.read( fullname ) ).result( binding )
+       rescue StandardError
+         raise( "#{filename} was found, but could not be parsed with ERB. \n#{$ERROR_INFO.inspect}" )
+       end
+
+       begin
+         yml = YAML.load( config_erb )
+       rescue Psych::SyntaxError => e
+         raise "#{filename} was found, but could not be parsed. \nError #{e.message}"
+       end
+
+       config = yml.symbolize_keys
+       @configuration = config[ Rails.env.to_sym ].symbolize_keys || {}
+     end
+
    end
 end

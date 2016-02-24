@@ -1,8 +1,7 @@
 development:
   shoulder: "ark:/99999/fk4"
   authtoken: "super_secret"
-#  url: <%= ENV['ENTITYID_URL'] || "http://docker1.lib.virginia.edu:8210/entityid" %>
-  url: "http://docker1.lib.virginia.edu:8210/entityid"
+  url: <%= ENV['ENTITYID_URL'] || "http://docker1.lib.virginia.edu:8210/entityid" %>
   timeout: 5
 test:
   shoulder: "ark:/99999/fk4"
