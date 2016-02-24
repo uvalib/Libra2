@@ -126,7 +126,7 @@ task create_work: :environment do |t, args|
     upload_file( service, filename, work.id )
   end
 
-  puts "Created work (#{title})"
+  dump_work work
   task who.to_sym do ; end
 
 end
@@ -152,7 +152,7 @@ task create_thesis: :environment do |t, args|
   filename = copy_sourcefile( sample_file )
   upload_file( service, filename, work.id )
 
-  puts "Created thesis (#{title})"
+  dump_work work
   task who.to_sym do ; end
 
 end
@@ -173,6 +173,7 @@ def create_generic_work( work_type, user, title, description )
     w.description << description
     w.work_type = work_type
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
+    #w.identifier << "123456"
 
   end
 
@@ -189,11 +190,15 @@ end
 
 def dump_work( work )
 
-  #puts "#{work.inspect}"
-  puts "#{work.depositor}, #{work.title}"
-  #if work.upload_set
-  #  puts work.upload_set.inspect
-  #end
+  j = JSON.parse( work.to_json )
+  j.keys.sort.each do |k|
+     val = j[ k ]
+     if k.end_with?( "_id" ) == false && val.nil? == false && val.empty? == false
+       puts " #{k} => #{val}"
+     end
+  end
+
+  puts "*" * 30
 
 end
 
