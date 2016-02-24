@@ -38,8 +38,10 @@ task del_all_works: :environment do |t, args|
   count = 0
   GenericWork.all.each do |generic_work|
      count += 1
+     print "."
      generic_work.destroy
   end
+  puts "done" unless count == 0
   puts "Deleted #{count} work(s)"
 
 end
@@ -52,10 +54,14 @@ task del_my_works: :environment do |t, args|
    count = 0
 
    GenericWork.all.each do |generic_work|
-     count += 1 if generic_work.depositor == who
-     generic_work.destroy if generic_work.depositor == who
+     if generic_work.depositor == who
+        count += 1
+        print "."
+        generic_work.destroy
+     end
    end
 
+   puts "done" unless count == 0
    puts "Deleted #{count} work(s)"
    task who.to_sym do ; end
 
