@@ -27,5 +27,17 @@ class GenericWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  class << self
 
+    # determine which fields can have multiple values...
+    def multiple?( term )
+      case term.to_s
+        when 'contributor', 'subject', 'related_url'
+          true
+        else
+          false
+      end
+    end
+
+  end
 end
