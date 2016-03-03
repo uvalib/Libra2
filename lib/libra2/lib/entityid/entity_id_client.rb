@@ -12,18 +12,18 @@ module Libra2
      end
 
      def self.newid( work )
-       url = "#{EntityIdClient.url}/#{EntityIdClient.shoulder}"
+       url = "#{EntityIdClient.url}/#{EntityIdClient.shoulder}?auth=#{EntityIdClient.authtoken}"
        payload =  self.payload( work )
-       status, response = self.post( url, payload )
+       status, response = self.send( url, :post, payload )
 
        return status, response['details']['id'] if EntityIdClient.ok?( status ) && response['details'] && response['details']['id']
        return status, ''
      end
 
      def self.metadatasync( work )
-       url = "#{EntityIdClient.url}/#{work.identifier[ 0 ]}"
+       url = "#{EntityIdClient.url}/#{work.identifier[ 0 ]}?auth=#{EntityIdClient.authtoken}"
        payload =  self.payload( work )
-       status, response = self.post( url, payload )
+       status, response = self.send( url, :put, payload )
        return status
      end
 
@@ -38,9 +38,9 @@ module Libra2
 
      private
 
-     def self.post( url, payload )
+     def self.send( url, method, payload )
        begin
-         response = RestClient::Request.execute( method: :post,
+         response = RestClient::Request.execute( method: method,
                                       url: URI.escape( url ),
                                       payload: payload,
                                       content_type: :json,
