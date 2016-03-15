@@ -112,7 +112,7 @@ task bulk_create_work: :environment do |t, args|
 end
 
 desc "Create new generic work; optionally provide depositor name"
-task create_work: :environment do |t, args|
+task create_new_work: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_user if who.nil?
@@ -140,7 +140,7 @@ task create_work: :environment do |t, args|
 end
 
 desc "Create new thesis; optionally provide depositor name"
-task create_thesis: :environment do |t, args|
+task create_new_thesis: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_user if who.nil?
