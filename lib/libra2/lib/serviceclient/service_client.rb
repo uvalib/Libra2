@@ -28,12 +28,15 @@ module Libra2
                                                  url: URI.escape( url ),
                                                  payload: payload,
                                                  content_type: :json,
+                                                 accept: :json,
                                                  timeout: self.timeout )
 
          if ok?( response.code ) && response.empty? == false && response != ' '
            return response.code, JSON.parse( response )
          end
          return response.code, {}
+       rescue RestClient::ResourceNotFound => e
+         return e.http_code, {}
        rescue RestClient::Exception => e
          puts "POST, URL: #{url}" if method == :post
          puts "PUT, URL: #{url}" if method == :put
@@ -52,12 +55,15 @@ module Libra2
        begin
          response = RestClient::Request.execute( method: :get,
                                                  url: URI.escape( url ),
+                                                 accept: :json,
                                                  timeout: self.timeout )
 
          if ok?( response.code ) && response.empty? == false && response != ' '
            return response.code, JSON.parse( response )
          end
          return response.code, {}
+       rescue RestClient::ResourceNotFound => e
+         return e.http_code, {}
        rescue RestClient::Exception => e
          puts "GET, URL: #{url}"
          puts e
