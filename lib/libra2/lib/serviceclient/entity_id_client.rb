@@ -2,51 +2,61 @@ require "#{Rails.root}/lib/libra2/lib/serviceclient/service_client"
 
 module Libra2
 
-   class EntityIdClient < ServiceClient
+   class EntityIdClient
 
      #
-     # configure the appropriate configuration file
+     # configure with the appropriate configuration file
      #
-     class << self
-       ServiceClient.config_file = "entityid.yml"
+     def initialize
+       @client = ServiceClient.new( "entityid.yml" )
      end
+
+     #
+     # singleton stuff
+     #
+
+     @@instance = EntityIdClient.new
+
+     def self.instance
+       return @@instance
+     end
+
+     private_class_method :new
 
      #
      # create a new DOI and associate any metadata we can determine from the supplied work
      #
-     def self.newid( work )
-       url = "#{EntityIdClient.url}/#{EntityIdClient.shoulder}?auth=#{EntityIdClient.authtoken}"
+     def newid( work )
+       url = "#{self.url}/#{self.shoulder}?auth=#{self.authtoken}"
        payload =  self.construct_payload( work )
-       status, response = self.rest_send( url, :post, payload )
+       status, response = @client.rest_send( url, :post, payload )
 
-       return status, response['details']['id'] if EntityIdClient.ok?( status ) && response['details'] && response['details']['id']
+       return status, response['details']['id'] if @client.ok?( status ) && response['details'] && response['details']['id']
        return status, ''
      end
 
      #
      # update an existing DOI with any metadata we can determine from the supplied work
      #
-     def self.metadatasync( work )
-       url = "#{EntityIdClient.url}/#{work.identifier[ 0 ]}?auth=#{EntityIdClient.authtoken}"
+     def metadatasync( work )
+       url = "#{self.url}/#{work.identifier[ 0 ]}?auth=#{self.authtoken}"
        payload =  self.construct_payload( work )
-       status, response = self.rest_send( url, :put, payload )
+       status, response = @client.rest_send( url, :put, payload )
        return status
      end
 
      #
      # remove a DOI entry
      #
-     def self.remove( work )
+     def remove( work )
        # not implemented
        500
      end
 
-     private
-
      #
      # construct the request payload
      #
-     def self.construct_payload( work )
+     def construct_payload( work )
        h = {}
        h['title'] = work.title[ 0 ] if work.title[ 0 ]
        h['publisher'] = 'the publisher'
@@ -58,19 +68,23 @@ module Libra2
      end
 
      #
-     # configuration helpers
+     # helpers
      #
 
-     def self.shoulder
-       ServiceClient.configuration[ :shoulder ]
+     def ok?( status )
+       @client.ok?( status )
      end
 
-     def self.authtoken
-       ServiceClient.configuration[ :authtoken ]
+     def shoulder
+       @client.configuration[ :shoulder ]
      end
 
-     def self.url
-       ServiceClient.configuration[ :url ]
+     def authtoken
+       @client.configuration[ :authtoken ]
+     end
+
+     def url
+       @client.configuration[ :url ]
      end
 
    end

@@ -183,8 +183,8 @@ def create_generic_work( work_type, user, title, description )
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
 
     print "getting DOI..."
-    status, id = Libra2::EntityIdClient.newid( w )
-    w.identifier << id if Libra2::EntityIdClient.ok?( status )
+    status, id = Libra2::EntityIdClient.instance.newid( w )
+    w.identifier << id if Libra2::EntityIdClient.instance.ok?( status )
     puts "done"
 
   end

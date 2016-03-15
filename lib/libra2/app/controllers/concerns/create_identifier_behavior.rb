@@ -13,8 +13,8 @@ module Libra2
 
     # get a DOI from the service
     def add_identifier
-      status, id = Libra2::EntityIdClient.newid( curation_concern )
-      curation_concern.identifier << id if Libra2::EntityIdClient.ok?( status )
+      status, id = Libra2::EntityIdClient.instance.newid( curation_concern )
+      curation_concern.identifier << id if Libra2::EntityIdClient.instance.ok?( status )
     end
 
   end
