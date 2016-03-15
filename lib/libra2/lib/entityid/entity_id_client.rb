@@ -1,64 +1,52 @@
-require 'rest_client'
+require "#{Rails.root}/lib/libra2/lib/serviceclient/service_client"
 
 module Libra2
-   class EntityIdClient
 
+   class EntityIdClient < ServiceClient
+
+     #
+     # configure the appropriate configuration file
+     #
      class << self
-        attr_accessor :configuration
+       ServiceClient.config_file = "entityid.yml"
      end
 
-     def self.configuration
-       @configuration ||= EntityIdClient.load_config
-     end
-
+     #
+     # create a new DOI and associate any metadata we can determine from the supplied work
+     #
      def self.newid( work )
        url = "#{EntityIdClient.url}/#{EntityIdClient.shoulder}?auth=#{EntityIdClient.authtoken}"
-       payload =  self.payload( work )
-       status, response = self.send( url, :post, payload )
+       payload =  self.construct_payload( work )
+       status, response = self.rest_send( url, :post, payload )
 
        return status, response['details']['id'] if EntityIdClient.ok?( status ) && response['details'] && response['details']['id']
        return status, ''
      end
 
+     #
+     # update an existing DOI with any metadata we can determine from the supplied work
+     #
      def self.metadatasync( work )
        url = "#{EntityIdClient.url}/#{work.identifier[ 0 ]}?auth=#{EntityIdClient.authtoken}"
-       payload =  self.payload( work )
-       status, response = self.send( url, :put, payload )
+       payload =  self.construct_payload( work )
+       status, response = self.rest_send( url, :put, payload )
        return status
      end
 
+     #
+     # remove a DOI entry
+     #
      def self.remove( work )
        # not implemented
        500
      end
 
-     def self.ok?( status )
-       return( status == 200 )
-     end
-
      private
 
-     def self.send( url, method, payload )
-       begin
-         response = RestClient::Request.execute( method: method,
-                                      url: URI.escape( url ),
-                                      payload: payload,
-                                      content_type: :json,
-                                      timeout: EntityIdClient.timeout )
-
-         if EntityIdClient.ok?( response.code ) && response.empty? == false && response != ' '
-           return response.code, JSON.parse( response )
-         end
-         return response.code, {}
-       rescue => e
-         puts "URL: #{url}"
-         puts "Payload: #{payload}"
-         puts e
-         return 500, {}
-       end
-     end
-
-     def self.payload( work )
+     #
+     # construct the request payload
+     #
+     def self.construct_payload( work )
        h = {}
        h['title'] = work.title[ 0 ] if work.title[ 0 ]
        h['publisher'] = 'the publisher'
@@ -69,40 +57,20 @@ module Libra2
        h.to_json
      end
 
+     #
+     # configuration helpers
+     #
+
      def self.shoulder
-       EntityIdClient.configuration[ :shoulder ]
+       ServiceClient.configuration[ :shoulder ]
      end
 
      def self.authtoken
-       EntityIdClient.configuration[ :authtoken ]
+       ServiceClient.configuration[ :authtoken ]
      end
 
      def self.url
-       EntityIdClient.configuration[ :url ]
-     end
-
-     def self.timeout
-       EntityIdClient.configuration[ :timeout ]
-     end
-
-     def self.load_config
-
-       filename = "entityid.yml"
-       fullname = "#{Rails.application.root}/lib/libra2/config/#{filename}"
-       begin
-         config_erb = ERB.new( IO.read( fullname ) ).result( binding )
-       rescue StandardError
-         raise( "#{filename} was found, but could not be parsed with ERB. \n#{$ERROR_INFO.inspect}" )
-       end
-
-       begin
-         yml = YAML.load( config_erb )
-       rescue Psych::SyntaxError => e
-         raise "#{filename} was found, but could not be parsed. \nError #{e.message}"
-       end
-
-       config = yml.symbolize_keys
-       @configuration = config[ Rails.env.to_sym ].symbolize_keys || {}
+       ServiceClient.configuration[ :url ]
      end
 
    end
