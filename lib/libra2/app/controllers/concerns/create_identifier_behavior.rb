@@ -1,4 +1,4 @@
-require "lib/entityid/entity_id_client"
+require "lib/serviceclient/entity_id_client"
 
 module Libra2
 

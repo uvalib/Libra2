@@ -2,7 +2,7 @@
 # Some helper tasks to create and delete works
 #
 
-require "#{Rails.root}/lib/libra2/lib/entityid/entity_id_client"
+require "#{Rails.root}/lib/libra2/lib/serviceclient/entity_id_client"
 
 namespace :libra2 do
 
