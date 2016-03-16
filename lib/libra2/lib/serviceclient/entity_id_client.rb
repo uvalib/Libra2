@@ -58,12 +58,12 @@ module Libra2
      #
      def construct_payload( work )
        h = {}
-       h['title'] = work.title[ 0 ] if work.title[ 0 ]
-       h['publisher'] = 'the publisher'
-       h['creator'] = work.creator[ 0 ] if work.creator[ 0 ]
-       h['url'] = 'http://example.com/blablabla'
+       h['title'] = work.title[ 0 ] if work.title[ 0 ] && work.title
+       h['publisher'] = work.publisher if work.publisher
+       h['creator'] = work.creator if work.creator
+       h['url'] = work.relative_path if work.relative_path
        h['publication_year'] = '2016'
-       h['type'] = 'Dataset'
+       h['type'] = work.resource_type if work.resource_type
        h.to_json
      end
 

@@ -1,9 +1,10 @@
-# Generated via
-#  `rails generate curation_concerns:work GenericWork`
+require 'concerns/basic_metadata'
+
 class GenericWork < ActiveFedora::Base
   include ::CurationConcerns::WorkBehavior
-  include ::CurationConcerns::BasicMetadata
+  include ::Libra2::BasicMetadata
   include Sufia::WorkBehavior
+
   validates :title, presence: { message: 'Your work must have a title.' }
 
   # work type definitions
@@ -32,7 +33,7 @@ class GenericWork < ActiveFedora::Base
     # determine which fields can have multiple values...
     def multiple?( term )
       case term.to_s
-        when 'contributor', 'subject', 'related_url'
+        when 'title', 'contributor', 'subject', 'related_url'
           true
         else
           false
