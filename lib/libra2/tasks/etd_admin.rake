@@ -2,10 +2,10 @@
 # Some helper tasks to manage ETD creation
 #
 
-require "#{Rails.root}/lib/libra2/lib/serviceclient/deposit_reg_client"
-require "#{Rails.root}/lib/libra2/lib/helpers/value_snapshot"
-require "#{Rails.root}/lib/libra2/lib/helpers/deposit_request"
-require "#{Rails.root}/lib/libra2/lib/helpers/etd_helper"
+require_dependency 'libra2/lib/serviceclient/deposit_reg_client'
+require_dependency 'libra2/lib/helpers/value_snapshot'
+require_dependency 'libra2/lib/helpers/deposit_request'
+require_dependency 'libra2/lib/helpers/etd_helper'
 
 namespace :libra2 do
 
@@ -18,8 +18,8 @@ namespace :libra2 do
     last_id = ARGV[ 1 ]
     last_id = default_last_id if last_id.nil?
 
-    status, resp = Libra2::DepositRegClient.instance.list_requests( last_id )
-    if Libra2::DepositRegClient.instance.ok?( status )
+    status, resp = ServiceClient::DepositRegClient.instance.list_requests( last_id )
+    if ServiceClient::DepositRegClient.instance.ok?( status )
       resp.each do |r|
         dump_deposit_request r
       end
@@ -49,14 +49,14 @@ namespace :libra2 do
     statefile = default_statefile if statefile.nil?
     count = 0
 
-    s = Libra2::ValueSnapshot.new( statefile, default_last_id )
+    s = Helpers::ValueSnapshot.new( statefile, default_last_id )
     last_id = s.val
 
-    status, resp = Libra2::DepositRegClient.instance.list_requests( last_id )
-    if Libra2::DepositRegClient.instance.ok?( status )
+    status, resp = ServiceClient::DepositRegClient.instance.list_requests( last_id )
+    if ServiceClient::DepositRegClient.instance.ok?( status )
       resp.each do |r|
-        req = Libra2::DepositRequest.create( r )
-        if Libra2::EtdHelper::new_etd_from_deposit_request( req ) == true
+        req = ServiceClient::DepositRequest.create( r )
+        if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
            count += 1
            #s.val = req.id
         else

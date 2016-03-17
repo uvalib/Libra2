@@ -1,10 +1,10 @@
-module Libra2
+module Helpers
 
   class EtdHelper
 
     def self.new_etd_from_deposit_request( dr )
 
-      default_email_domain = "virginia.edu"
+      default_email_domain = 'virginia.edu'
 
       # determine the user and return if we cannot... cant create without an owner
       email = "#{dr.who}@#{default_email_domain}"
@@ -27,8 +27,8 @@ module Libra2
         w.department = dr.department
         w.degree = dr.degree
 
-        status, id = Libra2::EntityIdClient.instance.newid( w )
-        if Libra2::EntityIdClient.instance.ok?( status )
+        status, id = ServiceClient::EntityIdClient.instance.newid( w )
+        if ServiceClient::EntityIdClient.instance.ok?( status )
         w.identifier = id
         else
           puts "Cannot mint DOI (#{status})"

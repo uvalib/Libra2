@@ -1,6 +1,6 @@
 require 'rest_client'
 
-module Libra2
+module ServiceClient
 
    class ServiceClient
 

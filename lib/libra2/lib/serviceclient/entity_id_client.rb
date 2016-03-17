@@ -1,6 +1,6 @@
-require "#{Rails.root}/lib/libra2/lib/serviceclient/service_client"
+require_dependency 'libra2/lib/serviceclient/service_client'
 
-module Libra2
+module ServiceClient
 
    class EntityIdClient
 

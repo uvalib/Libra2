@@ -1,8 +1,8 @@
-require 'concerns/basic_metadata'
+require 'concerns/libra2/basic_metadata'
 
 class GenericWork < ActiveFedora::Base
   include ::CurationConcerns::WorkBehavior
-  include ::Libra2::BasicMetadata
+  include Libra2::BasicMetadata
   include Sufia::WorkBehavior
 
   # validations required for model integrity
@@ -69,7 +69,7 @@ class GenericWork < ActiveFedora::Base
   end
 
   # sponsoring agency (grant funded work, etc)
-  property :sponsoring_agency, predicate: ::RDF::URI('http://example.org/terms/sponsoring_agency'), multiple: false do |index|
+  property :sponsoring_agency, predicate: ::RDF::URI('http://example.org/terms/sponsoring_agency') do |index|
     index.as :stored_searchable, :facetable
   end
 

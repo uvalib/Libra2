@@ -1,4 +1,4 @@
-module Libra2
+module Helpers
 
   #
   # helper class for the deposit request response

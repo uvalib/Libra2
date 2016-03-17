@@ -46,9 +46,11 @@ module Internal
     paths[ 'app/views' ] << "lib/#{app_namespace}/app/views"
     paths[ 'app/models' ] << "lib/#{app_namespace}/app/models"
     paths[ 'app/helpers' ] << "lib/#{app_namespace}/app/helpers"
-    paths[ 'lib' ] << "lib/#{app_namespace}"
+    #paths[ 'lib' ] << "lib/#{app_namespace}/lib"
     paths[ 'lib/tasks' ] << "lib/#{app_namespace}/tasks"
     paths[ 'config' ] << "lib/#{app_namespace}/config"
+
+    config.autoload_paths << "#{Rails.root}/lib"
 
   end
 end

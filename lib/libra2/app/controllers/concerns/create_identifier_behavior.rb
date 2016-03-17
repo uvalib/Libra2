@@ -1,8 +1,6 @@
-require "lib/serviceclient/entity_id_client"
+require_dependency 'libra2/lib/serviceclient/entity_id_client'
 
-module Libra2
-
-  module CreateIdentifierBehavior
+module CreateIdentifierBehavior
     extend ActiveSupport::Concern
 
     included do
@@ -13,9 +11,8 @@ module Libra2
 
     # get a DOI from the service
     def add_identifier
-      status, id = Libra2::EntityIdClient.instance.newid( curation_concern )
-      curation_concern.identifier = id if Libra2::EntityIdClient.instance.ok?( status )
+      status, id = ServiceClient::EntityIdClient.instance.newid( curation_concern )
+      curation_concern.identifier = id if ServiceClient::EntityIdClient.instance.ok?( status )
     end
 
-  end
 end

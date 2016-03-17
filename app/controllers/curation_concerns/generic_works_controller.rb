@@ -9,5 +9,5 @@ class CurationConcerns::GenericWorksController < ApplicationController
   include Sufia::WorksControllerBehavior
 
   # Adds identifier behavior to the controller.
-  include Libra2::CreateIdentifierBehavior
+  include ::CreateIdentifierBehavior
 end

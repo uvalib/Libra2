@@ -2,7 +2,7 @@
 # Some helper tasks to create and delete works
 #
 
-require "#{Rails.root}/lib/libra2/lib/serviceclient/entity_id_client"
+require_dependency 'libra2/lib/serviceclient/entity_id_client'
 
 namespace :libra2 do
 
@@ -192,10 +192,10 @@ def create_generic_work( work_type, user, title, description )
     w.contributor << 'Dr. Ruth'
 
     print "getting DOI..."
-    status, id = Libra2::EntityIdClient.instance.newid( w )
-    w.identifier = id if Libra2::EntityIdClient.instance.ok?( status )
-    puts "done" if Libra2::EntityIdClient.instance.ok?( status ) == true
-    puts "error" if Libra2::EntityIdClient.instance.ok?( status ) == false
+    status, id = ServiceClient::EntityIdClient.instance.newid( w )
+    w.identifier = id if ServiceClient::EntityIdClient.instance.ok?( status )
+    puts "done" if ServiceClient::EntityIdClient.instance.ok?( status ) == true
+    puts "error" if ServiceClient::EntityIdClient.instance.ok?( status ) == false
 
   end
 
