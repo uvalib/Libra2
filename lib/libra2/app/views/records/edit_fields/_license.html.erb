@@ -1,0 +1,4 @@
+<%= f.input :license, label: 'License *', as: :select, required: f.object.required?(key),
+    collection: ['this', 'that', 'the other'],
+    input_html: { class: 'form-control' } %>
+<%#= render "curation_concerns/file_sets/rights_modal" %>

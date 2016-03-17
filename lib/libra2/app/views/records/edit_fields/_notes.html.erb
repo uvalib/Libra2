@@ -1,5 +1,1 @@
-<% if f.object.class.multiple? key %>
-  <%= f.input :notes, as: :multi_value_with_help, input_html: { rows: '5', type: 'textarea'}, required: false %>
-<% else %>
-  <%= f.input :notes, as: :text, input_html: { rows: '5' } %>
-<% end %>
+<%= f.input :notes, as: :text, input_html: { rows: '5' }, required: f.object.required?(key) %>

@@ -5,7 +5,18 @@ class GenericWork < ActiveFedora::Base
   include ::Libra2::BasicMetadata
   include Sufia::WorkBehavior
 
+  # validations required for model integrity
   validates :title, presence: { message: 'Your work must have a title.' }
+  #validates :creator, presence: { message: 'Your work must have an author.' }
+  #validates :contributor, presence: { message: 'Your work must have a contributor.' }
+  #validates :description, presence: { message: 'Your work must have a description.' }
+  #validates :publisher, presence: { message: 'Your work must have a publisher.' }
+  #validates :date_created, presence: { message: 'Your work must have a creation date.' }
+  #validates :rights, presence: { message: 'Your work must have a rights assignment.' }
+  #validates :identifier, presence: { message: 'Your work must have an identifier.' }
+  #validates :department, presence: { message: 'Your work must have a department.' }
+  #validates :degree, presence: { message: 'Your work must have a degree.' }
+  #validates :license, presence: { message: 'Your work must have a license acceptance.' }
 
   # work type definitions
   WORK_TYPE_GENERIC = 'generic_work'.freeze
@@ -43,23 +54,23 @@ class GenericWork < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
-  #
+  # notes associated with the deposit
   property :notes, predicate: ::RDF::URI('http://example.org/terms/notes'), multiple: false do |index|
     index.type :text
     index.as :stored_searchable
   end
 
-  #
+  # the license assigned to the work
   property :license, predicate: ::RDF::URI('http://example.org/terms/license') do |index|
     index.as :stored_searchable, :facetable
   end
 
-  #
+  # sponsoring agency (grant funded work, etc)
   property :sponsoring_agency, predicate: ::RDF::URI('http://example.org/terms/sponsoring_agency'), multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
 
-  #
+  # notes for the administrator; not visible to normal users
   property :admin_notes, predicate: ::RDF::URI('http://example.org/terms/admin_notes') do |index|
     index.type :text
     index.as :stored_searchable
@@ -70,7 +81,7 @@ class GenericWork < ActiveFedora::Base
     # determine which fields can have multiple values...
     def multiple?( term )
       case term.to_s
-        when 'title', 'contributor', 'subject', 'related_url', 'admin_notes'
+        when 'title', 'contributor', 'subject', 'related_url', 'sponsoring_agency', 'admin_notes'
           true
         else
           false
