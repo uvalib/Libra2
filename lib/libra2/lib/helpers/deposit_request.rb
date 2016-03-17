@@ -9,14 +9,14 @@ module Libra2
       attr_accessor :id
       attr_accessor :requester
       attr_accessor :who
-      attr_accessor :school
+      attr_accessor :department
       attr_accessor :degree
 
       def initialize( json )
         @id = json['id'] || '0'
         @requester = json[ 'requester'] || ''
         @who = json[ 'for'] || ''
-        @school = json[ 'school'] || ''
+        @department = json[ 'department'] || ''
         @degree = json[ 'degree'] || ''
       end
 
@@ -25,3 +25,7 @@ module Libra2
       end
   end
 end
+
+#
+# end of file
+#
