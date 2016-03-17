@@ -22,6 +22,9 @@ class GenericWork < ActiveFedora::Base
   WORK_TYPE_GENERIC = 'generic_work'.freeze
   WORK_TYPE_THESIS = 'thesis'.freeze
 
+  # defaults
+  DEFAULT_PUBLISHER = 'University Of Virginia'.freeze
+
   # Custom Metadata
 
   # work_type - Currently either a 'thesis' or a 'generic_work'.
