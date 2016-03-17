@@ -1,9 +1,9 @@
 development:
-  host: docker2.lib.virginia.edu
-  port: 6379
+  host: <%= ENV['REDIS_HOST'] || "docker2.lib.virginia.edu" %>
+  port: <%= ENV['REDIS_PORT'] || "6379" %>
 test:
-  host: docker2.lib.virginia.edu
-  port: 6379
+  host: <%= ENV['REDIS_HOST'] || "docker2.lib.virginia.edu" %>
+  port: <%= ENV['REDIS_PORT'] || "6379" %>
 production:
-  host: localhost
-  port: 6379
+  host: <%= ENV['REDIS_HOST'] || "docker2.lib.virginia.edu" %>
+  port: <%= ENV['REDIS_PORT'] || "6379" %>
