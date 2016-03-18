@@ -15,7 +15,7 @@ module ServiceClient
      # singleton stuff
      #
 
-     @@instance = DepositRegClient.new
+     @@instance = new
 
      def self.instance
        return @@instance

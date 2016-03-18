@@ -15,7 +15,7 @@ module ServiceClient
      # singleton stuff
      #
 
-     @@instance = EntityIdClient.new
+     @@instance = new
 
      def self.instance
        return @@instance

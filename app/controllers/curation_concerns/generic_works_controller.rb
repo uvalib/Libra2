@@ -1,7 +1,3 @@
-# Generated via
-#  `rails generate curation_concerns:work GenericWork`
-
-require "create_identifier_behavior"
 
 class CurationConcerns::GenericWorksController < ApplicationController
   include CurationConcerns::CurationConcernController

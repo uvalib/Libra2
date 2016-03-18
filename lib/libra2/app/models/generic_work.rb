@@ -1,5 +1,5 @@
-require 'concerns/libra2/basic_metadata'
-require 'libra2/app/indexers/libra2_indexer'
+require_dependency 'concerns/libra2/basic_metadata'
+require_dependency 'libra2/app/indexers/libra2_indexer'
 
 class GenericWork < ActiveFedora::Base
 
