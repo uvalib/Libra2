@@ -1,8 +1,8 @@
-require_dependency 'libra2/lib/serviceclient/service_client'
+require_dependency 'libra2/lib/serviceclient/base_client'
 
 module ServiceClient
 
-   class DepositRegClient < ServiceClientBase
+   class DepositRegClient < BaseClient
 
      #
      # configure with the appropriate configuration file

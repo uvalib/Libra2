@@ -2,7 +2,7 @@ require 'rest_client'
 
 module ServiceClient
 
-   class ServiceClientBase
+   class BaseClient
 
      def configuration
        @configuration
