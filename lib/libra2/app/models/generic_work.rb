@@ -1,6 +1,8 @@
 require 'concerns/libra2/basic_metadata'
+require 'libra2/app/indexers/libra2_indexer'
 
 class GenericWork < ActiveFedora::Base
+
   include ::CurationConcerns::WorkBehavior
   include Libra2::BasicMetadata
   include Sufia::WorkBehavior
@@ -79,6 +81,11 @@ class GenericWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  # specify the indexer used to create the SOLR document
+  def self.indexer
+    ::Libra2Indexer
+  end
+
   class << self
 
     # determine which fields can have multiple values...
@@ -93,3 +100,7 @@ class GenericWork < ActiveFedora::Base
 
   end
 end
+
+#
+# end of file
+#

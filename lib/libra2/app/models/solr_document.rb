@@ -9,8 +9,6 @@ class SolrDocument
   # Adds Sufia behaviors to the SolrDocument.
   include Sufia::SolrDocumentBehavior
 
-
-
   # self.unique_key = 'id'
   
   # Email uses the semantic field mappings below to generate the body of an email.
@@ -31,12 +29,54 @@ class SolrDocument
 
   use_extension( Hydra::ContentNegotiation )
 
+  #
+  # Libra2 specific extensions here
+  #
+
   def work_type
     self[Solrizer.solr_name('work_type')]
   end
 
   def draft
     self[Solrizer.solr_name('draft')]
+  end
+
+  def author_institution
+    self[Solrizer.solr_name('author_institution')]
+  end
+
+  def department
+    self[Solrizer.solr_name('department')]
+  end
+
+  def degree
+    self[Solrizer.solr_name('degree')]
+  end
+
+  def notes
+    self[Solrizer.solr_name('notes')]
+  end
+
+  def license
+    self[Solrizer.solr_name('license')]
+  end
+
+  def sponsoring_agency
+    self[Solrizer.solr_name('sponsoring_agency')]
+  end
+
+  def admin_notes
+    self[Solrizer.solr_name('admin_notes')]
+  end
+
+  def is_thesis?
+    return false if work_type.nil?
+    return work_type[ 0 ] == GenericWork::WORK_TYPE_THESIS
+  end
+
+  def is_draft?
+    return false if draft.nil?
+    return draft[ 0 ] == 'true'
   end
 
 end
