@@ -2,13 +2,13 @@ require_dependency 'libra2/lib/serviceclient/service_client'
 
 module ServiceClient
 
-   class DepositRegClient
+   class DepositRegClient < ServiceClientBase
 
      #
      # configure with the appropriate configuration file
      #
      def initialize
-       @client = ServiceClient.new( "depositreg.yml" )
+       load_config( "depositreg.yml" )
      end
 
      #
@@ -28,7 +28,7 @@ module ServiceClient
      #
      def list_requests( id )
        url = "#{self.url}?auth=#{self.authtoken}&later=#{id}"
-       status, response = @client.rest_get( url )
+       status, response = rest_get( url )
        return status, response['details'] if ok?( status ) && response['details']
        return status, ''
      end
@@ -53,16 +53,12 @@ module ServiceClient
      # helpers
      #
 
-     def ok?( status )
-       @client.ok?( status )
-     end
-
      def authtoken
-       @client.configuration[ :authtoken ]
+       configuration[ :authtoken ]
      end
 
      def url
-       @client.configuration[ :url ]
+       configuration[ :url ]
      end
 
    end

@@ -2,13 +2,13 @@ require_dependency 'libra2/lib/serviceclient/service_client'
 
 module ServiceClient
 
-   class EntityIdClient
+   class EntityIdClient < ServiceClientBase
 
      #
      # configure with the appropriate configuration file
      #
      def initialize
-       @client = ServiceClient.new( "entityid.yml" )
+       load_config( "entityid.yml" )
      end
 
      #
@@ -29,9 +29,9 @@ module ServiceClient
      def newid( work )
        url = "#{self.url}/#{self.shoulder}?auth=#{self.authtoken}"
        payload =  self.construct_payload( work )
-       status, response = @client.rest_send( url, :post, payload )
+       status, response = rest_send( url, :post, payload )
 
-       return status, response['details']['id'] if @client.ok?( status ) && response['details'] && response['details']['id']
+       return status, response['details']['id'] if ok?( status ) && response['details'] && response['details']['id']
        return status, ''
      end
 
@@ -71,20 +71,16 @@ module ServiceClient
      # helpers
      #
 
-     def ok?( status )
-       @client.ok?( status )
-     end
-
      def shoulder
-       @client.configuration[ :shoulder ]
+       configuration[ :shoulder ]
      end
 
      def authtoken
-       @client.configuration[ :authtoken ]
+       configuration[ :authtoken ]
      end
 
      def url
-       @client.configuration[ :url ]
+       configuration[ :url ]
      end
 
    end

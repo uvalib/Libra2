@@ -2,11 +2,7 @@ require 'rest_client'
 
 module ServiceClient
 
-   class ServiceClient
-
-     def initialize( config )
-       load_config( config )
-     end
+   class ServiceClientBase
 
      def configuration
        @configuration
