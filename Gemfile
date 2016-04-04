@@ -71,6 +71,8 @@ group :development, :test do
   gem 'rspec-rails'
 end
 
+gem 'rest-client'
+
 # special case for the vendored hydra-works gem...
 gem 'hydra-works', '0.6.0',
   :path => "vendor/hydra-works-0.6.0"
