@@ -93,13 +93,10 @@ task bulk_create_work: :environment do |t, args|
 
       user = User.find_by_email( who )
       work = create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description )
-      def user.directory
-        "#{File::SEPARATOR}tmp"
-      end
 
-      service = Sufia::IngestLocalFileService.new( user )
       filename = get_an_image( )
-      upload_file( service, filename, work.id )
+      fileset = ::FileSet.new
+      upload_file( user, fileset, work, filename )
 
       count += 1
     end
@@ -124,15 +121,9 @@ task create_new_work: :environment do |t, args|
 
   work = create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description )
 
-  def user.directory
-    "#{File::SEPARATOR}tmp"
-  end
-
-  service = Sufia::IngestLocalFileService.new( user )
-  2.times do
-    filename = get_an_image( )
-    upload_file( service, filename, work.id )
-  end
+  fileset = ::FileSet.new
+  filename = get_an_image( )
+  upload_file( user, fileset, work, filename )
 
   dump_work work
   task who.to_sym do ; end
@@ -152,13 +143,9 @@ task create_new_thesis: :environment do |t, args|
 
   work = create_generic_work( GenericWork::WORK_TYPE_THESIS, user, title, description )
 
-  def user.directory
-    "#{File::SEPARATOR}tmp"
-  end
-
-  service = Sufia::IngestLocalFileService.new( user )
   filename = copy_sourcefile( sample_file )
-  upload_file( service, filename, work.id )
+  fileset = ::FileSet.new
+  upload_file( user, fileset, work, filename )
 
   dump_work work
   task who.to_sym do ; end
@@ -167,10 +154,7 @@ end
 
 def create_generic_work( work_type, user, title, description )
 
-  id = SecureRandom.uuid
-  upload_set = UploadSet.find_or_create( id )
-
-  work = GenericWork.create!(title: [ title ], upload_set: upload_set) do |w|
+  work = GenericWork.create!(title: [ title ] ) do |w|
 
     # generic work attributes
     w.apply_depositor_metadata(user)
@@ -202,10 +186,14 @@ def create_generic_work( work_type, user, title, description )
   return work
 end
 
-def upload_file( uploader, filename, work_id )
+def upload_file( user, fileset, work, filename )
 
   print "uploading #{filename}... "
-  uploader.ingest_local_file( [ File.basename( filename ) ], work_id )
+
+  file_actor = ::CurationConcerns::FileSetActor.new( fileset, user )
+  file_actor.create_metadata( work )
+  file_actor.create_content( File.open( filename ) )
+
   puts "done"
 
 end
