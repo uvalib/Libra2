@@ -10,7 +10,39 @@
 	a[href="/dashboard/collections"] {
 		display: none;
 	}
+
+    .dropdown-menu {
+      a[href="/dashboard/transfers"] {
+        display: none;
+      }
+      a[href="/dashboard/highlights"] {
+        display: none;
+      }
+      a[href="/dashboard/shares"] {
+        display: none;
+      }
+      :nth-child(5) {    // the divider
+        display: none;
+      }
+    }
 }
+
+
+// the search button drop down
+#search-form-header {
+  .input-group-btn {
+    a[data-search-label="My Collections"] {
+      display: none; // search button within collections
+    }
+    a[data-search-label="My Highlights"] {
+      display: none; // search button within highlights
+    }
+    a[data-search-label="My Shares"] {
+      display: none; // search button within shares
+    }
+  }
+}
+
 
 //
 // Dashboard
