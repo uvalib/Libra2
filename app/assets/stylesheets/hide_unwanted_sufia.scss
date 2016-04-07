@@ -1,0 +1,58 @@
+// Get rid of canned Sufia functionality that we don't want to show in Libra2.
+
+//
+// All pages
+//
+#masthead {
+	a[href="/dashboard/works"] {
+		display: none;
+	}
+	a[href="/dashboard/collections"] {
+		display: none;
+	}
+}
+
+//
+// Dashboard
+//
+
+//
+// Uploading
+//
+.new_generic_work {
+	a[aria-controls="relationships"] {
+		display: none;
+	}
+	a[aria-controls="share"] {
+		display: none;
+	}
+}
+
+//
+// Profile
+//
+
+.panel-user {
+	.list-group-item:nth-child(2) { // Collections section on user profile.
+		display: none;
+	}
+	.list-group-item:nth-child(4) { // Followers section on user profile.
+		display: none;
+	}
+}
+
+label[for="user_orcid"], #user_orcid {
+	display: none;
+}
+
+label[for="user_twitter_handle"], #user_twitter_handle {
+	display: none;
+}
+
+label[for="user_facebook_handle"], #user_facebook_handle {
+	display: none;
+}
+
+label[for="user_googleplus_handle"], #user_googleplus_handle {
+	display: none;
+}
