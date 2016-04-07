@@ -2,4 +2,6 @@
 class Collection < ActiveFedora::Base
   include ::CurationConcerns::CollectionBehavior
   include Sufia::CollectionBehavior
+  # You can replace these metadata if they're not suitable
+  include Hydra::Collections::BasicMetadata
 end

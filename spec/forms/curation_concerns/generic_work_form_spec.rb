@@ -7,4 +7,3 @@ describe CurationConcerns::GenericWorkForm do
     skip "Add your tests here"
   end
 end
-

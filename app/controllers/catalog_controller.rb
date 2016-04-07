@@ -44,10 +44,6 @@ class CatalogController < ApplicationController
       qf: "title_tesim name_tesim"
     }
 
-    # Specify which field to use in the tag cloud on the homepage.
-    # To disable the tag cloud, comment out this line.
-    config.tag_cloud_field_name = Solrizer.solr_name("tag", :facetable)
-
     # solr field configuration for document/show views
     config.index.title_field = solr_name("title", :stored_searchable)
     config.index.display_type_field = solr_name("has_model", :symbol)
@@ -317,5 +313,12 @@ class CatalogController < ApplicationController
     # If there are more than this many search results, no spelling ("did you
     # mean") suggestion is offered.
     config.spell_max = 5
+  end
+
+  # disable the bookmark control from displaying in gallery view
+  # Sufia doesn't show any of the default controls on the list view, so
+  # this method is not called in that context.
+  def render_bookmarks_control?
+    false
   end
 end

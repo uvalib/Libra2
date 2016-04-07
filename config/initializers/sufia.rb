@@ -1,9 +1,4 @@
 Sufia.config do |config|
-  # Sufia can integrate with Zotero's Arkivo service for automatic deposit
-  # of Zotero-managed research items.
-  # Defaults to false.  See README for more info
-  config.arkivo_api = true
-
   config.fits_to_desc_mapping = {
     file_title: :title,
     file_author: :creator
@@ -74,7 +69,7 @@ Sufia.config do |config|
   # Enable displaying usage statistics in the UI
   # Defaults to FALSE
   # Requires a Google Analytics id and OAuth2 keyfile.  See README for more info
-  config.analytics = true
+  config.analytics = false
 
   # Specify a Google Analytics tracking ID to gather usage statistics
   # config.google_analytics_id = 'UA-99999999-1'
@@ -133,7 +128,14 @@ Sufia.config do |config|
   # NOTE: if you have always sent analytics to GA for downloads and page views leave this commented out
   # config.analytic_start_date = DateTime.new(2014,9,10)
 
-  config.geonames_username = ''
+  # Location autocomplete uses geonames to search for named regions.
+  # Specify the user for connecting to geonames:
+  # config.geonames_username = ''
+
+  # Should the acceptance of the licence agreement be active (checkbox), or
+  # implied when the save button is pressed? Set to true for active.
+  # The default is true.
+  # config.active_deposit_agreement_acceptance = true
 
   # If browse-everything has been configured, load the configs.  Otherwise, set to nil.
   begin
