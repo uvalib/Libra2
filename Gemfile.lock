@@ -1,7 +1,7 @@
 GIT
-  remote: https://github.com/projecthydra/sufia.git
-  revision: f69045c10be135f18175a73b26bea1e33fef986a
-  branch: master
+  remote: git://github.com/projecthydra/sufia.git
+  revision: 012a4bdc9ec6f6cbb23181d0879e77d9d35a652b
+  ref: 012a4bdc9ec6f6cbb23181d0879e77d9d35a652b
   specs:
     sufia (7.0.0.beta1)
       active-fedora (~> 9.10)
@@ -481,7 +481,7 @@ GEM
       rdf-xsd (~> 1.1)
     rdf-n3 (1.99.0)
       rdf (~> 1.99)
-    rdf-rdfa (1.99.0)
+    rdf-rdfa (1.99.1)
       haml (~> 4.0)
       htmlentities (~> 4.3)
       rdf (~> 1.99)
@@ -535,6 +535,8 @@ GEM
     resque-pool (0.6.0)
       rake
       resque (~> 1.22)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     retriable (1.4.1)
     rsolr (1.0.13)
       builder (>= 2.1.2)
@@ -672,6 +674,7 @@ DEPENDENCIES
   jquery-rails
   mysql2 (>= 0.3.13, < 0.5)
   rails (= 4.2.6)
+  rest-client
   rsolr (~> 1.0.6)
   rspec-rails
   sass-rails (~> 5.0)
