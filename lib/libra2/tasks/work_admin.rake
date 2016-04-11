@@ -8,7 +8,7 @@ namespace :libra2 do
 
 default_user = "dpg3k@virginia.edu"
 sample_file = "data/sample.pdf"
-default_bulkfile = "data/bulk.data"
+default_bulkfile = "data/work.data"
 
 desc "List all works"
 task list_all_works: :environment do |t, args|
