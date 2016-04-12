@@ -23,3 +23,8 @@ en:
   libra:
     dashboard:
       active_theses: "Active Theses"
+
+
+en:
+  sufia:
+    product_name: "Libra"
