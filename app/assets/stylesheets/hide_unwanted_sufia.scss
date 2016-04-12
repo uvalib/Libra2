@@ -28,6 +28,14 @@
 }
 
 
+.navbar-static-top {
+   .navbar-nav {
+     a[href="/"] {    // the about menu item
+         display: none;
+     }
+   }
+}
+
 // the search button drop down
 #search-form-header {
   .input-group-btn {
