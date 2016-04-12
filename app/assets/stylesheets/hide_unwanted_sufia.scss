@@ -96,8 +96,12 @@
     }
 }
 
+label[for="user_update_directory"], #user_update_directory {
+      display: none;
+}
+
 label[for="user_orcid"], #user_orcid {
-    display: none;
+//    display: none;
 }
 
 label[for="user_twitter_handle"], #user_twitter_handle {
@@ -111,3 +115,40 @@ label[for="user_facebook_handle"], #user_facebook_handle {
 label[for="user_googleplus_handle"], #user_googleplus_handle {
     display: none;
 }
+
+//
+// Works pages
+//
+
+#my_nav {
+  a[href="/dashboard/collections"] {  // my collections tab in works display
+    display: none;
+  }
+  a[href="/dashboard/highlights"] {   // my highlights tab in works display
+    display: none;
+  }
+  a[href="/dashboard/shares"] {       // my shares tab in works display
+    display: none;
+  }
+}
+
+.batch-toggle {
+  .batch-select-all {
+    //input[value="Delete Selected"] {  // delete selected button
+    //  display: none;
+    //}
+  }
+  .submits-batches-add { // add to collection button
+    display: none;
+  }
+}
+
+.text-center {
+  li[role="menuitem"] .trophy-class {   // highlight item dropdown option
+    display: none;
+  }
+  li[role="menuitem"] .itemtransfer {   // transfer item dropdown option
+    display: none;
+  }
+}
+
