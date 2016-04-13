@@ -1,4 +1,4 @@
-$(function() {
+function initPage() {
 	"use strict";
 
 	// If there is an "Additional Fields" button on the page, then show the extended fields and hide the button.
@@ -8,4 +8,9 @@ $(function() {
 		additionalFieldsButton.click();
 		additionalFieldsButton.hide();
 	}
+}
+
+$(window).bind('page:change', function() {
+	"use strict";
+	initPage();
 });
