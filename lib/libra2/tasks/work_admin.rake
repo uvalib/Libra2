@@ -67,7 +67,7 @@ task del_my_works: :environment do |t, args|
 
 end
 
-desc "Bulk create generic works; must specify filename containing details"
+desc "Bulk create generic works; optionally specify filename containing details (default is #{default_bulkfile})"
 task bulk_create_work: :environment do |t, args|
 
   filename = ARGV[ 1 ]

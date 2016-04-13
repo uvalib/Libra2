@@ -57,7 +57,7 @@ task create_user: :environment do |t, args|
 
 end
 
-desc "Bulk create new users; must specify filename containing details"
+desc "Bulk create new users; optionally specify filename containing details (default is #{default_bulkfile})"
 task bulk_create_user: :environment do |t, args|
 
   filename = ARGV[ 1 ]
