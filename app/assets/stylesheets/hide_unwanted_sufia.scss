@@ -87,6 +87,11 @@
 // Profile
 //
 
+.profile .nav-tabs {
+	a[href="#contributions"] {
+		display: none;
+	}
+}
 .panel-user {
     .list-group-item:nth-child(2) { // Collections section on user profile.
         display: none;
@@ -114,6 +119,17 @@ label[for="user_facebook_handle"], #user_facebook_handle {
 
 label[for="user_googleplus_handle"], #user_googleplus_handle {
     display: none;
+}
+
+.profile {
+	form {
+		//  Remove Highlight Designation - this is particularly hard to specify, so sorry about the fragility of the css selector.
+		div:nth-child(9) {
+			&.control-label {
+				display: none;
+			}
+		}
+	}
 }
 
 //
@@ -152,3 +168,22 @@ label[for="user_googleplus_handle"], #user_googleplus_handle {
   }
 }
 
+// hide collections header, and the collections that follow. (That is, the message that there are no collections.)
+// This uses a lot of specificity because there isn't a good way to know that the current page is the work page.
+table.generic_work + .related_files + .form-actions + h2 {
+	display: none;
+}
+
+table.generic_work + .related_files + .form-actions + h2 + p {
+	display: none;
+}
+
+// Hide all the "share with" lines
+#permissions_display form > .row {
+	display: none;
+}
+
+// Hide Person/Group section.
+#permissions_display form > table.table {
+	display: none;
+}
