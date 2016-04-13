@@ -7,4 +7,7 @@ class CurationConcerns::GenericWorksController < ApplicationController
   include Sufia::WorksControllerBehavior
 
   self.curation_concern_type = GenericWork
+
+  # Adds identifier behavior to the controller.
+  include Libra2::CreateIdentifierBehavior
 end
