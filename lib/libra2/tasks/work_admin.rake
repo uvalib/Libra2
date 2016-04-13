@@ -158,32 +158,26 @@ def create_generic_work( work_type, user, title, description )
 
     # generic work attributes
     w.apply_depositor_metadata(user)
-#    w.creator = user.email
-    w.creator << user.email
+    w.creator = user.email
     w.date_uploaded = CurationConcerns::TimeService.time_in_utc
-#    w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
-    w.date_created << CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
+    w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
     w.visibility = work_type == GenericWork::WORK_TYPE_THESIS ? Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE :
         Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-#    w.description = description
-    w.description << description
+    w.description = description
     w.work_type = work_type
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
 
-#    w.publisher = GenericWork::DEFAULT_PUBLISHER
-    w.publisher << GenericWork::DEFAULT_PUBLISHER
+    w.publisher = GenericWork::DEFAULT_PUBLISHER
     w.department = 'Daves Special Department'
     w.degree = 'Super Master Ninja Person'
     w.notes = 'Created automatically by your friendly rake task'
     w.admin_notes << 'Created automatically by your friendly rake task'
-#    w.language = 'English'
-    w.language << 'English'
+    w.language = 'English'
     w.contributor << 'Dr. Ruth'
 
     print "getting DOI..."
     status, id = ServiceClient::EntityIdClient.instance.newid( w )
-#    w.identifier = id if ServiceClient::EntityIdClient.instance.ok?( status )
-    w.identifier << id if ServiceClient::EntityIdClient.instance.ok?( status )
+    w.identifier = id if ServiceClient::EntityIdClient.instance.ok?( status )
     puts "done" if ServiceClient::EntityIdClient.instance.ok?( status ) == true
     puts "error" if ServiceClient::EntityIdClient.instance.ok?( status ) == false
 

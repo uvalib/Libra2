@@ -7,29 +7,28 @@ module Libra2
     included do
       property :part_of, predicate: RDF::Vocab::DC.isPartOf
 
-      #property :contributor, predicate: RDF::Vocab::DC.contributor, multiple: false do |index|
       property :contributor, predicate: RDF::Vocab::DC.contributor do |index|
         index.as :stored_searchable, :facetable
       end
 
-      #property :creator, predicate: RDF::Vocab::DC.creator, multiple: false do |index|
-      property :creator, predicate: RDF::Vocab::DC.creator do |index|
+      property :creator, predicate: RDF::Vocab::DC.creator, multiple: false do |index|
+      #property :creator, predicate: RDF::Vocab::DC.creator do |index|
         index.as :stored_searchable, :facetable
       end
 
-      #property :description, predicate: RDF::Vocab::DC.description, multiple: false do |index|
-      property :description, predicate: RDF::Vocab::DC.description do |index|
+      property :description, predicate: RDF::Vocab::DC.description, multiple: false do |index|
+      #property :description, predicate: RDF::Vocab::DC.description do |index|
         index.type :text
         index.as :stored_searchable
       end
 
-      #property :publisher, predicate: RDF::Vocab::DC.publisher, multiple: false do |index|
-      property :publisher, predicate: RDF::Vocab::DC.publisher do |index|
+      property :publisher, predicate: RDF::Vocab::DC.publisher, multiple: false do |index|
+      #property :publisher, predicate: RDF::Vocab::DC.publisher do |index|
         index.as :stored_searchable, :facetable
       end
 
-      #property :date_created, predicate: RDF::Vocab::DC.created, multiple: false do |index|
-      property :date_created, predicate: RDF::Vocab::DC.created do |index|
+      property :date_created, predicate: RDF::Vocab::DC.created, multiple: false do |index|
+      #property :date_created, predicate: RDF::Vocab::DC.created do |index|
         index.as :stored_searchable
       end
 
@@ -47,8 +46,8 @@ module Libra2
         index.as :stored_searchable, :facetable
       end
 
-      #property :language, predicate: RDF::Vocab::DC.language, multiple: false do |index|
-      property :language, predicate: RDF::Vocab::DC.language do |index|
+      property :language, predicate: RDF::Vocab::DC.language, multiple: false do |index|
+      #property :language, predicate: RDF::Vocab::DC.language do |index|
         index.as :stored_searchable, :facetable
       end
 
@@ -57,12 +56,12 @@ module Libra2
         index.as :stored_searchable
       end
 
-      #property :resource_type, predicate: RDF::Vocab::DC.type, multiple: false do |index|
-      property :resource_type, predicate: RDF::Vocab::DC.type do |index|
+      property :resource_type, predicate: RDF::Vocab::DC.type, multiple: false do |index|
+      #property :resource_type, predicate: RDF::Vocab::DC.type do |index|
         index.as :stored_searchable, :facetable
       end
 
-      property :identifier, predicate: RDF::Vocab::DC.identifier do |index|
+      property :identifier, predicate: RDF::Vocab::DC.identifier, multiple: false do |index|
         index.as :stored_searchable
       end
 

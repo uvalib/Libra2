@@ -86,19 +86,24 @@ class GenericWork < ActiveFedora::Base
     ::Libra2Indexer
   end
 
-  #class << self
+  class << self
 
-    # determine which fields can have multiple values...
-    #def multiple?( term )
-    #  case term.to_s
-    #    when 'title', 'contributor', 'subject', 'related_url', 'sponsoring_agency', 'admin_notes'
-    #      true
-    #    else
-    #      false
-    #  end
+    #def unique?( term )
+       #puts "=====> unique? #{term}"
     #end
 
-  #end
+    # determine which fields can have multiple values...
+    def multiple?( term )
+      #puts "=====> multiple? #{term}"
+      case term.to_s
+        when 'title', 'rights', 'contributor', 'subject', 'related_url', 'license', 'sponsoring_agency', 'admin_notes'
+          true
+        else
+          false
+      end
+    end
+
+  end
 end
 
 #
