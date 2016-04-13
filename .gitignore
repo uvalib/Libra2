@@ -22,5 +22,6 @@
 /fits.log
 
 /fcrepo4-data
+/fcrepo4-development-data
 /env.set
 /env.unset

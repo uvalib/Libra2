@@ -16,6 +16,8 @@ gem 'coffee-rails', '~> 4.1.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -44,14 +46,13 @@ group :development do
 end
 
 #gem 'sufia', git: 'https://github.com/projecthydra/sufia.git', branch: 'master'
-gem 'sufia', github: 'projecthydra/sufia', ref: '012a4bdc9ec6f6cbb23181d0879e77d9d35a652b'
+gem 'sufia', github: 'projecthydra/sufia', ref: '1658ed1b8981120bf39f68bf806651a6b57d3ccb'
 
 group :development, :test do
   gem 'solr_wrapper', '>= 0.3'
 end
 
-gem 'rsolr', '~> 1.0.6'
-gem 'globalid'
+gem 'rsolr', '~> 1.0'
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 group :development, :test do
