@@ -58,12 +58,20 @@ module ServiceClient
      #
      def construct_payload( work )
        h = {}
-       h['title'] = work.title[ 0 ] if work.title[ 0 ] && work.title
-       h['publisher'] = work.publisher if work.publisher
-       h['creator'] = work.creator if work.creator
-       h['url'] = work.relative_path if work.relative_path
+#       h['title'] = work.title[ 0 ] if work.title && work.title[ 0 ]
+#       h['publisher'] = work.publisher if work.publisher
+#       h['creator'] = work.creator if work.creator
+#       h['url'] = work.relative_path if work.relative_path
+#       h['publication_year'] = '2016'
+#       h['type'] = work.resource_type if work.resource_type
+
+       h['title'] = work.title[ 0 ] if work.title && work.title[ 0 ]
+       h['publisher'] = work.publisher[ 0 ] if work.publisher && work.publisher[ 0 ]
+       h['creator'] = work.creator[ 0 ] if work.creator && work.creator[ 0 ]
+       h['url'] = 'https://google.com'
        h['publication_year'] = '2016'
-       h['type'] = work.resource_type if work.resource_type
+       h['type'] = work.resource_type[ 0 ] if work.resource_type && work.resource_type[ 0 ]
+
        h.to_json
      end
 
