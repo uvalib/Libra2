@@ -11,9 +11,9 @@ module CurationConcerns
     delegate :sponsoring_agency, to: :model
     delegate :license,           to: :model
 
-    # which terms do we want on the form
+    # additional terms we want on the form
     self.terms += [
-                  :title,
+#        :title,
 #                  :creator,
 #                  :contributor,
 #                  :description,
@@ -21,21 +21,19 @@ module CurationConcerns
 #                  :language,
 #                  :publisher,
 #                  :date_created,
-    #              :tag,
 #                  :identifier,
-    #              :based_near,
 #                  :related_url,
-
-                  :department,
-                  :degree,
-                  :notes,
-                  :sponsoring_agency,
-
+        :department,
+        :degree,
+        :notes,
+        :sponsoring_agency,
 #                  :rights,
-                  :license
-                  ]
+        :license
+    ]
 
-    self.terms -= [ :tag, :based_near ]
+    self.terms -= [
+        :based_near
+    ]
 
     # which fields are required...
     def required?(term)

@@ -25,3 +25,7 @@ en:
       active_theses: "Active Theses"
   sufia:
     product_name: "Libra"
+  simple_form:
+    hints:
+      defaults:
+        notes: 'Please keep your notes to 300 words or fewer.'
