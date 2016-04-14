@@ -174,6 +174,8 @@ def create_generic_work( work_type, user, title, description )
     w.admin_notes << 'Created automatically by your friendly rake task'
     w.language = 'English'
     w.contributor << 'Dr. Ruth'
+    w.rights << "My right to disagree with you"
+    w.license << "CC 3.0"
 
     print "getting DOI..."
     status, id = ServiceClient::EntityIdClient.instance.newid( w )
