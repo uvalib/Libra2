@@ -5,6 +5,13 @@ module CurationConcerns
     self.model_class = ::GenericWork
     include HydraEditor::Form::Permissions
 
+    delegate :department,        to: :model
+    delegate :degree,            to: :model
+    delegate :notes,             to: :model
+    delegate :sponsoring_agency, to: :model
+    delegate :license,           to: :model
+
+    # which terms do we want on the form
     self.terms += [
                   :title,
 #                  :creator,
@@ -29,6 +36,14 @@ module CurationConcerns
                   ]
 
     self.terms -= [ :tag, :based_near ]
+
+    # which fields are required...
+    def required?(term)
+      #puts "=====> required? #{term}"
+      return true if [:title, :creator, :contributor, :description, :publisher, :rights, :identifier, :department, :degree, :license].include? term
+      false
+    end
+
   end
 end
 

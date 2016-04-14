@@ -9,16 +9,16 @@ class GenericWork < ActiveFedora::Base
 
   # validations required for model integrity
   validates :title, presence: { message: 'Your work must have a title.' }
-  #validates :creator, presence: { message: 'Your work must have an author.' }
-  #validates :contributor, presence: { message: 'Your work must have a contributor.' }
-  #validates :description, presence: { message: 'Your work must have a description.' }
-  #validates :publisher, presence: { message: 'Your work must have a publisher.' }
+  validates :creator, presence: { message: 'Your work must have an author.' }
+  validates :contributor, presence: { message: 'Your work must have a contributor.' }
+  validates :description, presence: { message: 'Your work must have a description.' }
+  validates :publisher, presence: { message: 'Your work must have a publisher.' }
   #validates :date_created, presence: { message: 'Your work must have a creation date.' }
-  #validates :rights, presence: { message: 'Your work must have a rights assignment.' }
-  #validates :identifier, presence: { message: 'Your work must have an identifier.' }
-  #validates :department, presence: { message: 'Your work must have a department.' }
-  #validates :degree, presence: { message: 'Your work must have a degree.' }
-  #validates :license, presence: { message: 'Your work must have a license acceptance.' }
+  validates :rights, presence: { message: 'Your work must have a rights assignment.' }
+  validates :identifier, presence: { message: 'Your work must have an identifier.' }
+  validates :department, presence: { message: 'Your work must have a department.' }
+  validates :degree, presence: { message: 'Your work must have a degree.' }
+  validates :license, presence: { message: 'Your work must have a license acceptance.' }
 
   # work type definitions
   WORK_TYPE_GENERIC = 'generic_work'.freeze
@@ -86,24 +86,13 @@ class GenericWork < ActiveFedora::Base
     ::Libra2Indexer
   end
 
-  class << self
-
-    #def unique?( term )
-       #puts "=====> unique? #{term}"
-    #end
-
-    # determine which fields can have multiple values...
-    def multiple?( term )
-      #puts "=====> multiple? #{term}"
-      case term.to_s
-        when 'title', 'rights', 'contributor', 'subject', 'related_url', 'license', 'sponsoring_agency', 'admin_notes'
-          true
-        else
-          false
-      end
-    end
-
+  # determine which fields can have multiple values...
+  def self.multiple?( term )
+    #puts "=====> multiple? #{term}"
+    return true if [:title, :rights, :contributor, :subject, :related_url, :license, :sponsoring_agency, :admin_notes].include? term
+    false
   end
+
 end
 
 #
