@@ -79,4 +79,38 @@ class SolrDocument
     return draft[ 0 ] == 'true'
   end
 
+  def self.custom_fields()
+    return [
+        { name: 'department', label: 'Department' },
+        { name: 'degree', label: 'Degree' },
+        { name: 'notes', label: 'Notes' },
+        { name: 'sponsoring_agency', label: 'Sponsoring Agency' }
+    ]
+  end
+
+  def self.initialize_pre(config)
+    fields = self.custom_fields()
+    fields.each { |field_def|
+      config.add_facet_field Solrizer.solr_name(field_def[:name], :facetable), label: field_def[:label], limit: 5
+      config.add_index_field Solrizer.solr_name(field_def[:name], :stored_searchable), label: field_def[:label], itemprop: field_def[:name]
+      config.add_show_field Solrizer.solr_name(field_def[:name], :stored_searchable), label: field_def[:label]
+    }
+  end
+
+  def self.initialize_post(config)
+    fields = self.custom_fields()
+    fields.each { |field_def|
+      config.add_search_field(field_def[:name]) do |field|
+        field.solr_parameters = {
+            :"spellcheck.dictionary" => field_def[:name]
+        }
+        solr_name = Solrizer.solr_name(field_def[:name], :stored_searchable)
+        field.solr_local_parameters = {
+            qf: solr_name,
+            pf: solr_name
+        }
+      end
+    }
+  end
+
 end
