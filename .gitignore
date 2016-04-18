@@ -25,3 +25,5 @@
 /fcrepo4-development-data
 /env.set
 /env.unset
+
+/scripts/helpers/db_clean.ksh
