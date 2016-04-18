@@ -7,10 +7,9 @@ DIFF_TOOL=/Applications/DiffMerge.app/Contents/MacOS/DiffMerge
 # where to start looking
 ROOT_DIR=lib/libra2/app/views
 
-GEM_BASE=/Users/dpg3k/.rvm/gems/ruby-2.2.4
+GEM_BASE=/Users/dpg3k/.rvm/gems/ruby-2.3.0
 
-SUFIA_ROOT=$GEM_BASE/bundler/gems/sufia-50b3ca9391e5
-#CURATION_CONCERNS_ROOT=$GEM_BASE/gems/curation_concerns-0.6.0
+SUFIA_ROOT=$GEM_BASE/bundler/gems/sufia-ac053bc4ad55
 
 DIFF_FILE=/tmp/diff-list.$$
 rm -fr $DIFF_FILE > /dev/null 2>&1
