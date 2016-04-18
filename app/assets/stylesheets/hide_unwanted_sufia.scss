@@ -170,12 +170,12 @@ label[for="user_googleplus_handle"], #user_googleplus_handle {
 
 // hide collections header, and the collections that follow. (That is, the message that there are no collections.)
 // This uses a lot of specificity because there isn't a good way to know that the current page is the work page.
-table.generic_work + .related_files + .form-actions + h2 {
-	display: none;
+.work_description + h2 {
+  display: none;
 }
 
-table.generic_work + .related_files + .form-actions + h2 + p {
-	display: none;
+.work_description + h2 + p {
+  display: none;
 }
 
 // Hide all the "share with" lines
