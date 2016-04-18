@@ -92,7 +92,7 @@ task bulk_create_work: :environment do |t, args|
       puts "#{title}, #{description}, #{who}"
 
       user = User.find_by_email( who )
-      work = create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description )
+      work = create_work( user, title, description )
 
       filename = get_an_image( )
       fileset = ::FileSet.new
@@ -119,7 +119,7 @@ task create_new_work: :environment do |t, args|
   title = "Example generic work title (#{id})"
   description = "Example generic work description (#{id})"
 
-  work = create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description )
+  work = create_work( user, title, description )
 
   fileset = ::FileSet.new
   filename = get_an_image( )
@@ -141,7 +141,7 @@ task create_new_thesis: :environment do |t, args|
   title = "Example thesis title (#{id})"
   description = "Example thesis description (#{id})"
 
-  work = create_generic_work( GenericWork::WORK_TYPE_THESIS, user, title, description )
+  work = create_thesis( user, title, description )
 
   filename = copy_sourcefile( sample_file )
   fileset = ::FileSet.new
@@ -150,6 +150,14 @@ task create_new_thesis: :environment do |t, args|
   dump_work work
   task who.to_sym do ; end
 
+end
+
+def create_work( user, title, description )
+   return( create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description ) )
+end
+
+def create_thesis( user, title, description )
+  return( create_generic_work( GenericWork::WORK_TYPE_THESIS, user, title, description ) )
 end
 
 def create_generic_work( work_type, user, title, description )
