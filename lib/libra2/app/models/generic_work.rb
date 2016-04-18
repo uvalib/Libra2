@@ -7,6 +7,8 @@ class GenericWork < ActiveFedora::Base
   include Libra2::BasicMetadata
   include Sufia::WorkBehavior
 
+  self.human_readable_type = 'Generic Work'
+
   # validations required for model integrity
   validates :title, presence: { message: 'Your work must have a title.' }
   validates :creator, presence: { message: 'Your work must have an author.' }

@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/projecthydra/sufia.git
-  revision: 1658ed1b8981120bf39f68bf806651a6b57d3ccb
-  ref: 1658ed1b8981120bf39f68bf806651a6b57d3ccb
+  revision: ac053bc4ad5565e15b0154dfd26a21e3d4c0f393
+  ref: ac053bc4ad5565e15b0154dfd26a21e3d4c0f393
   specs:
     sufia (7.0.0.beta1)
       active-fedora (~> 9.10)
@@ -11,7 +11,7 @@ GIT
       blacklight-gallery (~> 0.1)
       browse-everything (~> 0.10)
       carrierwave (~> 0.9)
-      curation_concerns (~> 0.12.0.pre4)
+      curation_concerns (~> 0.12.0.pre7)
       daemons (~> 1.1)
       font-awesome-rails (~> 4.2)
       google-api-client (~> 0.7, < 0.9)
@@ -176,7 +176,7 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     concurrent-ruby (1.0.1)
-    curation_concerns (0.12.0.pre4)
+    curation_concerns (0.12.0.pre7)
       active-fedora (~> 9.9)
       active_attr
       active_fedora-noid (~> 1.0)
@@ -213,8 +213,6 @@ GEM
     devise-guests (0.5.0)
       devise
     diff-lcs (1.2.5)
-    domain_name (0.5.20160310)
-      unf (>= 0.0.5, < 1.0.0)
     dropbox-sdk (1.6.5)
       json
     ebnf (1.0.0)
@@ -266,8 +264,6 @@ GEM
       httparty (>= 0.7.3)
       mimemagic
       multipart-post
-    http-cookie (1.0.2)
-      domain_name (~> 0.5)
     http_logger (0.5.1)
     httparty (0.13.7)
       json (~> 1.8)
@@ -389,7 +385,9 @@ GEM
       foreigner (>= 0.9.1)
       rails (>= 3.2.0)
     memoist (0.14.0)
-    mime-types (2.99.1)
+    mime-types (3.0)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2016.0221)
     mimemagic (0.3.1)
     mini_magick (4.5.1)
     mini_portile2 (2.0.0)
@@ -402,7 +400,6 @@ GEM
     nest (1.1.2)
       redis
     net-http-persistent (2.9.4)
-    netrc (0.11.0)
     noid (0.8.0)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
@@ -522,7 +519,7 @@ GEM
       rdf (~> 1.99)
     rdoc (4.2.2)
       json (~> 1.4)
-    redis (3.2.2)
+    redis (3.3.0)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
     redlock (0.1.5)
@@ -538,10 +535,8 @@ GEM
     resque-pool (0.6.0)
       rake
       resque (~> 1.22)
-    rest-client (1.8.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 3.0)
-      netrc (~> 0.7)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     retriable (1.4.1)
     rsolr (1.1.1)
       builder (>= 2.1.2)
@@ -651,9 +646,6 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.7.2)
     vegas (0.1.11)
       rack (>= 1.0.0)
     warden (1.2.6)
