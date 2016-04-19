@@ -2,9 +2,13 @@
 # Some helper tasks to create and delete users
 #
 
+require_dependency 'libra2/lib/serviceclient/user_info_client'
+require_dependency 'libra2/lib/helpers/user_info'
+
 namespace :libra2 do
 
   default_bulkfile = "data/user.data"
+  default_password = "password"
 
 desc "Delete all users"
 task del_all_users: :environment do |t, args|
@@ -39,14 +43,13 @@ task create_user: :environment do |t, args|
 
   name = ARGV[ 1 ]
   email = ARGV[ 2 ]
-  password = 'password'
 
   if name.nil? == false && email.nil? == false
      user = User.find_by_email( email )
      if user.nil?
-        user = User.new( email: email, password: password, password_confirmation: password, display_name: name, title: name )
-        user.save!
-        puts "Created user: #{name} (#{email})"
+       if create_user( name, email, default_password )
+         puts "Created user: #{name} (#{email})"
+       end
      else
        puts "Email #{email} already in use"
      end
@@ -65,7 +68,6 @@ task bulk_create_user: :environment do |t, args|
 
   name = ''
   email = ''
-  password = 'password'
 
   count = 0
   ignored = 0
@@ -81,10 +83,10 @@ task bulk_create_user: :environment do |t, args|
     if number % 2 == 0
       user = User.find_by_email( email )
       if user.nil?
-        user = User.new( email: email, password: password, password_confirmation: password, display_name: name, title: name )
-        user.save!
-        puts "Created user: #{name} (#{email})"
-        count += 1
+        if create_user( name, email, default_password )
+           puts "Created user: #{name} (#{email})"
+           count += 1
+        end
       else
         puts "Email #{email} already in use"
         ignored += 1
@@ -102,8 +104,32 @@ desc "List all users"
 task list_all_users: :environment do |t, args|
 
   User.all.each do |user|
-    puts user.email
+    puts "#{user.display_name} (#{user.email})"
   end
+
+end
+
+#
+# create a new user record; attempt to lookup using the user info service
+#
+def create_user( name, email, password )
+
+  info = nil
+  # extract computing ID and look up...
+  tokens = email.split( "@" )
+  status, resp = ServiceClient::UserInfoClient.instance.get_info( tokens[ 0 ] )
+  if ServiceClient::UserInfoClient.instance.ok?( status )
+    info = Helpers::UserInfo.create( resp )
+  else
+    puts "User #{tokens[ 0 ]} lookup failed (#{status})"
+  end
+
+  display_name = info.nil? ? name : info.display_name
+  title = info.nil? ? name : "#{info.description}, #{info.department}"
+  user = User.new( email: email, password: password, password_confirmation: password, display_name: display_name, title: title )
+  user.save!
+
+  return true
 
 end
 
