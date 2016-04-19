@@ -117,7 +117,7 @@ def create_user( name, email, password )
   info = nil
   # extract computing ID and look up...
   tokens = email.split( "@" )
-  status, resp = ServiceClient::UserInfoClient.instance.get_info( tokens[ 0 ] )
+  status, resp = ServiceClient::UserInfoClient.instance.get_by_id( tokens[ 0 ] )
   if ServiceClient::UserInfoClient.instance.ok?( status )
     info = Helpers::UserInfo.create( resp )
   else

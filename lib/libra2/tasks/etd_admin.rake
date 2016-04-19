@@ -61,7 +61,7 @@ namespace :libra2 do
     status, resp = ServiceClient::DepositRegClient.instance.list_requests( last_id )
     if ServiceClient::DepositRegClient.instance.ok?( status )
       resp.each do |r|
-        req = ServiceClient::DepositRequest.create( r )
+        req = Helpers::DepositRequest.create( r )
         if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
            count += 1
            #s.val = req.id

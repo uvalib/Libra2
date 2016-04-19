@@ -26,7 +26,7 @@ module ServiceClient
      #
      # get specified user information
      #
-     def get_info( id )
+     def get_by_id( id )
        url = "#{self.url}/user/#{id}?auth=#{self.authtoken}"
        status, response = rest_get( url )
        return status, response['user'] if ok?( status ) && response['user']
