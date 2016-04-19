@@ -12,11 +12,13 @@ namespace :libra2 do
   default_last_id = "0"
   default_statefile = "#{Rails.root}/tmp/deposit-req.last"
 
-  desc "List new optional ETD deposit requests; optionally provide the last ETD deposit id"
+  desc "List new optional ETD deposit requests; optionally provide the last deposit id"
   task list_optional_etd_deposits: :environment do |t, args|
 
     last_id = ARGV[ 1 ]
     last_id = default_last_id if last_id.nil?
+
+    puts "Listing new optional ETD deposits since id: #{last_id}"
 
     status, resp = ServiceClient::DepositRegClient.instance.list_requests( last_id )
     if ServiceClient::DepositRegClient.instance.ok?( status )
@@ -32,11 +34,13 @@ namespace :libra2 do
 
   end
 
-  desc "List new SIS ETD deposit requests; optionally provide the last ETD deposit id"
+  desc "List new SIS ETD deposit requests; optionally provide the last deposit id"
   task list_sis_etd_deposits: :environment do |t, args|
 
     last_id = ARGV[ 1 ]
     last_id = default_last_id if last_id.nil?
+
+    puts "Listing new SIS ETD deposits since id: #{last_id}"
 
     task last_id.to_sym do ; end
 
@@ -51,6 +55,8 @@ namespace :libra2 do
 
     s = Helpers::ValueSnapshot.new( statefile, default_last_id )
     last_id = s.val
+
+    puts "Ingesting new optional ETD deposits since id: #{last_id}"
 
     status, resp = ServiceClient::DepositRegClient.instance.list_requests( last_id )
     if ServiceClient::DepositRegClient.instance.ok?( status )
