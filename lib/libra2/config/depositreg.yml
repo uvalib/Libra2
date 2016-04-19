@@ -1,12 +1,12 @@
 development:
   authtoken: <%= ENV['API_TOKEN'] || "super_secret" %>
-  url: <%= ENV['DEPOSITREG_URL'] || "docker2.lib.virginia.edu:8220" %>
+  url: <%= ENV['DEPOSITREG_URL'] || "docker1.lib.virginia.edu:8220" %>
   timeout: 5
 test:
   authtoken: <%= ENV['API_TOKEN'] || "super_secret" %>
-  url: <%= ENV['DEPOSITREG_URL'] || "docker2.lib.virginia.edu:8220" %>
+  url: <%= ENV['DEPOSITREG_URL'] || "docker1.lib.virginia.edu:8220" %>
   timeout: 5
 production:
   authtoken: <%= ENV['API_TOKEN'] || "super_secret" %>
-  url: <%= ENV['DEPOSITREG_URL'] || "docker2.lib.virginia.edu:8220" %>
+  url: <%= ENV['DEPOSITREG_URL'] || "docker1.lib.virginia.edu:8220" %>
   timeout: 5
