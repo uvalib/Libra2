@@ -36,6 +36,7 @@ module Helpers
         w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
         w.description = default_description
         w.work_type = GenericWork::WORK_TYPE_THESIS
+        w.draft = 'true'
         w.publisher = GenericWork::DEFAULT_PUBLISHER
         w.department = dr.department
         w.degree = dr.degree
@@ -46,7 +47,7 @@ module Helpers
 
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
         if ServiceClient::EntityIdClient.instance.ok?( status )
-        w.identifier = id
+           w.identifier = id
         else
           puts "Cannot mint DOI (#{status})"
           return false
