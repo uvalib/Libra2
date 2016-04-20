@@ -1,0 +1,117 @@
+<style>
+	#header {
+		background-color: #677fad;
+		color: #fff;
+		margin: 0 0 1em 0;
+		padding: .6em 1em .4em 2em;
+	}
+	#header h1 {
+		margin: .2em 0 .1em 0;
+		font-size: 25px;
+	}
+	#header h2 {
+		font-size: 1em;
+		font-weight: bold;
+		margin-top: .4em;
+	}
+	#loginBoxes {
+		width: 60%;
+		float: left;
+		margin: 0 1em 0 1em;
+	}
+	#loginBoxes {
+		clear: both;
+	}
+	.preferredContent {
+		margin-bottom: 1em;
+		border-color: #666;
+	}
+	fieldset {
+		border: 2px solid;
+		padding: 0 1em;
+	}
+	.preferredContent legend {
+		background: #ddd;
+		border-color: #666;
+		font-weight: bold;
+	}
+	legend {
+		border: 2px solid;
+		font-style: italic;
+		margin-bottom: .4em;
+		padding: .2em .6em;
+		font-size: 12px;
+		width: inherit;
+	}
+	.col1 {
+		width: 55%;
+		float: left;
+	}
+	fieldset p {
+		margin: .4em 1em .8em 1em;
+	}
+	.col2 {
+		width: 42%;
+		float: right;
+	}
+	.redcaption {
+		color: #900;
+		font-style: italic;
+	}
+	#privacyWarning {
+		width: 30%;
+		float: right;
+		margin: 1.2em 1em 1em 0;
+	}
+	#privacyWarning {
+		border: 2px solid #666;
+		background: #ddd;
+		padding: 1em;
+		font-size: .9em;
+	}
+	#privacyWarning h2 {
+		font-size: 1.2em;
+		font-weight: bold;
+	}
+	#privacyWarning ul {
+		padding-left: 1em;
+		margin-left: 1em;
+	}
+	#privacyWarning li {
+		margin-bottom: .4em;
+	}
+</style>
+<div id="header">
+	<h1>Development Mode Fake NetBadge</h1>
+	<h2 class="verbose">NetBadge is a digital "badge" allowing you to access protected resources on the UVa network</h2>
+</div>
+<div id="content">
+	<div id="loginBoxes">
+		<fieldset class="preferredContent"><legend>Got a UVa Digital Certificate?</legend>
+          <span class="col1">
+            <p>Log in with your <strong>Digital Certificate</strong>.</p>
+          </span>
+          <span class="col2">
+			  <select id="net-badge-ids">
+				  <option></option>
+<% @users.each { |user| %>
+				  <option><%= user %></option>
+<% } %>
+			  </select>
+            <p class="redcaption verbose">Less typing. More secure!</p>
+          </span></fieldset>
+		<div id="certError">
+
+		</div>
+	</div>
+	<div id="privacyWarning" class="verbose">
+		<h2>Protect Your Privacy!</h2>
+		<p><strong>To log out, completely exit your Web browser when you are finished.</strong></p>
+		<ul>
+			<li><em>Windows users:</em> Close all Web browser windows.</li>
+			<li><em>Mac users:</em> Quit your Web browser.</li>
+		</ul>
+		<p>Otherwise, your NetBadge access will last for 9 hours if you're on Grounds (1 hour if you're off
+			Grounds)—and someone else can use your browser to log in <em>as you</em>.</p>
+	</div>
+</div>

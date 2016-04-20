@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
   include CurationConcerns::ThemedLayoutController
   layout 'sufia-one-column'
 
+  # Adds Libra2 authentication behavior
+  include Libra2::AuthenticationBehavior
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.

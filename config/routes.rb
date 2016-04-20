@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  
+
+  root 'dashboard#index'
+  get 'development_login' => 'dashboard#development_login' # TODO-PER: Temp route to get login working quickly.
+
   mount Blacklight::Engine => '/'
   
     concern :searchable, Blacklight::Routes::Searchable.new
@@ -16,7 +19,6 @@ Rails.application.routes.draw do
 
   mount CurationConcerns::Engine, at: '/'
   resources :welcome, only: 'index'
-  root 'sufia/homepage#index'
   curation_concerns_collections
   curation_concerns_basic_routes
   curation_concerns_embargo_management
