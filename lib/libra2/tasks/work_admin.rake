@@ -18,7 +18,7 @@ task list_all_works: :environment do |t, args|
    end
 end
 
-desc "List my works; optionally provide depositor name"
+desc "List my works; optionally provide depositor email"
 task list_my_works: :environment do |t, args|
 
   who = ARGV[ 1 ]
@@ -46,7 +46,7 @@ task del_all_works: :environment do |t, args|
 
 end
 
-desc "Delete my works; optionally provide depositor name"
+desc "Delete my works; optionally provide depositor email"
 task del_my_works: :environment do |t, args|
 
    who = ARGV[ 1 ]
@@ -108,7 +108,7 @@ task bulk_create_work: :environment do |t, args|
 
 end
 
-desc "Create new generic work; optionally provide depositor name"
+desc "Create new generic work; optionally provide depositor email"
 task create_new_work: :environment do |t, args|
 
   who = ARGV[ 1 ]
@@ -130,7 +130,7 @@ task create_new_work: :environment do |t, args|
 
 end
 
-desc "Create new thesis; optionally provide depositor name"
+desc "Create new thesis; optionally provide depositor email"
 task create_new_thesis: :environment do |t, args|
 
   who = ARGV[ 1 ]
