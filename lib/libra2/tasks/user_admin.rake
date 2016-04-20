@@ -109,20 +109,25 @@ task list_all_users: :environment do |t, args|
 
 end
 
+desc "Sync all user data "
+task sync_all_users: :environment do |t, args|
+
+  User.all.each do |user|
+    if sync_user( user ) == true
+       puts "Updated user record for #{user.email}"
+    end
+  end
+
+end
+
 #
 # create a new user record; attempt to lookup using the user info service
 #
 def create_user( name, email, password )
 
-  info = nil
   # extract computing ID and look up...
   tokens = email.split( "@" )
-  status, resp = ServiceClient::UserInfoClient.instance.get_by_id( tokens[ 0 ] )
-  if ServiceClient::UserInfoClient.instance.ok?( status )
-    info = Helpers::UserInfo.create( resp )
-  else
-    puts "User #{tokens[ 0 ]} lookup failed (#{status})"
-  end
+  info = lookup_user( tokens[ 0 ] )
 
   display_name = info.nil? ? name : info.display_name
   title = info.nil? ? name : "#{info.description}, #{info.department}"
@@ -131,6 +136,41 @@ def create_user( name, email, password )
 
   return true
 
+end
+
+#
+# sync user data from the info service
+#
+def sync_user( user )
+
+  # extract computing ID and look up...
+  tokens = user.email.split( "@" )
+  info = lookup_user( tokens[ 0 ] )
+
+  if info.nil? == false
+    user.display_name = info.display_name
+    user.title = "#{info.description}, #{info.department}"
+    user.save!
+    return true
+  end
+
+  return false
+end
+
+#
+# lookup user information from the user info service
+#
+def lookup_user( id )
+
+  info = nil
+  status, resp = ServiceClient::UserInfoClient.instance.get_by_id( id )
+  if ServiceClient::UserInfoClient.instance.ok?( status )
+    info = Helpers::UserInfo.create( resp )
+  else
+    puts "User #{id} lookup failed (#{status})"
+  end
+
+  return( info )
 end
 
 end   # namespace
