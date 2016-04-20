@@ -1,5 +1,5 @@
 #
-# Called periodically to import deposit authorizations; either from SIS or the optional ones
+# Runner process to call the rake tasks that control deposit importing from SIS or optional registration
 #
 
 # send the logs here
@@ -11,24 +11,37 @@ fi
 
 export LOGFILE=$LOGROOT/deposit_import.log
 
+# our sleep time, currently 5 minutes
+export SLEEPTIME=300
+
+# the logging function
 function logit {
    local msg=$1
    TS=$(date "+%Y-%m-%d %H:%M:%S")
    echo "$TS: $msg" >> $LOGFILE
 }
 
-# starting message
-logit "Beginning deposit import"
+# forever...
+while true; do
 
-# do the import
-rake libra2:ingest_optional_etd_deposits >> $LOGFILE 2>&1
-res=$?
+   # sleeping message...
+   logit "Sleeping for $SLEEPTIME seconds ..."
+   sleep $SLEEPTIME
 
-# ending message
-logit "Exists with status $res"
+   # starting message
+   logit "Beginning deposit import"
 
-# all over
-exit $res
+   # do the import
+   rake libra2:ingest_optional_etd_deposits >> $LOGFILE 2>&1
+   res=$?
+
+   # ending message
+   logit "Completes with status $res"
+
+done
+
+# never get here...
+exit 0
 
 #
 # end of file
