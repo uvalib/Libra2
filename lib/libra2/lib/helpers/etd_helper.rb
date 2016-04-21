@@ -22,7 +22,7 @@ module Helpers
       # default values
       default_title = 'Enter your title here'
       default_description = 'Enter your description here'
-      default_contributor = 'Your contributers here'
+      default_contributor = 'Your contributors here'
       default_rights = 'Your rights assignments here'
       default_license = 'Your license terms here'
 
