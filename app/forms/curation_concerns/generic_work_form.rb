@@ -42,6 +42,13 @@ module CurationConcerns
       false
     end
 
+    # which fields are readonly...
+    def readonly?(term)
+      #puts "=====> readonly? #{term}"
+      return true if [:date_created, :identifier, :publisher, :department, :degree].include? term
+      false
+    end
+
   end
 end
 
