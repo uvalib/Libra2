@@ -32,8 +32,14 @@ module CurationConcerns
     ]
 
     self.terms -= [
-        :based_near
+        :based_near,
+        :tag
     ]
+
+    # override from the base class to remove tag from the list of primary fields
+    def primary_terms
+      [:title, :creator, :rights]
+    end
 
     # which fields are required...
     def required?(term)
