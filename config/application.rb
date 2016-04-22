@@ -47,6 +47,7 @@ module Libra2
     paths[ 'app/models' ] << "lib/#{app_namespace}/app/models"
     paths[ 'app/helpers' ] << "lib/#{app_namespace}/app/helpers"
     #paths[ 'lib' ] << "lib/#{app_namespace}/lib"
+    paths[ 'lib/assets' ] << "lib/#{app_namespace}/app/assets"
     paths[ 'lib/tasks' ] << "lib/#{app_namespace}/tasks"
     paths[ 'config' ] << "lib/#{app_namespace}/config"
 

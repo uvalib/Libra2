@@ -12,4 +12,5 @@
  *
  *= require_tree .
  *= require_self
+ *= require_tree ../../../lib/libra2/app/assets/stylesheets
  */
