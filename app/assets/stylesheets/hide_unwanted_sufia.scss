@@ -57,9 +57,7 @@
 //
 .dashboard {
     .heading-row {
-        .heading-tile:nth-child(2), .heading-tile:nth-child(3) {
-            display: none;
-        }
+       display: none;
     }
 
     #transfers {
