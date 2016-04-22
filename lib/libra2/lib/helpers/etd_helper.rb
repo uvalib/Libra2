@@ -7,17 +7,20 @@ module Helpers
 
     def self.new_etd_from_deposit_request( dr )
 
-      default_email_domain = 'virginia.edu'
-
-      # locate the user and create the account if we cannot... cant create an ETD without an owner
-      email = "#{dr.who}@#{default_email_domain}"
-      user = User.find_by_email( email )
-      user = create_user( dr.who, email ) if user.nil?
-
-      if user.nil?
+      # lookup the user by computing id
+      user_info = lookup_user( dr.who )
+      if user_info.nil?
         puts "Cannot locate user info for #{dr.who}"
         return false
       end
+
+      default_email_domain = 'virginia.edu'
+
+      # locate the user and create the account if we cannot... cant create an ETD without an owner
+      email = user_info.email
+      email = "#{user_info.id}@#{default_email_domain}" if email.nil? || email.blank?
+      user = User.find_by_email( email )
+      user = create_user( user_info, email ) if user.nil?
 
       # default values
       default_title = 'Enter your title here'
@@ -59,21 +62,28 @@ module Helpers
 
     private
 
-    def self.create_user( id, email )
+    def self.create_user( user_info, email )
 
       default_password = 'password'
 
+      user = User.new( email: email,
+                       password: default_password, password_confirmation: default_password,
+                       display_name: user_info.display_name,
+                       department: user_info.department,
+                       office: user_info.office,
+                       telephone: user.info.phone,
+                       title: user_info.title )
+      user.save!
+      puts "Created new account for #{user_info.id}"
+      return( user )
+
+    end
+
+    def self.lookup_user( id )
+
       status, resp = ServiceClient::UserInfoClient.instance.get_by_id( id )
       if ServiceClient::UserInfoClient.instance.ok?( status )
-        info = Helpers::UserInfo.create( resp )
-
-        user = User.new( email: email,
-                         password: default_password, password_confirmation: default_password,
-                         display_name: info.display_name,
-                         title: "#{info.description}, #{info.department}" )
-        user.save!
-        puts "Created new account for #{id}"
-        return( user )
+        return Helpers::UserInfo.create( resp )
       end
       return nil
 

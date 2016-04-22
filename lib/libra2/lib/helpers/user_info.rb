@@ -13,6 +13,10 @@ module Helpers
       attr_accessor :last_name
       attr_accessor :description
       attr_accessor :department
+      attr_accessor :title
+      attr_accessor :office
+      attr_accessor :phone
+      attr_accessor :email
 
       def initialize( json )
         @id = json['cid'] || '0'
@@ -22,6 +26,10 @@ module Helpers
         @last_name = json[ 'last_name'] || ''
         @description = json[ 'description'] || ''
         @department = json[ 'department'] || ''
+        @title = json[ 'title'] || ''
+        @office = json[ 'office'] || ''
+        @phone = json[ 'phone'] || ''
+        @email = json[ 'email'] || ''
       end
 
       def self.create( json )

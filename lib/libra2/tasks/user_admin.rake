@@ -149,7 +149,11 @@ def sync_user( user )
 
   if info.nil? == false
     user.display_name = info.display_name
-    user.title = "#{info.description}, #{info.department}"
+    user.department = info.department,
+    user.office = info.office,
+    user.telephone = info.phone,
+    user.title = info.title
+
     user.save!
     return true
   end
