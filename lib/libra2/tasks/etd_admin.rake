@@ -83,6 +83,24 @@ namespace :libra2 do
 
   end
 
+  desc "List optional deposit options"
+  task list_deposit_options: :environment do |t, args|
+
+    status, resp = ServiceClient::DepositRegClient.instance.list_deposit_options( )
+    if ServiceClient::DepositRegClient.instance.ok?( status )
+
+      resp['department'].each do |d|
+         puts "Department: '#{d}'"
+      end
+      resp['degree'].each do |d|
+         puts "Degree:     '#{d}'"
+      end
+    else
+      puts "ERROR: options service returns #{status}"
+    end
+
+  end
+
   def dump_deposit_request( req )
 
     req.keys.each do |k|

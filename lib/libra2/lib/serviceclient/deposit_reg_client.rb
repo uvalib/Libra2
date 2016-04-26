@@ -34,6 +34,16 @@ module ServiceClient
      end
 
      #
+     # list the options available for depositing
+     #
+     def list_deposit_options( )
+       url = "#{self.url}/options"
+       status, response = rest_get( url )
+       return status, response['options'] if ok?( status ) && response['options']
+       return status, ''
+     end
+
+     #
      # notify of a deposit
      #
      def request_fulfilled( work )
