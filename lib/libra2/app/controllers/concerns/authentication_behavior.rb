@@ -21,8 +21,11 @@ module AuthenticationBehavior
     #
     #request.env['REMOTE_USER'] = 'dpg3k'
     if request.env['REMOTE_USER'].present?
+       puts "=====> REMOTE_USER: #{request.env['REMOTE_USER']}"
        return if sign_in_user_id( request.env['REMOTE_USER'] )
     end
+
+    puts "=====> REMOTE_USER NOT defined"
 
     #
     # a hack to allow us to login without netbadge
