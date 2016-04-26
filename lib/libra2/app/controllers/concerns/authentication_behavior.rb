@@ -27,6 +27,13 @@ module AuthenticationBehavior
 
     puts "=====> REMOTE_USER NOT defined"
 
+    if request.env['REQUEST_URI'].include? '/sign_in'
+       puts "=====> Dumpting request environment"
+       request.env.keys.each do | k|
+         puts "#{k} -> #{request.env[k]}"
+       end
+    end
+
     #
     # a hack to allow us to login without netbadge
     #
