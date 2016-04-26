@@ -6,6 +6,8 @@ class DashboardController < ApplicationController
   include Blacklight::SearchHelper
   include Blacklight::AccessControls::Catalog
 
+  include AuthenticationHelper
+
   copy_blacklight_config_from(CatalogController)
 
   before_action :authenticate_user!, except: [ 'development_login']
@@ -36,12 +38,8 @@ class DashboardController < ApplicationController
 
   def development_login # TODO-PER: Temp route to get login working quickly.
     if Rails.env.to_s == 'development'
-      user_id = params[:user]
-      user = User.find_by_sql("select * from users where email LIKE '%#{user_id}%'")
-      if user.length > 0
-        sign_in(user[0], :bypass => true)
-        redirect_to "/"
-      end
+      sign_in_user_id( params[:user] )
+      redirect_to '/'
     end
   end
 end
