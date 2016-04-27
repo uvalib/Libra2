@@ -2,7 +2,9 @@ Rails.application.routes.draw do
 
   root 'dashboard#index'
   get 'development_login' => 'dashboard#development_login' # TODO-PER: Temp route to get login working quickly.
-  
+  get '/preview/:id' => 'submission#preview'
+  post '/submit/:id' => 'submission#submit'
+
   Hydra::BatchEdit.add_routes(self)
   mount Blacklight::Engine => '/'
   
