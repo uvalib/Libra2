@@ -28,7 +28,7 @@ module AuthenticationBehavior
     puts "=====> REMOTE_USER NOT defined"
 
     if request.env['REQUEST_URI'].include? '/sign_in'
-       puts "=====> Dumpting request environment"
+       puts "=====> Dumping request environment"
        request.env.keys.each do | k|
          puts "#{k} -> #{request.env[k]}"
        end
@@ -38,7 +38,7 @@ module AuthenticationBehavior
     # a hack to allow us to login without netbadge
     #
 		if Rails.env.to_s == 'development'
-			@users = User.all
+			@users = User.order( :email )
 			@users = @users.map {|user| user.email.split("@")[0] }
     end
 
