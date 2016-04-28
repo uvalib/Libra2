@@ -2,14 +2,20 @@
 # Runner process to call the rake tasks that control deposit importing from SIS or optional registration
 #
 
-# send the logs here
+# environment settings
 if [ -n "$APP_HOME" ]; then
-   LOGROOT=$APP_HOME/log
+   LOG_ROOT=$APP_HOME/log
+   SNAP_ROOT=$APP_HOME/hostfs/snapshot
 else
-   LOGROOT=log
+   LOG_ROOT=log
+   SNAP_ROOT=tmp
 fi
 
-export LOGFILE=$LOGROOT/deposit_import.log
+# log file location
+export LOG_FILE=$LOG_ROOT/deposit_import.log
+
+# snapshot file for optional ETD
+export OPT_SNAPSHOT=$SNAP_ROOT/optional-etd.last
 
 # our sleep time, currently 5 minutes
 export SLEEPTIME=300
@@ -18,8 +24,11 @@ export SLEEPTIME=300
 function logit {
    local msg=$1
    TS=$(date "+%Y-%m-%d %H:%M:%S")
-   echo "$TS: $msg" >> $LOGFILE
+   echo "$TS: $msg" >> $LOG_FILE
 }
+
+# helpfull message...
+logit "Starting up; using snapshot file $OPT_SNAPSHOT"
 
 # forever...
 while true; do
@@ -29,10 +38,10 @@ while true; do
    sleep $SLEEPTIME
 
    # starting message
-   logit "Beginning deposit import"
+   logit "Beginning deposit import sequence"
 
    # do the import
-   rake libra2:ingest_optional_etd_deposits >> $LOGFILE 2>&1
+   rake libra2:ingest_optional_etd_deposits $OPT_SNAPSHOT >> $LOG_FILE 2>&1
    res=$?
 
    # ending message
