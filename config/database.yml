@@ -12,13 +12,14 @@
 default: &default
   adapter: mysql2
   encoding: utf8
-  host: mysqldev.lib.virginia.edu
+  pool: 5
+  socket: /tmp/mysql.sock
 
 development:
   <<: *default
   database: libra2_development
-  username: libra2
-  password: QxCTB5LR
+  username: root
+  password: 
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -26,7 +27,7 @@ development:
 test:
   <<: *default
   database: libra2_test
-  username: libra2
+  username: root
   password:
 
 # As with config/secrets.yml, you never want to store sensitive information,

@@ -2,6 +2,8 @@ Rails.application.routes.draw do
 
   root 'dashboard#index'
   get 'development_login' => 'dashboard#development_login' # TODO-PER: Temp route to get login working quickly.
+  get "/test_exception_notifier" => "dashboard#test_exception_notifier"
+  get "/test_email" => "dashboard#test_email"
   get '/preview/:id' => 'submission#preview'
   post '/submit/:id' => 'submission#submit'
 
