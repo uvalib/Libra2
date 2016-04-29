@@ -42,4 +42,15 @@ class DashboardController < ApplicationController
       redirect_to '/'
     end
   end
+
+  # GET /text_exception_notifier
+  def test_exception_notifier
+    raise "This is only a test of the automatic notification system."
+  end
+
+  # GET /test_email
+  def test_email
+    TestMailers.email().deliver_now
+  end
+
 end
