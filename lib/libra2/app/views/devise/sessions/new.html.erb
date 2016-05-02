@@ -94,9 +94,11 @@
           <span class="col2">
 			  <select id="net-badge-ids">
 				  <option></option>
-<% @users.each { |user| %>
-				  <option><%= user %></option>
-<% } %>
+					<% if @users.nil? == false %>
+             <% @users.each { |user| %>
+				        <option><%= user %></option>
+             <% } %>
+   				<% end %>
 			  </select>
             <p class="redcaption verbose">Less typing. More secure!</p>
           </span></fieldset>
