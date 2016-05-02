@@ -1,0 +1,6 @@
+development:
+  polling_interval: <%= ENV['POLLING_INTERVAL'] %>
+test:
+  polling_interval: <%= ENV['POLLING_INTERVAL'] %>
+production:
+  polling_interval: <%= ENV['POLLING_INTERVAL'] %>
