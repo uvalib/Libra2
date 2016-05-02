@@ -1,22 +1,24 @@
 # config/initializers/email.rb
 
+config = YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 'email.yml'))).result)[Rails.env].with_indifferent_access
+
 settings = {
-	address: ENV['EMAIL_ADDRESS'],
-	domain: ENV['EMAIL_DOMAIN'],
+	address: config['email_address'],
+	domain: config['email_domain'],
 }
-settings[:port] = ENV['EMAIL_PORT'] if ENV['EMAIL_PORT'].present?
-settings[:user_name] = ENV['EMAIL_USER_NAME'] if ENV['EMAIL_USER_NAME'].present?
-settings[:password] = ENV['EMAIL_PASSWORD'] if ENV['EMAIL_PASSWORD'].present?
-settings[:authentication] = ENV['EMAIL_AUTHENTICATION'] if ENV['EMAIL_AUTHENTICATION'].present?
-settings[:return_path] = ENV['EMAIL_RETURN_PATH'] if ENV['EMAIL_RETURN_PATH'].present?
-settings[:enable_starttls_auto] = ENV['EMAIL_ENABLE_STARTTLS_AUTO'] if ENV['EMAIL_ENABLE_STARTTLS_AUTO'].present?
+settings[:port] = config['email_port'] if config['email_port'].present?
+settings[:user_name] = config['email_user_name'] if config['email_user_name'].present?
+settings[:password] = config['email_password'] if config['email_password'].present?
+settings[:authentication] = config['email_authentication'] if config['email_authentication'].present?
+settings[:return_path] = config['email_return_path'] if config['email_return_path'].present?
+settings[:enable_starttls_auto] = config['email_enable_starttls_auto'] if config['email_enable_starttls_auto'].present?
 
 ActionMailer::Base.smtp_settings = settings
 
 ActionMailer::Base.default_url_options[:host] = ActionMailer::Base.smtp_settings[:return_path]
 
-if ENV['DELIVER_EMAIL'] != 'true'
+if config['deliver_email'] != 'true'
 	ActionMailer::Base.register_interceptor(StagingMailInterceptor)
-	emails = ENV['MAIL_INTERCEPT_RECIPIENTS'] || ""
+	emails = config['mail_intercept_recipients'] || ""
 	MAIL_INTERCEPT_RECIPIENTS = emails.split(/[^\w\.@+-]+/)
 end
