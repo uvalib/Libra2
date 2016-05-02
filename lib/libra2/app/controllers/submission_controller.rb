@@ -10,8 +10,16 @@ class SubmissionController < ApplicationController
 		end
 	end
 
+	def public_view
+		@id = params[:id]
+		@work = GenericWork.where({ id: @id })
+		if @work.length > 0
+			@work = @work[0]
+		end
+	end
+
 	def submit
 		id = params[:id]
-		redirect_to "/concern/generic_works/#{id}", :flash => { :notice => "Thank you for your submission. You have finished this requirement for graduation." }
+		redirect_to "/public_view/#{id}", :flash => { :notice => "Thank you for your submission. You have finished this requirement for graduation." }
 	end
 end

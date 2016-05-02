@@ -13,5 +13,6 @@
 </table>
 
 <%= form_tag("/submit/#{@id}", method: "post") do %>
-<button name="button" type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-save"></i> Submit</button>
+<a href="/concern/generic_works/<%= @id %>" class="btn btn-default"><i class="glyphicon glyphicon-backward"></i> Back</a>
+<button name="button" type="submit" class="btn btn-primary" data-confirm="This is your final step and you cannot change the document afterwards. Are you sure?"><i class="glyphicon glyphicon-save"></i> Submit</button>
 <% end %>

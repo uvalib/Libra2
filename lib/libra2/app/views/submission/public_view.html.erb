@@ -1,0 +1,12 @@
+<h1><%= @work[:title].join("<br>") %></h1>
+
+<table class="table table-striped generic_work attributes" itemscope="" itemtype="http://schema.org/CreativeWork">
+	<tbody>
+	<%= render_thesis_attribute("Title", @work[:title]) %>
+	<%= render_thesis_attribute("Description", @work.description) %>
+	<%= render_thesis_attribute("Creator", @work.creator) %>
+	<%= render_thesis_attribute("Contributors", @work.contributor) %>
+	<%= render_thesis_attribute("Department", @work.department) %>
+	<%= render_thesis_attribute("Degree", @work.degree) %>
+	</tbody>
+</table>

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get "/test_exception_notifier" => "dashboard#test_exception_notifier"
   get "/test_email" => "dashboard#test_email"
   get '/preview/:id' => 'submission#preview'
+  get '/public_view/:id' => 'submission#public_view'
   post '/submit/:id' => 'submission#submit'
 
   Hydra::BatchEdit.add_routes(self)
