@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160406175244) do
+ActiveRecord::Schema.define(version: 20160502150334) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -45,6 +45,28 @@ ActiveRecord::Schema.define(version: 20160406175244) do
     t.datetime "updated_at",                 null: false
     t.string   "external_key", limit: 255
   end
+
+  create_table "curation_concerns_operations", force: :cascade do |t|
+    t.string   "status",         limit: 255
+    t.string   "operation_type", limit: 255
+    t.string   "job_class",      limit: 255
+    t.string   "job_id",         limit: 255
+    t.string   "type",           limit: 255
+    t.text     "message",        limit: 65535
+    t.integer  "user_id",        limit: 4
+    t.integer  "parent_id",      limit: 4
+    t.integer  "lft",            limit: 4,                 null: false
+    t.integer  "rgt",            limit: 4,                 null: false
+    t.integer  "depth",          limit: 4,     default: 0, null: false
+    t.integer  "children_count", limit: 4,     default: 0, null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "curation_concerns_operations", ["lft"], name: "index_curation_concerns_operations_on_lft", using: :btree
+  add_index "curation_concerns_operations", ["parent_id"], name: "index_curation_concerns_operations_on_parent_id", using: :btree
+  add_index "curation_concerns_operations", ["rgt"], name: "index_curation_concerns_operations_on_rgt", using: :btree
+  add_index "curation_concerns_operations", ["user_id"], name: "index_curation_concerns_operations_on_user_id", using: :btree
 
   create_table "domain_terms", force: :cascade do |t|
     t.string "model", limit: 255
@@ -323,6 +345,7 @@ ActiveRecord::Schema.define(version: 20160406175244) do
   add_index "work_view_stats", ["user_id"], name: "index_work_view_stats_on_user_id", using: :btree
   add_index "work_view_stats", ["work_id"], name: "index_work_view_stats_on_work_id", using: :btree
 
+  add_foreign_key "curation_concerns_operations", "users"
   add_foreign_key "mailboxer_conversation_opt_outs", "mailboxer_conversations", column: "conversation_id", name: "mb_opt_outs_on_conversations_id"
   add_foreign_key "mailboxer_notifications", "mailboxer_conversations", column: "conversation_id", name: "notifications_on_conversation_id"
   add_foreign_key "mailboxer_receipts", "mailboxer_notifications", column: "notification_id", name: "receipts_on_notification_id"

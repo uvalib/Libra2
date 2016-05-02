@@ -17,11 +17,7 @@ Rails.application.routes.draw do
   end
 
   devise_for :users
-  Hydra::BatchEdit.add_routes(self)
-  # This must be the very last route in the file because it has a catch-all route for 404 errors.
-  # This behavior seems to show up only in production mode.
-  mount Sufia::Engine => '/'
-
+  
   mount CurationConcerns::Engine, at: '/'
   resources :welcome, only: 'index'
   #root 'sufia/homepage#index'
@@ -96,4 +92,10 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  Hydra::BatchEdit.add_routes(self)
+  # This must be the very last route in the file because it has a catch-all route for 404 errors.
+  # This behavior seems to show up only in production mode.
+  mount Sufia::Engine => '/'
+
 end

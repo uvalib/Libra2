@@ -8,8 +8,7 @@ DIFF_TOOL=/Applications/DiffMerge.app/Contents/MacOS/DiffMerge
 ROOT_DIR=lib/libra2/app/views
 
 GEM_BASE=/Users/dpg3k/.rvm/gems/ruby-2.3.0
-
-SUFIA_ROOT=$GEM_BASE/bundler/gems/sufia-ac053bc4ad55
+SUFIA_ROOT=$GEM_BASE/bundler/gems/sufia-2d439b3100dd
 
 DIFF_FILE=/tmp/diff-list.$$
 rm -fr $DIFF_FILE > /dev/null 2>&1
