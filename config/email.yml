@@ -1,0 +1,33 @@
+development:
+  email_address: <%= ENV['EMAIL_ADDRESS'] %>
+  email_domain: <%= ENV['EMAIL_DOMAIN'] %>
+  email_port: <%= ENV['EMAIL_PORT'] %>
+  email_user_name: <%= ENV['EMAIL_USER_NAME'] %>
+  email_password: <%= ENV['EMAIL_PASSWORD'] %>
+  email_authentication: <%= ENV['EMAIL_AUTHENTICATION'] %>
+  email_return_path: <%= ENV['EMAIL_RETURN_PATH'] %>
+  email_enable_starttls_auto: <%= ENV['EMAIL_ENABLE_STARTTLS_AUTO'] %>
+  deliver_email: <%= ENV['DELIVER_EMAIL'] %>
+  mail_intercept_recipients: <%= ENV['MAIL_INTERCEPT_RECIPIENTS'] %>
+test:
+  email_address: <%= ENV['EMAIL_ADDRESS'] %>
+  email_domain: <%= ENV['EMAIL_DOMAIN'] %>
+  email_port: <%= ENV['EMAIL_PORT'] %>
+  email_user_name: <%= ENV['EMAIL_USER_NAME'] %>
+  email_password: <%= ENV['EMAIL_PASSWORD'] %>
+  email_authentication: <%= ENV['EMAIL_AUTHENTICATION'] %>
+  email_return_path: <%= ENV['EMAIL_RETURN_PATH'] %>
+  email_enable_starttls_auto: <%= ENV['EMAIL_ENABLE_STARTTLS_AUTO'] %>
+  deliver_email: <%= ENV['DELIVER_EMAIL'] %>
+  mail_intercept_recipients: <%= ENV['MAIL_INTERCEPT_RECIPIENTS'] %>
+production:
+  email_address: <%= ENV['EMAIL_ADDRESS'] %>
+  email_domain: <%= ENV['EMAIL_DOMAIN'] %>
+  email_port: <%= ENV['EMAIL_PORT'] %>
+  email_user_name: <%= ENV['EMAIL_USER_NAME'] %>
+  email_password: <%= ENV['EMAIL_PASSWORD'] %>
+  email_authentication: <%= ENV['EMAIL_AUTHENTICATION'] %>
+  email_return_path: <%= ENV['EMAIL_RETURN_PATH'] %>
+  email_enable_starttls_auto: <%= ENV['EMAIL_ENABLE_STARTTLS_AUTO'] %>
+  deliver_email: <%= ENV['DELIVER_EMAIL'] %>
+  mail_intercept_recipients: <%= ENV['MAIL_INTERCEPT_RECIPIENTS'] %>
