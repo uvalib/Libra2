@@ -21,7 +21,7 @@
       a[href="/dashboard/shares"] {
         display: none;
       }
-      :nth-child(5) {    // the divider
+      :nth-child(2), :nth-child(4) {    // the dividers
         display: none;
       }
     }
