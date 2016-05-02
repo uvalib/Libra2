@@ -63,7 +63,7 @@ namespace :libra2 do
       resp.each do |r|
         req = Helpers::DepositRequest.create( r )
         if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
-           puts "Created optional ETD for #{req.who}"
+           puts "Created optional ETD for #{req.who} (request #{req.id})"
            count += 1
         else
           puts "ERROR ingesting request #{req.id} for #{req.who}; ignoring"

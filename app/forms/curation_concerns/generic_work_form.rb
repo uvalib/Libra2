@@ -32,6 +32,7 @@ module CurationConcerns
     ]
 
     self.terms -= [
+        :identifier,
         :based_near,
         :tag
     ]
