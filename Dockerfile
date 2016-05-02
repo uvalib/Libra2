@@ -32,6 +32,7 @@ addressable:2.3.8 \
 arel:6.0.3 \
 autoparse:0.3.3 \
 autoprefixer-rails:6.3.6 \
+awesome_nested_set:3.0.3 \
 babel-source:5.8.35 \
 babel-transpiler:0.7.0 \
 bcp47:0.3.3 \
@@ -54,7 +55,7 @@ coffee-rails:4.1.1 \
 coffee-script-source:1.10.0 \
 coffee-script:2.4.1 \
 concurrent-ruby:1.0.1 \
-curation_concerns:0.13.1 \
+curation_concerns:0.14.0.pre3 \
 daemons:1.2.3 \
 debug_inspector:0.0.2 \
 deprecation:0.2.2 \
@@ -87,7 +88,7 @@ hydra-access-controls:9.10.0 \
 hydra-batch-edit:2.0.2 \
 hydra-core:9.10.0 \
 hydra-derivatives:3.0.1 \
-hydra-editor:1.2.0 \
+hydra-editor:2.0.0 \
 hydra-file_characterization:0.3.3 \
 hydra-head:9.10.0 \
 hydra-pcdm:0.6.0 \
