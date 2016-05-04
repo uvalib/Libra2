@@ -45,7 +45,7 @@ module Helpers
         w.degree = dr.degree
 
         w.contributor << default_contributor
-        w.rights = default_rights
+        w.rights << default_rights
         w.license = default_license
 
         status, id = ServiceClient::EntityIdClient.instance.newid( w )

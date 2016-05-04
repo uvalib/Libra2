@@ -182,7 +182,7 @@ def create_generic_work( work_type, user, title, description )
     w.admin_notes << 'Admin notes created automatically'
     w.language = 'English'
     w.contributor << 'Dr. Ruth'
-    w.rights = 'Determine your rights assignments here'
+    w.rights << 'Determine your rights assignments here'
     w.license = 'None'
 
     print "getting DOI..."

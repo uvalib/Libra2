@@ -44,18 +44,25 @@ module CurationConcerns
 
     # which fields are required...
     def required?(term)
-      #puts "=====> required? #{term}"
-      return true if [:title, :creator, :contributor, :description, :publisher, :rights, :identifier, :department, :degree, :license].include? term
-      false
+      #puts "=====> GenericWorkForm.required? #{term}"
+      GenericWork.required?( term )
     end
 
     # which fields are readonly...
     def readonly?(term)
-      #puts "=====> readonly? #{term}"
-      return true if [:date_created, :identifier, :publisher, :department, :degree, :license].include? term
-      false
+      #puts "=====> GenericWorkForm.readonly? #{term}"
+      GenericWork.readonly?( term )
     end
 
+    def multiple?(term)
+      #puts "=====> GenericWorkForm.multiple? #{term}"
+      GenericWork.multiple?( term )
+    end
+
+    def self.build_permitted_params
+      #puts "=====> GenericWorkForm.build_permitted_params"
+      super + [:on_behalf_of, :rights, { collection_ids: [] }]
+    end
   end
 end
 

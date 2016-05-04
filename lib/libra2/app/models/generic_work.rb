@@ -90,10 +90,25 @@ class GenericWork < ActiveFedora::Base
 
   # determine which fields can have multiple values...
   def self.multiple?( term )
-    #puts "=====> multiple? #{term}"
+    #puts "=====> GenericWork.multiple? #{term}"
     return true if [:tag, :title, :contributor, :subject, :related_url, :sponsoring_agency, :admin_notes].include? term
     false
   end
+
+  # which fields are required...
+  def self.required?(term)
+    #puts "=====> GenericWork.required? #{term}"
+    return true if [:title, :creator, :contributor, :description, :publisher, :rights, :identifier, :department, :degree, :license].include? term
+    false
+  end
+
+  # which fields are readonly...
+  def self.readonly?(term)
+    #puts "=====> GenericWork.readonly? #{term}"
+    return true if [:date_created, :identifier, :publisher, :department, :degree, :license].include? term
+    false
+  end
+
 
 end
 
