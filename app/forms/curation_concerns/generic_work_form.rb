@@ -14,21 +14,21 @@ module CurationConcerns
     # additional terms we want on the form
     self.terms += [
 #        :title,
-#                  :creator,
-#                  :contributor,
-#                  :description,
-#                  :subject,
-#                  :language,
-#                  :publisher,
-#                  :date_created,
-#                  :identifier,
-#                  :related_url,
+#        :creator,
+#        :contributor,
+#        :description,
+#        :subject,
+#        :language,
+#        :publisher,
+#        :date_created,
+#        :identifier,
+#        :related_url,
         :department,
         :degree,
         :notes,
         :sponsoring_agency,
-#                  :rights,
-        :license
+#        :rights,
+#        :license
     ]
 
     self.terms -= [
@@ -52,7 +52,7 @@ module CurationConcerns
     # which fields are readonly...
     def readonly?(term)
       #puts "=====> readonly? #{term}"
-      return true if [:date_created, :identifier, :publisher, :department, :degree].include? term
+      return true if [:date_created, :identifier, :publisher, :department, :degree, :license].include? term
       false
     end
 

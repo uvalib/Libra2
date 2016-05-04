@@ -68,7 +68,7 @@ class GenericWork < ActiveFedora::Base
   end
 
   # the license assigned to the work
-  property :license, predicate: ::RDF::URI('http://example.org/terms/license') do |index|
+  property :license, predicate: ::RDF::URI('http://example.org/terms/license'), multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
 
@@ -91,7 +91,7 @@ class GenericWork < ActiveFedora::Base
   # determine which fields can have multiple values...
   def self.multiple?( term )
     #puts "=====> multiple? #{term}"
-    return true if [:tag, :title, :rights, :contributor, :subject, :related_url, :license, :sponsoring_agency, :admin_notes].include? term
+    return true if [:tag, :title, :contributor, :subject, :related_url, :sponsoring_agency, :admin_notes].include? term
     false
   end
 
