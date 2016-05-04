@@ -10,6 +10,22 @@
     a[href="/dashboard/collections"] {
         display: none;
     }
+
+    .dropdown-menu {
+      a[href="/dashboard/transfers"] {
+        display: none;
+      }
+      a[href="/dashboard/highlights"] {
+        display: none;
+      }
+      a[href="/dashboard/shares"] {
+        display: none;
+      }
+
+      .divider {
+         display: none;
+      }
+    }
 }
 
 
