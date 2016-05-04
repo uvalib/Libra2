@@ -30,10 +30,10 @@ module AuthenticationBehavior
     #
     # a hack to allow us to login without netbadge
     #
-		if Rails.env.to_s == 'development'
+		#if Rails.env.to_s == 'development'
 			@users = User.order( :email )
 			@users = @users.map {|user| user.email.split("@")[0] }
-    end
+    #end
 
 	end
 
