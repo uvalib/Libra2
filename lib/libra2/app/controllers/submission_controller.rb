@@ -1,7 +1,7 @@
 class SubmissionController < ApplicationController
 	include AuthenticationHelper
 	before_action :authenticate_user!, except: [ 'development_login']
-	layout "public", only: [ 'public_view' ]
+	layout "public"
 
 	def preview
 		@id = params[:id]

@@ -1,18 +1,64 @@
-<h1>Preview of Submitted Thesis</h1>
-<p class="lead text-warning">You are not finished! If this is complete, then click "Submit". Otherwise go back and fill in the missing pieces.</p>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
 
-<table class="table table-striped generic_work attributes" itemscope="" itemtype="http://schema.org/CreativeWork">
-	<tbody>
-	<%= render_thesis_attribute("Title", @work[:title]) %>
-	<%= render_thesis_attribute("Description", @work.description) %>
-	<%= render_thesis_attribute("Creator", @work.creator) %>
-	<%= render_thesis_attribute("Contributors", @work.contributor) %>
-	<%= render_thesis_attribute("Department", @work.department) %>
-	<%= render_thesis_attribute("Degree", @work.degree) %>
-	</tbody>
-</table>
+<style>
+	.preview-controls {
+		position: absolute;
+		background-color: #F9F3A0;
+		opacity: 0.98;
+		z-index: 1000;
+		padding: 16px;
+		right: 10px;
+		top: 10px;
+		width: 200px;
+		border-radius: 4px;
+		box-shadow: 1px 1px 5px #889;
+	}
+	.preview-controls h1 {
+		font-size: 20px;
+	}
+	.preview-warning {
+		font-weight: bold;
+	}
+	.btn {
+		display: inline-block;
+		margin-bottom: 0;
+		font-weight: normal;
+		text-align: center;
+		vertical-align: middle;
+		touch-action: manipulation;
+		cursor: pointer;
+		background-image: none;
+		border: 1px solid transparent;
+		white-space: nowrap;
+		padding: 6px 12px;
+		font-size: 14px;
+		line-height: 1.42857143;
+		border-radius: 4px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+	.btn-default {
+		color: #333;
+		background-color: #fff;
+		border-color: #ccc;
+	}
+	.btn-primary, .add {
+		color: #fff;
+		background-color: #337ab7;
+		border-color: #2e6da4;
+	}
 
-<%= form_tag("/submit/#{@id}", method: "post") do %>
-<a href="/concern/generic_works/<%= @id %>" class="btn btn-default"><i class="glyphicon glyphicon-backward"></i> Back</a>
-<button name="button" type="submit" class="btn btn-primary" data-confirm="This is your final step and you cannot change the document afterwards. Are you sure?"><i class="glyphicon glyphicon-save"></i> Submit</button>
-<% end %>
+</style>
+<div class="preview-controls">
+	<h1>Preview Page</h1>
+	<p class="preview-warning">
+		You are not finished! If this is complete, then click "Submit". Otherwise go back and fill in the missing pieces.
+	</p>
+	<%= form_tag("/submit/#{@id}", method: "post") do %>
+		<a href="/concern/generic_works/<%= @id %>" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a>
+		<button name="button" type="submit" class="btn btn-primary" data-confirm="This is your final step and you cannot change the document afterwards. Are you sure?"><i class="fa fa-check"></i> Submit</button>
+	<% end %>
+</div>
+<%= render "document" %>
