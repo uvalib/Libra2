@@ -7,7 +7,7 @@
 			<%= link_to "Edit", edit_polymorphic_path([main_app, presenter]), class: 'btn btn-default' %>
 			<%= link_to "Preview", "/preview/#{presenter.solr_document.id}", {class: 'btn btn-default', data: { 'no-turbolink' => true }} %>
 		<% else %>
-			<%= link_to "Public View", "/preview/#{presenter.solr_document.id}", class: 'btn btn-default' %>
+			<%= link_to "Public View", "/public_view/#{presenter.solr_document.id}", {class: 'btn btn-default', data: { 'no-turbolink' => true }} %>
 		<% end %>
 	<% end %>
 	<% if presenter.display_feature_link? %>
