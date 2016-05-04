@@ -176,14 +176,14 @@ def create_generic_work( work_type, user, title, description )
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
 
     w.publisher = GenericWork::DEFAULT_PUBLISHER
-    w.department = 'Daves Special Department'
-    w.degree = 'Super Master Ninja Person'
-    w.notes = 'Created automatically by your friendly rake task'
-    w.admin_notes << 'Created automatically by your friendly rake task'
+    w.department = 'Default department'
+    w.degree = 'Default degree'
+    w.notes = 'Notes created automatically'
+    w.admin_notes << 'Admin notes created automatically'
     w.language = 'English'
     w.contributor << 'Dr. Ruth'
-    w.rights << "My right to disagree with you"
-    w.license << "CC 3.0"
+    w.rights << 'Determine your rights assignments here'
+    w.license = 'None'
 
     print "getting DOI..."
     status, id = ServiceClient::EntityIdClient.instance.newid( w )
