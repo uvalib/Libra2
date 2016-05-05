@@ -12,6 +12,7 @@ settings[:password] = config['email_password'] if config['email_password'].prese
 settings[:authentication] = config['email_authentication'] if config['email_authentication'].present?
 settings[:return_path] = config['email_return_path'] if config['email_return_path'].present?
 settings[:enable_starttls_auto] = config['email_enable_starttls_auto'] if config['email_enable_starttls_auto'].present?
+MAIL_SENDER = config['email_sender'] || 'libra2@virginia.edu'
 
 ActionMailer::Base.smtp_settings = settings
 

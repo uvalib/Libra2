@@ -10,13 +10,17 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 namespace :libra2 do
 
   default_last_id = "0"
-  default_statefile = "#{Rails.root}/tmp/deposit-req.last"
+  default_optional_statefile = "#{Rails.root}/tmp/deposit-req.last"
+  default_sis_statefile = "#{Rails.root}/tmp/deposit-sis.last"
 
-  desc "List new optional ETD deposit requests; optionally provide the last deposit id"
+  desc "List new optional ETD deposit requests; optionally provide the statefile name"
   task list_optional_etd_deposits: :environment do |t, args|
 
-    last_id = ARGV[ 1 ]
-    last_id = default_last_id if last_id.nil?
+    statefile = ARGV[ 1 ]
+    statefile = default_optional_statefile if statefile.nil?
+
+    s = Helpers::ValueSnapshot.new( statefile, default_last_id )
+    last_id = s.val
 
     puts "Listing new optional ETD deposits since id: #{last_id}"
 
@@ -34,11 +38,14 @@ namespace :libra2 do
 
   end
 
-  desc "List new SIS ETD deposit requests; optionally provide the last deposit id"
+  desc "List new SIS ETD deposit requests; optionally provide the statefile name"
   task list_sis_etd_deposits: :environment do |t, args|
 
-    last_id = ARGV[ 1 ]
-    last_id = default_last_id if last_id.nil?
+    statefile = ARGV[ 1 ]
+    statefile = default_sis_statefile if statefile.nil?
+
+    s = Helpers::ValueSnapshot.new( statefile, default_last_id )
+    last_id = s.val
 
     puts "Listing new SIS ETD deposits since id: #{last_id}"
 
@@ -50,7 +57,7 @@ namespace :libra2 do
   task ingest_optional_etd_deposits: :environment do |t, args|
 
     statefile = ARGV[ 1 ]
-    statefile = default_statefile if statefile.nil?
+    statefile = default_optional_statefile if statefile.nil?
     count = 0
 
     s = Helpers::ValueSnapshot.new( statefile, default_last_id )
@@ -63,6 +70,7 @@ namespace :libra2 do
       resp.each do |r|
         req = Helpers::DepositRequest.create( r )
         if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
+           ThesisMailers.thesis_can_be_submitted( req.who ).deliver_now
            puts "Created optional ETD for #{req.who} (request #{req.id})"
            count += 1
         else
