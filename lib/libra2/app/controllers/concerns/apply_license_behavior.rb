@@ -1,7 +1,7 @@
 module ApplyLicenseBehavior
     extend ActiveSupport::Concern
 
-    include LibraHelper
+    include AgreementHelper
 
     included do
       before_action :apply_license, only: [:update]
