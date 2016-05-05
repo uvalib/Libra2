@@ -1,3 +1,11 @@
-<p>Your thesis is now ready to be entered and submitted.</p>
+<p>Dear <%= @name %>,</p>
+<p>Congratulations on the successful completion of your department's pre-thesis requirements. You now have access to upload your approved thesis or dissertation to LIBRA at <a href="<%= ActionMailer::Base.default_url_options[:host] %>">LIBRA</a>.</p>
+<p>After you log in to LIBRA, enter the thesis for your title as approved by your department. The title in LIBRA must match the title on record in your school or department.  If it does not, the discrepancy will delay your departmental administrator's ability to verify successful completion of thesis requirements, possibly delaying your graduation.</p>
+<p>Before you upload your thesis or dissertation, be sure you've reviewed the <a href="http://www.library.virginia.edu/libra/etds/etds-checklist/">"Electronic Thesis/Dissertation (ETD) Submission Requirements Checklist."</a>.</p>
+<p>Text documents deposited in LIBRA must be in PDF format. Supplemental files are accepted in most formats, see the checklist above for a complete list. If you have questions about acceptable formats, please contact Libra staff at <a href="mailto:libra@virginia.edu">libra@virginia.edu</a>. Please note that once the upload is complete, the document may not be changed in any way, so be sure to upload your final copy.</p>
+<p>You may check that the upload was successful by searching for your thesis or dissertation in VIRGO, the UVA online library catalog, 24 hours after deposit. You will also receive email confirmation of your deposit, including the permanent URL for your scholarship.</p>
+<p>More information on ETDs and Libra can be found on the following web page:  <a href="http://www.library.virginia.edu/libra/etds/">Electronic Theses & Dissertations (ETDs)</a></p>
+<p>If you have any questions about this process, please contact your school of enrollment.</p>
+<p>Best Regards,</p>
+<p>Scholarly Repository Services, University of Virginia Library</p>
 
-<p>To begin, log in here: <%= "#{ActionMailer::Base.default_url_options[:host]}" %></p>

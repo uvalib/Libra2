@@ -70,7 +70,8 @@ namespace :libra2 do
       resp.each do |r|
         req = Helpers::DepositRequest.create( r )
         if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
-           ThesisMailers.thesis_can_be_submitted( req.who ).deliver_now
+			user = Helpers::EtdHelper::lookup_user( req.who )
+           ThesisMailers.thesis_can_be_submitted( req.who, user.display_name ).deliver_now
            puts "Created optional ETD for #{req.who} (request #{req.id})"
            count += 1
         else
