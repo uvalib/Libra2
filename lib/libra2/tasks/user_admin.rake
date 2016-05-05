@@ -152,7 +152,7 @@ def sync_user( user )
     user.department = info.department,
     user.office = info.office,
     user.telephone = info.phone,
-    user.title = info.title
+    user.title = info.description
 
     user.save!
     return true

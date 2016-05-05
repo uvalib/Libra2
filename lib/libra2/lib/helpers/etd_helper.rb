@@ -72,7 +72,7 @@ module Helpers
                        department: user_info.department,
                        office: user_info.office,
                        telephone: user_info.phone,
-                       title: user_info.title )
+                       title: user_info.description )
       user.save!
       puts "Created new account for #{user_info.id}"
       return( user )
