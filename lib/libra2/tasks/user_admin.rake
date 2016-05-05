@@ -146,19 +146,41 @@ def sync_user( user )
   # extract computing ID and look up...
   tokens = user.email.split( "@" )
   info = lookup_user( tokens[ 0 ] )
+  updated = false
 
   if info.nil? == false
-    user.display_name = info.display_name
-    user.department = info.department,
-    user.office = info.office,
-    user.telephone = info.phone,
-    user.title = info.description
 
-    user.save!
-    return true
+    if user.display_name != info.display_name
+      user.display_name = info.display_name
+      updated = true
+    end
+
+    if user.department != info.department
+       user.department = info.department
+       updated = true
+    end
+
+    if user.office != info.office
+       user.office = info.office
+       updated = true
+    end
+
+    if user.telephone != info.phone
+       user.telephone = info.phone
+       updated = true
+    end
+
+    if user.title != info.description
+       user.title = info.description
+       updated = true
+    end
+
+    if updated
+       user.save!
+    end
   end
 
-  return false
+  return updated
 end
 
 #
@@ -170,6 +192,7 @@ def lookup_user( id )
   status, resp = ServiceClient::UserInfoClient.instance.get_by_id( id )
   if ServiceClient::UserInfoClient.instance.ok?( status )
     info = Helpers::UserInfo.create( resp )
+    puts "User #{id} lookup OK"
   else
     puts "User #{id} lookup failed (#{status})"
   end
