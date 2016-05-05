@@ -183,7 +183,7 @@ def create_generic_work( work_type, user, title, description )
     w.language = 'English'
     w.contributor << 'Dr. Ruth'
     w.rights << 'Determine your rights assignments here'
-    w.license = 'None'
+    w.license = GenericWork::DEFAULT_LICENSE
 
     print "getting DOI..."
     status, id = ServiceClient::EntityIdClient.instance.newid( w )

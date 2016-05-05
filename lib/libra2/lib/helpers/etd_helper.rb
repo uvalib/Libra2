@@ -27,7 +27,6 @@ module Helpers
       default_description = 'Enter your description here'
       default_contributor = 'Enter your contributors here'
       default_rights = 'Determine your rights assignments here'
-      default_license = 'None'
 
       GenericWork.create!( title: [ default_title ] ) do |w|
 
@@ -46,7 +45,7 @@ module Helpers
 
         w.contributor << default_contributor
         w.rights << default_rights
-        w.license = default_license
+        w.license = GenericWork::DEFAULT_LICENSE
 
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
         if ServiceClient::EntityIdClient.instance.ok?( status )

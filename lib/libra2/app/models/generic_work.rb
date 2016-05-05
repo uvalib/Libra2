@@ -28,6 +28,7 @@ class GenericWork < ActiveFedora::Base
 
   # defaults
   DEFAULT_PUBLISHER = 'University Of Virginia'.freeze
+  DEFAULT_LICENSE = 'None'.freeze
 
   # Custom Metadata
 
@@ -109,7 +110,10 @@ class GenericWork < ActiveFedora::Base
     false
   end
 
-
+  # have we already accepted the license agreement?
+  def self.accepted_agreement?( license )
+    return license != DEFAULT_LICENSE
+  end
 end
 
 #

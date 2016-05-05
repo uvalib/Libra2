@@ -38,7 +38,9 @@ module CurationConcerns
     ]
 
     # override from the base class to remove tag from the list of primary fields
+    # we also do some logic here to ensure that the deposit agreement must be accepted once
     def primary_terms
+      @agreement_accepted = GenericWork.accepted_agreement?( self.license )
       [:title, :creator, :rights]
     end
 
