@@ -13,9 +13,9 @@ module UrlHelper
     "https://libra2dev.lib.virginia.edu"
   end
 
-  def doi_work_url( doi )
-    #TODO-DPG: fix this appropriatly
-    "/DOI/#{doi}"
-  end
+  #def doi_work_url( doi )
+  #  #TODO-DPG: fix this appropriatly
+  #  "/DOI/#{doi}"
+  #end
 
 end
