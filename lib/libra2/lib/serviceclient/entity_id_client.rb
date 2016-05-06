@@ -65,7 +65,6 @@ module ServiceClient
        h['url'] = self.fully_qualified_work_url( work.id )
        h['publication_year'] = "#{work.date_uploaded.year}" if work.date_uploaded
        h['type'] = work.resource_type if work.resource_type
-       puts "====> #{h}"
        h.to_json
      end
 
