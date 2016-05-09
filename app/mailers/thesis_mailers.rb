@@ -1,18 +1,19 @@
 class ThesisMailers < ActionMailer::Base
 
+  add_template_helper( UrlHelper )
+
 	def thesis_can_be_submitted( whom, name )
 		@name = name
     mail( to: whom, from: MAIL_SENDER, subject: "Access to upload your approved thesis or dissertation to LIBRA" )
   end
 
-	def thesis_submitted_author(work, advisee, adviser)
+	def thesis_submitted_author( work, author )
 		@work = work
-		@advisee = advisee
-		@adviser = adviser
+		@advisee = author
 		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your thesis")
 	end
 
-	def thesis_submitted_adviser(work, advisee, adviser)
+	def thesis_submitted_adviser( work, advisee, adviser )
 		@work = work
 		@advisee = advisee
 		@adviser = adviser
