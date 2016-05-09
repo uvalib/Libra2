@@ -30,7 +30,7 @@
 		right: -10px;
 	}
 </style>
-<
+
 <% if flash[:notice].present? %>
 	<div class="flash-notice" role="alert">
 		<button id="close-button" type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -39,8 +39,11 @@
 <% end %>
 <%= render "document" %>
 <script language="JavaScript">
-	document.getElementById('close-button').onclick = function() {
-		var parent = this.parentNode;
-		parent.parentNode.removeChild(parent);
+	var closeButton = document.getElementById('close-button');
+	if (closeButton) {
+		closeButton.onclick = function() {
+			var parent = this.parentNode;
+			parent.parentNode.removeChild(parent);
+		}
 	}
 </script>
