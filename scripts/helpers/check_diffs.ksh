@@ -8,7 +8,7 @@ DIFF_TOOL=/Applications/DiffMerge.app/Contents/MacOS/DiffMerge
 ROOT_DIR=lib/libra2/app/views
 
 GEM_BASE=/Users/dpg3k/.rvm/gems/ruby-2.3.0
-SUFIA_ROOT=$GEM_BASE/bundler/gems/sufia-2d439b3100dd
+SUFIA_ROOT=$GEM_BASE/bundler/gems/sufia-82e7bc903ee6
 
 DIFF_FILE=/tmp/diff-list.$$
 rm -fr $DIFF_FILE > /dev/null 2>&1
@@ -40,7 +40,7 @@ for file in $(<$DIFF_FILE); do
       diff $location/$part $file > /dev/null 2>&1
       res=$?
       if [ $res -ne 0 ]; then
-         echo "$DIFF_TOOL $location/$part $file" >> $CMD_FILE
+         echo "$DIFF_TOOL $file $location/$part" >> $CMD_FILE
       fi
 
    else
