@@ -50,12 +50,12 @@ builder:3.2.2 \
 bundler:1.11.2 \
 byebug:8.2.4 \
 cancancan:1.13.1 \
-carrierwave:0.11.0 \
+carrierwave:0.11.2 \
 coffee-rails:4.1.1 \
 coffee-script-source:1.10.0 \
 coffee-script:2.4.1 \
 concurrent-ruby:1.0.1 \
-curation_concerns:0.14.0.pre3 \
+curation_concerns:0.14.0.pre4 \
 daemons:1.2.3 \
 debug_inspector:0.0.2 \
 deprecation:0.2.2 \
@@ -72,7 +72,7 @@ execjs:2.6.0 \
 extlib:0.9.16 \
 faraday:0.9.2 \
 fcrepo_wrapper:0.4.0 \
-font-awesome-rails:4.6.1.0 \
+font-awesome-rails:4.6.2.0 \
 foreigner:1.7.4 \
 globalid:0.3.6 \
 google-api-client:0.8.6 \
@@ -87,12 +87,12 @@ httparty:0.13.7 \
 hydra-access-controls:9.10.0 \
 hydra-batch-edit:2.0.2 \
 hydra-core:9.10.0 \
-hydra-derivatives:3.0.1 \
+hydra-derivatives:3.0.2 \
 hydra-editor:2.0.0 \
 hydra-file_characterization:0.3.3 \
 hydra-head:9.10.0 \
-hydra-pcdm:0.6.0 \
-hydra-works:0.8.1 \
+hydra-pcdm:0.7.0 \
+hydra-works:0.9.0 \
 i18n:0.7.0 \
 jbuilder:2.4.1 \
 jquery-rails:4.1.1 \
@@ -120,7 +120,6 @@ mimemagic:0.3.1 \
 mini_magick:4.5.1 \
 mini_portile2:2.0.0 \
 minitest:5.8.4 \
-mono_logger:1.1.0 \
 multi_json:1.11.3 \
 multi_xml:0.5.5 \
 multipart-post:2.0.0 \
@@ -140,7 +139,6 @@ os:0.9.6 \
 parslet:1.7.1 \
 posix-spawn:0.3.11 \
 qa:0.6.0 \
-rack-protection:1.5.3 \
 rack-test:0.6.3 \
 rack:1.6.4 \
 rails-deprecated_sanitizer:1.0.3 \
@@ -167,12 +165,9 @@ rdf-vocab:0.8.8 \
 rdf-xsd:1.99.0 \
 rdf:1.99.1 \
 rdoc:4.2.2 \
-redis-namespace:1.5.2 \
 redis:3.3.0 \
 redlock:0.1.5 \
 responders:2.1.2 \
-resque-pool:0.6.0 \
-resque:1.26.0 \
 rest-client:1.8.0 \
 retriable:1.4.1 \
 rsolr:1.1.1 \
@@ -190,7 +185,6 @@ sdoc:0.4.1 \
 select2-rails:3.5.10 \
 signet:0.7.2 \
 simple_form:3.1.1 \
-sinatra:1.4.7 \
 skydrive:1.2.0 \
 slop:4.3.0 \
 solr_wrapper:0.10.0 \
@@ -214,7 +208,6 @@ tzinfo:1.2.2 \
 uglifier:3.0.0 \
 unf:0.1.4 \
 unf_ext:0.0.7.2 \
-vegas:0.1.11 \
 warden:1.2.6 \
 web-console:2.3.0 \
 xml-simple:1.1.5 \
