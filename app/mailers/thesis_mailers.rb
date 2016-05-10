@@ -2,6 +2,15 @@ class ThesisMailers < ActionMailer::Base
 
   add_template_helper( UrlHelper )
 
+  def visibility_string( work )
+	  visibility = work.visibility
+	  if visibility == 'open'
+		  return "public access immediately"
+	  end
+	  embargo_release_date = work.embargo_release_date
+	  return "public access  on #{embargo_release_date.strftime("%B %-d, %Y")}"
+  end
+
 	def thesis_can_be_submitted( whom, name )
 		@name = name
     mail( to: whom, from: MAIL_SENDER, subject: "Access to upload your approved thesis or dissertation to LIBRA" )
@@ -10,6 +19,7 @@ class ThesisMailers < ActionMailer::Base
 	def thesis_submitted_author( work, author )
 		@work = work
 		@advisee = author
+		@availability = visibility_string(work)
 		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your thesis")
 	end
 
@@ -18,6 +28,7 @@ class ThesisMailers < ActionMailer::Base
 		@advisee = advisee
 		@adviser = adviser
 		#TODO-PER: Get the adviser to mail to.
+		@availability = visibility_string(work)
 		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your advisees thesis")
 	end
 end
