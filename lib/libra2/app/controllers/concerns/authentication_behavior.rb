@@ -30,10 +30,12 @@ module AuthenticationBehavior
     #
     # a hack to allow us to login without netbadge
     #
-		#if Rails.env.to_s == 'development'
+    if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
 			@users = User.order( :email )
 			@users = @users.map {|user| user.email.split("@")[0] }
-    #end
+    else
+      raise ActionController::RoutingError.new( 'Forbidden' )
+    end
 
 	end
 

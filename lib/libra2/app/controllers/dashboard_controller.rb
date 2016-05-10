@@ -38,10 +38,10 @@ class DashboardController < ApplicationController
   end
 
   def development_login # TODO-PER: Temp route to get login working quickly.
-    #if Rails.env.to_s == 'development'
+    if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
       sign_in_user_id( params[:user] )
       redirect_to '/'
-    #end
+    end
   end
 
   # GET /text_exception_notifier
