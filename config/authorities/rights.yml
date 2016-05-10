@@ -1,7 +1,7 @@
 terms:
-    - id: https://creativecommons.org/licenses/by/4.0/
-      term: CC BY
-    - id: http://creativecommons.org/publicdomain/zero/1.0/
-      term: CC0 1.0 Universal
-    - id: http://www.europeana.eu/portal/rights/rr-r.html
-      term: All Rights Reserved
+    - id: Attribution (CC BY) https://creativecommons.org/licenses/by/4.0/
+      term: Attribution (CC BY) https://creativecommons.org/licenses/by/4.0/
+    - id: No Rights Reserved (CC0) https://creativecommons.org/publicdomain/zero/1.0/
+      term: No Rights Reserved (CC0) https://creativecommons.org/publicdomain/zero/1.0/
+    - id: None
+      term: None
