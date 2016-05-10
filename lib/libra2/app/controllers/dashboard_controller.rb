@@ -27,8 +27,9 @@ class DashboardController < ApplicationController
     @user = current_user
 
     (@response, @document_list) = search_results( params )
-    #@theses = (@response.docs.map { |x| SolrDocument.new(x) if ((!x.work_type.nil? && x.work_type[0] == "thesis") && (!x.draft.nil? && x.draft[0] == "true"))}).select { |y| !y.nil?}
-    @theses = (@response.docs.map { |x| x if ( x.is_thesis? && x.is_draft? )}).select { |y| !y.nil? }
+
+    # a draft thesis owned by me
+    @theses = (@response.docs.map { |x| x if ( x.is_thesis? && x.is_draft? && x.is_mine?( current_user.user_key ) )}).select { |y| !y.nil? }
 
     @activity = current_user.all_user_activity(params[:since].blank? ? DateTime.now.to_i - Sufia.config.activity_to_show_default_seconds_since_now : params[:since].to_i)
     @notifications = current_user.mailbox.inbox
