@@ -104,7 +104,10 @@ desc "List all users"
 task list_all_users: :environment do |t, args|
 
   User.all.each do |user|
-    puts "#{user.display_name} (#{user.email})"
+    puts "User: #{user.display_name}"
+    puts "  email:   #{user.email}"
+    puts "  title:   #{user.title}"
+    puts "  created: #{user.created_at}"
   end
 
 end
