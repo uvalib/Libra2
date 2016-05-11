@@ -39,17 +39,18 @@
 
 // the search button drop down
 #search-form-header {
-  .input-group-btn {
-    a[data-search-label="My Collections"] {
-      display: none; // search button within collections
-    }
-    a[data-search-label="My Highlights"] {
-      display: none; // search button within highlights
-    }
-    a[data-search-label="My Shares"] {
-      display: none; // search button within shares
-    }
-  }
+    display: none;
+  //.input-group-btn {
+  //  a[data-search-label="My Collections"] {
+  //    display: none; // search button within collections
+  //  }
+  //  a[data-search-label="My Highlights"] {
+  //    display: none; // search button within highlights
+  //  }
+  //  a[data-search-label="My Shares"] {
+  //    display: none; // search button within shares
+  //  }
+  //}
 }
 
 
