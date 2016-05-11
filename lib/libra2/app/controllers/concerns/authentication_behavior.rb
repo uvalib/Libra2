@@ -19,10 +19,13 @@ module AuthenticationBehavior
     #
     # check the request environment and see if we have a user defined by netbadge
     #
-    #request.env['HTTP_REMOTE_USER'] = 'dpg3k'
-    if request.env['HTTP_REMOTE_USER'].present?
+     if request.env['HTTP_REMOTE_USER'].present?
        puts "=====> HTTP_REMOTE_USER: #{request.env['HTTP_REMOTE_USER']}"
-       return if sign_in_user_id( request.env['HTTP_REMOTE_USER'] )
+	   begin
+		   return if sign_in_user_id( request.env['HTTP_REMOTE_USER'] )
+	   rescue
+		   return false
+	   end
     end
 
     puts "=====> HTTP_REMOTE_USER NOT defined"
