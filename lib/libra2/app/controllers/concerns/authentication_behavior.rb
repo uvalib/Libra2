@@ -22,6 +22,7 @@ module AuthenticationBehavior
      if request.env['HTTP_REMOTE_USER'].present?
        puts "=====> HTTP_REMOTE_USER: #{request.env['HTTP_REMOTE_USER']}"
 	   begin
+		   # TODO-PER: This fails when called when requesting the favicon. I'm not sure why, but the errors are obscuring real system errors.
 		   return if sign_in_user_id( request.env['HTTP_REMOTE_USER'] )
 	   rescue
 		   return false
