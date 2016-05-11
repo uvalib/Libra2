@@ -22,9 +22,28 @@
 en:
   libra:
     dashboard:
-      active_theses: "Active Theses"
+      active_theses: 'Active Theses'
+    visibility:
+      open:
+        text: 'Open Access'
+        label_html: '<span class="label label-success">Open Access</span> Visible to the world'
+      authenticated:
+        text: 'University Of Virginia'
+      embargo:
+        label_html: '<span class="label label-warning">Embargo</span>'
+      after_embargo:
+        label_html: 'Then <span class="label label-success">Open Access</span>'
+    duration:
+      6_month:
+        text: '6 Months'
+      1_year:
+        text: '1 Year'
+      2_year:
+        text: '2 Years'
+      5_year:
+        text: '5 Years'
   sufia:
-    product_name: "Libra"
+    product_name: 'Libra'
   simple_form:
     hints:
       defaults:

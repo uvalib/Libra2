@@ -30,6 +30,12 @@ class GenericWork < ActiveFedora::Base
   DEFAULT_PUBLISHER = 'University Of Virginia'.freeze
   DEFAULT_LICENSE = 'None'.freeze
 
+  # embargo periods
+  EMBARGO_VALUE_6_MONTH = '6_month'.freeze
+  EMBARGO_VALUE_1_YEAR = '1_year'.freeze
+  EMBARGO_VALUE_2_YEAR = '2_year'.freeze
+  EMBARGO_VALUE_5_YEAR = '5_year'.freeze
+
   # Custom Metadata
 
   # work_type - Currently either a 'thesis' or a 'generic_work'.
