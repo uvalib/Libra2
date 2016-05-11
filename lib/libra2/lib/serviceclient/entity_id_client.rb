@@ -91,7 +91,7 @@ module ServiceClient
      end
 
      def public_site_url
-       #TODO-DPG: fix this appropriatly
+       #TODO-DPG: fix this appropriately
        "https://libra2dev.lib.virginia.edu"
      end
 
