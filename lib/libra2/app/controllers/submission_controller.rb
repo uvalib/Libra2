@@ -35,6 +35,15 @@ class SubmissionController < ApplicationController
 		redirect_to locally_hosted_work_url( id ), :flash => { :notice => "Thank you for submitting your thesis. You have finished this requirement for graduation." }
   end
 
+	def unpublish
+		if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
+			id = params[:id]
+			work = get_work_item
+			work.draft = "true"
+			work.save!
+			redirect_to locally_hosted_work_url( id )
+		end
+	end
   private
 
   def get_work_item

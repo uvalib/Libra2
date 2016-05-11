@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get "/test_email" => "dashboard#test_email"
   get '/public_view/:id' => 'submission#public_view'
   post '/submit/:id' => 'submission#submit'
+  get '/public_view/:id/unpublish' => 'submission#unpublish'
 
   Hydra::BatchEdit.add_routes(self)
   mount Blacklight::Engine => '/'
