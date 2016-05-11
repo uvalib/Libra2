@@ -27,6 +27,8 @@ en:
       open:
         text: 'Open Access'
         label_html: '<span class="label label-success">Open Access</span> Visible to the world'
+      restricted:
+        text: 'Private'
       authenticated:
         text: 'University Of Virginia'
       embargo:
