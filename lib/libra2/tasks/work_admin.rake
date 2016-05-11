@@ -169,8 +169,7 @@ def create_generic_work( work_type, user, title, description )
     w.creator = user.email
     w.date_uploaded = CurationConcerns::TimeService.time_in_utc
     w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
-    w.visibility = work_type == GenericWork::WORK_TYPE_THESIS ? Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE :
-        Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+    w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     w.description = description
     w.work_type = work_type
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'

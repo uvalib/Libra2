@@ -35,7 +35,7 @@ module Helpers
         w.creator = email
         w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
 
-        w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.description = default_description
         w.work_type = GenericWork::WORK_TYPE_THESIS
         w.draft = 'true'
