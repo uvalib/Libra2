@@ -103,11 +103,12 @@ end
 desc "List all users"
 task list_all_users: :environment do |t, args|
 
-  User.all.each do |user|
+  User.order( :email ).each do |user|
     puts "User: #{user.display_name}"
-    puts "  email:   #{user.email}"
-    puts "  title:   #{user.title}"
-    puts "  created: #{user.created_at}"
+    puts "  email:      #{user.email}"
+    puts "  title:      #{user.title}"
+    puts "  department: #{user.department}"
+    puts "  created:    #{user.created_at}"
   end
 
 end
@@ -133,8 +134,14 @@ def create_user( name, email, password )
   info = lookup_user( tokens[ 0 ] )
 
   display_name = info.nil? ? name : info.display_name
-  title = info.nil? ? name : "#{info.description}, #{info.department}"
-  user = User.new( email: email, password: password, password_confirmation: password, display_name: display_name, title: title )
+  title = info.nil? ? name : info.description
+  department = info.nil? ? name : info.department
+  user = User.new( email: email,
+                   password: password,
+                   password_confirmation: password,
+                   display_name: display_name,
+                   title: title,
+                   department: department )
   user.save!
 
   return true
