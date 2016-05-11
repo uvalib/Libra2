@@ -10,7 +10,8 @@ module Libra2::UserAttributes
 
   # is the user an engineering student
   def is_engineering?
-    return false
+    return false if department.nil?
+    return department.match( /-?eng$/ )
   end
 
 end
