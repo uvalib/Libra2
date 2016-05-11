@@ -14,12 +14,17 @@ class ThesisMailers < ActionMailer::Base
 	def thesis_can_be_submitted( whom, name )
 		@name = name
     mail( to: whom, from: MAIL_SENDER, subject: "Access to upload your approved thesis or dissertation to LIBRA" )
+	end
+
+  def doi_link(work)
+	  "http://dx.doi.org/#{work.identifier.gsub("doi:", "")}"
   end
 
 	def thesis_submitted_author( work, author )
 		@work = work
 		@advisee = author
 		@availability = visibility_string(work)
+		@doi_link = doi_link(work)
 		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your thesis")
 	end
 
@@ -27,6 +32,7 @@ class ThesisMailers < ActionMailer::Base
 		@work = work
 		@advisee = advisee
 		@adviser = adviser
+		@doi_link = doi_link(work)
 		#TODO-PER: Get the adviser to mail to.
 		@availability = visibility_string(work)
 		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your advisees thesis")
