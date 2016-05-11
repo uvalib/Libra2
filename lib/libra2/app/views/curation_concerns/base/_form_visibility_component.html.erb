@@ -17,11 +17,10 @@
       <%= t('libra.visibility.embargo.label_html') %>
       <div class="collapse" id="collapseEmbargo">
         <div class="form-inline">
-          <%= f.input :visibility_during_embargo, label: 'Restricted to', wrapper: :inline, collection: post_embargo_visibility_options( ), include_blank: false %>
           <%= f.input :embargo_period, label: 'For', wrapper: :inline, collection: embargo_duration_options( ), include_blank: false %>
+          <%= f.input :visibility_during_embargo, as: :hidden, input_html: { value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED } %>
           <%= f.input :embargo_release_date, as: :hidden, input_html: { value: Date.tomorrow } %>
           <%= f.input :visibility_after_embargo, as: :hidden, input_html: { value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC } %>
-          <br>
           <%= t('libra.visibility.after_embargo.label_html') %>
         </div>
       </div>
