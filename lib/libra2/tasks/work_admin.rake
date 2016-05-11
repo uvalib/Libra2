@@ -209,6 +209,7 @@ end
 
 def dump_work( work )
 
+  return if work.nil?
   j = JSON.parse( work.to_json )
   j.keys.sort.each do |k|
      val = j[ k ]
@@ -216,8 +217,9 @@ def dump_work( work )
        puts " #{k} => #{val}"
      end
   end
+  puts " visibility => #{work.visibility}"
 
-  puts "*" * 30
+  puts '*' * 40
 
 end
 
