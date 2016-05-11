@@ -1,3 +1,5 @@
+require_dependency 'concerns/libra2/user_attributes'
+
 class User < ActiveRecord::Base
   # Connects this user object to Hydra behaviors.
   include Hydra::User
@@ -7,8 +9,8 @@ class User < ActiveRecord::Base
   include Sufia::User
   include Sufia::UserUsageStats
 
-
-
+  # helpers, etc for Libra2 users
+  include Libra2::UserAttributes
 
   if Blacklight::Utils.needs_attr_accessible?
     attr_accessible :email, :password, :password_confirmation

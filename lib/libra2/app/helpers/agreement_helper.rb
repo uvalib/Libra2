@@ -13,9 +13,10 @@ module AgreementHelper
   private
 
   def deposit_agreement
-    if current_user && current_user.title && current_user.title.match( /^Undergraduate/ )
-      return 'Libra U.Va.-only Deposit License', 'http://www.library.virginia.edu/libra/open-access/libra-deposit-license/#uvaonly'
-    end
-    return 'Libra Deposit License for Student Theses and Dissertations', 'http://www.library.virginia.edu/libra/etds/etd-license'
+    return 'Libra U.Va.-only Deposit License',
+        'http://www.library.virginia.edu/libra/open-access/libra-deposit-license/#uvaonly' if current_user && current_user.is_undergraduate?
+
+    return 'Libra Deposit License for Student Theses and Dissertations',
+        'http://www.library.virginia.edu/libra/etds/etd-license'
   end
 end
