@@ -29,4 +29,18 @@ module VisibilityHelper
     t("libra.duration.#{value}.text", default: value )
   end
 
+  def is_draft(solr_document)
+    return true if solr_document.nil?
+    return false if solr_document.draft.nil?
+    return true if "#{solr_document.draft[0]}" != "false"
+    return false
+  end
+
+  def edit_link_if_draft(document)
+    if is_draft(document)
+      return edit_curation_concerns_generic_work_path(document)
+    else
+      return curation_concerns_generic_work_path(document)
+    end
+  end
 end

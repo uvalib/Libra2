@@ -8,19 +8,17 @@ class SubmissionController < ApplicationController
 	before_action :authenticate_user!, except: [ 'development_login']
 	layout "public"
 
-	def preview
-		@id = params[:id]
-		@work = get_work_item
-	end
-
 	def public_view
 		@id = params[:id]
     @work = get_work_item
+		@is_preview = @work.draft == "true"
 	end
 
 	def submit
 		id = params[:id]
     work = get_work_item
+		work.draft = false
+		work.save!
 
     author = nil
     adviser = nil
