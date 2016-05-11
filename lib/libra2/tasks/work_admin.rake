@@ -7,7 +7,7 @@ require_dependency 'libra2/lib/serviceclient/entity_id_client'
 namespace :libra2 do
 
 default_user = "dpg3k@virginia.edu"
-sample_file = "data/sample.pdf"
+sample_pdf_file = "data/sample.pdf"
 default_bulkfile = "data/work.data"
 
 desc "List all works"
@@ -143,9 +143,9 @@ task create_new_thesis: :environment do |t, args|
 
   work = create_thesis( user, title, description )
 
-  filename = copy_sourcefile( sample_file )
-  fileset = ::FileSet.new
-  upload_file( user, fileset, work, filename )
+  #filename = copy_sourcefile( sample_pdf_file )
+  #fileset = ::FileSet.new
+  #upload_file( user, fileset, work, filename )
 
   dump_work work
   task who.to_sym do ; end
