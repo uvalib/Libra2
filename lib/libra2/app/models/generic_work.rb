@@ -84,6 +84,11 @@ class GenericWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  # the license assigned to the work
+  property :embargo_period, predicate: ::RDF::URI('http://example.org/terms/embargo_period'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   # specify the indexer used to create the SOLR document
   def self.indexer
     ::Libra2Indexer
