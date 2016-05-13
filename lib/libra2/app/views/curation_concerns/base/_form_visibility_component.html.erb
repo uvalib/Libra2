@@ -1,37 +1,33 @@
 <h3>Visibility</h3>
-<% if f.object.embargo_release_date %>
-  <%= render 'form_permission_under_embargo', f: f %>
-<% elsif f.object.lease_expiration_date %>
-  <%= render 'form_permission_under_lease', f: f %>
-<% else %>
-  <div class="form-group visibility">
-    <label class="radio">
-      <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, data: { 'target': '#collapsePublic' }  %>
-      <%= t('libra.visibility.open.label_html') %>
-      <section class="collapse" id="collapsePublic">
-      </section>
-    </label>
 
-    <label class="radio">
-      <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, data: { 'target': '#collapseEmbargo' } %>
-      <%= t('libra.visibility.embargo.label_html') %>
-      <div class="collapse" id="collapseEmbargo">
-        <div class="form-inline">
-          <% if current_user && current_user.is_engineering? %>
-             <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
-          <% else %>
-             <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
-          <% end %>
-          <%= f.input :visibility_during_embargo, label: 'Visible For', disabled: true, input_html: { value: embargo_visibility } %>
-          <%= f.input :embargo_period, label: 'For', wrapper: :inline, collection: embargo_duration_options( ), include_blank: false %>
-          <%= f.input :embargo_release_date, as: :hidden, input_html: { value: Date.tomorrow } %>
-          <%= f.input :visibility_after_embargo, as: :hidden, input_html: { value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC } %>
-          <br>
-          <%= t('libra.visibility.after_embargo.label_html') %>
-        </div>
+<div class="form-group visibility">
+  <label class="radio">
+    <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, data: { 'target': '#collapsePublic' }  %>
+    <%= t('libra.visibility.open.label_html') %>
+  </label>
+
+  <label class="radio">
+
+    <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, data: { 'target': '#collapseEmbargo' } %>
+    <% if current_user && current_user.is_engineering? %>
+        <% embargo_label = 'libra.visibility.embargo_engineering.label_html' %>
+        <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
+    <% else %>
+        <% embargo_label = 'libra.visibility.embargo.label_html' %>
+        <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
+    <% end %>
+
+    <%= t( embargo_label ) %>
+    <div class="collapse" id="collapseEmbargo">
+      <div class="form-inline">
+        <%= f.input :embargo_period, label: ' For ', wrapper: :inline, collection: embargo_duration_options( ), include_blank: false %>
+        <%= t('libra.visibility.after_embargo.label_html') %>
+
+        <!-- hidden fields -->
+        <%= f.input :visibility_during_embargo, as: :hidden, input_html: { value: embargo_visibility }   %>
+        <%= f.input :embargo_release_date, as: :hidden, input_html: { value: Date.tomorrow } %>
+        <%= f.input :visibility_after_embargo, as: :hidden, input_html: { value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC } %>
       </div>
-    </label>
-
-  </div>
-<% end %>
-
+    </div>
+  </label>
+</div>

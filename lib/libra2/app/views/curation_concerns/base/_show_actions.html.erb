@@ -3,7 +3,7 @@
 		<%= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default' %>
 	<% end %>
 	<% if presenter.editor? %>
-		<% if is_draft(presenter.solr_document) %>
+		<% if presenter.solr_document.is_draft? %>
 			<%= link_to "Edit", edit_polymorphic_path([main_app, presenter]), class: 'btn btn-default' %>
 			<%= link_to "Preview", locally_hosted_work_url( presenter.solr_document.id ), {class: 'btn btn-default', data: { 'no-turbolink' => true }} %>
 		<% else %>
