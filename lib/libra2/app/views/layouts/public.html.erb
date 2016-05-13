@@ -28,6 +28,14 @@
 			width: 100%;
 		}
 
+		.ask-a-librarian, .ask-a-librarian:visited, .ask-a-librarian:link {
+			color: #f59a2c;
+			font-size: 14px;
+			float: right;
+			text-decoration: none;
+			border-bottom: 1px dotted #89a;
+		}
+
 		.container_24 {
 			zoom: 1;
 			width: 816px;
@@ -78,16 +86,11 @@
 			vertical-align: middle;
 		}
 		.app_banner_container {
-			background: #c0d1eb;
-			height: 60px;
+			height: 45px;
 			border-bottom: 1px solid #52637D;
 			-webkit-box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
 			-moz-box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
 			box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
-			background-image: -moz-linear-gradient(top, #d8eaff, #c0d1eb);
-			background-image: -o-linear-gradient(top, #d8eaff, #c0d1eb);
-			background-image: -webkit-linear-gradient(#d8eaff, #c0d1eb);
-			background-image: linear-gradient(top, #d8eaff, #c0d1eb);
 		}
 		.app_banner_container h1 {
 			margin: 0;
@@ -103,10 +106,10 @@
 			display: block;
 			float: left;
 			font-family: "trajan-pro", "Trajan Pro", "Trajan", Georgia, serif;
-			font-size: 37px;
+			font-size: 25px;
 			font-weight: normal;
 			letter-spacing: -1px;
-			line-height: 60px;
+			line-height: 45px;
 			text-decoration: none;
 			-webkit-text-shadow: 0px -1px 0px #f2f6fc;
 			-moz-text-shadow: 0px -1px 0px #f2f6fc;
@@ -118,7 +121,7 @@
 			float: left;
 			font-size: 17px;
 			font-weight: normal;
-			margin: 21px 21px 0;
+			margin: 15px 21px 0;
 			vertical-align: middle;
 			-webkit-text-shadow: 0px -1px 0px #f2f6fc;
 			-moz-text-shadow: 0px -1px 0px #f2f6fc;
@@ -492,6 +495,7 @@
 
 	<div id="uva_lib_banner">
 		<div id="container1" class="lib_banner container_24">
+			<a href="http://www.library.virginia.edu/askalibrarian/" class="ask-a-librarian">Ask a Librarian</a>
 			<div id="uva_lib_logo" class="grid_14 alpha"><a href="http://www.library.virginia.edu/"><%= image_tag("uva_lib_logo.png", { alt: "University of Virginia Library" }) %></a></div>
 		</div>
 	</div>

@@ -8,16 +8,20 @@
 		z-index: 1000;
 		padding: 16px;
 		right: 10px;
-		top: 10px;
-		width: 200px;
-		border-radius: 4px;
+		top: 30px;
+		width: 250px;
 		box-shadow: 1px 1px 5px #889;
+		text-align: left;
 	}
 	.preview-controls h1 {
-		font-size: 20px;
+		font-size: 23px;
+		font-weight: normal;
 	}
-	.preview-warning {
-		font-weight: bold;
+	.preview-buttons {
+		float: right;
+	}
+	.preview-buttons a {
+		text-decoration: none;
 	}
 	.btn {
 		display: inline-block;
@@ -92,13 +96,14 @@
 <% end %>
 <% if @is_preview %>
 <div class="preview-controls">
-	<h1>Preview Page</h1>
+	<h1>Submission Preview</h1>
 	<p class="preview-warning">
-		You are not finished! If this is complete, then click "Submit". Otherwise go back and fill in the missing pieces.
+		Before proceeding, we encourage you to review the information on this page. If you
+		experience problems with your submission, please <a href="mailto:libra2@virginia.edu">contact us</a>.
 	</p>
-	<%= form_tag("/submit/#{@id}", method: "post") do %>
+	<%= form_tag("/submit/#{@id}", method: "post", class: 'preview-buttons') do %>
 		<a href="/concern/generic_works/<%= @id %>" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a>
-		<button name="button" type="submit" class="btn btn-primary" data-confirm="This is your final step and you cannot change the document afterwards. Are you sure?"><i class="fa fa-check"></i> Submit</button>
+		<button name="button" type="submit" class="btn btn-primary" data-confirm="This is your final step and you cannot change the document afterwards. Are you sure?"><i class="fa fa-check"></i> Submit Thesis</button>
 	<% end %>
 </div>
 <% end %>
