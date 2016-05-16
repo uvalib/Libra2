@@ -11,25 +11,25 @@
 						<span class="document-label">Author:</span><%= @work.creator %>
 					</div>
 					<div class="document-row">
-						<span class="document-label">Advisors:</span><%= @work.creator %>
+						<span class="document-label">Advisors:</span>TODO <%= @work.creator %>
 					</div>
 					<div class="document-row">
 						<span class="document-label">Abstract:</span><%= @work.description %>
 					</div>
 					<div class="document-row">
-						<span class="document-label">Degree Type:</span><%= @work.degree %>
+						<span class="document-label">Degree Type:</span>TODO <%= @work.degree %>
 					</div>
 					<div class="document-row">
 						<span class="document-label">Degree:</span><%= @work.degree %>
 					</div>
 					<div class="document-row">
-						<span class="document-label">Keywords:</span><%= @work.tag.join(", ") %>
+						<span class="document-label">Keywords:</span>TODO <%= @work.tag.join(", ") %>
 					</div>
 					<div class="document-row">
-						<span class="document-label">Sponsoring Agency:</span><%= @work.creator %>
+						<span class="document-label">Sponsoring Agency:</span><%= @work.sponsoring_agency.join(" ") %>
 					</div>
 					<div class="document-row">
-						<span class="document-label">Related Links:</span><%= @work.creator %>
+						<span class="document-label">Related Links:</span><%= @work.related_url.join(", ") %>
 					</div>
 					<div class="document-row">
 						<span class="document-label">Notes:</span><%= @work.notes %>
@@ -38,7 +38,7 @@
 						<span class="document-label">Language:</span><%= @work.language %>
 					</div>
 					<div class="document-row">
-						<span class="document-label">Rights:</span><%= @work.rights.join(" ") %>
+						<span class="document-label">Rights:</span><%= display_rights(@work.rights) %>
 					</div>
 					<div class="document-row">
 						<span class="document-label">DOI:</span><%= public_doi_link(@work) %>
