@@ -3,88 +3,49 @@
 	</div>
 
 	<div id="bd" class="no-search">
-		<div id="main" class="clearfix container_24">
-
+		<div id="main" class="clearfix">
 			<div id="main_content" role="main" class="col-xs-12 col-sm-9 col-sm-push-3">
-				<div id="document" class="document_show">
-					<div id="doc_libra-oa:11617">
-						<h1></h1>
-						<div class="document">
-							<span class="Z3988"></span>
-							<div class="document_viewer" id="cover_container">
-								<div class="document_head">
-									<h1><%= @work[:title].join("<br>") %></h1>
-									<div id="contributors_list">
-										<ol>
-											<li id="person_0">
-												<span class="contributor_role">author</span>
-												<%= @work.creator %>
-											</li>
-										</ol>
-									</div>
-								</div>
-
-								<div class="document_body">
-									<fieldset><legend>Degree Information</legend>
-										<div id="degree" class="browse_value">
-											<div class="degree">
-												<span class="field_name">Degree:</span>
-												<%= @work.degree %>
-											</div>
-											<div class="degree">
-												<span class="field_name">Department:</span>
-												<%= @work.department %>
-											</div>
-										</div>
-									</fieldset>
-									<fieldset><legend>Keywords</legend>
-										<div class="browse_value">
-											American literature, Nathaniel Hawthorne, Toni Morrison
-										</div>
-									</fieldset>
-									<fieldset><legend>Abstract</legend>
-										<div id="abstract" class="browse_value">
-											<p><%= @work.description %></p>
-										</div>
-									</fieldset>
-								</div>
-
-							</div>
-
-						</div>
+				<div id="document">
+					<h1><%= @work[:title].join("<br>") %></h1>
+					<div class="document-row">
+						<span class="document-label">Author:</span><%= @work.creator %>
 					</div>
-
-
+					<div class="document-row">
+						<span class="document-label">Advisors:</span><%= @work.creator %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Abstract:</span><%= @work.description %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Degree Type:</span><%= @work.degree %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Degree:</span><%= @work.degree %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Keywords:</span><%= @work.tag.join(", ") %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Sponsoring Agency:</span><%= @work.creator %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Related Links:</span><%= @work.creator %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Notes:</span><%= @work.notes %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Language:</span><%= @work.language %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">Rights:</span><%= @work.rights.join(" ") %>
+					</div>
+					<div class="document-row">
+						<span class="document-label">DOI:</span><%= public_doi_link(@work) %>
+					</div>
 				</div>
 			</div>
-			<div id="sidebar" class="col-xs-12 col-sm-3 col-sm-pull-9">
-				<h2 class="side-list">File</h2>
-				<p class="file-notice"> </p>
-				<div id="uploads">
-					<div class="file_asset_record">
-						<p class="file_asset" id="libra-oa:11618">
-							<a href="/file_assets/libra-oa:11618">Béar MA thesis.pdf</a>
-						</p>
-
-						<p class="file_type">
-							<span class="file_label">Type:</span> Thesis
-						</p>
-
-						<p class="file_size">
-							<span class="file_label">Size:</span> 325 KB
-						</p>
-						<p class="file_created">
-
-							<span class="file_label">Created:</span> 2016-05-03 2:30a
-						</p>
-					</div>
-
-				</div>
-				<h2 class="side-list">License &amp; Terms</h2>
-				<a class="terms-link" href="/terms">Terms of Use</a>
-				<span class="license-title">Author's Deposit License</span>
-				<a href="/licenses#uetd_license" id="uetd_read_all" class="license-link" title="Libra Deposit License for Student Theses and Dissertations">Libra Deposit License for Student Theses and Dissertations</a>
-			</div>
+			<%= render "side_bar" %>
 		</div>
 	</div>
 </div>
