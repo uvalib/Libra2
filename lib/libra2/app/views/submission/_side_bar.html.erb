@@ -2,14 +2,13 @@
 	<h2>Files</h2>
 	<p class="file-notice"><%= @file_notice %></p>
 	<div id="uploads">
-		<div class="file_asset_record">
 			<% @files.each { |file| %>
+			<div class="file_asset_record">
 			<p><%= link_to(file[:title], file[:location]) %></p>
-			<p><span class="file_label">Type:</span><%= file[:type] %></p>
 			<p><span class="file_label">Size:</span><%= file[:size] %></p>
 			<p><span class="file_label">Created:</span><%= file_date(file[:date]) %></p>
+			</div>
 			<% } %>
-		</div>
 
 	</div>
 	<h2>License</h2>

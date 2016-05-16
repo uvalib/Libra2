@@ -12,15 +12,17 @@ class SubmissionController < ApplicationController
 		@id = params[:id]
 		@work = get_work_item
 		@file_notice = "This work can only be viewed at UVA."
-		@files = [
-			{
-				title: "my_file.pdf",
-				location: "/assets/my_file.pdf",
-				type: "Thesis",
-				size: "130KB",
-				date: Time.now
-			}
-		]
+
+		file_sets = @work.file_sets
+		@files = []
+		file_sets.each { |file|
+			@files.push({
+				title: file.title.join(" "),
+				location: download_path(file),
+				size: file.file_size.join(" "),
+				date: DateTime.strptime(file.date_created.join(), "%Y:%m:%d")
+			})
+		}
 		@is_preview = @work.draft == "true"
 	end
 
