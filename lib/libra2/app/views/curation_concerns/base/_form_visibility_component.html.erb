@@ -2,13 +2,13 @@
 
 <div class="form-group visibility">
   <label class="radio">
-    <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, data: { 'target': '#collapsePublic' }  %>
+    <%= f.radio_button :visibility_during_embargo, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, data: { 'target': '#collapsePublic' }  %>
     <%= t('libra.visibility.open.label_html') %>
   </label>
 
   <label class="radio">
 
-    <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, data: { 'target': '#collapseEmbargo' } %>
+    <%= f.radio_button :visibility_during_embargo, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, data: { 'target': '#collapseEmbargo' } %>
     <% if current_user && current_user.is_engineering? %>
         <% embargo_label = 'libra.visibility.embargo_engineering.label_html' %>
         <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
@@ -24,6 +24,7 @@
         <%= t('libra.visibility.after_embargo.label_html') %>
 
         <!-- hidden fields -->
+        <%= f.input :visibility, as: :hidden, input_html: { value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC }   %>
         <%= f.input :visibility_during_embargo, as: :hidden, input_html: { value: embargo_visibility }   %>
         <%= f.input :embargo_release_date, as: :hidden, input_html: { value: Date.tomorrow } %>
         <%= f.input :visibility_after_embargo, as: :hidden, input_html: { value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC } %>
