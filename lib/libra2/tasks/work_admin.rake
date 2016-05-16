@@ -170,6 +170,7 @@ def create_generic_work( work_type, user, title, description )
     w.date_uploaded = CurationConcerns::TimeService.time_in_utc
     w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
     w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+    w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     w.description = description
     w.work_type = work_type
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
@@ -218,6 +219,7 @@ def dump_work( work )
      end
   end
   puts " visibility => #{work.visibility}"
+  puts " visibility_during_embargo => #{work.visibility_during_embargo}"
 
   puts '*' * 40
 

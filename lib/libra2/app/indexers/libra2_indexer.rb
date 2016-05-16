@@ -41,6 +41,11 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           'embargo_period',
                           object.embargo_period,
                           :searchable )
+
+      Solrizer.set_field( solr_doc,
+                          'visibility_during_embargo',
+                          object.visibility_during_embargo,
+                          :searchable )
     end
   end
 

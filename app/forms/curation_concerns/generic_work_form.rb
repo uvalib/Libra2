@@ -5,12 +5,13 @@ module CurationConcerns
     self.model_class = ::GenericWork
 #    include HydraEditor::Form::Permissions
 
-    delegate :department,        to: :model
-    delegate :degree,            to: :model
-    delegate :notes,             to: :model
-    delegate :sponsoring_agency, to: :model
-    delegate :license,           to: :model
-    delegate :embargo_period,    to: :model
+    delegate :department,                 to: :model
+    delegate :degree,                     to: :model
+    delegate :notes,                      to: :model
+    delegate :sponsoring_agency,          to: :model
+    delegate :license,                    to: :model
+    delegate :embargo_period,             to: :model
+    delegate :visibility_during_embargo,  to: :model
 
     # additional terms we want on the form
     self.terms += [
@@ -64,7 +65,7 @@ module CurationConcerns
 
     def self.build_permitted_params
       #puts "=====> GenericWorkForm.build_permitted_params"
-      super + [:embargo_period, :on_behalf_of, :rights, { collection_ids: [] }]
+      super + [:embargo_period, :visibility_during_embargo, :on_behalf_of, :rights, { collection_ids: [] }]
     end
   end
 end
