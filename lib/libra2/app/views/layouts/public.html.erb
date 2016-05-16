@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	<meta name="author" content="<%= display_author(@work) %>">
+	<meta name="keywords" content="<%= display_keywords(@work) %>" />
 	<title><%= @work[:title].join("<br>") %></title>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
 	<link href="http://fonts.googleapis.com/css?family=Cardo:700|Pontano+Sans" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="https://use.typekit.com/c/3012f8/1w;garamond-premier-pro-caption,2,XtT:W:n6;myriad-pro,2,ftf:W:n4,ftk:W:n7;trajan-pro,2,XdT:W:n4/l?3bb2a6e53c9684ffdc9a9ef31d5b2a628f7cbbb38238f9e4c8fae6de45cafb44e84470224030e7b84a28c506979138e8e0b0f854b94a19b2d14896c83e0ad21d81d610577e5f26a6510aaadb7287365178515cf1b60b1730f096dcda2194f3196c2ce66c884b9bb2165dc659f20392c6549cf04b53e8a8c76b7815036bf1a0a9894138a725be0dabee67a9cf461688e448ebddc749a3b66d568260828d38917fe4eadf2959be4b7e538e8645f4933bbf90308e26237a158eeac2cebbef5ba6e26f3b7fe82b91c1b8314ca45744ce3e02cdad57ce85c3332bae65a704bcdc0e3deddc400c65be02986d38d5c37250aa98361cc0aacfb7567f020ba3b10fa46fbe42a4668737d537bc39fde007e3a025f96afbfca4074235b4495c8b86888957d80c1859a9af02ae2b7ae31147edc2b50f7c0638a25fba01c291d253728d2604c25fd0ebef9b32580b21b6a57e05a96bc6512e7ade0c5da84c61260aa385f213b20b40bbca2b9fb16cc1ba6f9be8a9e5741c5ab8934ba2049568924fd2f0cf211d1e456401dd1e332e4ef3c882463c07ac83067f7e52a41db902efa44ca84d43b53e501874a4970e3b298bf4c75762297399cb19f683d1c00a6266b020358be9f2ba4fe2d986e2418327" media="all">
 	<%= stylesheet_link_tag    'application', media: 'all' %>

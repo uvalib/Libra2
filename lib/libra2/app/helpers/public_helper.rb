@@ -1,7 +1,7 @@
 module PublicHelper
 
 	def file_date(date)
-		return date.strftime("%m/%d/%Y")
+		return date.strftime("%B %d, %Y")
 	end
 
 	def public_doi_link(work)
@@ -23,5 +23,13 @@ module PublicHelper
 			a.push(content_tag(:a, link, { href: link, target: "_blank" }))
 		}
 		return raw(a.join(", "))
+	end
+
+	def display_keywords(work)
+		return work.tag.join(", ")
+	end
+
+	def display_author(work)
+		return work.creator
 	end
 end

@@ -8,7 +8,7 @@
 				<div id="document">
 					<h1><%= @work[:title].join("<br>") %></h1>
 					<div class="document-row">
-						<span class="document-label">Author:</span><%= @work.creator %>
+						<span class="document-label">Author:</span><%= display_author(@work) %>
 					</div>
 					<div class="document-row">
 						<span class="document-label">Advisors:</span><%= @work.contributor.join(", ") %>
@@ -20,7 +20,7 @@
 						<span class="document-label">Degree:</span><%= @work.degree %>
 					</div>
 					<div class="document-row">
-						<span class="document-label">Keywords:</span>TODO <%= @work.tag.join(", ") %>
+						<span class="document-label">Keywords:</span><%= display_keywords(@work) %>
 					</div>
 					<div class="document-row">
 						<span class="document-label">Sponsoring Agency:</span><%= @work.sponsoring_agency.join(" ") %>
