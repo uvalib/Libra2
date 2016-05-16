@@ -6,7 +6,8 @@ module PublicHelper
 
 	def public_doi_link(work)
 		return "Persistent link will appear here after submission." if work.draft == "true"
-		return "http://dx.doi.org/#{work.identifier.gsub("doi:", "")}"
+		doi = "http://dx.doi.org/#{work.identifier.gsub("doi:", "")}"
+		return link_to(doi, doi)
 	end
 
 	def display_rights(rights)
