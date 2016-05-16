@@ -1,0 +1,167 @@
+body.public {
+	body {
+		background: #012251;
+		font-family: "Helvetica Neue", Arial, sans-serif;
+		height: 100%;
+		min-width: 816px;
+		color: #222;
+		margin: 0;
+		font-size: 13px;
+		line-height: 1.231;
+		text-align: center;
+	}
+
+	#uva_lib_banner {
+		background: #002F6C;
+		height: 34px;
+		padding: 8px 30px;
+		width: 100%;
+	}
+
+	.ask-a-librarian, .ask-a-librarian:visited, .ask-a-librarian:link {
+		color: #f59a2c;
+		font-size: 14px;
+		float: right;
+		text-decoration: none;
+		border-bottom: 1px dotted #89a;
+	}
+
+	#uva_lib_banner #container1 {
+		margin-right: auto;
+		margin-left: auto;
+		font-size: 12px;
+		color: #A8CCE8;
+		font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	}
+	#uva_lib_logo {
+		height: 15px;
+		width: 200px;
+		padding-top: 1px;
+		vertical-align: middle;
+		text-align: left;
+	}
+	.app_banner_container {
+		height: 50px;
+		border-bottom: 1px solid #52637D;
+		-webkit-box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
+		-moz-box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
+		box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
+		padding: 0 30px;
+
+		h1 {
+			margin: 0;
+		}
+	}
+
+	#libra_logo_link {
+		color: #013;
+		display: block;
+		float: left;
+		font-family: "trajan-pro", "Trajan Pro", "Trajan", Georgia, serif;
+		font-size: 25px;
+		font-weight: normal;
+		letter-spacing: -1px;
+		line-height: 45px;
+		text-decoration: none;
+		text-shadow: 0px -1px 0px #f2f6fc;
+	}
+	.search-scope {
+		color: #224f72;
+		display: block;
+		float: left;
+		font-size: 17px;
+		font-weight: normal;
+		margin: 15px 21px 0;
+		vertical-align: middle;
+		text-shadow: 0px -1px 0px #f2f6fc;
+	}
+
+	.document-background {
+		background-image: linear-gradient(#739688, #BED482);
+		height: 280px;
+		width: 100%;
+	}
+
+	/************************/
+	#footer {
+		background: #012251;
+		border-top: 2px solid #013;
+		color: #d2e5f7;
+		padding: 2em 0;
+		background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+		background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+		background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+		background-image: linear-gradient(top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+		-webkit-box-shadow: 0 -3px 3px rgba(128, 128, 128, 0.2);
+		-moz-box-shadow: 0 -3px 3px rgba(128, 128, 128, 0.2);
+		box-shadow: 0 -3px 3px rgba(128, 128, 128, 0.2);
+		width: 100%;
+	}
+	#footer #container3 {
+		height: 160px;
+		width: 960px;
+		margin-right: auto;
+		margin-left: auto;
+		text-align: right;
+		font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+		font-size: 11px;
+		color: #FFF;
+		line-height: 21px;
+		padding-top: 15px;
+	}
+	#footer .contact_info {
+		float: left;
+		margin-bottom: 1.5em;
+		text-align: left;
+	}
+	#footer a {
+		border-bottom: 1px dotted #839DBF;
+		color: #def;
+		font-weight: normal !important;
+		line-height: 1.5em;
+		text-decoration: none;
+	}
+	#footer a:link, #footer a:visited {
+		font-weight: bold;
+		color: #E6E8F5;
+		border-bottom: 1px solid #839DBF;
+		text-decoration: none;
+	}
+	#footer .aux_links {
+		float: right;
+		text-align: right;
+	}
+	#footer_notices {
+		border-top: 1px solid #648FC7;
+		clear: both;
+		padding-top: 1.5em;
+		width: 100%;
+	}
+	#footer #container3 #federal_lib_logo {
+		float: left;
+		height: 50px;
+		width: 5%;
+		text-align: left;
+	}
+	#footer #federal_lib_logo, #footer #federal_text {
+		padding-top: 1.5em;
+	}
+	#footer #container3 #bottom_text {
+		float: left;
+		font-size: 11px;
+		font-weight: bold;
+		color: #B9CAE6;
+		height: 50px;
+		width: 85%;
+	}
+	#footer #container3 #bottom_text #federal_lib {
+		text-align: left;
+		line-height: 15px;
+	}
+	#footer #container3 #hydra_logo {
+		float: left;
+		height: 50px;
+		width: 10%;
+	}
+
+}
