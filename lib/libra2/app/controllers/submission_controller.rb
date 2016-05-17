@@ -20,7 +20,8 @@ class SubmissionController < ApplicationController
 				title: file.title.join(" "),
 				location: download_path(file),
 				size: file.file_size.join(" "),
-				date: DateTime.strptime(file.date_created.join(), "%Y:%m:%d")
+#				date: DateTime.strptime(file.date_created.join(), "%Y:%m:%d")
+			  date: DateTime.now
 			})
 		}
 		@is_preview = @work.draft == "true"
