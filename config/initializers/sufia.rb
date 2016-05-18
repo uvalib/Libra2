@@ -1,60 +1,6 @@
 Sufia.config do |config|
-  config.fits_to_desc_mapping = {
-    file_title: :title,
-    file_author: :creator
-  }
-
   config.max_days_between_audits = 7
-
   config.max_notifications_for_dashboard = 5
-
-  config.resource_types = {
-    "Article" => "Article",
-    "Audio" => "Audio",
-    "Book" => "Book",
-    "Capstone Project" => "Capstone Project",
-    "Conference Proceeding" => "Conference Proceeding",
-    "Dataset" => "Dataset",
-    "Dissertation" => "Dissertation",
-    "Fourth Year Thesis" => "Fourth Year Thesis",
-    "Image" => "Image",
-    "Journal" => "Journal",
-    "Map or Cartographic Material" => "Map or Cartographic Material",
-    "Masters Thesis" => "Masters Thesis",
-    "Part of Book" => "Part of Book",
-    "Poster" => "Poster",
-    "Presentation" => "Presentation",
-    "Project" => "Project",
-    "Report" => "Report",
-    "Research Paper" => "Research Paper",
-    "Software or Program Code" => "Software or Program Code",
-    "Video" => "Video",
-    "Other" => "Other"
-  }
-
-  config.resource_types_to_schema = {
-    "Article" => "http://schema.org/Article",
-    "Audio" => "http://schema.org/AudioObject",
-    "Book" => "http://schema.org/Book",
-    "Capstone Project" => "http://schema.org/CreativeWork",
-    "Conference Proceeding" => "http://schema.org/ScholarlyArticle",
-    "Dataset" => "http://schema.org/Dataset",
-    "Dissertation" => "http://schema.org/ScholarlyArticle",
-    "Fourth Year Thesis" => "http://schema.org/ScholarlyArticle",
-    "Image" => "http://schema.org/ImageObject",
-    "Journal" => "http://schema.org/CreativeWork",
-    "Map or Cartographic Material" => "http://schema.org/Map",
-    "Masters Thesis" => "http://schema.org/ScholarlyArticle",
-    "Part of Book" => "http://schema.org/Book",
-    "Poster" => "http://schema.org/CreativeWork",
-    "Presentation" => "http://schema.org/CreativeWork",
-    "Project" => "http://schema.org/CreativeWork",
-    "Report" => "http://schema.org/CreativeWork",
-    "Research Paper" => "http://schema.org/ScholarlyArticle",
-    "Software or Program Code" => "http://schema.org/Code",
-    "Video" => "http://schema.org/VideoObject",
-    "Other" => "http://schema.org/CreativeWork"
-  }
 
   config.permission_levels = {
     "Choose Access" => "none",
@@ -93,7 +39,7 @@ Sufia.config do |config|
   # If you have ffmpeg installed and want to transcode audio and video uncomment this line
   config.enable_ffmpeg = true
 
-  # Specify the path to the ffmpeg tool:
+  # Specify the path to the ffmpeg tool
   config.ffmpeg_path = "#{Rails.application.root}/tools/ffmpeg-3.0-64bit-static/ffmpeg"
 
   # Sufia uses NOIDs for files and collections instead of Fedora UUIDs
@@ -139,6 +85,15 @@ Sufia.config do |config|
   # implied when the save button is pressed? Set to true for active.
   # The default is true.
   # config.active_deposit_agreement_acceptance = true
+
+  # Should a button with "Share my work" show on the front page to all users (even those not logged in)?
+  # config.always_display_share_button = true
+
+  # The user who runs batch jobs. Update this if you aren't using emails
+  # config.batch_user_key = 'batchuser@example.com'
+
+  # The user who runs audit jobs. Update this if you aren't using emails
+  # config.audit_user_key = 'audituser@example.com'
 
   # If browse-everything has been configured, load the configs.  Otherwise, set to nil.
   begin
