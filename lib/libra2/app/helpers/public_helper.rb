@@ -4,6 +4,16 @@ module PublicHelper
 		return date.strftime("%B %d, %Y")
 	end
 
+	def file_date_created(date)
+		return "Unknown" if date.nil?
+		date = date.join() if date.kind_of?(Array)
+		begin
+			return file_date(DateTime.strptime(date, "%Y:%m:%d"))
+		rescue
+			return date
+		end
+	end
+
 	def public_doi_link(work)
 		return "Persistent link will appear here after submission." if work.draft == "true"
 		doi = "http://dx.doi.org/#{work.identifier.gsub("doi:", "")}"
