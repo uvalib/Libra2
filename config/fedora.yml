@@ -9,7 +9,7 @@ test:
   url: <%= ENV['FEDORA_TEST_URL'] || "http://127.0.0.1:#{ENV['FCREPO_TEST_PORT'] || 8986}/rest" %>
   base_path: /test
 production:
-  user: libra2
-  password: libra2DevPassword
+  user: fedoraAdmin
+  password: fedoraAdmin
   url: <%= ENV['FEDORA_URL'] || "http://127.0.0.1:8983/fedora/rest" %>
   base_path: /prod
