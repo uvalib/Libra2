@@ -115,7 +115,7 @@ task create_new_work: :environment do |t, args|
   who = default_user if who.nil?
 
   user = User.find_by_email( who )
-  id = Time.now.nsec
+  id = Time.now.to_i
   title = "Example generic work title (#{id})"
   description = "Example generic work description (#{id})"
 
@@ -137,7 +137,7 @@ task create_new_thesis: :environment do |t, args|
   who = default_user if who.nil?
 
   user = User.find_by_email( who )
-  id = Time.now.nsec
+  id = Time.now.to_i
   title = "Example thesis title (#{id})"
   description = "Example thesis description (#{id})"
 
@@ -152,7 +152,26 @@ task create_new_thesis: :environment do |t, args|
 
 end
 
-def create_work( user, title, description )
+desc "Create new theses for all registered users"
+task thesis_for_all: :environment do |t, args|
+
+  count = 0
+  User.order( :email ).each do |user|
+
+    id = Time.now.to_i
+    title = "Example thesis title (#{id})"
+    description = "Example thesis description (#{id})"
+
+    _ = create_thesis( user, title, description )
+    count += 1
+
+  end
+
+  puts "Created #{count} theses"
+
+end
+
+  def create_work( user, title, description )
    return( create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description ) )
 end
 
