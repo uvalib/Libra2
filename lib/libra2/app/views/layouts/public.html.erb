@@ -32,29 +32,7 @@
 	</div>
 	<div class="document-background"></div>
 <%= yield %>
-	<div id="footer">
-		<div id="container3">
-			<div class="contact_info">
-				<a href="http://www.library.virginia.edu/" target="_blank">University of Virginia Library</a><br>
-				PO Box 400113, Charlottesville, VA 22904-4113<br>
-				ph: (434) 924-3021, fax: (434) 924-1431, <a href="mailto:library@virginia.edu">library@virginia.edu</a>
-			</div>
-			<div class="aux_links">
-				<a href="http://www.library.virginia.edu/organization/" target="_blank">Depts./Contacts</a> | <a href="http://www.virginia.edu/" target="_blank">U.Va. Home</a> | <a href="http://its.virginia.edu/" target="_blank">ITS</a><br>
-				<a href="/feedback" target="_blank">Libra Feedback</a> | <a href="http://www.library.virginia.edu/askalibrarian/" target="_blank">Questions? Ask a Librarian</a> | <a href="http://www.library.virginia.edu/site-search/" target="blank">Search</a> | <a href="http://www.library.virginia.edu/hours/" target="_blank">Hours</a> | <a href="http://www.library.virginia.edu/map/" target="_blank">Map</a> | <a href="http://www.library.virginia.edu/policies/" target="_blank">Policies</a> | <a href="http://www.library.virginia.edu/press/" target="_blank">Press</a> | <a href="http://www.library.virginia.edu/jobs/" target="_blank">Jobs</a><br>
-				<a href="http://www.virginia.edu/copyright.html" id="copyrightLink" target="_blank">©</a> 2011 by the Rector and Visitors of the <a href="http://www.virginia.edu/" target="_blank">University of Virginia</a> | v 1.29
-
-			</div>
-			<div id="footer_notices">
-				<div id="federal_lib_logo"><%= image_tag("federal_lib_logo.png", { alt: "Federal Library Depository logo", height: 33, width: 37}) %></div>
-				<div id="bottom_text">
-					<div id="federal_lib">This library is a Congressionally designated depository for <a href="http://guides.lib.virginia.edu/findinggovinfo/" target="_blank">U.S. Government documents</a>.
-						Public access to the Government documents is guaranteed by public law.</div>
-				</div>
-				<div id="hydra_logo"><%= image_tag("powered_by_hydra.png", { alt: "Hydra logo", height: 50, width: 80}) %></div>
-			</div>
-		</div>
-	</div>
+<%= render "/layouts/footer" %>
 </div>
 </body>
 </html>
