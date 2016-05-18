@@ -103,7 +103,7 @@ class GenericWork < ActiveFedora::Base
   # determine which fields can have multiple values...
   def self.multiple?( term )
     #puts "=====> GenericWork.multiple? #{term}"
-    return true if [:tag, :title, :contributor, :subject, :related_url, :sponsoring_agency, :admin_notes].include? term
+    return true if [:keyword, :title, :contributor, :subject, :related_url, :sponsoring_agency, :admin_notes].include? term
     false
   end
 

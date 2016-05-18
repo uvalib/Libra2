@@ -11,18 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160502150334) do
+ActiveRecord::Schema.define(version: 20160516171732) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
     t.string   "user_type",     limit: 255
     t.string   "document_id",   limit: 255
+    t.string   "document_type", limit: 255
     t.string   "title",         limit: 255
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
-    t.string   "document_type", limit: 255
   end
 
+  add_index "bookmarks", ["document_id"], name: "index_bookmarks_on_document_id", using: :btree
   add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
 
   create_table "checksum_audit_logs", force: :cascade do |t|
@@ -32,8 +33,8 @@ ActiveRecord::Schema.define(version: 20160502150334) do
     t.integer  "pass",            limit: 4
     t.string   "expected_result", limit: 255
     t.string   "actual_result",   limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   add_index "checksum_audit_logs", ["file_set_id", "file_id"], name: "by_file_set_id_and_file_id", using: :btree
@@ -236,8 +237,8 @@ ActiveRecord::Schema.define(version: 20160502150334) do
     t.string   "path",        limit: 255
     t.string   "itemId",      limit: 255
     t.datetime "expires"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "subject_local_authority_entries", force: :cascade do |t|
@@ -329,8 +330,8 @@ ActiveRecord::Schema.define(version: 20160502150334) do
     t.string   "datastream_id",   limit: 255
     t.string   "version_id",      limit: 255
     t.string   "committer_login", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "work_view_stats", force: :cascade do |t|
