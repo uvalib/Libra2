@@ -54,4 +54,11 @@ module PublicHelper
 		release_date = Time.now + 1.year
 		return "This item is restricted #{restricted_area} until #{file_date(release_date)}."
 	end
+
+	def display_array(value)
+		if value.kind_of?(Array)
+			value = value.join(", ")
+		end
+		return value
+	end
 end
