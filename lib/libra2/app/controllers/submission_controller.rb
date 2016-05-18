@@ -11,18 +11,21 @@ class SubmissionController < ApplicationController
 	def public_view
 		@id = params[:id]
 		@work = get_work_item
-
-		file_sets = @work.file_sets
-		@files = []
-		file_sets.each { |file|
-			@files.push({
-				title: file.title.join(" "),
-				location: download_path(file),
-				size: file.file_size.join(" "),
-				date: file.date_created
-			})
-		}
-		@is_preview = @work.draft == "true"
+		if @work.present?
+			file_sets = @work.file_sets
+			@files = []
+			file_sets.each { |file|
+				@files.push({
+					title: file.title.join(" "),
+					location: download_path(file),
+					size: file.file_size.join(" "),
+					date: file.date_created
+				})
+			}
+			@is_preview = @work.draft == "true"
+		else
+			redirect_to "/404.html", status: 404
+		end
 	end
 
 	def submit
