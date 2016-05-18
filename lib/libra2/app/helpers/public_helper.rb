@@ -4,6 +4,16 @@ module PublicHelper
 		return date.strftime("%B %d, %Y")
 	end
 
+	def file_date_created(date)
+		return "Unknown" if date.nil?
+		date = date.join() if date.kind_of?(Array)
+		begin
+			return file_date(DateTime.strptime(date, "%Y:%m:%d"))
+		rescue
+			return date
+		end
+	end
+
 	def public_doi_link(work)
 		return "Persistent link will appear here after submission." if work.draft == "true"
 		doi = "http://dx.doi.org/#{work.identifier.gsub("doi:", "")}"
@@ -32,5 +42,16 @@ module PublicHelper
 
 	def display_author(work)
 		return work.creator
+	end
+
+	def embargo_notice(work)
+		visibility = work.visibility
+		return "" if visibility == "open"
+		# TODO-PER: when the embargo works, then finish wiring this up.
+		#embargo_period = work.embargo_period
+		#embargo_release_date = work.embargo_release_date
+		restricted_area = "to UVa"
+		release_date = Time.now + 1.year
+		return "This item is restricted #{restricted_area} until #{file_date(release_date)}."
 	end
 end

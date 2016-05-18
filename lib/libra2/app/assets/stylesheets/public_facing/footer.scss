@@ -1,0 +1,49 @@
+body.public {
+	.donate-btn {
+		margin-top: 10px;
+	}
+
+	.centered-img {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 150px;
+	}
+
+	.footer {
+		background-color: #002F6C;
+		padding: 20px 0;
+		font-family: 'Open Sans', sans-serif;
+
+		a {
+			color: #fff;
+			margin-bottom: 18px;
+		}
+
+		img {
+			padding-top: 25%;
+		}
+	}
+
+	.footer_wrap {
+		padding: 25px 0;
+
+		h4 {
+			color: #fff;
+			font-family: 'Open Sans', sans-serif;
+			font-weight: 600;
+			margin-bottom: 18px;
+		}
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			li {
+				color: #fff;
+				padding: 10px 0;
+			}
+		}
+	}
+}
