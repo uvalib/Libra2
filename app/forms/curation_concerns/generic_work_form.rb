@@ -4,6 +4,7 @@ module CurationConcerns
   class GenericWorkForm < Sufia::Forms::WorkForm
     self.model_class = ::GenericWork
 #    include HydraEditor::Form::Permissions
+    attr_accessor :file_sets
 
     delegate :department,                 to: :model
     delegate :degree,                     to: :model
