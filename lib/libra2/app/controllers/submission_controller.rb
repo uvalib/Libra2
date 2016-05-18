@@ -11,7 +11,6 @@ class SubmissionController < ApplicationController
 	def public_view
 		@id = params[:id]
 		@work = get_work_item
-		@file_notice = "This work can only be viewed at UVA."
 
 		file_sets = @work.file_sets
 		@files = []

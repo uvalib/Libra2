@@ -1,6 +1,6 @@
 <div id="sidebar" class="col-xs-12 col-sm-3 col-sm-pull-9">
 	<h2>Files</h2>
-	<p class="file-notice"><%= @file_notice %></p>
+	<p class="file-notice"><%= embargo_notice(@work) %></p>
 	<div id="uploads">
 			<% @files.each { |file| %>
 			<div class="file_asset_record">
