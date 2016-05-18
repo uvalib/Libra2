@@ -1,7 +1,10 @@
 terms:
     - id: Attribution (CC BY) https://creativecommons.org/licenses/by/4.0/
       term: Attribution (CC BY) https://creativecommons.org/licenses/by/4.0/
+      active: true
     - id: No Rights Reserved (CC0) https://creativecommons.org/publicdomain/zero/1.0/
       term: No Rights Reserved (CC0) https://creativecommons.org/publicdomain/zero/1.0/
+      active: true
     - id: None
       term: None
+      active: true

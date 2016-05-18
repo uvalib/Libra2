@@ -8,7 +8,8 @@ DIFF_TOOL=/Applications/DiffMerge.app/Contents/MacOS/DiffMerge
 ROOT_DIR=lib/libra2/app/views
 
 GEM_BASE=/Users/dpg3k/.rvm/gems/ruby-2.3.0
-SUFIA_ROOT=$GEM_BASE/bundler/gems/sufia-82e7bc903ee6
+SUFIA_ROOT=$GEM_BASE/bundler/gems/sufia-02182b8dbce0
+CURATION_CONCERNS_ROOT=$GEM_BASE/gems/curation_concerns-1.0.0.beta2
 
 DIFF_FILE=/tmp/diff-list.$$
 rm -fr $DIFF_FILE > /dev/null 2>&1
@@ -18,8 +19,9 @@ rm -fr $CMD_FILE > /dev/null 2>&1
 
 find $ROOT_DIR -type f > $DIFF_FILE
 
-echo "Using sufia: $SUFIA_ROOT"
-echo "Ensure this is current..."
+echo "Using sufia:             $SUFIA_ROOT"
+echo "Using curation concerns: $CURATION_CONCERNS_ROOT"
+echo "Ensure these are current..."
 echo ""
 
 lines=$(wc -l $DIFF_FILE| awk '{print $1}')
@@ -48,6 +50,10 @@ for file in $(<$DIFF_FILE); do
    fi
 
 done
+
+# do the special cases
+echo "$DIFF_TOOL lib/libra2/app/models/concerns/libra2/basic_metadata.rb $CURATION_CONCERNS_ROOT/app/models/concerns/curation_concerns/basic_metadata.rb" >> $CMD_FILE
+
 
 lines=$(wc -l $CMD_FILE| awk '{print $1}')
 if [ $lines -ne 0 ]; then

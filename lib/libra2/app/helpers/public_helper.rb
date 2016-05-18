@@ -37,7 +37,7 @@ module PublicHelper
 	end
 
 	def display_keywords(work)
-		return work.tag.join(", ")
+		return work.keyword.join(", ")
 	end
 
 	def display_author(work)

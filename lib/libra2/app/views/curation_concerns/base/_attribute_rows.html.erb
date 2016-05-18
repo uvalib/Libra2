@@ -1,11 +1,14 @@
 <%= presenter.attribute_to_html(:creator, catalog_search_link: true ) %>
 <%= presenter.attribute_to_html(:contributor, label: 'Contributors', catalog_search_link: true) %>
 <%= presenter.attribute_to_html(:subject, catalog_search_link: true) %>
-<%= presenter.attribute_to_html(:publisher) %>
+<%= presenter.attribute_to_html(:rights) %>
+<%= presenter.attribute_to_html(:keyword) %>
 <%= presenter.attribute_to_html(:language) %>
-<%= presenter.attribute_to_html(:identifier) if presenter.solr_document.is_draft? == false %>
-<%= presenter.attribute_to_html(:tag) %>
-<%= presenter.attribute_to_html(:date_created) %>
-<%= presenter.attribute_to_html(:based_near) %>
 <%= presenter.attribute_to_html(:related_url) %>
-<%= presenter.attribute_to_html(:resource_type) %>
+<%= presenter.attribute_to_html(:sponsoring_agency) %>
+<%= presenter.attribute_to_html(:notes) %>
+<%= presenter.attribute_to_html(:publisher) %>
+<%= presenter.attribute_to_html(:department) %>
+<%= presenter.attribute_to_html(:degree) %>
+<%= presenter.attribute_to_html(:date_created) %>
+<%= presenter.attribute_to_html(:identifier) if presenter.solr_document.is_draft? == false %>
