@@ -37,7 +37,7 @@ module CurationConcerns
     self.terms -= [
         :identifier,
         :based_near,
-#        :keyword
+        :subject
     ]
 
     # override from the base class to remove tag from the list of primary fields
