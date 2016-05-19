@@ -52,3 +52,12 @@ en:
     hints:
       defaults:
         notes: 'Please keep your notes to 300 words or fewer.'
+    labels:
+      defaults:
+        creator: 'Author'
+        contributor: 'Advisor'
+        description: 'Abstract'
+        keyword: 'Keywords'
+        related_url: 'Related Links'
+        sponsoring_agency: 'Sponsoring Agency'
+
