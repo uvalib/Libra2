@@ -83,6 +83,10 @@
     }
 }
 
+.fileupload-buttonbar span.fileinput-button:nth-child(2) { // the "Add Folders" button
+    display: none;
+}
+
 //
 // Profile
 //
