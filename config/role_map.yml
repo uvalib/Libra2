@@ -17,3 +17,14 @@ test:
   patron:
     - patron1@example.com
     - leland_himself@example.com
+production:
+  archivist:
+    - archivist1@example.com
+  admin_policy_object_editor:
+    - archivist1@example.com
+  donor:
+    - archivist1@example.com
+  researcher:
+    - archivist1@example.com
+  patron:
+    - archivist1@example.com
