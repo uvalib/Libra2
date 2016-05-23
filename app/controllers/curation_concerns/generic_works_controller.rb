@@ -1,6 +1,23 @@
 module CurationConcerns
 
   class GenericWorksController < ApplicationController
+    after_action :save_file_display_name
+
+    def save_file_display_name
+      # TODO-PER: This is a hack to try to figure out how to save the file's display title. There is probably a better way to do this.
+      if params['action'] == 'update'
+        work = GenericWork.where({ id: params[:id] })
+        if work.length > 0
+          file_sets = work[0].file_sets
+          previously_uploaded_files_label = params['previously_uploaded_files_label']
+          previously_uploaded_files_label.each_with_index { |label, i|
+            file_attributes = { title: [ label ]}
+            actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[i], current_user)
+            actor.update_metadata(file_attributes)
+          }
+        end
+      end
+    end
 
     include CurationConcerns::CurationConcernController
 
