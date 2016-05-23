@@ -1,14 +1,15 @@
-<%= presenter.attribute_to_html(:creator, catalog_search_link: true ) %>
-<%= presenter.attribute_to_html(:contributor, label: 'Contributors', catalog_search_link: true) %>
-<%= presenter.attribute_to_html(:subject, catalog_search_link: true) %>
-<%= presenter.attribute_to_html(:rights) %>
-<%= presenter.attribute_to_html(:keyword) %>
-<%= presenter.attribute_to_html(:language) %>
-<%= presenter.attribute_to_html(:related_url) %>
-<%= presenter.attribute_to_html(:sponsoring_agency) %>
-<%= presenter.attribute_to_html(:notes) %>
-<%= presenter.attribute_to_html(:publisher) %>
-<%= presenter.attribute_to_html(:department) %>
-<%= presenter.attribute_to_html(:degree) %>
-<%= presenter.attribute_to_html(:date_created) %>
-<%= presenter.attribute_to_html(:identifier) if presenter.solr_document.is_draft? == false %>
+<%= presenter.attribute_to_html( :title, include_empty: true, catalog_search_link: true ) %>
+<%= presenter.attribute_to_html( :creator, label: t( 'simple_form.labels.defaults.creator' ), include_empty: true, catalog_search_link: true ) %>
+<%= presenter.attribute_to_html( :contributor, label: t( 'simple_form.labels.defaults.contributor' ), include_empty: true, catalog_search_link: true) %>
+<%= presenter.attribute_to_html( :description, label: t( 'simple_form.labels.defaults.description' ), include_empty: true, catalog_search_link: true) %>
+<%= presenter.attribute_to_html( :rights, include_empty: true) %>
+<%= presenter.attribute_to_html( :keyword, label: t( 'simple_form.labels.defaults.keyword' ), include_empty: true ) %>
+<%= presenter.attribute_to_html( :language, include_empty: true) %>
+<%= presenter.attribute_to_html( :related_url, label: t( 'simple_form.labels.defaults.related_url' ), include_empty: true ) %>
+<%= presenter.attribute_to_html( :sponsoring_agency, label: t( 'simple_form.labels.defaults.sponsoring_agency' ), include_empty: true ) %>
+<%= presenter.attribute_to_html( :notes, include_empty: true) %>
+<%= presenter.attribute_to_html( :publisher, include_empty: true ) %>
+<%= presenter.attribute_to_html( :department, include_empty: true ) %>
+<%= presenter.attribute_to_html( :degree, include_empty: true ) %>
+<%= presenter.attribute_to_html( :date_created, include_empty: true ) %>
+<%= presenter.attribute_to_html( :identifier, include_empty: true ) if presenter.solr_document.is_draft? == false %>

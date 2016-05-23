@@ -12,9 +12,17 @@ RUN /bin/bash -l -c "rvm install 2.3.0"
 RUN /bin/bash -l -c "rvm use 2.3.0 --default"
 RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
 
-# attempt to preinstall all dependent gems
-#RUN /bin/bash -l -c "gem install \
-#--no-ri --no-rdoc"
+# attempt to preinstall dependent gems with native extensions
+RUN /bin/bash -l -c "gem install \
+bcrypt:3.1.11 \
+debug_inspector:0.0.2 \
+byebug:9.0.3 \
+unf_ext:0.0.7.2 \
+mysql2:0.4.4 \
+posix-spawn:0.3.11 \
+nokogiri:1.6.7.2 \
+binding_of_caller:0.7.2 \
+--no-ri --no-rdoc"
 
 # Create the run user and group
 RUN groupadd -r webservice && useradd -r -g webservice webservice

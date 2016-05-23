@@ -381,7 +381,7 @@ GEM
     mimemagic (0.3.1)
     mini_magick (4.5.1)
     mini_portile2 (2.0.0)
-    minitest (5.8.4)
+    minitest (5.9.0)
     multi_json (1.12.0)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -667,4 +667,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.11.2
+   1.12.4
