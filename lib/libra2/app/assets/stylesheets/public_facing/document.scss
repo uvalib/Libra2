@@ -27,6 +27,8 @@ body.public {
 	}
 
 	#sidebar {
+		overflow-wrap: break-word;
+
 		a {
 			text-decoration: underline;
 		}
