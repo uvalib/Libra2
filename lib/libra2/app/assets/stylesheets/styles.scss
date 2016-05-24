@@ -1,5 +1,23 @@
+.form-group.visibility {
+	// TODO-PER: This just corrects for an alignment error that was introduced in sufia. With the next update it might go away.
+	margin-left: 25px;
+}
+
 #fileupload {
 	padding-top: 10px;
+
+	table {
+		table-layout: fixed;
+		td:nth-child(1) {
+			width: 10%;
+		}
+		td:nth-child(2) {
+			width: 60%;
+		}
+		td:nth-child(3) {
+			width: 10%;
+		}
+	}
 }
 
 .show-actions {
@@ -8,4 +26,18 @@
 	box-shadow: 1px 1px 5px #889;
 	text-align: left;
 	margin-bottom: 20px;
+}
+
+.file-name {
+	font-weight: bold;
+}
+.file-label {
+	padding-right: 10px;
+}
+
+.uploaded-files {
+	.form-control {
+		display: inline-block;
+		width: 65%;
+	}
 }

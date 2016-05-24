@@ -42,18 +42,16 @@
 			<legend>Previously Uploaded Files</legend>
 			<table role="presentation" class="table table-striped uploaded-files">
 				<tbody>
-				<tr>
-					<th>Filename</th>
-					<th>Display Label</th>
-				</tr>
 				<% f.object.file_sets.each do |file| %>
 					<tr>
+						<td><span class="preview"></span></td>
 						<td>
-							<span><%= file.solr_document.label %></span>
+							<span class="file-name"><%= file.solr_document.label %></span><br>
+							<span class="file-label">Display Label:</span><input type="text" class="string optional form-control" name="previously_uploaded_files_label[]" value="<%= display_array(file.title) %>" />
 						</td>
 						<td>
-							<span><%= display_array(file.title) %></span>
 						</td>
+						<td></td>
 					</tr>
 				<% end %>
 				</tbody>
