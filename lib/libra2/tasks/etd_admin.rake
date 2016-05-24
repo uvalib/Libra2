@@ -10,17 +10,22 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 namespace :libra2 do
 
   default_last_id = "0"
-  default_optional_statefile = "#{Rails.root}/tmp/deposit-req.last"
-  default_sis_statefile = "#{Rails.root}/tmp/deposit-sis.last"
+  default_optional_statekey = "#{Rails.env.to_s}.deposit-opt.last"
+  default_sis_statekey = "#{Rails.env.to_s}.deposit-sis.last"
 
-  desc "List new optional ETD deposit requests; optionally provide the statefile name"
+  desc "List new optional ETD deposit requests; optionally provide the state key name"
   task list_optional_etd_deposits: :environment do |t, args|
 
-    statefile = ARGV[ 1 ]
-    statefile = default_optional_statefile if statefile.nil?
+    statekey = ARGV[ 1 ]
+    statekey = default_optional_statekey if statekey.nil?
 
-    s = Helpers::ValueSnapshot.new( statefile, default_last_id )
+    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
+
+    if last_id.nil? || last_id.blank?
+      puts "ERROR: loading last processed id, aborting"
+      next
+    end
 
     puts "Listing new optional ETD deposits since id: #{last_id}"
 
@@ -34,34 +39,45 @@ namespace :libra2 do
       puts "No ETD deposit requests located" if status == 404
       puts "ERROR: request returned #{status}" unless status == 404
     end
-    task last_id.to_sym do ; end
+
+    task statekey.to_sym do ; end
 
   end
 
-  desc "List new SIS ETD deposit requests; optionally provide the statefile name"
+  desc "List new SIS ETD deposit requests; optionally provide the state key name"
   task list_sis_etd_deposits: :environment do |t, args|
 
-    statefile = ARGV[ 1 ]
-    statefile = default_sis_statefile if statefile.nil?
+    statekey = ARGV[ 1 ]
+    statekey = default_sis_statekey if statekey.nil?
 
-    s = Helpers::ValueSnapshot.new( statefile, default_last_id )
+    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
+
+    if last_id.nil? || last_id.blank?
+      puts "ERROR: loading last processed id, aborting"
+      next
+    end
 
     puts "Listing new SIS ETD deposits since id: #{last_id}"
 
-    task last_id.to_sym do ; end
+    task statekey.to_sym do ; end
 
   end
 
-  desc "Ingest new optional ETD deposit requests; optionally provide the statefile name"
+  desc "Ingest new optional ETD deposit requests; optionally provide the state key name"
   task ingest_optional_etd_deposits: :environment do |t, args|
 
-    statefile = ARGV[ 1 ]
-    statefile = default_optional_statefile if statefile.nil?
+    statekey = ARGV[ 1 ]
+    statekey = default_optional_statekey if statekey.nil?
     count = 0
 
-    s = Helpers::ValueSnapshot.new( statefile, default_last_id )
+    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
+
+    if last_id.nil? || last_id.blank?
+      puts "ERROR: loading last processed id, aborting"
+      next
+    end
 
     puts "Ingesting new optional ETD deposits since id: #{last_id}"
 
@@ -70,7 +86,7 @@ namespace :libra2 do
       resp.each do |r|
         req = Helpers::DepositRequest.create( r )
         if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
-			user = Helpers::EtdHelper::lookup_user( req.who )
+			     user = Helpers::EtdHelper::lookup_user( req.who )
            ThesisMailers.thesis_can_be_submitted( req.who, user.display_name ).deliver_now
            puts "Created optional ETD for #{req.who} (request #{req.id})"
            count += 1
@@ -88,7 +104,7 @@ namespace :libra2 do
       puts "No ETD deposit requests located" if status == 404
       puts "ERROR: request returned #{status}" unless status == 404
     end
-    task last_id.to_sym do ; end
+    task statekey.to_sym do ; end
 
   end
 

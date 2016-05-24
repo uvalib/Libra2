@@ -1,21 +1,25 @@
 #
-# Runner process to call the rake tasks that control deposit importing from SIS or optional registration
+# Runner process to call the rake tasks that control deposit importing from SIS and optional registration
 #
 
 # environment settings
+ENVIRONMENT=${RAILS_ENV:=development}
+SNAPSHOT_NAMESPACE=$ENVIRONMENT
+
+# determine if we are in a dockerized environment
 if [ -n "$APP_HOME" ]; then
-   LOG_ROOT=$APP_HOME/log
-   SNAP_ROOT=$APP_HOME/hostfs/snapshot
+   export LOGGER=$APP_HOME/log/deposit_import.log
 else
-   LOG_ROOT=log
-   SNAP_ROOT=tmp
+   export LOGGER=/dev/stdout
 fi
 
 # log file location
-export LOG_FILE=$LOG_ROOT/deposit_import.log
 
 # snapshot file for optional ETD
-export OPT_SNAPSHOT=$SNAP_ROOT/optional-etd.last
+export OPT_SNAPSHOT=$SNAPSHOT_NAMESPACE.deposit-opt.last
+
+# snapshot file for SIS based ETD
+export SIS_SNAPSHOT=$SNAPSHOT_NAMESPACE.deposit-sis.last
 
 # our sleep time, currently 5 minutes
 export SLEEPTIME=300
@@ -24,11 +28,11 @@ export SLEEPTIME=300
 function logit {
    local msg=$1
    TS=$(date "+%Y-%m-%d %H:%M:%S")
-   echo "$TS: $msg" >> $LOG_FILE
+   echo "$TS: $msg" >> $LOGGER
 }
 
-# helpfull message...
-logit "Starting up; using snapshot file $OPT_SNAPSHOT"
+# helpful message...
+logit "Starting up; using optional snapshot name $OPT_SNAPSHOT"
 
 # forever...
 while true; do
@@ -38,10 +42,10 @@ while true; do
    sleep $SLEEPTIME
 
    # starting message
-   logit "Beginning deposit import sequence"
+   logit "Beginning optional deposit import sequence"
 
    # do the import
-   rake libra2:ingest_optional_etd_deposits $OPT_SNAPSHOT >> $LOG_FILE 2>&1
+   rake libra2:ingest_optional_etd_deposits $OPT_SNAPSHOT >> $LOGGER 2>&1
    res=$?
 
    # ending message
