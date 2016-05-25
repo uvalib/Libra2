@@ -12,7 +12,7 @@ class GenericWork < ActiveFedora::Base
   # validations required for model integrity
   validates :title, presence: { message: 'Your work must have a title.' }
   validates :creator, presence: { message: 'Your work must have an author.' }
-  validates :contributor, presence: { message: 'Your work must have a contributor.' }
+  #validates :contributor, presence: { message: 'Your work must have a contributor.' }
   validates :description, presence: { message: 'Your work must have a description.' }
   validates :publisher, presence: { message: 'Your work must have a publisher.' }
   #validates :date_created, presence: { message: 'Your work must have a creation date.' }
@@ -37,6 +37,14 @@ class GenericWork < ActiveFedora::Base
   EMBARGO_VALUE_5_YEAR = '5_year'.freeze
 
   # Custom Metadata
+
+  #property :creator, predicate: ::RDF::Vocab::DC11.creator, class_name: 'Person'
+  property :contributor, predicate: ::RDF::Vocab::DC11.contributor, class_name: 'Person'
+
+  #accepts_nested_attributes_for :creator, allow_destroy: true
+
+  #has_many :contributor, dependent: :destroy
+#  accepts_nested_attributes_for :contributor
 
   # work_type - Currently either a 'thesis' or a 'generic_work'.
   property :work_type, predicate: ::RDF::URI('http://example.org/terms/work_type'), multiple: false do |index|
@@ -94,6 +102,11 @@ class GenericWork < ActiveFedora::Base
   property :embargo_period, predicate: ::RDF::URI('http://example.org/terms/embargo_period'), multiple: false do |index|
     index.as :stored_searchable
   end
+
+  # must be included after all properties are declared
+  #include ::NestedAttributes
+
+  accepts_nested_attributes_for :contributor, reject_if: :person_blank, allow_destroy: true
 
   # specify the indexer used to create the SOLR document
   def self.indexer

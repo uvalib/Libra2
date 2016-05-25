@@ -34,5 +34,8 @@ module CurationConcerns
 
     # use our custom presenter
     self.show_presenter = CustomGenericWorkPresenter
+
+    # use our edit form
+    #self.form_class = ::CurationConcerns::GenericWorkForm
   end
 end

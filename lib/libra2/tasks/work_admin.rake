@@ -200,7 +200,7 @@ def create_generic_work( work_type, user, title, description )
     w.notes = 'Notes created automatically'
     w.admin_notes << 'Admin notes created automatically'
     w.language = 'English'
-    w.contributor << 'Dr. Ruth'
+    w.contributor << Person.create( first_name: 'Dave', last_name: 'Gee' )
     w.rights << 'Determine your rights assignments here'
     w.license = GenericWork::DEFAULT_LICENSE
 
