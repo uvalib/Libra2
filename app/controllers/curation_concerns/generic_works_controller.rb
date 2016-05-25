@@ -10,16 +10,20 @@ module CurationConcerns
         if work.length > 0
           file_sets = work[0].file_sets
           previously_uploaded_files_label = params['previously_uploaded_files_label']
-          previously_uploaded_files_label.each_with_index { |label, i|
-            file_attributes = { title: [ label ]}
-            actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[i], current_user)
-            actor.update_metadata(file_attributes)
-          }
+          if previously_uploaded_files_label.present?
+            previously_uploaded_files_label.each_with_index { |label, i|
+              file_attributes = { title: [ label ]}
+              actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[i], current_user)
+              actor.update_metadata(file_attributes)
+            }
+          end
 
           newly_uploaded_files_label = params['newly_uploaded_files_label']
-          newly_uploaded_files_label.each_with_index { |label, i|
+          if previously_uploaded_files_label.present?
+            newly_uploaded_files_label.each_with_index { |label, i|
 
-          }
+            }
+          end
         end
       end
     end
