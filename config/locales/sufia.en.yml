@@ -9,3 +9,8 @@ en:
       suffix:           "@example.org"
     footer:
       copyright_html: "<strong>Copyright &copy; 2016 Project Hydra</strong> Licensed under the Apache License, Version 2.0"
+  curation_concerns:
+    base:
+      items:
+        header: Files
+        empty:  "No files have been uploaded. You can add one by clicking \"Edit\" and using the \"Files\" tab."

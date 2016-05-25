@@ -19,7 +19,7 @@ module CurationConcerns
           end
 
           newly_uploaded_files_label = params['newly_uploaded_files_label']
-          if previously_uploaded_files_label.present?
+          if newly_uploaded_files_label.present?
             newly_uploaded_files_label.each_with_index { |label, i|
 
             }
