@@ -15,19 +15,8 @@
 </head>
 <body class="public">
 <div id="libra_container">
+	<%= render "/masthead" %>
 
-	<div id="uva_lib_banner">
-		<div id="container1" class="lib_banner">
-			<a href="http://www.library.virginia.edu/askalibrarian/" class="ask-a-librarian"><i class="fa fa-question-circle"></i> Ask a Librarian</a>
-			<div id="uva_lib_logo" class="grid_14 alpha"><a href="http://www.library.virginia.edu/"><%= image_tag("uva_lib_logo.png", { alt: "University of Virginia Library" }) %></a></div>
-		</div>
-	</div>
-	<div class="app_banner_container">
-		<h1 class="virgo-logo-heading">
-			<a href="/" id="libra_logo_link"><%= image_tag("libra_logo.png", { alt: "LIBRA" }) %></a>
-		</h1>
-		<h2 class="search-scope">Online Archive of University of Virginia Scholarship</h2>
-	</div>
 	<div class="document-background"></div>
 <%= yield %>
 <%= render "/footer" %>

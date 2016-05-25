@@ -1,63 +1,6 @@
 body.public {
 	font-family: 'Open Sans', sans-serif;
 
-	#uva_lib_banner {
-		background: #002F6C;
-		height: 34px;
-		padding: 8px 30px;
-		width: 100%;
-	}
-
-	.ask-a-librarian, .ask-a-librarian:visited, .ask-a-librarian:link {
-		color: #f59a2c;
-		font-size: 14px;
-		float: right;
-		text-decoration: none;
-		border-bottom: 1px dotted #89a;
-	}
-
-	#uva_lib_banner #container1 {
-		margin-right: auto;
-		margin-left: auto;
-		font-size: 12px;
-		color: #A8CCE8;
-	}
-	#uva_lib_logo {
-		height: 15px;
-		width: 200px;
-		padding-top: 1px;
-		vertical-align: middle;
-		text-align: left;
-	}
-	.app_banner_container {
-		height: 50px;
-		border-bottom: 1px solid #52637D;
-		-webkit-box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
-		-moz-box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
-		box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
-		padding: 0 30px;
-
-		h1 {
-			margin: 0;
-		}
-	}
-
-	#libra_logo_link {
-		display: block;
-		float: left;
-		line-height: 38px;
-	}
-	.search-scope {
-		color: #224f72;
-		display: block;
-		float: left;
-		font-size: 17px;
-		font-weight: normal;
-		margin: 15px 21px 0;
-		vertical-align: middle;
-		text-shadow: 0px -1px 0px #f2f6fc;
-	}
-
 	.document-background {
 		background-image: linear-gradient(#f1f1f1, #dedede);
 		height: 280px;
