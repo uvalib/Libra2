@@ -11,7 +11,13 @@ class GenericWork < ActiveFedora::Base
 
   # validations required for model integrity
   validates :title, presence: { message: 'Your work must have a title.' }
+
   validates :creator, presence: { message: 'Your work must have an author.' }
+  validates :author_email, presence: { message: 'Your work must have an author email address.' }
+  validates :author_first_name, presence: { message: 'Your work must have an author first name.' }
+  validates :author_last_name, presence: { message: 'Your work must have an author last name.' }
+  validates :author_institution, presence: { message: 'Your work must have an author institution.' }
+
   validates :contributor, presence: { message: 'Your work must have a contributor.' }
   validates :description, presence: { message: 'Your work must have a description.' }
   validates :publisher, presence: { message: 'Your work must have a publisher.' }
@@ -27,7 +33,8 @@ class GenericWork < ActiveFedora::Base
   WORK_TYPE_THESIS = 'thesis'.freeze
 
   # defaults
-  DEFAULT_PUBLISHER = 'University Of Virginia'.freeze
+  DEFAULT_INSTITUTION = 'University Of Virginia'.freeze
+  DEFAULT_PUBLISHER = DEFAULT_INSTITUTION
   DEFAULT_LICENSE = 'None'.freeze
 
   # embargo periods
@@ -50,6 +57,24 @@ class GenericWork < ActiveFedora::Base
   #   False if the thesis is finalized.
   #   False for any other work_type other than 'thesis'.
   property :draft, predicate: ::RDF::URI('http://example.org/terms/draft'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  # specific attributes for the author
+  # we should probably use nested fields at some point
+
+  # the email of the author
+  property :author_email, predicate: ::RDF::URI('http://example.org/terms/email'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  # the first name of the author
+  property :author_first_name, predicate: ::RDF::Vocab::FOAF.firstName, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  # the last name of the author
+  property :author_last_name, predicate: ::RDF::Vocab::FOAF.lastName, multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -110,14 +135,14 @@ class GenericWork < ActiveFedora::Base
   # which fields are required...
   def self.required?(term)
     #puts "=====> GenericWork.required? #{term}"
-    return true if [:title, :creator, :contributor, :description, :publisher, :rights, :identifier, :department, :degree, :license].include? term
+    return true if [:author_email, :author_first_name, :author_last_name, :author_institution, :title, :creator, :contributor, :description, :publisher, :rights, :identifier, :department, :degree, :license].include? term
     false
   end
 
   # which fields are readonly...
   def self.readonly?(term)
     #puts "=====> GenericWork.readonly? #{term}"
-    return true if [:date_created, :identifier, :publisher, :department, :degree, :license].include? term
+    return true if [:author_email, :author_institution, :date_created, :identifier, :publisher, :department, :degree, :license].include? term
     false
   end
 

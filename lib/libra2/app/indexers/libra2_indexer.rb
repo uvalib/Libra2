@@ -2,10 +2,26 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
 
   def generate_solr_document
     super.tap do |solr_doc|
+
       Solrizer.set_field( solr_doc,
-                         'author_institution',
-                         object.author_institution,
+                         'author_email',
+                         object.author_email,
                          :searchable )
+
+      Solrizer.set_field( solr_doc,
+                          'author_first_name',
+                          object.author_first_name,
+                          :searchable )
+
+      Solrizer.set_field( solr_doc,
+                          'author_last_name',
+                          object.author_last_name,
+                          :searchable )
+
+      Solrizer.set_field( solr_doc,
+                          'author_institution',
+                          object.author_institution,
+                          :searchable )
 
       Solrizer.set_field( solr_doc,
                           'department',

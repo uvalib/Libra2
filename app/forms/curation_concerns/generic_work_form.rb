@@ -26,6 +26,10 @@ module CurationConcerns
 #        :date_created,
 #        :identifier,
 #        :related_url,
+        :author_email,
+        :author_first_name,
+        :author_last_name,
+        :author_institution,
         :department,
         :degree,
         :notes,
@@ -35,6 +39,7 @@ module CurationConcerns
     ]
 
     self.terms -= [
+        :creator,
         :identifier,
         :based_near,
         :subject
@@ -44,7 +49,7 @@ module CurationConcerns
     # we also do some logic here to ensure that the deposit agreement must be accepted once
     def primary_terms
       @agreement_accepted = GenericWork.accepted_agreement?( self.license )
-      [:title, :creator, :rights]
+      [:title, :rights]
     end
 
     # which fields are required...
