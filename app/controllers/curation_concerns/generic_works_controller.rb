@@ -15,6 +15,11 @@ module CurationConcerns
             actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[i], current_user)
             actor.update_metadata(file_attributes)
           }
+
+          newly_uploaded_files_label = params['newly_uploaded_files_label']
+          newly_uploaded_files_label.each_with_index { |label, i|
+
+          }
         end
       end
     end
