@@ -22,13 +22,11 @@
 #uva_lib_logo {
 	height: 15px;
 	width: 200px;
-	padding-top: 1px;
 	vertical-align: middle;
 	text-align: left;
 }
 .app_banner_container {
 	height: 50px;
-	border-bottom: 1px solid #52637D;
 	-webkit-box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
 	-moz-box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
 	box-shadow: 0 1px 5px rgba(128, 128, 128, 0.8);
@@ -54,4 +52,9 @@
 	margin: 15px 21px 0;
 	vertical-align: middle;
 	text-shadow: 0px -1px 0px #f2f6fc;
+}
+
+.navbar-default {
+	background: #fff;
+	box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.12), 0px 4px 4px 0px rgba(0,0,0,0.06);
 }
