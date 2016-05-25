@@ -15,7 +15,7 @@ module CurationConcerns
     delegate :visibility_during_embargo,  to: :model
 
     # additional terms we want on the form
-    self.terms += [
+#    self.terms += [
 #        :title,
 #        :creator,
 #        :contributor,
@@ -26,25 +26,74 @@ module CurationConcerns
 #        :date_created,
 #        :identifier,
 #        :related_url,
-        :department,
-        :degree,
-        :notes,
-        :sponsoring_agency,
+#        :author_email,
+#        :author_first_name,
+#        :author_last_name,
+#        :author_institution,
+#        :department,
+#        :degree,
+#        :notes,
+#        :sponsoring_agency,
 #        :rights,
 #        :license
+#    ]
+
+#    self.terms -= [
+#        :creator,
+#        :identifier,
+#        :based_near,
+#        :subject
+#    ]
+
+    self.terms = [
+        :title,
+        :author_first_name,
+        :author_last_name,
+        :author_institution,
+
+        :contributor,
+        :description,
+        :rights,
+        :keyword,
+        :language,
+
+        :related_url,
+        :sponsoring_agency,
+        :notes,
+
+        :department,
+        :degree,
+
+        :date_created,
+
+        # required by sufia
+        :representative_id,
+        :thumbnail_id,
+        :files,
+        :visibility_during_embargo,
+        :embargo_release_date,
+        :visibility_after_embargo,
+        :visibility_during_lease,
+        :lease_expiration_date,
+        :visibility_after_lease,
+        :visibility,
+        :ordered_member_ids,
+        :collection_ids,
     ]
 
-    self.terms -= [
-        :identifier,
-        :based_near,
-        :subject
-    ]
+    def initialize( model, current_ability )
+      puts "=====> GenericWorkForm.initialize"
+      super( model, current_ability )
+      self.terms.each do |t|
+        puts "===> term #{t}"
+      end
+    end
 
     # override from the base class to remove tag from the list of primary fields
     # we also do some logic here to ensure that the deposit agreement must be accepted once
     def primary_terms
       @agreement_accepted = GenericWork.accepted_agreement?( self.license )
-      [:title, :creator, :rights]
+      [ ]
     end
 
     # which fields are required...

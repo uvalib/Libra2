@@ -41,6 +41,18 @@ class SolrDocument
     self[Solrizer.solr_name('draft')]
   end
 
+  def author_email
+    self[Solrizer.solr_name('author_email')]
+  end
+
+  def author_first_name
+    self[Solrizer.solr_name('author_first_name')]
+  end
+
+  def author_last_name
+    self[Solrizer.solr_name('author_last_name')]
+  end
+
   def author_institution
     self[Solrizer.solr_name('author_institution')]
   end

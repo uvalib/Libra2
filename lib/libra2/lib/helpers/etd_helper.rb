@@ -33,6 +33,11 @@ module Helpers
         # generic work attributes
         w.apply_depositor_metadata( user )
         w.creator = email
+        w.author_email = email
+        w.author_first_name = user_info.first_name || 'First name'
+        w.author_last_name = user_info.last_name || 'Last name'
+        w.author_institution = GenericWork::DEFAULT_INSTITUTION
+
         w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
 
         w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
