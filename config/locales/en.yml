@@ -54,7 +54,10 @@ en:
         notes: 'Please keep your notes to 300 words or fewer.'
     labels:
       defaults:
-        creator: 'Author'
+        #creator: 'Author'
+        author_first_name: 'First Name'
+        author_last_name: 'Last Name'
+        author_institution: 'Institution'
         contributor: 'Advisor'
         description: 'Abstract'
         keyword: 'Keywords'
