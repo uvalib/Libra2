@@ -1,0 +1,217 @@
+terms:
+   - id: Afrikaans
+     term: Afrikaans
+     active: true
+   - id: Albanian
+     term: Albanian
+     active: true
+   - id: Arabic
+     term: Arabic
+     active: true
+   - id: Armenian
+     term: Armenian
+     active: true
+   - id: Basque
+     term: Basque
+     active: true
+   - id: Bengali
+     term: Bengali
+     active: true
+   - id: Bulgarian
+     term: Bulgarian
+     active: true
+   - id: Cambodian
+     term: Cambodian
+     active: true
+   - id: Catalan
+     term: Catalan
+     active: true
+   - id: Chinese
+     term: Chinese
+     active: true
+   - id: Croatian
+     term: Croatian
+     active: true
+   - id: Czech
+     term: Czech
+     active: true
+   - id: Danish
+     term: Danish
+     active: true
+   - id: Dutch
+     term: Dutch
+     active: true
+   - id: English
+     term: English
+     active: true
+   - id: Estonian
+     term: Estonian
+     active: true
+   - id: Fiji
+     term: Fiji
+     active: true
+   - id: Finnish
+     term: Finnish
+     active: true
+   - id: French
+     term: French
+     active: true
+   - id: Georgian
+     term: Georgian
+     active: true
+   - id: German
+     term: German
+     active: true
+   - id: Greek
+     term: Greek
+     active: true
+   - id: Gujarati
+     term: Gujarati
+     active: true
+   - id: Hebrew
+     term: Hebrew
+     active: true
+   - id: Hindi
+     term: Hindi
+     active: true
+   - id: Hungarian
+     term: Hungarian
+     active: true
+   - id: Icelandic
+     term: Icelandic
+     active: true
+   - id: Indonesian
+     term: Indonesian
+     active: true
+   - id: Irish
+     term: Irish
+     active: true
+   - id: Italian
+     term: Italian
+     active: true
+   - id: Japanese
+     term: Japanese
+     active: true
+   - id: Javanese
+     term: Javanese
+     active: true
+   - id: Korean
+     term: Korean
+     active: true
+   - id: Latin
+     term: Latin
+     active: true
+   - id: Latvian
+     term: Latvian
+     active: true
+   - id: Lithuanian
+     term: Lithuanian
+     active: true
+   - id: Macedonian
+     term: Macedonian
+     active: true
+   - id: Malay
+     term: Malay
+     active: true
+   - id: Malayalam
+     term: Malayalam
+     active: true
+   - id: Maltese
+     term: Maltese
+     active: true
+   - id: Maori
+     term: Maori
+     active: true
+   - id: Marathi
+     term: Marathi
+     active: true
+   - id: Mongolian
+     term: Mongolian
+     active: true
+   - id: Nepali
+     term: Nepali
+     active: true
+   - id: Norwegian
+     term: Norwegian
+     active: true
+   - id: Persian
+     term: Persian
+     active: true
+   - id: Polish
+     term: Polish
+     active: true
+   - id: Portuguese
+     term: Portuguese
+     active: true
+   - id: Punjabi
+     term: Punjabi
+     active: true
+   - id: Quechua
+     term: Quechua
+     active: true
+   - id: Romanian
+     term: Romanian
+     active: true
+   - id: Russian
+     term: Russian
+     active: true
+   - id: Samoan
+     term: Samoan
+     active: true
+   - id: Serbian
+     term: Serbian
+     active: true
+   - id: Slovak
+     term: Slovak
+     active: true
+   - id: Slovenian
+     term: Slovenian
+     active: true
+   - id: Spanish
+     term: Spanish
+     active: true
+   - id: Swahili
+     term: Swahili
+     active: true
+   - id: Swedish
+     term: Swedish
+     active: true
+   - id: Tamil
+     term: Tamil
+     active: true
+   - id: Tatar
+     term: Tatar
+     active: true
+   - id: Telugu
+     term: Telugu
+     active: true
+   - id: Thai
+     term: Thai
+     active: true
+   - id: Tibetan
+     term: Tibetan
+     active: true
+   - id: Tonga
+     term: Tonga
+     active: true
+   - id: Turkish
+     term: Turkish
+     active: true
+   - id: Ukrainian
+     term: Ukrainian
+     active: true
+   - id: Urdu
+     term: Urdu
+     active: true
+   - id: Uzbek
+     term: Uzbek
+     active: true
+   - id: Vietnamese
+     term: Vietnamese
+     active: true
+   - id: Welsh
+     term: Welsh
+     active: true
+   - id: Xhosa
+     term: Xhosa
+     active: true
