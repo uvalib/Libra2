@@ -52,6 +52,9 @@ module Helpers
         w.rights << default_rights
         w.license = GenericWork::DEFAULT_LICENSE
 
+        # where the authorization comes from
+        w.work_source = "#{GenericWork::THESIS_SOURCE_SIS}:#{deposit_authorization.id}"
+
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
         if ServiceClient::EntityIdClient.instance.ok?( status )
           w.identifier = id
@@ -109,6 +112,9 @@ module Helpers
         w.contributor << default_contributor
         w.rights << default_rights
         w.license = GenericWork::DEFAULT_LICENSE
+
+        # where the authorization comes from
+        w.work_source = "#{GenericWork::THESIS_SOURCE_OPTIONAL}:#{deposit_request.id}"
 
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
         if ServiceClient::EntityIdClient.instance.ok?( status )

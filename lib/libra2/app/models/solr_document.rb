@@ -41,6 +41,10 @@ class SolrDocument
     self[Solrizer.solr_name('draft')]
   end
 
+  def work_source
+    self[Solrizer.solr_name('work_source')]
+  end
+
   def author_email
     self[Solrizer.solr_name('author_email')]
   end
@@ -89,6 +93,16 @@ class SolrDocument
   def is_draft?
     return false if draft.nil?
     return draft[ 0 ] == 'true'
+  end
+
+  def is_sis_thesis?
+    return false if work_source.nil?
+    return work_source[ 0 ].start_with? GenericWork::THESIS_SOURCE_SIS
+  end
+
+  def is_optional_thesis?
+    return false if work_source.nil?
+    return work_source[ 0 ].start_with? GenericWork::THESIS_SOURCE_OPTIONAL
   end
 
   def is_mine?( me )

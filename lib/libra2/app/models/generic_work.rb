@@ -32,6 +32,10 @@ class GenericWork < ActiveFedora::Base
   WORK_TYPE_GENERIC = 'generic_work'.freeze
   WORK_TYPE_THESIS = 'thesis'.freeze
 
+  # source definitions
+  THESIS_SOURCE_SIS = 'sis'.freeze
+  THESIS_SOURCE_OPTIONAL = 'optional'.freeze
+
   # defaults
   DEFAULT_INSTITUTION = 'University Of Virginia'.freeze
   DEFAULT_PUBLISHER = DEFAULT_INSTITUTION
@@ -57,6 +61,11 @@ class GenericWork < ActiveFedora::Base
   #   False if the thesis is finalized.
   #   False for any other work_type other than 'thesis'.
   property :draft, predicate: ::RDF::URI('http://example.org/terms/draft'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  # work_source - used to identify SIS verses optional thesis
+  property :work_source, predicate: ::RDF::URI('http://example.org/terms/work_source'), multiple: false do |index|
     index.as :stored_searchable
   end
 
