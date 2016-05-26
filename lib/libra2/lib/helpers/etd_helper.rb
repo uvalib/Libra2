@@ -47,6 +47,7 @@ module Helpers
         w.publisher = GenericWork::DEFAULT_PUBLISHER
         w.department = deposit_authorization.department
         w.degree = deposit_authorization.degree
+        w.language = 'English'
 
         w.contributor << default_contributor
         w.rights << default_rights
@@ -108,6 +109,7 @@ module Helpers
         w.publisher = GenericWork::DEFAULT_PUBLISHER
         w.department = deposit_request.department
         w.degree = deposit_request.degree
+        w.language = 'English'
 
         w.contributor << default_contributor
         w.rights << default_rights
