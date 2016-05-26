@@ -135,30 +135,43 @@ class GenericWork < ActiveFedora::Base
   end
 
   # determine which fields can have multiple values...
-  def self.multiple?( term )
-    #puts "=====> GenericWork.multiple? #{term}"
+  def term_multiple?( term )
+    #puts "=====> GenericWork.term_multiple? #{term}"
     return true if [:keyword, :title, :contributor, :subject, :related_url, :sponsoring_agency, :admin_notes].include? term
     false
   end
 
   # which fields are required...
-  def self.required?(term)
-    #puts "=====> GenericWork.required? #{term}"
+  def term_required?( term )
+    #puts "=====> GenericWork.term_required? #{term}"
     return true if [:author_email, :author_first_name, :author_last_name, :author_institution, :title, :creator, :contributor, :description, :publisher, :rights, :identifier, :department, :degree, :license].include? term
     false
   end
 
   # which fields are readonly...
-  def self.readonly?(term)
-    #puts "=====> GenericWork.readonly? #{term}"
+  def term_readonly?( term )
+    #puts "=====> GenericWork.term_readonly? #{term}"
     return true if [:author_email, :author_institution, :date_created, :identifier, :publisher, :department, :degree, :license].include? term
+    return true if term == :title && is_sis_thesis?
     false
   end
 
   # have we already accepted the license agreement?
-  def self.accepted_agreement?( license )
+  def accepted_agreement?
     return license != DEFAULT_LICENSE
   end
+
+  def is_sis_thesis?
+    return false if work_source.nil?
+    return work_source.start_with? GenericWork::THESIS_SOURCE_SIS
+  end
+
+  def is_optional_thesis?
+    return false if work_source.nil?
+    return work_source.start_with? GenericWork::THESIS_SOURCE_OPTIONAL
+  end
+
+
 end
 
 #

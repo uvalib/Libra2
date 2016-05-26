@@ -3,7 +3,7 @@
 module CurationConcerns
   class GenericWorkForm < Sufia::Forms::WorkForm
     self.model_class = ::GenericWork
-#    include HydraEditor::Form::Permissions
+
     attr_accessor :file_sets
 
     delegate :department,                 to: :model
@@ -14,36 +14,9 @@ module CurationConcerns
     delegate :embargo_period,             to: :model
     delegate :visibility_during_embargo,  to: :model
 
-    # additional terms we want on the form
-#    self.terms += [
-#        :title,
-#        :creator,
-#        :contributor,
-#        :description,
-#        :subject,
-#        :language,
-#        :publisher,
-#        :date_created,
-#        :identifier,
-#        :related_url,
-#        :author_email,
-#        :author_first_name,
-#        :author_last_name,
-#        :author_institution,
-#        :department,
-#        :degree,
-#        :notes,
-#        :sponsoring_agency,
-#        :rights,
-#        :license
-#    ]
-
-#    self.terms -= [
-#        :creator,
-#        :identifier,
-#        :based_near,
-#        :subject
-#    ]
+    #delegate :required?,  to: :model
+    #delegate :readonly?,  to: :model
+    #delegate :multiple?,  to: :model
 
     self.terms = [
         :title,
@@ -82,35 +55,35 @@ module CurationConcerns
     ]
 
     def initialize( model, current_ability )
-      puts "=====> GenericWorkForm.initialize"
+      #puts "=====> GenericWorkForm.initialize"
       super( model, current_ability )
-      self.terms.each do |t|
-        puts "===> term #{t}"
-      end
+      #self.terms.each do |t|
+      #  puts "===> term #{t}"
+      #end
     end
 
     # override from the base class to remove tag from the list of primary fields
     # we also do some logic here to ensure that the deposit agreement must be accepted once
     def primary_terms
-      @agreement_accepted = GenericWork.accepted_agreement?( self.license )
+      @agreement_accepted = model.accepted_agreement?
       [ ]
     end
 
     # which fields are required...
-    def required?(term)
+    def required?( term )
       #puts "=====> GenericWorkForm.required? #{term}"
-      GenericWork.required?( term )
+      model.term_required?( term )
     end
 
     # which fields are readonly...
-    def readonly?(term)
+    def readonly?( term )
       #puts "=====> GenericWorkForm.readonly? #{term}"
-      GenericWork.readonly?( term )
+      model.term_readonly?( term )
     end
 
-    def multiple?(term)
+    def multiple?( term )
       #puts "=====> GenericWorkForm.multiple? #{term}"
-      GenericWork.multiple?( term )
+      model.term_multiple?( term )
     end
 
     def self.build_permitted_params

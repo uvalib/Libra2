@@ -95,16 +95,6 @@ class SolrDocument
     return draft[ 0 ] == 'true'
   end
 
-  def is_sis_thesis?
-    return false if work_source.nil?
-    return work_source[ 0 ].start_with? GenericWork::THESIS_SOURCE_SIS
-  end
-
-  def is_optional_thesis?
-    return false if work_source.nil?
-    return work_source[ 0 ].start_with? GenericWork::THESIS_SOURCE_OPTIONAL
-  end
-
   def is_mine?( me )
     return false if depositor.nil?
     return depositor == me
