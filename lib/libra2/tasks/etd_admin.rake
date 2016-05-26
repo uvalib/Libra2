@@ -3,6 +3,7 @@
 #
 
 require_dependency 'libra2/lib/serviceclient/deposit_reg_client'
+require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
 require_dependency 'libra2/lib/helpers/value_snapshot'
 require_dependency 'libra2/lib/helpers/deposit_request'
 require_dependency 'libra2/lib/helpers/etd_helper'
@@ -28,15 +29,18 @@ namespace :libra2 do
     end
 
     puts "Listing new optional ETD deposits since id: #{last_id}"
+    count = 0
 
     status, resp = ServiceClient::DepositRegClient.instance.list_requests( last_id )
     if ServiceClient::DepositRegClient.instance.ok?( status )
       resp.each do |r|
-        dump_deposit_request r
+        dump_etd_request r
+        count += 1
       end
 
+      puts "#{count} optional ETD deposit(s) listed"
     else
-      puts "No ETD deposit requests located" if status == 404
+      puts "No optional ETD deposit requests located" if status == 404
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
@@ -59,6 +63,20 @@ namespace :libra2 do
     end
 
     puts "Listing new SIS ETD deposits since id: #{last_id}"
+    count = 0
+
+    status, resp = ServiceClient::DepositAuthClient.instance.list_requests( last_id )
+    if ServiceClient::DepositAuthClient.instance.ok?( status )
+      resp.each do |r|
+        dump_etd_request r
+        count += 1
+      end
+
+      puts "#{count} SIS ETD deposit(s) listed"
+    else
+      puts "No SIS ETD deposit requests located" if status == 404
+      puts "ERROR: request returned #{status}" unless status == 404
+    end
 
     task statekey.to_sym do ; end
 
@@ -99,11 +117,45 @@ namespace :libra2 do
 
       end
 
-      puts "Done; #{count} ETD(s) created"
+      puts "Done; #{count} optional ETD(s) created"
     else
-      puts "No ETD deposit requests located" if status == 404
+      puts "No optional ETD deposit requests located" if status == 404
       puts "ERROR: request returned #{status}" unless status == 404
     end
+
+    task statekey.to_sym do ; end
+
+  end
+
+  desc "Ingest new SIS ETD deposit requests; optionally provide the state key name"
+  task ingest_sis_etd_deposits: :environment do |t, args|
+
+    statekey = ARGV[ 1 ]
+    statekey = default_sis_statekey if statekey.nil?
+    count = 0
+
+    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    last_id = s.val
+
+    if last_id.nil? || last_id.blank?
+      puts "ERROR: loading last processed id, aborting"
+      next
+    end
+
+    puts "Ingesting new SIS ETD deposits since id: #{last_id}"
+
+    status, resp = ServiceClient::DepositAuthClient.instance.list_requests( last_id )
+    if ServiceClient::DepositAuthClient.instance.ok?( status )
+      resp.each do |r|
+
+      end
+
+      puts "Done; #{count} SIS ETD(s) created"
+    else
+      puts "No SIS ETD deposit requests located" if status == 404
+      puts "ERROR: request returned #{status}" unless status == 404
+    end
+
     task statekey.to_sym do ; end
 
   end
@@ -126,7 +178,7 @@ namespace :libra2 do
 
   end
 
-  def dump_deposit_request( req )
+  def dump_etd_request( req )
 
     req.keys.each do |k|
       val = req[ k ]
