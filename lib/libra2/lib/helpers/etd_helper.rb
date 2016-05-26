@@ -5,24 +5,81 @@ module Helpers
 
   class EtdHelper
 
-    def self.new_etd_from_deposit_request( dr )
+    @default_email_domain = 'virginia.edu'
+
+    def self.new_etd_from_sis_request( deposit_authorization )
 
       # lookup the user by computing id
-      user_info = lookup_user( dr.who )
+      user_info = lookup_user( deposit_authorization.who )
       if user_info.nil?
-        puts "Cannot locate user info for #{dr.who}"
+        puts "Cannot locate user info for #{deposit_authorization.who}"
         return false
       end
 
-      default_email_domain = 'virginia.edu'
-
       # locate the user and create the account if we cannot... cant create an ETD without an owner
       email = user_info.email
-      email = "#{user_info.id}@#{default_email_domain}" if email.nil? || email.blank?
+      email = "#{user_info.id}@#{@default_email_domain}" if email.nil? || email.blank?
       user = User.find_by_email( email )
       user = create_user( user_info, email ) if user.nil?
 
-      # default values
+      # default values (change later)
+      default_description = 'Enter your description here'
+      default_contributor = 'Enter your contributors here'
+      default_rights = 'Determine your rights assignments here'
+
+      GenericWork.create!( title: [ deposit_authorization.title ] ) do |w|
+
+        # generic work attributes
+        w.apply_depositor_metadata( user )
+        w.creator = email
+        w.author_email = email
+        w.author_first_name = deposit_authorization.first_name
+        w.author_last_name = deposit_authorization.last_name
+        w.author_institution = GenericWork::DEFAULT_INSTITUTION
+
+        w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
+
+        w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+        w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+        w.description = default_description
+        w.work_type = GenericWork::WORK_TYPE_THESIS
+        w.draft = 'true'
+        w.publisher = GenericWork::DEFAULT_PUBLISHER
+        w.department = deposit_authorization.department
+        w.degree = deposit_authorization.degree
+
+        w.contributor << default_contributor
+        w.rights << default_rights
+        w.license = GenericWork::DEFAULT_LICENSE
+
+        status, id = ServiceClient::EntityIdClient.instance.newid( w )
+        if ServiceClient::EntityIdClient.instance.ok?( status )
+          w.identifier = id
+        else
+          puts "Cannot mint DOI (#{status})"
+          return false
+        end
+
+      end
+      return true
+    end
+
+    def self.new_etd_from_deposit_request( deposit_request )
+
+      # lookup the user by computing id
+      user_info = lookup_user( deposit_request.who )
+      if user_info.nil?
+        puts "Cannot locate user info for #{deposit_request.who}"
+        return false
+      end
+
+      # locate the user and create the account if we cannot... cant create an ETD without an owner
+      email = user_info.email
+      email = "#{user_info.id}@#{@default_email_domain}" if email.nil? || email.blank?
+      user = User.find_by_email( email )
+      user = create_user( user_info, email ) if user.nil?
+
+      # default values (change later)
       default_title = 'Enter your title here'
       default_description = 'Enter your description here'
       default_contributor = 'Enter your contributors here'
@@ -46,8 +103,8 @@ module Helpers
         w.work_type = GenericWork::WORK_TYPE_THESIS
         w.draft = 'true'
         w.publisher = GenericWork::DEFAULT_PUBLISHER
-        w.department = dr.department
-        w.degree = dr.degree
+        w.department = deposit_request.department
+        w.degree = deposit_request.degree
 
         w.contributor << default_contributor
         w.rights << default_rights

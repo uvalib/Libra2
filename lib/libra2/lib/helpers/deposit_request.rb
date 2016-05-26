@@ -3,8 +3,10 @@ module Helpers
   #
   # helper class for the deposit request response
   #
+  # deposit requests represent an optional thesis deposit authorization
+  #
 
-   class DepositRequest
+  class DepositRequest
 
       attr_accessor :id
       attr_accessor :requester

@@ -6,6 +6,7 @@ require_dependency 'libra2/lib/serviceclient/deposit_reg_client'
 require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
 require_dependency 'libra2/lib/helpers/value_snapshot'
 require_dependency 'libra2/lib/helpers/deposit_request'
+require_dependency 'libra2/lib/helpers/deposit_authorization'
 require_dependency 'libra2/lib/helpers/etd_helper'
 
 namespace :libra2 do
@@ -106,10 +107,10 @@ namespace :libra2 do
         if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
 			     user = Helpers::EtdHelper::lookup_user( req.who )
            ThesisMailers.thesis_can_be_submitted( req.who, user.display_name ).deliver_now
-           puts "Created optional ETD for #{req.who} (request #{req.id})"
+           puts "Created placeholder (optional) ETD for #{req.who} (request #{req.id})"
            count += 1
         else
-          puts "ERROR ingesting request #{req.id} for #{req.who}; ignoring"
+          puts "ERROR ingesting optional request #{req.id} for #{req.who}; ignoring"
         end
 
         # save the current ID so we do not process it again
@@ -147,6 +148,16 @@ namespace :libra2 do
     status, resp = ServiceClient::DepositAuthClient.instance.list_requests( last_id )
     if ServiceClient::DepositAuthClient.instance.ok?( status )
       resp.each do |r|
+        req = Helpers::DepositAuthorization.create( r )
+        if Helpers::EtdHelper::new_etd_from_sis_request( req ) == true
+          puts "Created placeholder (SIS) ETD for #{req.who} (request #{req.id})"
+          count += 1
+        else
+          puts "ERROR ingesting sis authorization #{req.id} for #{req.who}; ignoring"
+        end
+
+        # save the current ID so we do not process it again
+        #s.val = req.id
 
       end
 
