@@ -157,7 +157,7 @@ namespace :libra2 do
         end
 
         # save the current ID so we do not process it again
-        #s.val = req.id
+        s.val = req.id
 
       end
 
@@ -186,6 +186,86 @@ namespace :libra2 do
     else
       puts "ERROR: options service returns #{status}"
     end
+
+  end
+
+  desc "List last SIS ETD id; optionally provide the state key name"
+  task list_last_sis_id: :environment do |t, args|
+
+    statekey = ARGV[ 1 ]
+    statekey = default_sis_statekey if statekey.nil?
+
+    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    last_id = s.val
+
+    if last_id.nil? || last_id.blank?
+      puts "ERROR: loading last processed id, aborting"
+      next
+    end
+
+    puts "Last id: #{last_id}"
+    task statekey.to_sym do ; end
+
+  end
+
+  desc "List last optional ETD id; optionally provide the state key name"
+  task list_last_optional_id: :environment do |t, args|
+
+    statekey = ARGV[ 1 ]
+    statekey = default_optional_statekey if statekey.nil?
+
+    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    last_id = s.val
+
+    if last_id.nil? || last_id.blank?
+      puts "ERROR: loading last processed id, aborting"
+      next
+    end
+
+    puts "Last id: #{last_id}"
+    task statekey.to_sym do ; end
+
+  end
+
+  desc "Reset last SIS ETD id; optionally provide the state key name"
+  task reset_last_sis_id: :environment do |t, args|
+
+    statekey = ARGV[ 1 ]
+    statekey = default_sis_statekey if statekey.nil?
+
+    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    last_id = s.val
+
+    if last_id.nil? || last_id.blank?
+      puts "ERROR: loading last processed id, aborting"
+      next
+    end
+
+    s.val = 0
+
+    puts "Reset (was #{last_id})"
+    task statekey.to_sym do ; end
+
+  end
+
+  desc "Reset last optional ETD id; optionally provide the state key name"
+  task reset_last_optional_id: :environment do |t, args|
+
+    statekey = ARGV[ 1 ]
+    statekey = default_optional_statekey if statekey.nil?
+
+    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    last_id = s.val
+
+    if last_id.nil? || last_id.blank?
+      puts "ERROR: loading last processed id, aborting"
+      next
+    end
+
+    s.val = 0
+
+    puts "Reset (was #{last_id})"
+    task statekey.to_sym do ; end
 
   end
 
