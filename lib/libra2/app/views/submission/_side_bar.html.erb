@@ -5,7 +5,6 @@
 			<% @files.each { |file| %>
 			<div class="file_asset_record">
 			<p><%= link_to(file[:title], file[:location]) %></p>
-			<p><span class="file_label">Size:</span><%= file[:size] %></p>
 			<p><span class="file_label">Created:</span><%= file_date_created(file[:date]) %></p>
 			</div>
 			<% } %>

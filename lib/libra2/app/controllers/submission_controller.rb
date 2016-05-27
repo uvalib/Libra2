@@ -18,8 +18,7 @@ class SubmissionController < ApplicationController
 				@files.push({
 					title: file.title.join(" "),
 					location: download_path(file),
-					size: file.file_size.join(" "),
-					date: file.date_created
+					date: file.date_uploaded
 				})
 			}
 			@is_preview = @work.draft == "true"

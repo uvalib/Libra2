@@ -17,5 +17,5 @@
 <%= presenter.attribute_to_html( :publisher, include_empty: true, catalog_search_link: false ) %>
 <%= presenter.attribute_to_html( :department, include_empty: true, catalog_search_link: false ) %>
 <%= presenter.attribute_to_html( :degree, include_empty: true, catalog_search_link: false ) %>
-<%= presenter.attribute_to_html( :date_created, include_empty: true ) %>
+<%= CurationConcerns::Renderers::AttributeRenderer.new("Date created", file_date_created(presenter.solr_document.date_created), {include_empty: true}).render %>
 <%= presenter.attribute_to_html( :identifier, include_empty: true ) if presenter.solr_document.is_draft? == false %>
