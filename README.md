@@ -1,31 +1,31 @@
-== README
+# LIBRA 2  [![Build Status](https://travis-ci.org/uvalib/Libra2.svg?branch=develop)](https://travis-ci.org/uvalib/Libra2)
 
-This is the beginning of the Libra 2 project.  
+Online Archive of University of Virginia Scholarship. 
+This repository contains Sufia code and the second major release of the Libra project.  
 
 ## Dependencies
-
-* ruby v2.2.2 or higher
+* Ruby v2.2.2 or higher
 * latest Bundler gem
-
 
 ## Installation
 
-Clone this project within the cloned Sufia 7 alpha on your local machine.  In the directory to which you cloned it, run the following:
+Fire up a console and type:
 
-```ruby
-git clone git@github.com:projecthydra/sufia.git
-cd sufia
-bundle install
-rake jetty:clean
-rake curation_concerns:jetty:config
-rake jetty:start
-git clone git@github.com:uvalib/Libra2.git
-cd Libra2
-bundle install
-rake db:migrate
-redis-server
-RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool --daemon --environment development start
-rails server
+`$ git clone git@github.com:uvalib/Libra2.git` 
+
+Then run a bundle install
+
+`$ bundle install` 
+
+Then create the database and Redis
+
+`$ rake db:migrate`
+`$ redis-server`
+
+Then run hooks and fire up the server
+
+`$ RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool --daemon --environment development start`
+`$ rails s`
+
 ```
-
 You should now be able to open your browser to http://localhost:3000/
