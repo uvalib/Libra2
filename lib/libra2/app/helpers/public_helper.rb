@@ -50,7 +50,7 @@ module PublicHelper
 	end
 
 	def display_author(work)
-		return work.creator
+		return "#{work.author_last_name}, #{work.author_first_name}"
 	end
 
 	def embargo_notice(work)
@@ -69,5 +69,11 @@ module PublicHelper
 			value = value.join(", ")
 		end
 		return value
+	end
+
+	def display_if_non_blank(label, value)
+		return "" if value.blank?
+		row = raw(content_tag(:span, label, { class: "document-label" }) + value)
+		return content_tag(:div, row, { class: "document-row" })
 	end
 end

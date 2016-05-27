@@ -7,39 +7,17 @@
 			<div id="main_content" role="main" class="col-xs-12 col-sm-9 col-sm-push-3">
 				<div id="document">
 					<h1><%= @work[:title].join("<br>") %></h1>
-					<div class="document-row">
-						<span class="document-label">Author:</span><%= display_author(@work) %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Advisors:</span><%= @work.contributor.join(", ") %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Abstract:</span><%= @work.description %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Degree:</span><%= @work.degree %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Keywords:</span><%= display_keywords(@work) %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Sponsoring Agency:</span><%= @work.sponsoring_agency.join(" ") %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Related Links:</span><%= display_related_links(@work.related_url) %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Notes:</span><%= @work.notes %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Language:</span><%= @work.language %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Rights:</span><%= display_rights(@work.rights) %>
-					</div>
-					<div class="document-row">
-						<span class="document-label">Persistent Link:</span><%= public_doi_link(@work) %>
-					</div>
+					<%= display_if_non_blank("Author:", display_author(@work)) %>
+					<%= display_if_non_blank("Advisors:", @work.contributor.join(", ")) %>
+					<%= display_if_non_blank("Abstract:", @work.description) %>
+					<%= display_if_non_blank("Degree:", @work.degree) %>
+					<%= display_if_non_blank("Keywords:", display_keywords(@work)) %>
+					<%= display_if_non_blank("Sponsoring Agency:", @work.sponsoring_agency.join(" ")) %>
+					<%= display_if_non_blank("Related Links:", display_related_links(@work.related_url)) %>
+					<%= display_if_non_blank("Notes:", @work.notes) %>
+					<%= display_if_non_blank("Language:", @work.language) %>
+					<%= display_if_non_blank("Rights:", display_rights(@work.rights)) %>
+					<%= display_if_non_blank("Persistent Link:", public_doi_link(@work)) %>
 				</div>
 			</div>
 			<%= render "side_bar" %>
