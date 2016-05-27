@@ -1,6 +1,6 @@
 <tr class="<%= dom_class(member) %> attributes">
   <td class="thumbnail">
-    <%= render_thumbnail_tag member %>
+    <%= render_thumbnail_tag member, {}, { suppress_link: true } %>
   </td>
   <td class="attribute filename"><%= member.link_name %></td>
   <td class="attribute permission"><%= display_array(member.title) %></td>
