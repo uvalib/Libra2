@@ -23,7 +23,6 @@ export SIS_SNAPSHOT=$SNAPSHOT_NAMESPACE.deposit-sis.last
 
 # our sleep time, currently 5 minutes
 export SLEEPTIME=300
-export SLEEPTIME=30
 
 # the logging function
 function logit {
