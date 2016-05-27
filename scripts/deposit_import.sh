@@ -23,6 +23,7 @@ export SIS_SNAPSHOT=$SNAPSHOT_NAMESPACE.deposit-sis.last
 
 # our sleep time, currently 5 minutes
 export SLEEPTIME=300
+export SLEEPTIME=30
 
 # the logging function
 function logit {
@@ -32,7 +33,9 @@ function logit {
 }
 
 # helpful message...
-logit "Starting up; using optional snapshot name $OPT_SNAPSHOT"
+logit "Starting up..."
+logit "Optional snapshot name: $OPT_SNAPSHOT"
+logit "SIS snapshot name: $SIS_SNAPSHOT"
 
 # forever...
 while true; do
@@ -44,12 +47,22 @@ while true; do
    # starting message
    logit "Beginning optional deposit import sequence"
 
-   # do the import
+   # do the optional import
    rake libra2:ingest_optional_etd_deposits $OPT_SNAPSHOT >> $LOGGER 2>&1
    res=$?
 
    # ending message
-   logit "Completes with status $res"
+   logit "Optional deposit import sequence completes with status: $res"
+
+   # starting message
+   logit "Beginning SIS deposit import sequence"
+
+   # do the SIS import
+   rake libra2:ingest_sis_etd_deposits $SIS_SNAPSHOT >> $LOGGER 2>&1
+   res=$?
+
+   # ending message
+   logit "SIS deposit import sequence completes with status: $res"
 
 done
 
