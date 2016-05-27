@@ -5,7 +5,7 @@ This repository contains Sufia code and the second major release of the Libra pr
 
 ## Dependencies
 * Ruby v2.2.2 or higher
-* latest Bundler gem
+* Latest Bundler gem
 
 ## Installation
 
@@ -20,12 +20,13 @@ Then run a bundle install
 Then create the database and Redis
 
 `$ rake db:migrate`
+
 `$ redis-server`
 
 Then run hooks and fire up the server
 
 `$ RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool --daemon --environment development start`
+
 `$ rails s`
 
-```
 You should now be able to open your browser to http://localhost:3000/
