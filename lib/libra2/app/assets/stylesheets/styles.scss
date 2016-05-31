@@ -45,3 +45,16 @@
 		width: 65%;
 	}
 }
+
+.thesis-thumbnail {
+	float: left;
+}
+
+#theses {
+	td {
+		vertical-align: middle;
+	}
+	td:nth-child(2) {
+		white-space: nowrap;
+	}
+}

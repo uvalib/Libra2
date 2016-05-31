@@ -1,0 +1,23 @@
+<table class="table table-striped">
+  <caption class="sr-only">Listing of items you have deposited in <%= application_name %></caption>
+<% unless params[:display_type] == 'list' %>
+  <thead>
+  <tr>
+    <th>Title</th>
+    <th class="sorts-dash"><i id="<%= CatalogController.uploaded_field %>" class="<%=params[:sort]== "#{CatalogController.uploaded_field} desc" ? 'caret' : params[:sort]== "#{CatalogController.uploaded_field} asc" ? 'caret up' : ''%>"></i>Date Uploaded</th>
+    <th>Visibility</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <% end %>
+  <tbody>
+  <% docs.each_with_index do |document,counter| %>
+    <% case document.hydra_model %>
+    <% when "Collection" %>
+      <%= render 'my/_index_partials/list_collections', document: document, counter: counter %>
+    <% else %>
+      <%= render 'my/_index_partials/list_works', document: document, counter: counter, presenter: Sufia::WorkShowPresenter.new(document, current_ability) %>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>

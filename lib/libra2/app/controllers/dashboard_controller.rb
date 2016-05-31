@@ -29,7 +29,8 @@ class DashboardController < ApplicationController
     (@response, @document_list) = search_results( params )
 
     # a draft thesis owned by me
-    @draft_theses = (@response.docs.map { |x| x if ( x.is_thesis? && x.is_draft? && x.is_mine?( current_user.user_key ) )}).select { |y| !y.nil? }
+    #@draft_theses = (@response.docs.map { |x| x if ( x.is_thesis? && x.is_draft? && x.is_mine?( current_user.user_key ) )}).select { |y| !y.nil? }
+    @draft_theses = (@response.docs.map { |x| x if ( x.is_thesis? && x.is_mine?( current_user.user_key ) )}).select { |y| !y.nil? }
 
     @activity = current_user.all_user_activity(params[:since].blank? ? DateTime.now.to_i - Sufia.config.activity_to_show_default_seconds_since_now : params[:since].to_i)
     @notifications = current_user.mailbox.inbox

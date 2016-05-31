@@ -35,4 +35,11 @@ module VisibilityHelper
     t("libra.duration.#{value}.text", default: value )
   end
 
+    def render_visibility_with_draft(document)
+      if document.is_draft?
+        return content_tag(:span, "Draft", { class: "label label-warning" })
+      else
+        return render_visibility_link(document)
+      end
+    end
 end
