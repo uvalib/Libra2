@@ -2,8 +2,12 @@ body.public {
 	font-family: 'Open Sans', sans-serif;
 
 	.document-background {
-		background-image: linear-gradient(#f1f1f1, #dedede);
-		height: 280px;
-		width: 100%;
+		background: image-url("/assets/header-bg.jpg") center center no-repeat;
+		height: 305px;
+		background-size: cover;
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 85px;
 	}
 }
