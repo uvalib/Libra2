@@ -267,7 +267,7 @@ namespace :libra2 do
 
   end
 
-  desc "Mark SIS EDT as submitted; must provide the work Id"
+  desc "Mark SIS EDT as submitted; must provide the work id"
   task mark_sis_etd_as_submitted: :environment do |t, args|
 
     work_id = ARGV[ 1 ]
