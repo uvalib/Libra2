@@ -15,9 +15,13 @@ sample_pdf_file = "data/sample.pdf"
 desc "List all works"
 task list_all_works: :environment do |t, args|
 
+   count = 0
    GenericWork.all.each do |generic_work|
-      dump_work( generic_work )
+     dump_work( generic_work )
+     count += 1
    end
+
+   puts "Listed #{count} work(s)"
 end
 
 desc "List my works; optionally provide depositor email"
@@ -27,10 +31,15 @@ task list_my_works: :environment do |t, args|
   who = default_user if who.nil?
   task who.to_sym do ; end
 
+  count = 0
   GenericWork.all.each do |generic_work|
-    dump_work( generic_work ) if generic_work.depositor == who
+    if generic_work.depositor == who
+       dump_work( generic_work )
+       count += 1
+    end
   end
 
+  puts "Listed #{count} work(s)"
 end
 
 desc "List work by id; must provide the work id"
