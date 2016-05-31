@@ -47,7 +47,7 @@ group :development do
 end
 
 #gem 'sufia', git: 'https://github.com/projecthydra/sufia.git', branch: 'master'
-gem 'sufia', github: 'projecthydra/sufia', ref: '39c11f82281368e321f751f881611b5e095da7fa'
+gem 'sufia', github: 'projecthydra/sufia', ref: '267701260b3292443407f138b71ffc7df11252ae'
 
 group :development, :test do
   gem 'solr_wrapper', '>= 0.3'
