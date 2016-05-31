@@ -1,4 +1,5 @@
 require_dependency 'libra2/lib/serviceclient/entity_id_client'
+require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
 require_dependency 'libra2/lib/helpers/etd_helper'
 
 class SubmissionController < ApplicationController
@@ -33,17 +34,14 @@ class SubmissionController < ApplicationController
 		work.draft = false
 		work.save!
 
-    author = nil
-    adviser = nil
-    author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] ) unless work.nil?
-    # TODO-PER: This should be the advisor's id instead.
-    adviser = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] ) unless work.nil?
+		# send the author email that they have successfully completed things
+		send_author_email( work )
 
-    ThesisMailers.thesis_submitted_adviser( work, author.display_name, adviser.display_name ).deliver_later unless author.nil? || adviser.nil?
-    ThesisMailers.thesis_submitted_author( work, author.display_name ).deliver_later unless author.nil?
+		# update the DOI service with the completed metadata
+		update_metadata( work )
 
-    # TODO-DPG: check status and log, etc
-    status = ServiceClient::EntityIdClient.instance.metadatasync( work ) unless work.nil?
+		# update SIS as necessary
+		update_submitted_state( work )
 
 		redirect_to locally_hosted_work_url( id ), :flash => { :notice => "Thank you for submitting your thesis. You have finished this requirement for graduation." }
   end
@@ -57,7 +55,41 @@ class SubmissionController < ApplicationController
 			redirect_to locally_hosted_work_url( id )
 		end
 	end
+
   private
+
+	# send the author email that they have successfully completed things
+	def send_author_email( work )
+		author = nil
+		author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] ) unless work.nil?
+		ThesisMailers.thesis_submitted_author( work, author.display_name ).deliver_later unless author.nil?
+
+	end
+
+	# update the DOI service metadata
+	def update_metadata( work )
+
+		# if we have no DOI, do nothing...
+		return if work.identifier.empty?
+
+		status = ServiceClient::EntityIdClient.instance.metadatasync( work ) unless work.nil?
+		if ServiceClient::EntityIdClient.instance.ok?( status ) == false
+			# TODO-DPG handle error
+		end
+	end
+
+	# update any foreign system that the student has submitted
+	def update_submitted_state( work )
+
+		# do nothing for non-SIS work
+		return if work.is_sis_thesis? == false
+
+		status = ServiceClient::DepositAuthClient.instance.request_fulfilled( work )
+		if ServiceClient::DepositAuthClient.instance.ok?( status ) == false
+			# TODO-DPG handle error
+		end
+
+	end
 
   def get_work_item
     id = params[:id]
