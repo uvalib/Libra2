@@ -20,6 +20,7 @@ namespace :libra2 do
 
     statekey = ARGV[ 1 ]
     statekey = default_optional_statekey if statekey.nil?
+    task statekey.to_sym do ; end
 
     s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
@@ -45,8 +46,6 @@ namespace :libra2 do
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
-    task statekey.to_sym do ; end
-
   end
 
   desc "List new SIS ETD deposit requests; optionally provide the state key name"
@@ -54,6 +53,7 @@ namespace :libra2 do
 
     statekey = ARGV[ 1 ]
     statekey = default_sis_statekey if statekey.nil?
+    task statekey.to_sym do ; end
 
     s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
@@ -79,8 +79,6 @@ namespace :libra2 do
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
-    task statekey.to_sym do ; end
-
   end
 
   desc "Ingest new optional ETD deposit requests; optionally provide the state key name"
@@ -88,6 +86,8 @@ namespace :libra2 do
 
     statekey = ARGV[ 1 ]
     statekey = default_optional_statekey if statekey.nil?
+    task statekey.to_sym do ; end
+
     count = 0
 
     s = Helpers::ValueSnapshot.new( statekey, default_last_id )
@@ -124,8 +124,6 @@ namespace :libra2 do
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
-    task statekey.to_sym do ; end
-
   end
 
   desc "Ingest new SIS ETD deposit requests; optionally provide the state key name"
@@ -133,6 +131,8 @@ namespace :libra2 do
 
     statekey = ARGV[ 1 ]
     statekey = default_sis_statekey if statekey.nil?
+    task statekey.to_sym do ; end
+
     count = 0
 
     s = Helpers::ValueSnapshot.new( statekey, default_last_id )
@@ -167,8 +167,6 @@ namespace :libra2 do
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
-    task statekey.to_sym do ; end
-
   end
 
   desc "List optional deposit options"
@@ -194,6 +192,7 @@ namespace :libra2 do
 
     statekey = ARGV[ 1 ]
     statekey = default_sis_statekey if statekey.nil?
+    task statekey.to_sym do ; end
 
     s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
@@ -204,7 +203,6 @@ namespace :libra2 do
     end
 
     puts "Last id: #{last_id}"
-    task statekey.to_sym do ; end
 
   end
 
@@ -213,6 +211,7 @@ namespace :libra2 do
 
     statekey = ARGV[ 1 ]
     statekey = default_optional_statekey if statekey.nil?
+    task statekey.to_sym do ; end
 
     s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
@@ -223,7 +222,6 @@ namespace :libra2 do
     end
 
     puts "Last id: #{last_id}"
-    task statekey.to_sym do ; end
 
   end
 
@@ -232,6 +230,7 @@ namespace :libra2 do
 
     statekey = ARGV[ 1 ]
     statekey = default_sis_statekey if statekey.nil?
+    task statekey.to_sym do ; end
 
     s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
@@ -244,7 +243,6 @@ namespace :libra2 do
     s.val = 0
 
     puts "Reset (was #{last_id})"
-    task statekey.to_sym do ; end
 
   end
 
@@ -253,6 +251,7 @@ namespace :libra2 do
 
     statekey = ARGV[ 1 ]
     statekey = default_optional_statekey if statekey.nil?
+    task statekey.to_sym do ; end
 
     s = Helpers::ValueSnapshot.new( statekey, default_last_id )
     last_id = s.val
@@ -265,7 +264,43 @@ namespace :libra2 do
     s.val = 0
 
     puts "Reset (was #{last_id})"
-    task statekey.to_sym do ; end
+
+  end
+
+  desc "Mark SIS EDT as submitted; must provide the work Id"
+  task mark_sis_etd_as_submitted: :environment do |t, args|
+
+    work_id = ARGV[ 1 ]
+    if work_id.nil?
+      puts "ERROR: no ETD id specified, aborting"
+      next
+    end
+
+    task work_id.to_sym do ; end
+
+    work = nil
+    begin
+       work = GenericWork.find( work_id )
+    rescue => e
+    end
+
+    if work.nil?
+      puts "ERROR: ETD #{work_id} does not exist, aborting"
+      next
+    end
+
+    if work.is_sis_thesis? == false
+      puts "ERROR: ETD #{work_id} is not a SIS thesis, aborting"
+      next
+    end
+
+    status = ServiceClient::DepositAuthClient.instance.request_fulfilled( work )
+    if ServiceClient::DepositAuthClient.instance.ok?( status ) == false
+      puts "ERROR: request returns #{status}, aborting"
+      next
+    end
+
+    puts "Marked SIS ETD #{work_id} as submitted"
 
   end
 

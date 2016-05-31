@@ -65,6 +65,7 @@ task bulk_create_user: :environment do |t, args|
 
   filename = ARGV[ 1 ]
   filename = default_bulkfile if filename.nil?
+  task filename.to_sym do ; end
 
   name = ''
   email = ''
@@ -96,7 +97,6 @@ task bulk_create_user: :environment do |t, args|
   end
 
   puts "Created #{count} user(s), ignored #{ignored} user(s)"
-  task filename.to_sym do ; end
 
 end
 
