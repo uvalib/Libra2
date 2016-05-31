@@ -2,7 +2,7 @@ module LanguageService
   mattr_accessor :authority
   self.authority = Qa::Authorities::Local.subauthority_for('languages')
 
-  def self.select_options
+  def self.select_active_options
     active_elements.map { |e| [e[:label], e[:id]] }
   end
 
