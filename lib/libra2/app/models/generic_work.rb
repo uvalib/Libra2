@@ -171,6 +171,10 @@ class GenericWork < ActiveFedora::Base
     return work_source.start_with? GenericWork::THESIS_SOURCE_OPTIONAL
   end
 
+  def sis_authorization_id
+    return work_source.split( ":" )[ 1 ] if is_sis_thesis?
+    return nil
+  end
 
 end
 

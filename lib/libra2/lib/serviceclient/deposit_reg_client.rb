@@ -48,15 +48,7 @@ module ServiceClient
      #
      def request_fulfilled( work )
        # not implemented
-       500
-     end
-
-     #
-     # construct the request payload
-     #
-     def construct_payload( work )
-       h = {}
-       h.to_json
+       return 500
      end
 
      #

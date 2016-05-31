@@ -37,16 +37,9 @@ module ServiceClient
      # notify of a deposit
      #
      def request_fulfilled( work )
-       # not implemented
-       500
-     end
-
-     #
-     # construct the request payload
-     #
-     def construct_payload( work )
-       h = {}
-       h.to_json
+       url = "#{self.url}/#{work.sis_authorization_id}?auth=#{self.authtoken}&deposit=#{work.identifier}"
+       status, _ = rest_send( url, :put, nil )
+       return status
      end
 
      #

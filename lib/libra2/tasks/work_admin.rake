@@ -23,12 +23,12 @@ task list_my_works: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_user if who.nil?
+  task who.to_sym do ; end
 
   GenericWork.all.each do |generic_work|
     dump_work( generic_work ) if generic_work.depositor == who
   end
 
-  task who.to_sym do ; end
 
 end
 
@@ -51,6 +51,8 @@ task del_my_works: :environment do |t, args|
 
    who = ARGV[ 1 ]
    who = default_user if who.nil?
+   task who.to_sym do ; end
+
    count = 0
 
    GenericWork.all.each do |generic_work|
@@ -63,7 +65,6 @@ task del_my_works: :environment do |t, args|
 
    puts "done" unless count == 0
    puts "Deleted #{count} work(s)"
-   task who.to_sym do ; end
 
 end
 
@@ -72,6 +73,7 @@ task create_new_work: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_user if who.nil?
+  task who.to_sym do ; end
 
   # lookup user and exit if error
   user = User.find_by_email( who )
@@ -92,7 +94,6 @@ task create_new_work: :environment do |t, args|
   upload_file( user, fileset, work, filename )
 
   dump_work work
-  task who.to_sym do ; end
 
 end
 
@@ -101,6 +102,7 @@ task create_new_thesis: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = default_user if who.nil?
+  task who.to_sym do ; end
 
   # lookup user and exit if error
   user = User.find_by_email( who )
@@ -121,7 +123,6 @@ task create_new_thesis: :environment do |t, args|
   #upload_file( user, fileset, work, filename )
 
   dump_work work
-  task who.to_sym do ; end
 
 end
 
