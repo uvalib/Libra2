@@ -65,7 +65,7 @@
        display: none;
     }
 
-    #transfers {
+    #transfers, #notifications {
       display: none;
     }
 }
@@ -101,6 +101,9 @@
 }
 .panel-user {
     .list-group-item:nth-child(2) { // Collections section on user profile.
+        display: none;
+    }
+    .list-group-item:nth-child(3) { // Works created section on user profile.
         display: none;
     }
     .list-group-item:nth-child(4) { // Followers section on user profile.
