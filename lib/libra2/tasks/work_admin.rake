@@ -29,7 +29,31 @@ task list_my_works: :environment do |t, args|
     dump_work( generic_work ) if generic_work.depositor == who
   end
 
+end
 
+desc "List work by id; must provide the work id"
+task list_by_id: :environment do |t, args|
+
+  work_id = ARGV[ 1 ]
+  if work_id.nil?
+    puts "ERROR: no work id specified, aborting"
+    next
+  end
+
+  task work_id.to_sym do ; end
+
+  work = nil
+  begin
+    work = GenericWork.find( work_id )
+  rescue => e
+  end
+
+  if work.nil?
+    puts "ERROR: work #{work_id} does not exist, aborting"
+    next
+  end
+
+  dump_work( work )
 end
 
 desc "Delete all works"
@@ -220,7 +244,8 @@ def dump_work( work )
   j = JSON.parse( work.to_json )
   j.keys.sort.each do |k|
      val = j[ k ]
-     if k.end_with?( "_id" ) == false && val.nil? == false && val.empty? == false
+     if k.end_with?( "_id" ) == false && val.nil? == false
+       next if val.respond_to?( :empty? ) && val.empty? == true
        puts " #{k} => #{val}"
      end
   end
