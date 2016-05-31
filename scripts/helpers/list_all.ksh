@@ -1,1 +1,1 @@
-rake libra2:list_all_works
+rake libra2:work:list_all_works

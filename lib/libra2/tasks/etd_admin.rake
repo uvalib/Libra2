@@ -11,6 +11,8 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 
 namespace :libra2 do
 
+  namespace :etd do
+
   default_last_id = "0"
   default_optional_statekey = "#{Rails.env.to_s}.deposit-opt.last"
   default_sis_statekey = "#{Rails.env.to_s}.deposit-sis.last"
@@ -316,7 +318,9 @@ namespace :libra2 do
     puts "*" * 30
   end
 
-end   # namespace
+  end   # namespace etd
+
+end   # namespace libra2
 
 #
 # end of file

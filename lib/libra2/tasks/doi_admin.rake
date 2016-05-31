@@ -6,6 +6,8 @@ require_dependency 'libra2/lib/serviceclient/entity_id_client'
 
 namespace :libra2 do
 
+  namespace :doi do
+
   desc "Create new DOI for work; must provide the work id"
   task assign_new_doi: :environment do |t, args|
 
@@ -62,7 +64,9 @@ namespace :libra2 do
 
   end
 
-end   # namespace
+  end   # namespace doi
+
+end   # namespace libra2
 
 #
 # end of file

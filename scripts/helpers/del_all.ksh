@@ -1,1 +1,1 @@
-rake libra2:del_all_works
+rake libra2:work:del_all_works

@@ -7,8 +7,10 @@ require_dependency 'libra2/lib/helpers/user_info'
 
 namespace :libra2 do
 
-  default_bulkfile = "data/user.data"
-  default_password = "password"
+namespace :user do
+
+default_bulkfile = "data/user.data"
+default_password = "password"
 
 desc "Delete all users"
 task del_all_users: :environment do |t, args|
@@ -210,7 +212,9 @@ def lookup_user( id )
   return( info )
 end
 
-end   # namespace
+end   # namespace user
+
+end   # namespace libra2
 
 #
 # end of file

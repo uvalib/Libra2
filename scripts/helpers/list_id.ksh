@@ -1,1 +1,1 @@
-rake libra2:list_by_id $1
+rake libra2:work:list_by_id $1

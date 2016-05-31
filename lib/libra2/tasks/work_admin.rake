@@ -7,6 +7,8 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 
 namespace :libra2 do
 
+namespace :work do
+
 default_user = "dpg3k@virginia.edu"
 sample_pdf_file = "data/sample.pdf"
 
@@ -297,7 +299,9 @@ def user_info_by_email( email )
     return user_info
 end
 
-end   # namespace
+end   # namespace work
+
+end   # namespace libra2
 
 #
 # end of file

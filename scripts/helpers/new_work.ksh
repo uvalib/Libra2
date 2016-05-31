@@ -1,1 +1,1 @@
-rake libra2:create_new_work $1
+rake libra2:work:create_new_work $1
