@@ -51,7 +51,7 @@ module ServiceClient
      #
      def remove( work )
        # not implemented
-       500
+       return 500
      end
 
      #
