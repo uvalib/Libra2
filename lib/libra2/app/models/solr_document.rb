@@ -95,11 +95,6 @@ class SolrDocument
     return draft[ 0 ] == 'true'
   end
 
-  def is_mine?( me )
-    return false if depositor.nil?
-    return depositor == me
-  end
-
   def self.custom_fields()
     return [
         { name: 'department', label: 'Department' },

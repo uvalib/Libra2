@@ -33,7 +33,7 @@ task list_my_works: :environment do |t, args|
 
   count = 0
   GenericWork.all.each do |generic_work|
-    if generic_work.depositor == who
+    if generic_work.is_mine?( who )
        dump_work( generic_work )
        count += 1
     end
@@ -91,7 +91,7 @@ task del_my_works: :environment do |t, args|
    count = 0
 
    GenericWork.all.each do |generic_work|
-     if generic_work.depositor == who
+     if generic_work.is_mine?( who )
         count += 1
         print "."
         generic_work.destroy

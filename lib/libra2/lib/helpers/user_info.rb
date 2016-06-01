@@ -30,6 +30,9 @@ module Helpers
         @office = json[ 'office'] || ''
         @phone = json[ 'phone'] || ''
         @email = json[ 'email'] || ''
+
+        # we have had some problems here; make sure all emails are lower case
+        @email = @email.downcase
       end
 
       def self.create( json )

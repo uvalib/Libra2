@@ -181,6 +181,12 @@ class GenericWork < ActiveFedora::Base
     return nil
   end
 
+  def is_mine?( me )
+    return false if depositor.nil?
+    #puts "===> GenericWork: depositor [#{depositor}] me [#{me}]"
+    return depositor == me
+  end
+
 end
 
 #

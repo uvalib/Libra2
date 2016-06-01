@@ -25,12 +25,13 @@ class DashboardController < ApplicationController
   def gather_dashboard_information
 
     @user = current_user
-
-    (@response, @document_list) = search_results( params )
+    (@response, @document_list) = search_results( q: "depositor_ssim:#{current_user.email}", rows: 100 )
 
     # a draft thesis owned by me
-    #@draft_theses = (@response.docs.map { |x| x if ( x.is_thesis? && x.is_draft? && x.is_mine?( current_user.user_key ) )}).select { |y| !y.nil? }
-    @draft_theses = (@response.docs.map { |x| x if ( x.is_thesis? && x.is_mine?( current_user.user_key ) )}).select { |y| !y.nil? }
+    #puts "===> query returns #{@response.docs.empty? ? "0" : @response.docs.size} item(s)"
+
+    @draft_theses = (@response.docs.map { |x| x if ( x.is_thesis? )}).select { |y| !y.nil? }
+    #puts "===> filtered returns #{@draft_theses.empty? ? "0" : @draft_theses.size} item(s)"
 
     @activity = current_user.all_user_activity(params[:since].blank? ? DateTime.now.to_i - Sufia.config.activity_to_show_default_seconds_since_now : params[:since].to_i)
     #@activity has a number of links built into it. Strip out all links, and when it is refers to a file, also change the file to its filename.
