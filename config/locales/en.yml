@@ -51,7 +51,8 @@ en:
   simple_form:
     hints:
       defaults:
-        notes: 'Please keep your notes to 300 words or fewer.'
+        notes: '' # This removes the "Please keep under 300 words" message.
+        description: '' # This removes the "Please keep under 300 words" message.
     labels:
       defaults:
         #creator: 'Author'
