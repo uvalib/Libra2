@@ -150,6 +150,10 @@ label[for="user_googleplus_handle"], #user_googleplus_handle {
 // Works pages
 //
 
+.social-media, .citations {
+    display: none;
+}
+
 #my_nav {
   a[href="/dashboard/collections"] {  // my collections tab in works display
     display: none;
