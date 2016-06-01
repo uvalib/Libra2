@@ -37,7 +37,7 @@ class GenericWork < ActiveFedora::Base
   THESIS_SOURCE_OPTIONAL = 'optional'.freeze
 
   # defaults
-  DEFAULT_INSTITUTION = 'University Of Virginia'.freeze
+  DEFAULT_INSTITUTION = 'University of Virginia'.freeze
   DEFAULT_PUBLISHER = DEFAULT_INSTITUTION
   DEFAULT_LICENSE = 'None'.freeze
 
