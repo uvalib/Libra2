@@ -228,10 +228,13 @@ def create_generic_work( work_type, user, title, description )
 
     print "getting DOI..."
     status, id = ServiceClient::EntityIdClient.instance.newid( w )
-    w.identifier = id if ServiceClient::EntityIdClient.instance.ok?( status )
-    puts "done" if ServiceClient::EntityIdClient.instance.ok?( status ) == true
-    puts "error" if ServiceClient::EntityIdClient.instance.ok?( status ) == false
-
+    if ServiceClient::EntityIdClient.instance.ok?( status )
+       w.identifier = id
+       w.permanent_url = w.doi_url( id )
+       puts "done"
+    else
+       puts "error"
+    end
   end
 
   return work

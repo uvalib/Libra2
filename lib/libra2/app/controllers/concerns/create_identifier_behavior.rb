@@ -12,7 +12,11 @@ module CreateIdentifierBehavior
     # get a DOI from the service
     def add_identifier
       status, id = ServiceClient::EntityIdClient.instance.newid( curation_concern )
-      curation_concern.identifier = id if ServiceClient::EntityIdClient.instance.ok?( status )
+      if ServiceClient::EntityIdClient.instance.ok?( status )
+        curation_concern.identifier = id
+        curation_concern.permanent_url = curation_concern.doi_url( id )
+      end
+
     end
 
 end

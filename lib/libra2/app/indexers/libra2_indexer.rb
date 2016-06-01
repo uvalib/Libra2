@@ -62,6 +62,11 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           'visibility_during_embargo',
                           object.visibility_during_embargo,
                           :searchable )
+
+      Solrizer.set_field( solr_doc,
+                          'permanent_url',
+                          object.permanent_url,
+                          :searchable )
     end
   end
 

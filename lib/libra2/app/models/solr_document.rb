@@ -85,6 +85,10 @@ class SolrDocument
     self[Solrizer.solr_name('admin_notes')]
   end
 
+  def permanent_url
+    self[Solrizer.solr_name('permanent_url')]
+  end
+
   def is_thesis?
     return false if work_type.nil?
     return work_type[ 0 ] == GenericWork::WORK_TYPE_THESIS

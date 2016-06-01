@@ -129,6 +129,10 @@ class GenericWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  # the permanent URL assigned to the work
+  property :permanent_url, predicate: ::RDF::URI('http://example.org/terms/permanent_url'), multiple: false do |index|
+  end
+
   # specify the indexer used to create the SOLR document
   def self.indexer
     ::Libra2Indexer
@@ -185,6 +189,11 @@ class GenericWork < ActiveFedora::Base
     return false if depositor.nil?
     #puts "===> GenericWork: depositor [#{depositor}] me [#{me}]"
     return depositor == me
+  end
+
+  def doi_url( doi )
+    return '' if doi.nil?
+    return "http://dx.doi.org/#{doi.gsub('doi:', '')}"
   end
 
 end
