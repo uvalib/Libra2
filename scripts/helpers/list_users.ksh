@@ -1,1 +1,1 @@
-rake libra2:list_all_users
+rake libra2:user:list_all_users

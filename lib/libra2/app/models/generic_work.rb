@@ -37,7 +37,7 @@ class GenericWork < ActiveFedora::Base
   THESIS_SOURCE_OPTIONAL = 'optional'.freeze
 
   # defaults
-  DEFAULT_INSTITUTION = 'University Of Virginia'.freeze
+  DEFAULT_INSTITUTION = 'University of Virginia'.freeze
   DEFAULT_PUBLISHER = DEFAULT_INSTITUTION
   DEFAULT_LICENSE = 'None'.freeze
 
@@ -161,6 +161,11 @@ class GenericWork < ActiveFedora::Base
     return license != DEFAULT_LICENSE
   end
 
+  def is_draft?
+    return false if draft.nil?
+    return draft == 'true'
+  end
+
   def is_sis_thesis?
     return false if work_source.nil?
     return work_source.start_with? GenericWork::THESIS_SOURCE_SIS
@@ -172,7 +177,7 @@ class GenericWork < ActiveFedora::Base
   end
 
   def sis_authorization_id
-    return work_source.split( ":" )[ 1 ] if is_sis_thesis?
+    return work_source.split( ':' )[ 1 ] if is_sis_thesis?
     return nil
   end
 

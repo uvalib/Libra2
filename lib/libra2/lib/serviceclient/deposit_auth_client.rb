@@ -43,6 +43,26 @@ module ServiceClient
      end
 
      #
+     # initiate a SIS import
+     #
+     def import
+       url = "#{self.url}/import?auth=#{self.authtoken}"
+       status, response = rest_send( url, :post, nil )
+       return status, response['count'] if ok?( status ) && response['count']
+       return status, 0
+     end
+
+     #
+     # initiate a SIS export
+     #
+     def export
+       url = "#{self.url}/export?auth=#{self.authtoken}"
+       status, response = rest_send( url, :post, nil )
+       return status, response['count'] if ok?( status ) && response['count']
+       return status, 0
+     end
+
+     #
      # helpers
      #
 

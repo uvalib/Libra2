@@ -28,13 +28,4 @@ class ThesisMailers < ActionMailer::Base
 		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your thesis")
 	end
 
-	def thesis_submitted_adviser( work, advisee, adviser )
-		@work = work
-		@advisee = advisee
-		@adviser = adviser
-		@doi_link = doi_link(work)
-		#TODO-PER: Get the adviser to mail to.
-		@availability = visibility_string(work)
-		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your advisees thesis")
-	end
 end
