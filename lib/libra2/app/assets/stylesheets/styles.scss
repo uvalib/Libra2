@@ -58,3 +58,30 @@
 		white-space: nowrap;
 	}
 }
+
+.input-group .person-input {
+	border: 1px solid #dddddd;
+	border-radius: 4px;
+	padding: 10px;
+	margin-bottom: 16px;
+
+	input {
+		width: 200px;
+		margin-bottom: 16px;
+	}
+
+	.field_help {
+		font-style: italic;
+		color: #aaaaaa;
+		margin-left: 210px;
+		margin-top: -26px;
+	}
+}
+
+.group-row {
+	float: left;
+
+	&:nth-child(3) {
+		margin-left: 10px;
+	}
+}
