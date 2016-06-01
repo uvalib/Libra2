@@ -5,6 +5,7 @@
 	<div id="bd" class="no-search">
 		<div id="main" class="clearfix">
 			<div id="main_content" role="main" class="col-xs-12 col-sm-9 col-sm-push-3">
+				<span class='Z3988' title='rft.btitle=<%= CGI.escape(@work[:title].join("")) %>'></span>
 				<div id="document">
 					<h1><%= @work[:title].join("<br>") %></h1>
 					<%= display_if_non_blank("Author:", display_author(@work)) %>
