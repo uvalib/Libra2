@@ -9,7 +9,7 @@ namespace :libra2 do
   namespace :email do
 
   desc "Resend the 'you can submit' email; must provide the computing id"
-  task can_submit: :environment do |t, args|
+  task send_can_submit: :environment do |t, args|
 
     computing_id = ARGV[ 1 ]
     if computing_id.nil?
@@ -32,7 +32,7 @@ namespace :libra2 do
   end
 
   desc "Resend the 'thank you for submitting' email; must provide the work id"
-  task did_submit: :environment do |t, args|
+  task send_did_submit: :environment do |t, args|
 
     work_id = ARGV[ 1 ]
     if work_id.nil?
