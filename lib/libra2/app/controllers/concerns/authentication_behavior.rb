@@ -2,12 +2,12 @@ module AuthenticationBehavior
 	extend ActiveSupport::Concern
 
 	included do
-		before_action :require_netbadge
+		before_action :require_auth
 	end
 
 	private
 
-	def require_netbadge
+	def require_auth
 
     #
     # if the user is already signed in, then we are good...

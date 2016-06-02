@@ -33,7 +33,7 @@
 							<li><%= link_to 'View Profile', sufia.profile_path(current_user) %></li>
 			        <li><%= link_to 'Edit Profile', sufia.edit_profile_path(current_user) %></li>
 			        <li role="separator" class="divider"></li>
-			        <li><%= link_to 'Sign out', main_app.destroy_user_session_path %></li>
+			        <li><%= link_to 'Sign out', logout_url %></li>
 	          </ul>
 	        </li>
 				<% else %>
