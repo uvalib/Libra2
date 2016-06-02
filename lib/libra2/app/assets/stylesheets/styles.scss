@@ -112,3 +112,27 @@
 	color: #aaaaaa;
 	margin: 0 0 10px 16px;
 }
+
+.requirements {
+	h3 {
+		margin: 0;
+		padding: 5px;
+		font-size: 12pt;
+	}
+	ul.requirements {
+		list-style-type: none;
+		padding-left: 8px;
+	}
+	.complete::before {
+		content: "\e013";
+		color: #5cb85c;
+		font-family: 'Glyphicons Halflings';
+		padding-right: 5px;
+	}
+	.incomplete::before {
+		content: "\e101";
+		color: #d9534f;
+		font-family: 'Glyphicons Halflings';
+		padding-right: 5px;
+	}
+}
