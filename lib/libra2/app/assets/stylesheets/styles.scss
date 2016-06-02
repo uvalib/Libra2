@@ -7,6 +7,10 @@
 	margin-left: 25px;
 }
 
+.form-instructions {
+	padding-top: 10px;
+}
+
 #fileupload {
 	padding-top: 10px;
 
@@ -70,19 +74,28 @@
 	margin-bottom: 16px;
 
 	input {
-		width: 200px;
+		width: 222px;
 		margin-bottom: 16px;
 	}
 
 	.field_help {
-		margin-left: 210px;
+		margin-left: 233px;
+	}
+}
+
+.author-fields {
+	label {
+		float: left;
+	}
+	input {
+		clear: both;
 	}
 }
 
 .field_help {
 	font-style: italic;
 	color: #aaaaaa;
-	margin-left: 220px;
+	margin-left: 244px;
 	margin-top: -26px;
 }
 

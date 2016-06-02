@@ -1,19 +1,33 @@
-
         <div class="form-instructions">
           <p>The more descriptive information you provide the better we can serve your needs.</p>
-          <div class="clearfix">
-            <small class="pull-left"><span class="error">*</span> required</small>
-          </div>
         </div>
         <div class="base-terms">
-          <% f.object.primary_terms.each do |term| %>
-            <%= render_edit_field_partial(term, f: f) %>
-          <% end %>
-        </div>
-        <div id="extended-terms">
-          <% f.object.secondary_terms.each do |term| %>
-            <%= render_edit_field_partial(term, f: f) %>
-          <% end %>
-          <%= render 'form_media', f: f %>
+            <%= render_edit_field_partial(:title, f: f) %>
+            <div class="form-group input-group">
+                <label class="control-label">Author</label>
+                <div class="person-input author-fields">
+                    <div class="group-row"></div>
+                    <div class="group-row">
+                        <%= render_edit_field_partial(:author_first_name, f: f) %>
+                        <%= render_edit_field_partial(:department, f: f) %>
+                    </div>
+                    <div class="group-row">
+                        <%= render_edit_field_partial(:author_last_name, f: f) %>
+                        <%= render_edit_field_partial(:author_institution, f: f) %>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+            <%= render_edit_field_partial(:contributor, f: f) %>
+            <%= render_edit_field_partial(:description, f: f) %>
+            <%= render_edit_field_partial(:rights, f: f) %>
+            <%= render_edit_field_partial(:keyword, f: f) %>
+            <%= render_edit_field_partial(:language, f: f) %>
+            <%= render_edit_field_partial(:related_url, f: f) %>
+            <%= render_edit_field_partial(:sponsoring_agency, f: f) %>
+            <%= render_edit_field_partial(:notes, f: f) %>
+            <%= render_edit_field_partial(:degree, f: f) %>
+            <%= render_edit_field_partial(:date_created, f: f) %>
+           <%= render 'form_media', f: f %>
         </div>
 
