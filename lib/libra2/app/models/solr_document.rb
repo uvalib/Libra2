@@ -89,6 +89,28 @@ class SolrDocument
     self[Solrizer.solr_name('permanent_url')]
   end
 
+  def contributor
+    first_name = contributor_first_name()
+    last_name = contributor_last_name()
+    department = contributor_department()
+    institution = contributor_institution()
+    advisers = []
+    # these should all be the same length, but we're making sure anyway.
+    len = 1000000
+    len = first_name.length if first_name.length < len
+    len = last_name.length if last_name.length < len
+    len = department.length if department.length < len
+    len = institution.length if institution.length < len
+    len.times { |i|
+      advisers.push("First Name: #{first_name[i]}<br>Last Name: #{last_name[i]}<br>Department: #{department[i]}<br>Institution: #{institution[i]}")
+    }
+    return advisers.join("<br>")
+  end
+
+  def contributor_computing_id
+    self[Solrizer.solr_name('contributor_computing_id')]
+  end
+
   def contributor_first_name
     self[Solrizer.solr_name('contributor_first_name')]
   end
