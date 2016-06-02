@@ -7,6 +7,10 @@
 	margin-left: 25px;
 }
 
+.form-instructions {
+	padding-top: 10px;
+}
+
 #fileupload {
 	padding-top: 10px;
 
@@ -70,16 +74,29 @@
 	margin-bottom: 16px;
 
 	input {
-		width: 200px;
+		width: 222px;
 		margin-bottom: 16px;
 	}
 
 	.field_help {
-		font-style: italic;
-		color: #aaaaaa;
-		margin-left: 210px;
-		margin-top: -26px;
+		margin-left: 233px;
 	}
+}
+
+.author-fields {
+	label {
+		float: left;
+	}
+	input {
+		clear: both;
+	}
+}
+
+.field_help {
+	font-style: italic;
+	color: #aaaaaa;
+	margin-left: 244px;
+	margin-top: -26px;
 }
 
 .group-row {
@@ -94,4 +111,28 @@
 	font-style: italic;
 	color: #aaaaaa;
 	margin: 0 0 10px 16px;
+}
+
+.requirements {
+	h3 {
+		margin: 0;
+		padding: 5px;
+		font-size: 12pt;
+	}
+	ul.requirements {
+		list-style-type: none;
+		padding-left: 8px;
+	}
+	.complete::before {
+		content: "\e013";
+		color: #5cb85c;
+		font-family: 'Glyphicons Halflings';
+		padding-right: 5px;
+	}
+	.incomplete::before {
+		content: "\e101";
+		color: #d9534f;
+		font-family: 'Glyphicons Halflings';
+		padding-right: 5px;
+	}
 }

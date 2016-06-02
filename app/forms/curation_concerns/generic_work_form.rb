@@ -22,6 +22,7 @@ module CurationConcerns
         :title,
         :author_first_name,
         :author_last_name,
+        :department,
         :author_institution,
 
         :contributor,
@@ -34,7 +35,6 @@ module CurationConcerns
         :sponsoring_agency,
         :notes,
 
-        :department,
         :degree,
 
         :date_created,

@@ -8,13 +8,14 @@ class PersonInput < MultiValueInput
 		input_html_classes.unshift('string')
 		input_html_options[:name] ||= "#{object_name}[#{attribute_name}][]"
 
-		outer_wrapper do
+		ret = outer_wrapper do
 			buffer_each(collection) do |value, index|
 				inner_wrapper do
 					build_field(value, index)
 				end
 			end
 		end
+		return content_tag(:div, "Enter your chair as the first adviser.", { class: "field_help" }) + raw(ret)
 	end
 
 	private
