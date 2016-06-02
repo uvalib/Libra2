@@ -60,7 +60,7 @@ class DashboardController < ApplicationController
 
     # if we are not in development, redirect to ship logout url
     if ENV['RAILS_ENV'] != 'development'
-      redirect_to '/Shibboleth.sso/Logout?return=http://libra.virginia.edu'
+      redirect_to "#{main_app.root_url}Shibboleth.sso/Logout?return=http://libra.virginia.edu"
     else
       redirect_to '/'
     end
