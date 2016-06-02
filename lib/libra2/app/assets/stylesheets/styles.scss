@@ -75,11 +75,15 @@
 	}
 
 	.field_help {
-		font-style: italic;
-		color: #aaaaaa;
 		margin-left: 210px;
-		margin-top: -26px;
 	}
+}
+
+.field_help {
+	font-style: italic;
+	color: #aaaaaa;
+	margin-left: 220px;
+	margin-top: -26px;
 }
 
 .group-row {
