@@ -89,6 +89,22 @@ class SolrDocument
     self[Solrizer.solr_name('permanent_url')]
   end
 
+  def contributor_first_name
+    self[Solrizer.solr_name('contributor_first_name')]
+  end
+
+  def contributor_last_name
+    self[Solrizer.solr_name('contributor_last_name')]
+  end
+
+  def contributor_institution
+    self[Solrizer.solr_name('contributor_institution')]
+  end
+
+  def contributor_department
+    self[Solrizer.solr_name('contributor_department')]
+  end
+
   def is_thesis?
     return false if work_type.nil?
     return work_type[ 0 ] == GenericWork::WORK_TYPE_THESIS
