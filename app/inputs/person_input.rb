@@ -31,7 +31,7 @@ class PersonInput < MultiValueInput
 	def build_field(value, index)
 		els = []
 
-		input = create_input("Computing ID", "U.Va. only. Entering a Computing ID will automatically fill the remaining fields for this person.")
+		input = create_input("Computing ID", "Enter a UVa Computing ID to automatically fill the remaining fields for this person.")
 		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_computing_id][][person]" rel="person_0_computing_id" type="hidden" value="0">
 		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_computing_id][]" rel="person_0_computing_id" type="hidden" value="computing_id">
 		# <span class="editable-container field" id="person_0_computing_id-container">
