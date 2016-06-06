@@ -1,0 +1,5 @@
+<% if f.object.class.multiple? key %>
+	<%= f.input key, as: :multi_value, disabled: f.object.readonly?(key), input_html: { class: 'form-control' }, required: f.object.required?(key), label: "Related Link(s)" %>
+<% else %>
+	<%= f.input key, required: f.object.required?(key), disabled: f.object.readonly?(key), label: "Related Link(s)" %>
+<% end %>
