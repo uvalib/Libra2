@@ -96,15 +96,24 @@ class SolrDocument
     institution = contributor_institution()
     advisers = []
     # these should all be the same length, but we're making sure anyway.
-    len = 1000000
-    len = first_name.length if first_name.length < len
-    len = last_name.length if last_name.length < len
-    len = department.length if department.length < len
-    len = institution.length if institution.length < len
+    if first_name.blank? || last_name.blank? || department.blank? || institution.blank?
+      len = 0
+    else
+      len = 1000000
+
+      len = first_name.length if first_name.length < len
+      len = last_name.length if last_name.length < len
+      len = department.length if department.length < len
+      len = institution.length if institution.length < len
+    end
     len.times { |i|
-      advisers.push("First Name: #{first_name[i]}<br>Last Name: #{last_name[i]}<br>Department: #{department[i]}<br>Institution: #{institution[i]}")
+      advisers.push("First Name: #{first_name[i]}")
+      advisers.push("Last Name: #{last_name[i]}")
+      advisers.push("Department: #{department[i]}")
+      advisers.push("Institution: #{institution[i]}")
+      advisers.push("---") if i < len - 1
     }
-    return advisers.join("<br>")
+    return advisers
   end
 
   def contributor_computing_id
