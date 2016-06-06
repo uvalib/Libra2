@@ -22,6 +22,9 @@ class SubmissionController < ApplicationController
 					date: file.date_uploaded
 				})
 			}
+			@files = @files.sort { |a,b|
+				a[:title].downcase <=> b[:title].downcase
+			}
 			@is_preview = @work.draft == "true"
 		else
 			redirect_to "/404.html", status: 404
