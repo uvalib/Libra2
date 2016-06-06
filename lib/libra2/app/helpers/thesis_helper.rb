@@ -18,4 +18,35 @@ module ThesisHelper
     return content_tag(:tr, row, {})
   end
 
+    def requirement_class(requirements, type)
+      klass = "incomplete"
+      if requirements.present?
+        klass = requirements[type] ? "complete" : "incomplete"
+      end
+        return klass
+    end
+
+  def proof_link(presenter, requirements)
+    if proof_is_readonly(requirements)
+      edit_polymorphic_path([main_app, presenter])
+    else
+      locally_hosted_work_url(presenter.solr_document.id)
+    end
+  end
+
+    def proof_is_readonly(requirements)
+      return !requirements[:files] || !requirements[:metadata]
+    end
+
+    def proof_tooltip(requirements)
+      if requirements[:files] && requirements[:metadata]
+        return "You have entered the required information. Click to continue the submission process."
+      elsif requirements[:files]
+          return "There are some required fields missing. Before continuing the submission process, click \"Edit\" to enter the missing data."
+      elsif requirements[:metadata]
+          return "You must upload at least one file to satisfy the requirements for submission. Click \"Edit\" to upload your files."
+      else
+          return "Before continuing the submission process, click \"Edit\" to enter all required fields and upload your files."
+      end
+    end
 end

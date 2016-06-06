@@ -2,6 +2,7 @@ module CurationConcerns
 
   class GenericWorksController < ApplicationController
     after_action :save_file_display_name
+    before_action :set_requirements, only: [ :show ]
 
     def save_file_display_name
       # TODO-PER: This is a hack to try to figure out how to save the file's display title. There is probably a better way to do this.
@@ -26,6 +27,27 @@ module CurationConcerns
           end
         end
       end
+    end
+
+    def set_requirements
+      has_files = false
+      if presenter.file_set_presenters.present?
+        has_files = presenter.file_set_presenters.length > 0
+      end
+      metadata = true
+      metadata = false if presenter.title.blank?
+      metadata = false if presenter.author_first_name.blank?
+      metadata = false if presenter.author_last_name.blank?
+      metadata = false if presenter.department.blank?
+      metadata = false if presenter.author_institution.blank?
+      metadata = false if presenter.contributor.blank?
+      metadata = false if presenter.description.blank?
+      metadata = false if presenter.rights.blank?
+      metadata = false if presenter.degree.blank?
+      @requirements = {
+          files: has_files,
+          metadata: metadata
+      }
     end
 
     include CurationConcerns::CurationConcernController
