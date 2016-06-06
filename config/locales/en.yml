@@ -59,7 +59,7 @@ en:
         author_first_name: 'First Name'
         author_last_name: 'Last Name'
         author_institution: 'Institution'
-        contributor: 'Adviser'
+        contributor: 'Advisor'
         description: 'Abstract'
         keyword: 'Keywords'
         related_url: 'Related Links'

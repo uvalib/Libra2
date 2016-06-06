@@ -24,6 +24,9 @@ body.public {
 		font-weight: bold;
 		margin-right: 4px;
 	}
+	.document-value {
+		display: inline-flex;
+	}
 
 	#sidebar {
 		overflow-wrap: break-word;

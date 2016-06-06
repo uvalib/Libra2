@@ -53,6 +53,29 @@ module PublicHelper
 		return "#{work.author_last_name}, #{work.author_first_name}"
 	end
 
+	def display_advisors(work)
+		first_name = work.contributor_first_name
+		last_name = work.contributor_last_name
+		department = work.contributor_department
+		institution = work.contributor_institution
+		advisors = []
+		# these should all be the same length, but we're making sure anyway.
+		if first_name.blank? || last_name.blank? || department.blank? || institution.blank?
+			len = 0
+		else
+			len = 1000000
+
+			len = first_name.length if first_name.length < len
+			len = last_name.length if last_name.length < len
+			len = department.length if department.length < len
+			len = institution.length if institution.length < len
+		end
+		len.times { |i|
+			advisors.push("#{last_name[i]}, #{first_name[i]} #{department[i]} #{institution[i]}")
+		}
+		return raw(advisors.join("<br>"))
+	end
+
 	def embargo_notice(work)
 		visibility = work.visibility
 		return "" if visibility == "open"
@@ -73,7 +96,7 @@ module PublicHelper
 
 	def display_if_non_blank(label, value)
 		return "" if value.blank?
-		row = raw(content_tag(:span, label, { class: "document-label" }) + value)
+		row = raw(content_tag(:span, label, { class: "document-label" }) + content_tag(:span, value, { class: "document-value"}))
 		return content_tag(:div, row, { class: "document-row" })
 	end
 end
