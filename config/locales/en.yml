@@ -32,7 +32,7 @@ en:
       authenticated:
         text: 'University of Virginia'
       embargo:
-        label_html: '<span class="label label-warning">Restricted To Uva Only</span>'
+        label_html: '<span class="label label-warning">Restricted To UVA Only</span>'
       embargo_engineering:
         label_html: '<span class="label label-warning">Restricted To Abstract</span>'
       after_embargo:

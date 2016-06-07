@@ -38,7 +38,7 @@ class PersonInput < MultiValueInput
 		department = f[:contributor_department][index]
 		institution = f[:contributor_institution][index]
 
-		input = create_input("Computing ID", "contributor_computing_id", computing_id, index, "Enter a UVa Computing ID to automatically fill the remaining fields for this person.")
+		input = create_input("Computing ID", "contributor_computing_id", computing_id, index, "Enter a UVA Computing ID to automatically fill the remaining fields for this person.")
 		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_computing_id][][person]" rel="person_0_computing_id" type="hidden" value="0">
 		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_computing_id][]" rel="person_0_computing_id" type="hidden" value="computing_id">
 		# <span class="editable-container field" id="person_0_computing_id-container">

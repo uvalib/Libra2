@@ -87,7 +87,7 @@ class GenericWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  # the institution name of the author; always UVa for thesis
+  # the institution name of the author; always UVA for thesis
   property :author_institution, predicate: ::RDF::URI('http://example.org/terms/institution'), multiple: false do |index|
     index.as :stored_searchable, :facetable
   end

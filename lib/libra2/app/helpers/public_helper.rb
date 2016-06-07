@@ -82,7 +82,7 @@ module PublicHelper
 		# TODO-PER: when the embargo works, then finish wiring this up.
 		#embargo_period = work.embargo_period
 		#embargo_release_date = work.embargo_release_date
-		restricted_area = "to UVa"
+		restricted_area = "to UVA"
 		release_date = Time.now + 1.year
 		return "This item is restricted #{restricted_area} until #{file_date(release_date)}."
 	end
