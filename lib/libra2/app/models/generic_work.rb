@@ -10,23 +10,23 @@ class GenericWork < ActiveFedora::Base
   self.human_readable_type = 'Generic Work'
 
   # validations required for model integrity
-  validates :title, presence: { message: 'Your work must have a title.' }
-
-  validates :creator, presence: { message: 'Your work must have an author.' }
-  validates :author_email, presence: { message: 'Your work must have an author email address.' }
-  validates :author_first_name, presence: { message: 'Your work must have an author first name.' }
-  validates :author_last_name, presence: { message: 'Your work must have an author last name.' }
-  validates :author_institution, presence: { message: 'Your work must have an author institution.' }
-
-  validates :contributor, presence: { message: 'Your work must have a contributor.' }
-  validates :description, presence: { message: 'Your work must have a description.' }
-  validates :publisher, presence: { message: 'Your work must have a publisher.' }
-  #validates :date_created, presence: { message: 'Your work must have a creation date.' }
-  validates :rights, presence: { message: 'Your work must have a rights assignment.' }
-  validates :identifier, presence: { message: 'Your work must have an identifier.' }
-  validates :department, presence: { message: 'Your work must have a department.' }
-  validates :degree, presence: { message: 'Your work must have a degree.' }
-  validates :license, presence: { message: 'Your work must have a license acceptance.' }
+  # validates :title, presence: { message: 'Your work must have a title.' }
+  #
+  # validates :creator, presence: { message: 'Your work must have an author.' }
+  # validates :author_email, presence: { message: 'Your work must have an author email address.' }
+  # validates :author_first_name, presence: { message: 'Your work must have an author first name.' }
+  # validates :author_last_name, presence: { message: 'Your work must have an author last name.' }
+  # validates :author_institution, presence: { message: 'Your work must have an author institution.' }
+  #
+  # validates :contributor, presence: { message: 'Your work must have a contributor.' }
+  # validates :description, presence: { message: 'Your work must have a description.' }
+  # validates :publisher, presence: { message: 'Your work must have a publisher.' }
+  # #validates :date_created, presence: { message: 'Your work must have a creation date.' }
+  # validates :rights, presence: { message: 'Your work must have a rights assignment.' }
+  # validates :identifier, presence: { message: 'Your work must have an identifier.' }
+  # validates :department, presence: { message: 'Your work must have a department.' }
+  # validates :degree, presence: { message: 'Your work must have a degree.' }
+  # validates :license, presence: { message: 'Your work must have a license acceptance.' }
 
   # work type definitions
   WORK_TYPE_GENERIC = 'generic_work'.freeze
