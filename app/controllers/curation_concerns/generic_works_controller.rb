@@ -21,8 +21,11 @@ module CurationConcerns
 
           newly_uploaded_files_label = params['newly_uploaded_files_label']
           if newly_uploaded_files_label.present?
+            offset = previously_uploaded_files_label.present? ? previously_uploaded_files_label.length : 0
             newly_uploaded_files_label.each_with_index { |label, i|
-
+              file_attributes = { title: [ label ]}
+              actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[offset+i], current_user)
+              actor.update_metadata(file_attributes)
             }
           end
         end
