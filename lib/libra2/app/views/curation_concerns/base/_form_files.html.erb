@@ -44,7 +44,7 @@
 			<table role="presentation" class="table table-striped uploaded-files">
 				<tbody>
 				<% f.object.file_sets.each do |file| %>
-					<tr>
+					<tr data-file-id="<%= file.id %>">
 						<td><span class="preview"></span></td>
 						<td>
 							<span class="file-name"><%= file.solr_document.label %></span><br>
@@ -53,7 +53,7 @@
 						<td>
 						</td>
 						<td>
-							<button class="btn btn-danger delete" data-type="DELETE" data-url="TODO/uploads/12">
+							<button class="btn btn-danger delete delete-previous-file" data-type="DELETE" data-url="/concern/file_sets/<%= file.id %>.json">
 							<i class="glyphicon glyphicon-trash"></i>
 							<span>Delete</span>
 						</button>
