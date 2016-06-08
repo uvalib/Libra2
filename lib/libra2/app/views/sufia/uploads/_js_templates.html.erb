@@ -108,7 +108,7 @@
                 {% } else { %}
                     <span class="file-name">{%=file.name%}</span>
                 {% } %}
-                <br><span class="file-label">Display Label:</span><input type="text" class="string optional form-control" name="newly_uploaded_files_label[]" value="{%=file.name%}" />
+                <br><span class="file-label">Display Label:</span><input type="text" class="string optional form-control" name="newly_uploaded_files_label[]" value="{%=createDisplayLabel() %}" />
                 <input type="hidden" name="uploaded_files[]" value="{%=file.id%}">
             </p>
             {% if (file.error) { %}
