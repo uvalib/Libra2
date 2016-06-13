@@ -71,7 +71,7 @@ module PublicHelper
 			len = institution.length if institution.length < len
 		end
 		len.times { |i|
-			advisors.push("#{last_name[i]}, #{first_name[i]} #{department[i]} #{institution[i]}")
+			advisors.push("#{last_name[i]}, #{first_name[i]}, #{department[i]}, #{institution[i]}")
 		}
 		return raw(advisors.join("<br>"))
 	end
