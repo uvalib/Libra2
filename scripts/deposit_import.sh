@@ -47,7 +47,7 @@ while true; do
    logit "Beginning optional deposit import sequence"
 
    # do the optional import
-   rake libra2:etd:ingest_optional_etd_deposits $OPT_SNAPSHOT >> $LOGGER 2>&1
+   bundle exec rake libra2:etd:ingest_optional_etd_deposits $OPT_SNAPSHOT >> $LOGGER 2>&1
    res=$?
 
    # ending message
@@ -57,7 +57,7 @@ while true; do
    logit "Beginning SIS deposit import sequence"
 
    # do the SIS import
-   rake libra2:etd:ingest_sis_etd_deposits $SIS_SNAPSHOT >> $LOGGER 2>&1
+   bundle exec rake libra2:etd:ingest_sis_etd_deposits $SIS_SNAPSHOT >> $LOGGER 2>&1
    res=$?
 
    # ending message
