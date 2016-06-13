@@ -6,7 +6,7 @@ fi
 # set the definitions
 INSTANCE=libra2
 
-CID=$(docker ps -f name=$INSTANCE|grep -v jetty|tail -1|awk '{print $1}')
+CID=$(docker ps -f name=$INSTANCE|grep -v jetty|grep -v wrapper|tail -1|awk '{print $1}')
 if [ -n "$CID" ]; then
    docker exec -it $CID /bin/bash
 else
