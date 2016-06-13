@@ -46,8 +46,7 @@ group :development do
   gem 'spring'
 end
 
-#gem 'sufia', git: 'https://github.com/projecthydra/sufia.git', branch: 'master'
-gem 'sufia', github: 'projecthydra/sufia', ref: '267701260b3292443407f138b71ffc7df11252ae'
+gem 'sufia', '7.0.0.beta1'
 
 group :development, :test do
   gem 'solr_wrapper', '>= 0.3'

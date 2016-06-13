@@ -1,6 +1,6 @@
 development:
-  url: <%= "#{ENV['SOLR_URL']}/development" || "http://127.0.0.1:#{ENV['SOLR_TEST_PORT'] || 8983}/solr/hydra-development" %>
+  url: <%= "#{ENV['SOLR_URL']}/hydra-development" || "http://127.0.0.1:#{ENV['SOLR_TEST_PORT'] || 8983}/solr/hydra-development" %>
 test:
-  url: <%= "#{ENV['SOLR_URL']}/test" || "http://127.0.0.1:#{ENV['SOLR_TEST_PORT'] || 8983}/solr/hydra-test" %>
+  url: <%= "#{ENV['SOLR_URL']}/hydra-development" || "http://127.0.0.1:#{ENV['SOLR_TEST_PORT'] || 8983}/solr/hydra-test" %>
 production:
-  url: <%= "#{ENV['SOLR_URL']}/test" || "http://your.production.server:8080/bl_solr/core0" %>
+  url: <%= "#{ENV['SOLR_URL']}/hydra-development" || "http://your.production.server:8080/bl_solr/core0" %>
