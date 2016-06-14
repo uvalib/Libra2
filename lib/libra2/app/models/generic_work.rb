@@ -135,7 +135,7 @@ class GenericWork < ActiveFedora::Base
   end
 
   # the license assigned to the work
-  property :embargo_date, predicate: ::RDF::URI('http://example.org/terms/embargo_date'), multiple: false do |index|
+  property :embargo_end_date, predicate: ::RDF::URI('http://example.org/terms/embargo_end_date'), multiple: false do |index|
     index.as :stored_searchable
   end
 

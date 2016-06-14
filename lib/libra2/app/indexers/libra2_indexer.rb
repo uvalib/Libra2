@@ -64,8 +64,8 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           :searchable )
 
       Solrizer.set_field( solr_doc,
-                          'embargo_date',
-                          object.embargo_date,
+                          'embargo_end_date',
+                          object.embargo_end_date,
                           :searchable )
 
       Solrizer.set_field( solr_doc,

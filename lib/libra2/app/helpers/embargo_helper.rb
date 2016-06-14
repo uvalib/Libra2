@@ -8,7 +8,7 @@ module EmbargoHelper
 		if work.is_draft?
 			return work.resolve_embargo_date()
 		else
-			return work.embargo_date
+			return work.embargo_end_date
 		end
 	end
 
