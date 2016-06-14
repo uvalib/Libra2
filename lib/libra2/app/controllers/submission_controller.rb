@@ -6,13 +6,13 @@ class SubmissionController < ApplicationController
 	include AuthenticationHelper
   include UrlHelper
 
-	before_action :authenticate_user!, except: [ 'development_login']
+	before_action :authenticate_user!, only: [ 'submit']
 	layout "public"
 
 	def public_view
 		@id = params[:id]
 		@work = get_work_item
-		if @work.present?
+		if can_view(@work)
 			file_sets = @work.file_sets
 			@files = []
 			file_sets.each { |file|
@@ -27,7 +27,7 @@ class SubmissionController < ApplicationController
 			}
 			@is_preview = @work.draft == "true"
 		else
-			redirect_to "/404.html", status: 404
+			raise CanCan::AccessDenied.new(nil, :show)
 		end
 	end
 
@@ -35,6 +35,9 @@ class SubmissionController < ApplicationController
 		id = params[:id]
     work = get_work_item
 		work.draft = false
+		if work.embargo_state != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+			work.embargo_date = work.resolve_embargo_date()
+		end
 		work.save!
 
 		# send the author email that they have successfully completed things
@@ -103,4 +106,10 @@ class SubmissionController < ApplicationController
     return nil
   end
 
+	def can_view(work)
+		# can view if the work exists and is published, or if it is draft and the owner is logged in.
+		return false if !work.present? # bad URL passed in: the work doesn't exist.
+		return true if current_user.present? && work.author_email == current_user.email # this work is owned by the current user.
+		return !work.is_draft? # This work has been published.
+	end
 end

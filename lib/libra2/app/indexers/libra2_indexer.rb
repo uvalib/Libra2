@@ -59,6 +59,16 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           :searchable )
 
       Solrizer.set_field( solr_doc,
+                          'embargo_state',
+                          object.embargo_state,
+                          :searchable )
+
+      Solrizer.set_field( solr_doc,
+                          'embargo_date',
+                          object.embargo_date,
+                          :searchable )
+
+      Solrizer.set_field( solr_doc,
                           'visibility_during_embargo',
                           object.visibility_during_embargo,
                           :searchable )
