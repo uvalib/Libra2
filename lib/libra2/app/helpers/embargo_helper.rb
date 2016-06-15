@@ -14,7 +14,7 @@ module EmbargoHelper
 
 	def is_under_embargo(work)
 		return false if work.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-		return embargo_release_date(work) > Time.now
+		return embargo_release_date(work) > @today
 	end
 
 	def is_engineering_embargo(work)
@@ -38,6 +38,10 @@ module EmbargoHelper
 	end
 
 	def is_on_grounds()
+		if @grounds_override
+			return true if @grounds_override == 'on'
+			return false if @grounds_override == 'off'
+		end
 		return true if uva_ip_blocks.any?{ |block| block.include?(request.remote_ip) }
 		return false
 	end
@@ -80,5 +84,13 @@ module EmbargoHelper
 
 		restricted_area = is_engineering_embargo(work) ? "abstract view" : "UVA"
 		return "This item is restricted to #{restricted_area} until #{file_date(embargo_release_date(work))}."
+	end
+
+	def create_radio(name, value, label, is_default = false)
+		attr = { type: "radio", name: name, value: value}
+		if params[name.to_sym] == value || (params[name.to_sym].nil? && is_default)
+			attr[:checked] = 'checked'
+		end
+		return content_tag(:input, ' ' + label, attr)
 	end
 end

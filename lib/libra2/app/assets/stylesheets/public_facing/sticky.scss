@@ -71,4 +71,28 @@ body.public {
 		right: -10px;
 	}
 
+	.debug-controls {
+		width: 260px;
+		height: 320px;
+		background: pink;
+		position: absolute;
+		left: 25px;
+		top: 77px;
+		z-index: 1000;
+		padding: 0 10px;
+		box-shadow: 1px 1px 5px #889;
+		opacity: 0.9;
+
+		h1 {
+			text-align: center;
+		}
+
+		input[type="radio"] {
+			margin-left: 30px;
+		}
+
+		button {
+			margin: 10px 0 0 60px;
+		}
+	}
 }

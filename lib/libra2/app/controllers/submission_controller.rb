@@ -26,6 +26,15 @@ class SubmissionController < ApplicationController
 				a[:title].downcase <=> b[:title].downcase
 			}
 			@is_preview = @work.draft == "true"
+			@today = Time.now
+			@grounds_override = false
+			if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
+				@grounds_override = params[:grounds] if params[:grounds].present?
+				if params[:time].present?
+					months = params[:time].to_i
+					@today = Time.now + months.months
+				end
+			end
 		else
 			raise CanCan::AccessDenied.new(nil, :show)
 		end
