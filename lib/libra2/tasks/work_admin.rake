@@ -218,12 +218,20 @@ def create_generic_work( work_type, user, title, description )
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
 
     w.publisher = GenericWork::DEFAULT_PUBLISHER
-    w.department = 'Place holder department'
-    w.degree = 'Place holder degree'
-    w.notes = 'Place holder notes'
-    w.admin_notes << 'Place holder admin notes'
-    w.language = 'English'
-    w.contributor << 'Dr. Ruth'
+    w.department = 'Placeholder department'
+    w.degree = 'Placeholder degree'
+    w.notes = 'Placeholder notes'
+    w.admin_notes << 'Placeholder admin notes'
+    w.language = GenericWork::DEFAULT_LANGUAGE
+
+    # assume I am the contributor
+    w.contributor << 'Dave Goldstein'
+    w.contributor_computing_id << 'dpg3k'
+    w.contributor_first_name << 'Dave'
+    w.contributor_last_name << 'Goldstein'
+    w.contributor_institution << GenericWork::DEFAULT_INSTITUTION
+    w.contributor_department << 'UVa Library'
+
     w.rights << 'Determine your rights assignments here'
     w.license = GenericWork::DEFAULT_LICENSE
 
@@ -265,7 +273,6 @@ def dump_work( work )
      end
   end
   puts " visibility => #{work.visibility}"
-  puts " embargo_state => #{work.embargo_state}"
   puts " embargo_end_date => #{work.embargo_end_date}"
 
   puts '*' * 40

@@ -22,11 +22,6 @@ module Helpers
       user = User.find_by_email( email )
       user = create_user( user_info, email ) if user.nil?
 
-      # default values (change later)
-      default_description = 'Enter your description here'
-      default_contributor = 'Enter your contributors here'
-      default_rights = 'Determine your rights assignments here'
-
       GenericWork.create!( title: [ deposit_authorization.title ] ) do |w|
 
         # generic work attributes
@@ -42,16 +37,12 @@ module Helpers
         w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.embargo_state = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-        w.description = default_description
         w.work_type = GenericWork::WORK_TYPE_THESIS
         w.draft = 'true'
         w.publisher = GenericWork::DEFAULT_PUBLISHER
         w.department = deposit_authorization.department
         w.degree = deposit_authorization.degree
-        w.language = 'English'
-
-        w.contributor << default_contributor
-        w.rights << default_rights
+        w.language = GenericWork::DEFAULT_LANGUAGE
         w.license = GenericWork::DEFAULT_LICENSE
 
         # where the authorization comes from
@@ -85,11 +76,8 @@ module Helpers
       user = User.find_by_email( email )
       user = create_user( user_info, email ) if user.nil?
 
-      # default values (change later)
+      # default values
       default_title = 'Enter your title here'
-      default_description = 'Enter your description here'
-      default_contributor = 'Enter your contributors here'
-      default_rights = 'Determine your rights assignments here'
 
       GenericWork.create!( title: [ default_title ] ) do |w|
 
@@ -106,16 +94,12 @@ module Helpers
         w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.embargo_state = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-        w.description = default_description
         w.work_type = GenericWork::WORK_TYPE_THESIS
         w.draft = 'true'
         w.publisher = GenericWork::DEFAULT_PUBLISHER
         w.department = deposit_request.department
         w.degree = deposit_request.degree
-        w.language = 'English'
-
-        w.contributor << default_contributor
-        w.rights << default_rights
+        w.language = GenericWork::DEFAULT_LANGUAGE
         w.license = GenericWork::DEFAULT_LICENSE
 
         # where the authorization comes from
