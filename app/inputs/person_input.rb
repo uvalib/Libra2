@@ -24,7 +24,7 @@ class PersonInput < MultiValueInput
 		els = []
 		els.push(content_tag(:label, label, { for: "#{name}_#{index}" }))
 		els.push("<br>")
-		els.push(content_tag(:input, "", { class: "form-control", id: "generic_work_#{name}_#{index}", name: "generic_work[#{name}][]", value: value }))
+		els.push(content_tag(:input, "", { class: "form-control #{name}", id: "generic_work_#{name}_#{index}", name: "generic_work[#{name}][]", value: value, "data-index" => index }))
 		els.push(content_tag(:div, help_text, { class: "field_help" })) if help_text.present?
 		return raw(els.join("\n"))
 	end
