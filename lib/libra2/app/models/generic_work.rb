@@ -40,6 +40,7 @@ class GenericWork < ActiveFedora::Base
   DEFAULT_INSTITUTION = 'University of Virginia'.freeze
   DEFAULT_PUBLISHER = DEFAULT_INSTITUTION
   DEFAULT_LICENSE = 'None'.freeze
+  DEFAULT_LANGUAGE = 'English'.freeze
 
   # embargo periods
   EMBARGO_VALUE_6_MONTH = '6_month'.freeze
