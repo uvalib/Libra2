@@ -50,7 +50,7 @@ module PublicHelper
 	end
 
 	def display_author(work)
-		return "#{work.author_last_name}, #{work.author_first_name}"
+		return "#{work.author_last_name}, #{work.author_first_name}, #{work.department}, #{work.author_institution}"
 	end
 
 	def display_advisors(work)

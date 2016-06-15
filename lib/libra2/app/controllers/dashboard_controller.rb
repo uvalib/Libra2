@@ -1,3 +1,5 @@
+require_dependency 'libra2/lib/helpers/etd_helper'
+
 class DashboardController < ApplicationController
   include Sufia::DashboardControllerBehavior
 
@@ -77,4 +79,19 @@ class DashboardController < ApplicationController
     TestMailers.email().deliver_now
   end
 
+  # GET /computing_id
+  def computing_id
+    respond_to do |wants|
+      wants.json {
+        status, resp = ServiceClient::UserInfoClient.instance.get_by_id( params[:id] )
+        if status == 404
+          resp = { }
+        else
+            resp[:institution] = "University of Virginia"
+            resp[:index] = params[:index]
+        end
+        render json: resp, status: :ok
+      }
+    end
+  end
 end
