@@ -16,6 +16,25 @@
 		<button name="button" type="submit" class="btn btn-primary" data-confirm="This is your final step and you cannot change the document afterwards. Are you sure?"><i class="fa fa-check"></i> Submit Thesis</button>
 	<% end %>
 </div>
+<% else %>
+	<% if ENV['ALLOW_FAKE_NETBADGE'] == 'true' %>
+		<div class="debug-controls">
+			<h1>Debugging</h1>
+			<%= form_tag({}, {:method => :get}) do %>
+				<%= create_radio("grounds", "off", "Off Grounds") %><br>
+				<%= create_radio("grounds", "on", "On Grounds", true) %><br>
+				<hr>
+				<b>Current date: <%= file_date(@today) %></b><br>
+				<%= create_radio("time", "0", "Now", true) %><br>
+				<%= create_radio("time", "5", "5 Months") %><br>
+				<%= create_radio("time", "6", "6 Months") %><br>
+				<%= create_radio("time", "7", "7 Months") %><br>
+				<%= create_radio("time", "13", "13 Months") %><br>
+
+				<button name="button" type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Override</button>
+			<% end %>
+		</div>
+	<% end %>
 <% end %>
 <%= render "document" %>
 <script language="JavaScript">
