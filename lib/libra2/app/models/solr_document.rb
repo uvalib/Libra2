@@ -41,6 +41,10 @@ class SolrDocument
     self[Solrizer.solr_name('draft')]
   end
 
+  def embargo_end_date
+    self[Solrizer.solr_name('embargo_end_date')]
+  end
+
   def work_source
     self[Solrizer.solr_name('work_source')]
   end

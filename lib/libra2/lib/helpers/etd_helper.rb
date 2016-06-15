@@ -40,6 +40,7 @@ module Helpers
         w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
 
         w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+        w.embargo_state = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.description = default_description
         w.work_type = GenericWork::WORK_TYPE_THESIS
@@ -104,6 +105,7 @@ module Helpers
 
         w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+        w.embargo_state = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.description = default_description
         w.work_type = GenericWork::WORK_TYPE_THESIS
         w.draft = 'true'

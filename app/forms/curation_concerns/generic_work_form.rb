@@ -12,6 +12,8 @@ module CurationConcerns
     delegate :sponsoring_agency,          to: :model
     delegate :license,                    to: :model
     delegate :embargo_period,             to: :model
+    delegate :embargo_state,             to: :model
+    delegate :embargo_end_date,             to: :model
     delegate :visibility_during_embargo,  to: :model
 
     #delegate :required?,  to: :model
@@ -94,7 +96,7 @@ module CurationConcerns
           { contributor_department: [] },
           { contributor_last_name: [] },
           { contributor_institution: [] },
-          :embargo_period, :visibility_during_embargo, :on_behalf_of, :rights, { collection_ids: [] }]
+          :embargo_state, :embargo_end_date, :embargo_period, :visibility_during_embargo, :on_behalf_of, :rights, { collection_ids: [] }]
     end
   end
 end

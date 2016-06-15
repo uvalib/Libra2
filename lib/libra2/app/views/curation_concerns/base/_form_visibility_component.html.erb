@@ -2,13 +2,13 @@
 
 <div class="form-group visibility">
   <label class="radio">
-    <%= f.radio_button :visibility_during_embargo, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, data: { 'target': '#collapsePublic' }  %>
+    <%= f.radio_button :embargo_state, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, data: { 'target': '#collapsePublic' }  %>
     <%= t('libra.visibility.open.label_html') %>
   </label>
 
   <label class="radio">
 
-    <%= f.radio_button :visibility_during_embargo, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, data: { 'target': '#collapseEmbargo' } %>
+    <%= f.radio_button :embargo_state, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, data: { 'target': '#collapseEmbargo' } %>
     <% if current_user && current_user.is_engineering? %>
         <% embargo_label = 'libra.visibility.embargo_engineering.label_html' %>
         <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>

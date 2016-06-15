@@ -129,6 +129,16 @@ class GenericWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  # the license assigned to the work
+  property :embargo_state, predicate: ::RDF::URI('http://example.org/terms/embargo_state'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  # the license assigned to the work
+  property :embargo_end_date, predicate: ::RDF::URI('http://example.org/terms/embargo_end_date'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   # the permanent URL assigned to the work
   property :permanent_url, predicate: ::RDF::URI('http://example.org/terms/permanent_url'), multiple: false
 
@@ -220,6 +230,18 @@ class GenericWork < ActiveFedora::Base
     return "http://dx.doi.org/#{doi.gsub('doi:', '')}"
   end
 
+    def resolve_embargo_date()
+      if embargo_period == GenericWork::EMBARGO_VALUE_6_MONTH
+        return Time.now() + 6.months
+      elsif embargo_period == GenericWork::EMBARGO_VALUE_1_YEAR
+        return Time.now() + 1.year
+      elsif embargo_period == GenericWork::EMBARGO_VALUE_2_YEAR
+        return Time.now() + 2.years
+      elsif embargo_period == GenericWork::EMBARGO_VALUE_5_YEAR
+        return Time.now() + 5.years
+      end
+        raise "Unknown embargo date."
+     end
 end
 
 #
