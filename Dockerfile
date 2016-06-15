@@ -1,6 +1,6 @@
 FROM centos:7
 
-RUN yum -y update && yum -y install which tar file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel && yum -y install nodejs
+RUN yum -y update && yum -y install which tar file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel libreoffice && yum -y install nodejs
 
 # install rvm
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
