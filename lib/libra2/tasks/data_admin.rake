@@ -123,11 +123,15 @@ namespace :libra2 do
   def get_import_list( dirname )
 
     res = []
-    Dir.foreach( dirname ) do |f|
-      if /^work./.match( f )
-        res << f
+    begin
+      Dir.foreach( dirname ) do |f|
+        if /^work./.match( f )
+          res << f
+        end
       end
+    rescue => e
     end
+
     return res
 
   end
@@ -174,13 +178,17 @@ namespace :libra2 do
       w.admin_notes = h['admin_notes']
       w.language = h['language']
 
-      # assume I am the contributor
       w.contributor = h['contributor']
-      w.contributor_computing_id = h['contributor_computing_id']
-      w.contributor_first_name = h['contributor_first_name']
-      w.contributor_last_name = h['contributor_last_name']
-      w.contributor_institution = h['contributor_institution']
-      w.contributor_department = h['contributor_department']
+      #h['contributor_computing_id'].reverse.each { |v| w.contributor_computing_id << v }
+      #h['contributor_first_name'].reverse.each { |v| w.contributor_first_name << v }
+      #h['contributor_last_name'].reverse.each { |v| w.contributor_last_name << v }
+      #h['contributor_institution'].reverse.each { |v| w.contributor_institution << v }
+      #h['contributor_department'].reverse.each { |v| w.contributor_department << v }
+      w.contributor_computing_id = h['contributor_computing_id'].reverse
+      w.contributor_first_name = h['contributor_first_name'].reverse
+      w.contributor_last_name = h['contributor_last_name'].reverse
+      w.contributor_institution = h['contributor_institution'].reverse
+      w.contributor_department = h['contributor_department'].reverse
 
       w.rights = h['rights']
       w.license = h['license']
