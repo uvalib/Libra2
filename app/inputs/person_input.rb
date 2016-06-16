@@ -39,46 +39,22 @@ class PersonInput < MultiValueInput
 		institution = f[:contributor_institution][index]
 
 		input = create_input("Computing ID", "contributor_computing_id", computing_id, index, "Enter a UVA Computing ID to automatically fill the remaining fields for this person.")
-		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_computing_id][][person]" rel="person_0_computing_id" type="hidden" value="0">
-		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_computing_id][]" rel="person_0_computing_id" type="hidden" value="computing_id">
-		# <span class="editable-container field" id="person_0_computing_id-container">
-		# <label for="person_0_computing_id">Computing ID</label>
-		# <span class="field_help">U.Va. only. Entering a Computing ID will automatically fill the remaining fields for this author.</span>
-		# <input class="editable-edit edit" id="person_0_computing_id" data-datastream-name="descMetadata" rel="person_0_computing_id" name="asset[descMetadata][person_0_computing_id][0]" value=""></span>
 		row = content_tag(:div, content_tag(:div, input, { class: "computing_id"}), { class: "group-row"})
 		els.push(row)
 
 		input1 = create_input("First Name", "contributor_first_name", first_name, index)
-		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_first_name][][person]" rel="person_0_first_name" type="hidden" value="0">
-		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_first_name][]" rel="person_0_first_name" type="hidden" value="first_name">
-		# <span class="editable-container field" id="person_0_first_name-container">
-		# <label for="person_0_first_name">First Name</label>
-		# <input class="editable-edit edit" id="person_0_first_name" data-datastream-name="descMetadata" rel="person_0_first_name" name="asset[descMetadata][person_0_first_name][0]" value=""></span>
 		input1 = content_tag(:div, input1, { class: "name_first"})
 
 		input2 = create_input("Department", "contributor_department", department, index)
-		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_description][][person]" rel="person_0_description" type="hidden" value="0">
-		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_description][]" rel="person_0_description" type="hidden" value="description">
-		# <span class="editable-container field" id="person_0_description-container">
-		# <label for="person_0_description">Department</label><input class="editable-edit edit" id="person_0_description" data-datastream-name="descMetadata" rel="person_0_description" name="asset[descMetadata][person_0_description][0]" value=""></span>
 		input2 = content_tag(:div, input2, { class: "department"})
 
 		row = content_tag(:div, raw(input1 + input2), { class: "group-row"})
 		els.push(row)
 
 		input1 = create_input("Last Name", "contributor_last_name", last_name, index)
-		#  <input class="fieldselector" name="field_selectors[descMetadata][person_0_last_name][][person]" rel="person_0_last_name" type="hidden" value="0">
-		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_last_name][]" rel="person_0_last_name" type="hidden" value="last_name">
-		# <span class="editable-container field" id="person_0_last_name-container">
-		# <label for="person_0_last_name">Last Name</label>
-		# <input class="editable-edit edit" id="person_0_last_name" data-datastream-name="descMetadata" rel="person_0_last_name" name="asset[descMetadata][person_0_last_name][0]" value=""></span>
 		input1 = content_tag(:div, input1, { class: "name_last"})
 
 		input2 = create_input("Institution", "contributor_institution", institution, index)
-		#  <input class="fieldselector" name="field_selectors[descMetadata][person_0_institution][][person]" rel="person_0_institution" type="hidden" value="0">
-		# <input class="fieldselector" name="field_selectors[descMetadata][person_0_institution][]" rel="person_0_institution" type="hidden" value="institution"><span class="editable-container field" id="person_0_institution-container">
-		# <label for="person_0_institution">Institution</label>
-		# <input class="editable-edit edit" id="person_0_institution" data-datastream-name="descMetadata" rel="person_0_institution" name="asset[descMetadata][person_0_institution][0]" value=""></span>
 		input2 = content_tag(:div, input2, { class: "affiliation"})
 		row = content_tag(:div, raw(input1 + input2), { class: "group-row"})
 		els.push(row)
