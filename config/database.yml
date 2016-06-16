@@ -50,6 +50,7 @@ test:
 #
 production:
   <<: *default
-  database: libra2_production
-  username: libra2
-  password: <%= ENV['LIBRA2_DATABASE_PASSWORD'] %>
+  host: <%= ENV['DBHOST'] %>
+  database: <%= ENV['DBNAME'] %>
+  username: <%= ENV['DBUSER'] %>
+  password: <%= ENV['DBPASSWD'] %>

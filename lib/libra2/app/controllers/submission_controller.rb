@@ -25,7 +25,7 @@ class SubmissionController < ApplicationController
 			@files = @files.sort { |a,b|
 				a[:title].downcase <=> b[:title].downcase
 			}
-			@is_preview = @work.draft == "true"
+			@is_preview = @work.is_draft?
 			@today = Time.now
 			@grounds_override = false
 			if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
@@ -43,7 +43,7 @@ class SubmissionController < ApplicationController
 	def submit
 		id = params[:id]
     work = get_work_item
-		work.draft = false
+		work.draft = 'false'
 		if work.embargo_state != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 			end_date = work.resolve_embargo_date()
 			work.embargo_end_date = DateTime.new(end_date.year, end_date.month, end_date.day)
@@ -66,7 +66,7 @@ class SubmissionController < ApplicationController
 		if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
 			id = params[:id]
 			work = get_work_item
-			work.draft = "true"
+			work.draft = 'true'
 			work.save!
 			redirect_to locally_hosted_work_url( id )
 		end
