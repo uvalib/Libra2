@@ -45,14 +45,14 @@ class PersonInput < MultiValueInput
 		input1 = create_input("First Name", "contributor_first_name", first_name, index)
 		input1 = content_tag(:div, input1, { class: "name_first"})
 
-		input2 = create_input("Department", "contributor_department", department, index)
-		input2 = content_tag(:div, input2, { class: "department"})
+		input2 = create_input("Last Name", "contributor_last_name", last_name, index)
+		input2 = content_tag(:div, input2, { class: "name_last"})
 
 		row = content_tag(:div, raw(input1 + input2), { class: "group-row"})
 		els.push(row)
 
-		input1 = create_input("Last Name", "contributor_last_name", last_name, index)
-		input1 = content_tag(:div, input1, { class: "name_last"})
+		input1 = create_input("Department", "contributor_department", department, index)
+		input1 = content_tag(:div, input1, { class: "department"})
 
 		input2 = create_input("Institution", "contributor_institution", institution, index)
 		input2 = content_tag(:div, input2, { class: "affiliation"})
