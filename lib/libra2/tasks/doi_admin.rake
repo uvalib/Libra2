@@ -10,6 +10,57 @@ namespace :libra2 do
 
   default_user = "dpg3k@virginia.edu"
 
+  desc "Get EZID metadata for the specified work; must provide the work id"
+  task get_ezid_metadata_by_work: :environment do |t, args|
+
+    work_id = ARGV[ 1 ]
+    if work_id.nil?
+      puts "ERROR: no work id specified, aborting"
+      next
+    end
+
+    task work_id.to_sym do ; end
+
+    work = nil
+    begin
+      work = GenericWork.find( work_id )
+    rescue => e
+    end
+
+    if work.nil?
+      puts "ERROR: work #{work_id} does not exist, aborting"
+      next
+    end
+
+    status, r = ServiceClient::EntityIdClient.instance.metadataget( work.identifier )
+    if ServiceClient::EntityIdClient.instance.ok?( status )
+      puts r
+    else
+      puts "ERROR: EZID service returns #{status}, aborting"
+    end
+
+  end
+
+  desc "Get EZID metadata for the specified DOI; must provide the DOI"
+  task get_ezid_metadata_by_doi: :environment do |t, args|
+
+    doi = ARGV[ 1 ]
+    if doi.nil?
+      puts "ERROR: no DOI specified, aborting"
+      next
+    end
+
+    task doi.to_sym do ; end
+
+    status, r = ServiceClient::EntityIdClient.instance.metadataget( doi )
+    if ServiceClient::EntityIdClient.instance.ok?( status )
+      puts r
+    else
+      puts "ERROR: EZID service returns #{status}, aborting"
+    end
+
+  end
+
   desc "Assign a new DOI for the specified work; must provide the work id"
   task assign_doi_to_work: :environment do |t, args|
 

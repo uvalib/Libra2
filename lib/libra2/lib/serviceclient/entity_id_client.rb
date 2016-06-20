@@ -46,6 +46,14 @@ module ServiceClient
        return status
      end
 
+     def metadataget( doi )
+       #puts "=====> metadataget #{doi}"
+       url = "#{self.url}/#{doi}?auth=#{self.authtoken}"
+       status, response = rest_get( url )
+       return status, response['details'] if ok?( status ) && response['details']
+       return status, ''
+     end
+
      #
      # remove a DOI entry
      #
