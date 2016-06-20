@@ -72,6 +72,68 @@ namespace :libra2 do
     puts "New DOI's assigned to #{count} works successfully"
   end
 
+  desc "Update DOI metadata for the specified work; must provide the work id"
+  task update_doi_metadata_by_work: :environment do |t, args|
+
+    work_id = ARGV[ 1 ]
+    if work_id.nil?
+      puts "ERROR: no work id specified, aborting"
+      next
+    end
+
+    task work_id.to_sym do ; end
+
+    work = nil
+    begin
+      work = GenericWork.find( work_id )
+    rescue => e
+    end
+
+    if work.nil?
+      puts "ERROR: work #{work_id} does not exist, aborting"
+      next
+    end
+
+    if update_work_metadata( work )
+      puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
+    end
+
+  end
+
+  desc "Update DOI metadata for all my submitted works; optionally provide depositor email"
+  task update_doi_metadata_my_works: :environment do |t, args|
+
+    who = ARGV[ 1 ]
+    who = default_user if who.nil?
+    task who.to_sym do ; end
+
+    count = 0
+    GenericWork.all.each do |work|
+      if work.is_mine?( who )
+        if update_work_metadata( work )
+          puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
+          count += 1
+        end
+      end
+    end
+
+    puts "#{count} work(s) successfully updated"
+
+  end
+
+  desc "Update DOI metadata for all submitted works"
+  task update_doi_metadata_all_works: :environment do |t, args|
+
+    count = 0
+    GenericWork.all.each do |work|
+      if update_work_metadata( work )
+        puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
+        count += 1
+      end
+    end
+    puts "#{count} work(s) successfully updated"
+  end
+
   # update the DOI for the supplied work
   def update_work_doi( work )
 
@@ -106,6 +168,22 @@ namespace :libra2 do
         end
      end
 
+    return true
+  end
+
+  # update the metadata for the supplied work
+  def update_work_metadata( work )
+
+    if work.is_draft?
+      puts "Work #{work.identifier} is draft... ignoring"
+      return false
+    else
+      status = ServiceClient::EntityIdClient.instance.metadatasync( work )
+      if ServiceClient::EntityIdClient.instance.ok?( status ) == false
+        puts "ERROR: metadata update returns #{status}, aborting"
+        return false
+      end
+    end
     return true
   end
 

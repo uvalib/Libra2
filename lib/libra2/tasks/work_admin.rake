@@ -103,6 +103,32 @@ task del_my_works: :environment do |t, args|
 
 end
 
+desc "Delete work by id; must provide the work id"
+task del_by_id: :environment do |t, args|
+
+  work_id = ARGV[ 1 ]
+  if work_id.nil?
+    puts "ERROR: no work id specified, aborting"
+    next
+  end
+
+  task work_id.to_sym do ; end
+
+  work = nil
+  begin
+    work = GenericWork.find( work_id )
+  rescue => e
+  end
+
+  if work.nil?
+    puts "ERROR: work #{work_id} does not exist, aborting"
+    next
+  end
+
+  work.destroy
+  puts "Work deleted"
+end
+
 desc "Create new generic work; optionally provide depositor email"
 task create_new_work: :environment do |t, args|
 
@@ -124,9 +150,8 @@ task create_new_work: :environment do |t, args|
 
   work = create_work( user, title, description )
 
-  fileset = ::FileSet.new
   filename = get_an_image( )
-  upload_file( user, fileset, work, filename )
+  upload_file( user, work, filename )
 
   dump_work work
 
@@ -154,8 +179,7 @@ task create_new_thesis: :environment do |t, args|
   work = create_thesis( user, title, description )
 
   #filename = copy_sourcefile( sample_pdf_file )
-  #fileset = ::FileSet.new
-  #upload_file( user, fileset, work, filename )
+  #upload_file( user, work, filename )
 
   dump_work work
 
@@ -249,10 +273,11 @@ def create_generic_work( work_type, user, title, description )
   return work
 end
 
-def upload_file( user, fileset, work, filename )
+def upload_file( user, work, filename )
 
   print "uploading #{filename}... "
 
+  fileset = ::FileSet.new
   file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, user )
   file_actor.create_metadata( work )
   file_actor.create_content( File.open( filename ) )
