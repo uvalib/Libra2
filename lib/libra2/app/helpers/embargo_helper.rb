@@ -82,7 +82,7 @@ module EmbargoHelper
 	def embargo_notice(work)
 		return "" if !is_under_embargo(work)
 
-		restricted_area = is_engineering_embargo(work) ? "abstract view" : "UVA"
+		restricted_area = is_engineering_embargo(work) ? "abstract view only" : "UVA"
 		return "This item is restricted to #{restricted_area} until #{file_date(embargo_release_date(work))}."
 	end
 
