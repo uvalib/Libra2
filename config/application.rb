@@ -10,6 +10,14 @@ module Libra2
   class Application < Rails::Application
 
     #
+    # enable the background job queue behavior
+    #config.active_job.queue_adapter = :resque
+
+    #
+    # specify the name of the IP whitelist file
+    config.ip_whitelist = "#{Rails.root}/data/ipwhitelist.txt"
+
+    #
     # We introduce several namespaces in order to partition rails components clearly and stay out of the base app namespace
     # which will be subject to changes from the sufia folks.
     #
@@ -51,6 +59,5 @@ module Libra2
     paths[ 'config' ] << "lib/#{app_namespace}/config"
 
     config.autoload_paths << "#{Rails.root}/lib"
-
   end
 end

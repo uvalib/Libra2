@@ -47,19 +47,12 @@ module EmbargoHelper
 	end
 
 	def uva_ip_blocks
-		# TODO-PER: hardcoding the UVA IP addresses until we come up with a system:
-		ips = [ # "127.0.0.0/8", the original file included localhost. Should it?
-		"128.143.0.0/16",
-		"137.54.0.0/16",
-		"199.111.160.0/19",
-		"199.111.192.0/18",
-		"172.16.0.0/16",
-		"172.18.32.0/22",
-		"172.19.0.0/16",
-		"172.23.0.0/16",
-		"172.25.0.0/16",
-		"172.26.0.0/16",
-		"172.27.0.0/16"]
+		ips = [ ]
+		File.open( Rails.application.config.ip_whitelist, 'r' ).each_line { |line|
+			line.strip!
+			ips.push line
+		}
+
 		uva_ip_ranges_list = []
 		ips.each { |ip_range|
 			arr = ip_range.split("/")
@@ -71,11 +64,6 @@ module EmbargoHelper
 			}
 		}
 
-		# The following reads the file:
-		# uva_ip_ranges_list =[]
-		# File.open(UVA_IP_ADDRESSES_FILE,"r").each_line { |line|
-		# 	uva_ip_ranges_list.push line
-		# }
 		return uva_ip_ranges_list
 	end
 
