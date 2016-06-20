@@ -37,9 +37,11 @@ module VisibilityHelper
 
     def render_visibility_with_draft(document)
       if document.is_draft?
-        return content_tag(:span, "Draft", { class: "label label-warning" })
+        return content_tag(:span, "Draft", { class: "label label-danger" })
+      elsif document.embargo_state == 'embargo'
+        return content_tag(:span, "Embargoed", { class: "label label-warning" })
       else
-        return render_visibility_link(document)
+        return content_tag(:span, "Open Access", { class: "label label-success" })
       end
     end
 end
