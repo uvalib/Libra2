@@ -106,6 +106,7 @@ class SolrDocument
 
     contributors.each_with_index { |person, index|
       arr = person.split("\n")
+      arr.push("") if arr.length == 4 # if the last item is empty, the split command will miss it.
       if arr.length == 5
         advisors.push("First Name: #{arr[1]}")
         advisors.push("Last Name: #{arr[2]}")

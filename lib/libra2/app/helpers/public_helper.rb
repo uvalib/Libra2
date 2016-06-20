@@ -58,6 +58,7 @@ module PublicHelper
 		advisors = []
 		contributors.each { |contributor|
 			arr = contributor.split("\n")
+			arr.push("") if arr.length == 4 # if the last item is empty, the split command will miss it.
 			# arr should be an array of [ computing_id, first_name, last_name, department, institution ]
 			if arr.length == 5
 				advisors.push("#{arr[2]}, #{arr[1]}, #{arr[3]}, #{arr[4]}")
