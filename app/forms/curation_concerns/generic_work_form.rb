@@ -91,11 +91,11 @@ module CurationConcerns
     def self.build_permitted_params
       #puts "=====> GenericWorkForm.build_permitted_params"
       super + [
-          { contributor_computing_id: [] },
-          { contributor_first_name: [] },
-          { contributor_department: [] },
-          { contributor_last_name: [] },
-          { contributor_institution: [] },
+          # { contributor_computing_id: [] },
+          # { contributor_first_name: [] },
+          # { contributor_department: [] },
+          # { contributor_last_name: [] },
+          # { contributor_institution: [] },
           :embargo_state, :embargo_end_date, :embargo_period, :visibility_during_embargo, :on_behalf_of, :rights, { collection_ids: [] }]
     end
   end

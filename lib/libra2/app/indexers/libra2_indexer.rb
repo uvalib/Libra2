@@ -78,30 +78,30 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           object.permanent_url,
                           :searchable )
 
-      Solrizer.set_field( solr_doc,
-                          'contributor_computing_id',
-                          object.contributor_computing_id,
-                          :searchable )
-
-      Solrizer.set_field( solr_doc,
-                          'contributor_first_name',
-                          object.contributor_first_name,
-                          :searchable )
-
-      Solrizer.set_field( solr_doc,
-                          'contributor_last_name',
-                          object.contributor_last_name,
-                          :searchable )
-
-      Solrizer.set_field( solr_doc,
-                          'contributor_institution',
-                          object.contributor_institution,
-                          :searchable )
-
-      Solrizer.set_field( solr_doc,
-                          'contributor_department',
-                          object.contributor_department,
-                          :searchable )
+      # Solrizer.set_field( solr_doc,
+      #                     'contributor_computing_id',
+      #                     object.contributor_computing_id,
+      #                     :searchable )
+	  #
+      # Solrizer.set_field( solr_doc,
+      #                     'contributor_first_name',
+      #                     object.contributor_first_name,
+      #                     :searchable )
+	  #
+      # Solrizer.set_field( solr_doc,
+      #                     'contributor_last_name',
+      #                     object.contributor_last_name,
+      #                     :searchable )
+	  #
+      # Solrizer.set_field( solr_doc,
+      #                     'contributor_institution',
+      #                     object.contributor_institution,
+      #                     :searchable )
+	  #
+      # Solrizer.set_field( solr_doc,
+      #                     'contributor_department',
+      #                     object.contributor_department,
+      #                     :searchable )
     end
   end
 

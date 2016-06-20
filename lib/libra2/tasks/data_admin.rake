@@ -184,11 +184,11 @@ namespace :libra2 do
       #h['contributor_last_name'].reverse.each { |v| w.contributor_last_name << v }
       #h['contributor_institution'].reverse.each { |v| w.contributor_institution << v }
       #h['contributor_department'].reverse.each { |v| w.contributor_department << v }
-      w.contributor_computing_id = h['contributor_computing_id'].reverse
-      w.contributor_first_name = h['contributor_first_name'].reverse
-      w.contributor_last_name = h['contributor_last_name'].reverse
-      w.contributor_institution = h['contributor_institution'].reverse
-      w.contributor_department = h['contributor_department'].reverse
+      # w.contributor_computing_id = h['contributor_computing_id'].reverse
+      # w.contributor_first_name = h['contributor_first_name'].reverse
+      # w.contributor_last_name = h['contributor_last_name'].reverse
+      # w.contributor_institution = h['contributor_institution'].reverse
+      # w.contributor_department = h['contributor_department'].reverse
 
       w.rights = h['rights']
       w.license = h['license']
