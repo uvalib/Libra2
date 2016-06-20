@@ -94,51 +94,67 @@ class SolrDocument
   end
 
   def contributor
-    first_name = contributor_first_name()
-    last_name = contributor_last_name()
-    department = contributor_department()
-    institution = contributor_institution()
     advisors = []
-    # these should all be the same length, but we're making sure anyway.
-    if first_name.blank? || last_name.blank? || department.blank? || institution.blank?
-      len = 0
-    else
-      len = 1000000
+    contributors = self[Solrizer.solr_name('contributor')]
+    return advisors if contributors.nil?
 
-      len = first_name.length if first_name.length < len
-      len = last_name.length if last_name.length < len
-      len = department.length if department.length < len
-      len = institution.length if institution.length < len
-    end
-    len.times { |i|
-      advisors.push("First Name: #{first_name[i]}")
-      advisors.push("Last Name: #{last_name[i]}")
-      advisors.push("Department: #{department[i]}")
-      advisors.push("Institution: #{institution[i]}")
-      advisors.push("---") if i < len - 1
+    contributors.each_with_index { |person, index|
+      arr = person.split("\n")
+      if arr.length == 5
+        advisors.push("First Name: #{arr[1]}")
+        advisors.push("Last Name: #{arr[2]}")
+        advisors.push("Department: #{arr[3]}")
+        advisors.push("Institution: #{arr[4]}")
+      else
+        advisors.push(person) # this shouldn't happen, but perhaps it will if old data gets in there.
+      end
+      advisors.push("---") if index < contributors.length - 1
     }
+    # first_name = contributor_first_name()
+    # last_name = contributor_last_name()
+    # department = contributor_department()
+    # institution = contributor_institution()
+    # advisors = []
+    # # these should all be the same length, but we're making sure anyway.
+    # if first_name.blank? || last_name.blank? || department.blank? || institution.blank?
+    #   len = 0
+    # else
+    #   len = 1000000
+	#
+    #   len = first_name.length if first_name.length < len
+    #   len = last_name.length if last_name.length < len
+    #   len = department.length if department.length < len
+    #   len = institution.length if institution.length < len
+    # end
+    # len.times { |i|
+    #   advisors.push("First Name: #{first_name[i]}")
+    #   advisors.push("Last Name: #{last_name[i]}")
+    #   advisors.push("Department: #{department[i]}")
+    #   advisors.push("Institution: #{institution[i]}")
+    #   advisors.push("---") if i < len - 1
+    # }
     return advisors
   end
 
-  def contributor_computing_id
-    self[Solrizer.solr_name('contributor_computing_id')]
-  end
-
-  def contributor_first_name
-    self[Solrizer.solr_name('contributor_first_name')]
-  end
-
-  def contributor_last_name
-    self[Solrizer.solr_name('contributor_last_name')]
-  end
-
-  def contributor_institution
-    self[Solrizer.solr_name('contributor_institution')]
-  end
-
-  def contributor_department
-    self[Solrizer.solr_name('contributor_department')]
-  end
+  # def contributor_computing_id
+  #   self[Solrizer.solr_name('contributor_computing_id')]
+  # end
+  #
+  # def contributor_first_name
+  #   self[Solrizer.solr_name('contributor_first_name')]
+  # end
+  #
+  # def contributor_last_name
+  #   self[Solrizer.solr_name('contributor_last_name')]
+  # end
+  #
+  # def contributor_institution
+  #   self[Solrizer.solr_name('contributor_institution')]
+  # end
+  #
+  # def contributor_department
+  #   self[Solrizer.solr_name('contributor_department')]
+  # end
 
   def is_thesis?
     return false if work_type.nil?

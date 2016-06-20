@@ -249,12 +249,12 @@ def create_generic_work( work_type, user, title, description )
     w.language = GenericWork::DEFAULT_LANGUAGE
 
     # assume I am the contributor
-    w.contributor << 'Dave Goldstein'
-    w.contributor_computing_id << 'dpg3k'
-    w.contributor_first_name << 'Dave'
-    w.contributor_last_name << 'Goldstein'
-    w.contributor_institution << GenericWork::DEFAULT_INSTITUTION
-    w.contributor_department << 'UVa Library'
+    w.contributor << "dpg3k\nDave\nGoldstein\nUVa Library\n#{GenericWork::DEFAULT_INSTITUTION}"
+    # w.contributor_computing_id << 'dpg3k'
+    # w.contributor_first_name << 'Dave'
+    # w.contributor_last_name << 'Goldstein'
+    # w.contributor_institution << GenericWork::DEFAULT_INSTITUTION
+    # w.contributor_department << 'UVa Library'
 
     w.rights << 'Determine your rights assignments here'
     w.license = GenericWork::DEFAULT_LICENSE
