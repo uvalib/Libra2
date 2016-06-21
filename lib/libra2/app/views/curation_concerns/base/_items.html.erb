@@ -14,5 +14,5 @@
     </tbody>
   </table>
 <% elsif can? :edit, presenter.id %>
-  <p class="text-center"><em><%= t('.empty', type: presenter.human_readable_type) %></em></p>
+  <p><em><%= t('.empty', type: presenter.human_readable_type) %></em></p>
 <% end %>
