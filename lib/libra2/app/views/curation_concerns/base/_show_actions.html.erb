@@ -8,7 +8,7 @@
 				<%= render 'requirements' %>
 			</div>
 			<%= link_to "Edit", edit_polymorphic_path([main_app, presenter]), class: 'btn btn-default' %>
-			<%= link_to "Proof", proof_link(presenter, @requirements), {class: 'btn btn-default', data: { 'no-turbolink' => true }, title: proof_tooltip(@requirements), disabled: proof_is_readonly(@requirements)} %>
+			<%= link_to "Preview before Submission", proof_link(presenter, @requirements), {class: 'btn btn-default', data: { 'no-turbolink' => true }, title: proof_tooltip(@requirements), disabled: proof_is_readonly(@requirements)} %>
 		<% else %>
 			<%= link_to "Public View", locally_hosted_work_url( presenter.solr_document.id ), {class: 'btn btn-default', data: { 'no-turbolink' => true }} %>
 		<% end %>
