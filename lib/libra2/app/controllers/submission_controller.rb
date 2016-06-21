@@ -36,7 +36,7 @@ class SubmissionController < ApplicationController
 				end
 			end
 		else
-			raise CanCan::AccessDenied.new(nil, :show)
+			response.status = 404
 		end
 	end
 

@@ -5,8 +5,11 @@
 	<div id="bd" class="no-search">
 		<div id="main" class="clearfix">
 			<div id="main_content" role="main" class="col-xs-12 col-sm-9 col-sm-push-3">
-				<span class='Z3988' title='rft.btitle=<%= CGI.escape(@work[:title].join("")) %>'></span>
+				<span class='Z3988' title='rft.btitle=<%= CGI.escape(display_title(@work)) %>'></span>
 				<div id="document">
+					<% if @work.nil? %>
+					<%= render partial: "/submission/not_found" %>
+					<% else %>
 					<h1><%= raw(@work[:title].join(raw("<br>"))) %></h1>
 					<%= display_if_non_blank("Author:", display_author(@work)) %>
 					<%= display_if_non_blank("Advisors:", display_advisors(@work)) %>
@@ -19,9 +22,12 @@
 					<%= display_if_non_blank("Language:", @work.language) %>
 					<%= display_if_non_blank("Rights:", display_rights(@work.rights)) %>
 					<%= display_if_non_blank("Persistent Link:", public_doi_link(@work)) %>
+					<% end %>
 				</div>
 			</div>
+			<% if @work.present? %>
 			<%= render "side_bar" %>
+			<% end %>
 		</div>
 	</div>
 </div>

@@ -46,10 +46,17 @@ module PublicHelper
 	end
 
 	def display_keywords(work)
+		return "" if work.nil?
 		return work.keyword.join(", ")
 	end
 
+	def display_title(work)
+		return "Not Found" if work.nil?
+		return work[:title][0]
+	end
+
 	def display_author(work)
+		return "" if work.nil?
 		return "#{work.author_last_name}, #{work.author_first_name}, #{work.department}, #{work.author_institution}"
 	end
 
