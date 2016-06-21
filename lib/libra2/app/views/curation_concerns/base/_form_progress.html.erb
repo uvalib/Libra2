@@ -34,7 +34,8 @@
       <%= link_to t(:'helpers.action.cancel'),
                   sufia.dashboard_index_path,
                   class: 'btn btn-default' %>
-      <%= f.submit 'Save', class: 'btn btn-primary', onclick: "confirmation_needed = false;", id: "with_files_submit", name: "save_with_files" %>
+      <%= f.submit 'Save and Exit', class: 'btn btn-primary', onclick: "confirmation_needed = false;", id: "with_files_submit_exit", name: "save_with_files_exit" %>
+      <%= f.submit 'Save and Continue', class: 'btn btn-primary', onclick: "confirmation_needed = false;", id: "with_files_submit_continue", name: "save_with_files_continue" %>
     </div>
   </div>
 </aside>
