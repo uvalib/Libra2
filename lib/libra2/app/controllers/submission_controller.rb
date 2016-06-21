@@ -59,7 +59,7 @@ class SubmissionController < ApplicationController
 		# update SIS as necessary
 		update_submitted_state( work )
 
-		redirect_to locally_hosted_work_url( id ), :flash => { :notice => "Thank you for submitting your thesis. You have finished this requirement for graduation." }
+		redirect_to locally_hosted_work_url( id ), :flash => { :notice => "Thank you for submitting your thesis. You have finished this requirement for graduation. Be sure to make note of and refer to the Persistent Link when you refer to this work." }
   end
 
 	def unpublish
