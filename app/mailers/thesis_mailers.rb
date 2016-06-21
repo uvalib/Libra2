@@ -16,6 +16,11 @@ class ThesisMailers < ActionMailer::Base
     mail( to: whom, from: MAIL_SENDER, subject: "Access to upload your approved thesis or dissertation to LIBRA" )
 	end
 
+	def sis_thesis_can_be_submitted( whom, name )
+		@name = name
+    mail( to: whom, from: MAIL_SENDER, subject: "Access to upload your approved thesis or dissertation to LIBRA" )
+	end
+
 	def thesis_submitted_author( work, author )
 		@work = work
 		@advisee = author
