@@ -1,9 +1,14 @@
 <p>Dear <%= @advisee %>,</p>
 <p>Congratulations on successful deposit of your <%= @work.degree %> thesis to Libra, the University of Virginia's scholarly repository.</p>
 <p>The work you have deposited in Libra will be available for <%= @availability %>. You have opted to grant <%= @work.rights.join(' ') %> to users of your scholarship.</p>
+<% if @is_sis_thesis %>
+<p><a href="http://www.its.virginia.edu/sis/">Please verify that SIS has been updated</a> to reflect that you have completed this requirement. This may take 48 hours.</p>
+<% else %>
 <p>Your completion of this requirement is being reported to your departmental advisor by copy of this email. If you have any questions about your degree status, please contact your school of enrollment.</p>
+<% end %>
 <p>The permanent location for your scholarship is <a href="<%= @doi_link %>"><%= @doi_link %></a>.</p>
 <p>For the most accurate metrics on views and downloads, remember to always provide this exact link when sharing your work with colleagues, collaborators, and on social media.</p>
 <p>You may check that the upload was successful by searching for your thesis or dissertation in VIRGO, the UVA online library catalog, 24 hours after deposit.</p>
 <p>Best Regards,</p>
-<p>The Libra Team</p>
+<p>Scholarly Repository Services, University of Virginia Library</p>
+<p>libra@virginia.edu</p>

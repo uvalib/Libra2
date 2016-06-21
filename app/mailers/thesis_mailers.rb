@@ -21,6 +21,7 @@ class ThesisMailers < ActionMailer::Base
 		@advisee = author
 		@availability = visibility_string(work)
 		@doi_link = work.permanent_url
+		@is_sis_thesis = work.is_sis_thesis?
 		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your thesis")
 	end
 
