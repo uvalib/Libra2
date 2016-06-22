@@ -50,7 +50,7 @@ Sufia.config do |config|
   # config.noid_template = ".reeddeeddk"
 
   # Store identifier minter's state in a file for later replayability
-  # config.minter_statefile = '/tmp/minter-state'
+  config.minter_statefile = config.minter_statefile = File.join( Rails.root, 'hostfs', 'state', 'minter-state' )
 
   # Process for translating Fedora URIs to identifiers and vice versa
   # config.translate_uri_to_id = ActiveFedora::Noid.config.translate_uri_to_id
