@@ -17,7 +17,7 @@
 	<% end %>
 </div>
 <% else %>
-	<% if ENV['ALLOW_FAKE_NETBADGE'] == 'true' && @work.present? %>
+	<% if ENV['ALLOW_FAKE_NETBADGE'] == 'true' && @can_view %>
 		<div class="debug-controls">
 			<h1>Debugging</h1>
 			<%= form_tag({}, {:method => :get}) do %>

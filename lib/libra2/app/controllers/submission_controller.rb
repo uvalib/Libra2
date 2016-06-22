@@ -12,7 +12,8 @@ class SubmissionController < ApplicationController
 	def public_view
 		@id = params[:id]
 		@work = get_work_item
-		if can_view(@work)
+		@can_view = can_view(@work)
+		if @can_view
 			file_sets = @work.file_sets
 			@files = []
 			file_sets.each { |file|
