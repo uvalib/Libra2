@@ -13,8 +13,10 @@ env.unset
 fcrepo4-development-data
 hostfs
 jetty
-public
 spec
 solr
 test
 scripts/helpers
+public/assets
+public/system
+public/uploads
