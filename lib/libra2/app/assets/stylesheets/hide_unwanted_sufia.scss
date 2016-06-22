@@ -71,6 +71,23 @@
 }
 
 //
+// Edit
+//
+.edit_generic_work .generic_work_title {
+    li {
+        display: none;
+
+        &:first-child {
+            display: inherit;
+        }
+
+        .field-controls {
+            display: none;
+        }
+    }
+}
+
+//
 // Uploading
 //
 .new_generic_work, .edit_generic_work {
