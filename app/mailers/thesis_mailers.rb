@@ -30,4 +30,13 @@ class ThesisMailers < ActionMailer::Base
 		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your thesis")
 	end
 
+	def thesis_submitted_registrar( work, author, registrar_name, registrar_email )
+		@work = work
+		@advisee = author
+		@advisor = registrar_name
+		@availability = visibility_string(work)
+		@doi_link = work.permanent_url
+		mail(to: registrar_email, from: MAIL_SENDER, subject: "Successful deposit of your student's thesis")
+	end
+
 end

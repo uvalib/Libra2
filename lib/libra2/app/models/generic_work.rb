@@ -143,6 +143,9 @@ class GenericWork < ActiveFedora::Base
   # the permanent URL assigned to the work
   property :permanent_url, predicate: ::RDF::URI('http://example.org/terms/permanent_url'), multiple: false
 
+  # the last name of the author
+  property :registrar_computing_id, predicate: ::RDF::URI('http://example.org/terms/registrar_computing_id'), multiple: false
+
   # # set of contributor computing ids
   # property :contributor_computing_id, predicate: ::RDF::URI('http://example.org/terms/contributor_computing_id') do |index|
   #   index.as :stored_searchable

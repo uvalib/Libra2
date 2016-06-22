@@ -54,6 +54,9 @@ class SubmissionController < ApplicationController
 		# send the author email that they have successfully completed things
 		send_author_email( work )
 
+		# send the registrar email that they have successfully completed things
+		send_registrar_email( work )
+
 		# update the DOI service with the completed metadata
 		update_metadata( work )
 
@@ -80,6 +83,19 @@ class SubmissionController < ApplicationController
 		author = nil
 		author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] ) unless work.nil?
 		ThesisMailers.thesis_submitted_author( work, author.display_name ).deliver_later unless author.nil?
+
+	end
+
+	# send the registrar email that the student has successfully completed things
+	def send_registrar_email( work )
+		return if work.nil?
+		computing_id = work.registrar_computing_id
+		return if computing_id.empty?
+		author = nil
+		author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] ) unless work.nil?
+
+		registrar = Helpers::EtdHelper::lookup_user( computing_id )
+		ThesisMailers.thesis_submitted_registrar( work, author.display_name, registrar.display_name, registrar.email ).deliver_later unless registrar.nil?
 
 	end
 

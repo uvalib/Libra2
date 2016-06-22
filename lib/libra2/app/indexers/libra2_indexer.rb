@@ -78,6 +78,11 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           object.permanent_url,
                           :searchable )
 
+      Solrizer.set_field( solr_doc,
+                          'registrar_computing_id',
+                          object.registrar_computing_id,
+                          :searchable )
+
       # Solrizer.set_field( solr_doc,
       #                     'contributor_computing_id',
       #                     object.contributor_computing_id,

@@ -1,0 +1,11 @@
+<p>Dear <%= @advisor %>,</p>
+<p><%= @advisee %> has successfully deposited of a <%= @work.degree %> thesis to Libra, the University of Virginia's scholarly repository.</p>
+<p>This work will be available for <%= @availability %>. The author has opted to grant <%= @work.rights.join(' ') %> to users of this scholarship.</p>
+<p>The permanent URL for this scholarship is <a href="<%= @doi_link %>"><%= @doi_link %></a>.</p>
+<p>Always provide this exact link when sharing this work with colleagues, collaborators, and on social media for the most accurate metrics on views and downloads.</p>
+<p>24 hours after deposit, you may check that this scholarship was successfully added to the Library's collection by searching for your thesis or dissertation in VIRGO, the UVA online library catalog.</p>
+<p>This student author's completion of this requirement is being reported to you for departmental purposes. No report of this optional thesis will be made to SIS or any grading application. If you have questions about the content of the thesis or access rights, please contact the student author.</p>
+<p></p>
+<p>Best Regards,</p>
+<p>Scholarly Repository Services, University of Virginia Library</p>
+<p>libra@virginia.edu</p>

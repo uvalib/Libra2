@@ -99,6 +99,10 @@ class SolrDocument
     self[Solrizer.solr_name('permanent_url')]
   end
 
+  def registrar_computing_id
+    self[Solrizer.solr_name('registrar_computing_id')]
+  end
+
   def contributor
     advisors = []
     contributors = self[Solrizer.solr_name('contributor')]
