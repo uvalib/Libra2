@@ -1,6 +1,7 @@
 module PublicHelper
 
 	def file_date(date)
+		return "Unknown" if date.nil?
 		return date.strftime("%B %d, %Y")
 	end
 
@@ -24,7 +25,7 @@ module PublicHelper
 	end
 
 	def public_doi_link(work)
-		return "Persistent link will appear here after submission." if work.draft == "true"
+		return "Persistent link will appear here after submission." if work.is_draft?
 		doi = work.permanent_url
 		return link_to(doi, doi)
 	end
