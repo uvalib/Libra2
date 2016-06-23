@@ -12,6 +12,9 @@ class SubmissionController < ApplicationController
 	def public_view
 		@id = params[:id]
 		@work = get_work_item
+
+		# TODO-DPG: handle a null work here
+
 		@can_view = can_view(@work)
 		if @can_view
 			file_sets = @work.file_sets
@@ -44,6 +47,9 @@ class SubmissionController < ApplicationController
 	def submit
 		id = params[:id]
     work = get_work_item
+
+		# TODO-DPG: handle a null work here
+
 		work.draft = 'false'
 		if work.embargo_state != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 			end_date = work.resolve_embargo_date()
@@ -70,6 +76,9 @@ class SubmissionController < ApplicationController
 		if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
 			id = params[:id]
 			work = get_work_item
+
+			# TODO-DPG: handle a null work here
+
 			work.draft = 'true'
 			work.save!
 			redirect_to locally_hosted_work_url( id )
@@ -80,19 +89,24 @@ class SubmissionController < ApplicationController
 
 	# send the author email that they have successfully completed things
 	def send_author_email( work )
-		author = nil
-		author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] ) unless work.nil?
+
+		return if work.nil?
+		author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] )
 		ThesisMailers.thesis_submitted_author( work, author.display_name ).deliver_later unless author.nil?
 
 	end
 
 	# send the registrar email that the student has successfully completed things
 	def send_registrar_email( work )
+
 		return if work.nil?
+
+		# do nothing for SIS work
+		return if work.is_sis_thesis?
+
 		computing_id = work.registrar_computing_id
 		return if computing_id.empty?
-		author = nil
-		author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] ) unless work.nil?
+		author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] )
 
 		registrar = Helpers::EtdHelper::lookup_user( computing_id )
 		ThesisMailers.thesis_submitted_registrar( work, author.display_name, registrar.display_name, registrar.email ).deliver_later unless registrar.nil?
@@ -102,10 +116,12 @@ class SubmissionController < ApplicationController
 	# update the DOI service metadata
 	def update_metadata( work )
 
+		return if work.nil?
+
 		# if we have no DOI, do nothing...
 		return if work.identifier.empty?
 
-		status = ServiceClient::EntityIdClient.instance.metadatasync( work ) unless work.nil?
+		status = ServiceClient::EntityIdClient.instance.metadatasync( work )
 		if ServiceClient::EntityIdClient.instance.ok?( status ) == false
 			# TODO-DPG handle error
 		end
@@ -113,6 +129,8 @@ class SubmissionController < ApplicationController
 
 	# update any foreign system that the student has submitted
 	def update_submitted_state( work )
+
+		return if work.nil?
 
 		# do nothing for non-SIS work
 		return if work.is_sis_thesis? == false
@@ -134,9 +152,15 @@ class SubmissionController < ApplicationController
   end
 
 	def can_view(work)
+
 		# can view if the work exists and is published, or if it is draft and the owner is logged in.
-		return false if !work.present? # bad URL passed in: the work doesn't exist.
-		return true if current_user.present? && work.author_email == current_user.email # this work is owned by the current user.
-		return !work.is_draft? # This work has been published.
+
+		return false if work.nil?
+
+		# this work is owned by the current user.
+		return true if current_user.present? && work.is_mine?( current_user.email )
+
+		# This work has been published.
+		return !work.is_draft?
 	end
 end
