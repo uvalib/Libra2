@@ -105,6 +105,9 @@ module Helpers
         # where the authorization comes from
         w.work_source = "#{GenericWork::THESIS_SOURCE_OPTIONAL}:#{deposit_request.id}"
 
+        # who requested it
+        w.registrar_computing_id = deposit_request.requester unless deposit_request.requester.nil?
+
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
         if ServiceClient::EntityIdClient.instance.ok?( status )
            w.identifier = id

@@ -299,6 +299,7 @@ def dump_work( work )
   end
   puts " visibility => #{work.visibility}"
   puts " embargo_end_date => #{work.embargo_end_date}"
+  puts " registrar_computing_id => #{work.registrar_computing_id}"
 
   puts '*' * 40
 
