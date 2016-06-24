@@ -105,7 +105,7 @@ class SubmissionController < ApplicationController
 		return if work.is_sis_thesis?
 
 		computing_id = work.registrar_computing_id
-		return if computing_id.empty?
+		return if computing_id.nil? || computing_id.empty?
 		author = Helpers::EtdHelper::lookup_user( work.creator.split("@")[0] )
 
 		registrar = Helpers::EtdHelper::lookup_user( computing_id )
@@ -119,7 +119,7 @@ class SubmissionController < ApplicationController
 		return if work.nil?
 
 		# if we have no DOI, do nothing...
-		return if work.identifier.empty?
+		return if work.identifier.nil? || work.identifier.empty?
 
 		status = ServiceClient::EntityIdClient.instance.metadatasync( work )
 		if ServiceClient::EntityIdClient.instance.ok?( status ) == false

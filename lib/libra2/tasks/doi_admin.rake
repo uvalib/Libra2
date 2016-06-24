@@ -188,7 +188,7 @@ namespace :libra2 do
   # update the DOI for the supplied work
   def update_work_doi( work )
 
-      if work.identifier.empty? == false
+      if work.identifier.nil? == false && work.identifier.empty? == false
         puts "WARNING: work #{work.id} already has a DOI (#{work.identifier}), removing it"
         #status = ServiceClient::EntityIdClient.instance.remove( work )
         #if ServiceClient::EntityIdClient.instance.ok?( status ) == false
