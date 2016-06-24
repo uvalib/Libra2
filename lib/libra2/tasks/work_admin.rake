@@ -185,6 +185,28 @@ task create_new_thesis: :environment do |t, args|
 
 end
 
+desc "Create new work for all registered users"
+task works_for_all: :environment do |t, args|
+
+  count = 0
+  User.order( :email ).each do |user|
+
+    id = Time.now.to_i
+    title = "Example generic work title (#{id})"
+    description = "Example generic work description (#{id})"
+
+    work = create_work( user, title, description )
+
+    filename = get_an_image( )
+    upload_file( user, work, filename )
+
+    count += 1
+  end
+
+  puts "Created #{count} works"
+
+end
+
 desc "Create new theses for all registered users"
 task thesis_for_all: :environment do |t, args|
 
