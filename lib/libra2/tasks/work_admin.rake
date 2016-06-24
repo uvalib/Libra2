@@ -151,7 +151,7 @@ task create_new_work: :environment do |t, args|
   work = create_work( user, title, description )
 
   filename = get_an_image( )
-  upload_file( user, work, filename )
+  upload( user, work, filename )
 
   dump_work work
 
@@ -179,7 +179,7 @@ task create_new_thesis: :environment do |t, args|
   work = create_thesis( user, title, description )
 
   #filename = copy_sourcefile( sample_pdf_file )
-  #upload_file( user, work, filename )
+  #upload( user, work, filename )
 
   dump_work work
 
@@ -198,7 +198,7 @@ task works_for_all: :environment do |t, args|
     work = create_work( user, title, description )
 
     filename = get_an_image( )
-    upload_file( user, work, filename )
+    upload( user, work, filename )
 
     count += 1
   end
@@ -220,7 +220,7 @@ task thesis_for_all: :environment do |t, args|
     work = create_thesis( user, title, description )
 
     filename = get_an_image( )
-    upload_file( user, work, filename )
+    upload( user, work, filename )
 
     count += 1
 
@@ -230,7 +230,7 @@ task thesis_for_all: :environment do |t, args|
 
 end
 
-  def create_work( user, title, description )
+def create_work( user, title, description )
    return( create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description ) )
 end
 
@@ -299,7 +299,7 @@ def create_generic_work( work_type, user, title, description )
   return work
 end
 
-def upload_file( user, work, filename )
+def upload( user, work, filename )
 
   print "uploading #{filename}... "
 

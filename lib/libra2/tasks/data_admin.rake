@@ -28,7 +28,7 @@ namespace :libra2 do
       count += 1
     end
 
-    puts "#{count} items exported successfully"
+    puts "#{count} item(s) exported successfully"
 
   end
 
@@ -50,7 +50,7 @@ namespace :libra2 do
       count += 1
     end
 
-    puts "#{count} items exported successfully"
+    puts "#{count} item(s) imported successfully"
 
   end
 
@@ -62,13 +62,29 @@ namespace :libra2 do
     FileUtils::mkdir_p( d )
 
     f = File.join( d, 'data.json' )
-    File.open( f, 'w') { |file| file.write( work.to_json ) }
+    File.open( f, 'w') do |file|
+      file.write( work.to_json )
+    end
 
-    if work.file_sets
-      work.file_sets.each do |file_set|
-        f = File.join( d, file_set.label )
-        get_file( f, file_set.id )
-      end
+    f = File.join( d, 'special.txt' )
+    File.open( f, 'w') do |file|
+      file.write( "visibility: #{work.visibility}\n" )
+    end
+
+    if work.file_sets && work.file_sets.length != 0
+
+       f = File.join( d, 'filelist.txt' )
+       File.open( f, 'w') do |file|
+          work.file_sets.each do |file_set|
+             #puts file_set.inspect
+             file.write( "#{file_set.label}:#{file_set.title[0]}\n" )
+          end
+       end
+
+       work.file_sets.each do |file_set|
+         f = File.join( d, file_set.label )
+         get_file( f, file_set.label, file_set.id )
+       end
 
     end
   end
@@ -93,15 +109,26 @@ namespace :libra2 do
 
     work = make_new_work( user, h )
 
+    f = File.join( dirname, 'special.txt' )
+    File.open( f, 'r').each do |line|
+
+      line = line.strip
+      if /^visibility/.match( line )
+        work.visibility = line.gsub( "visibility: ", "" )
+      end
+    end
+
+    work.save!
+
     filelist = get_file_list( dirname )
-    filelist.each do |filename|
-      upload_file( user, work, File.join( dirname, filename ) )
+    filelist.each do |f|
+      upload_file( user, work, File.join( dirname, f[ :filename ] ), f[ :label ] )
     end
   end
 
-  def get_file( filename, id )
+  def get_file( filename, label, id )
 
-    print " getting file #{id}... "
+    print " getting file #{label}... "
 
     Net::HTTP.start( 'localhost', 3000 ) do |http|
       resp = http.get("/downloads/#{id}")
@@ -139,11 +166,15 @@ namespace :libra2 do
   def get_file_list( dirname )
 
     res = []
-    Dir.foreach( dirname ) do |f|
-      if ['.', '..', 'data.json'].include?( f ) == false
-        res << f
+    begin
+      f = File.join( dirname, 'filelist.txt' )
+      File.open( f, 'r').each do |line|
+        tokens = line.strip.split( ":" )
+        res << { :filename => tokens[ 0 ], :label => tokens[ 1 ] }
       end
+    rescue => e
     end
+
     return res
 
   end
@@ -160,9 +191,9 @@ namespace :libra2 do
       w.author_last_name = h['author_last_name']
       w.author_institution = h['author_institution']
 
-      w.date_uploaded = h['date_uploaded']
-      w.date_modified = h['date_modified']
-      w.date_created = h['date_created']
+      w.date_uploaded = DateTime.parse( h['date_uploaded'] ) if h['date_uploaded']
+      w.date_modified = DateTime.parse( h['date_modified'] ) if h['date_modified']
+      w.date_created = DateTime.parse( h['date_created'] ) if h['date_created']
       w.visibility = h['visibility']
       w.visibility_during_embargo = h['visibility_during_embargo']
       w.embargo_state = h['embargo_state']
@@ -179,16 +210,6 @@ namespace :libra2 do
       w.language = h['language']
 
       w.contributor = h['contributor']
-      #h['contributor_computing_id'].reverse.each { |v| w.contributor_computing_id << v }
-      #h['contributor_first_name'].reverse.each { |v| w.contributor_first_name << v }
-      #h['contributor_last_name'].reverse.each { |v| w.contributor_last_name << v }
-      #h['contributor_institution'].reverse.each { |v| w.contributor_institution << v }
-      #h['contributor_department'].reverse.each { |v| w.contributor_department << v }
-      # w.contributor_computing_id = h['contributor_computing_id'].reverse
-      # w.contributor_first_name = h['contributor_first_name'].reverse
-      # w.contributor_last_name = h['contributor_last_name'].reverse
-      # w.contributor_institution = h['contributor_institution'].reverse
-      # w.contributor_department = h['contributor_department'].reverse
 
       w.rights = h['rights']
       w.license = h['license']
@@ -200,11 +221,12 @@ namespace :libra2 do
     return work
   end
 
-  def upload_file( user, work, filename )
+  def upload_file( user, work, filename, title )
 
     print "uploading #{filename}... "
 
     fileset = ::FileSet.new
+    fileset.title << title
     file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, user )
     file_actor.create_metadata( work )
     file_actor.create_content( File.open( filename ) )
