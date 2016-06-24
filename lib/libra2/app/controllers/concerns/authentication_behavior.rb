@@ -36,7 +36,7 @@ module AuthenticationBehavior
     #
     if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
 			@users = User.order( :email )
-			@users = @users.map {|user| user.email.split("@")[0] }
+			@users = @users.map {|user| User.cid_from_email( user.email ) }
     else
       raise ActionController::RoutingError.new( 'Forbidden' )
     end

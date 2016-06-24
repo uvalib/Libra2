@@ -135,8 +135,7 @@ end
 def create_user( name, email, password )
 
   # extract computing ID and look up...
-  tokens = email.split( "@" )
-  info = lookup_user( tokens[ 0 ] )
+  info = lookup_user( User.cid_from_email( email ) )
 
   display_name = info.nil? ? name : info.display_name
   title = info.nil? ? name : info.description
@@ -159,8 +158,7 @@ end
 def sync_user( user )
 
   # extract computing ID and look up...
-  tokens = user.email.split( "@" )
-  info = lookup_user( tokens[ 0 ] )
+  info = lookup_user( User.cid_from_email( user.email ) )
   updated = false
 
   if info.nil? == false

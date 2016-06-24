@@ -358,7 +358,7 @@ end
 
 def user_info_by_email( email )
 
-    id = email.split( "@" )[ 0 ]
+    id = User.cid_from_email( email )
     print "Looking up user details for #{id}..."
 
     # lookup the user by computing id
