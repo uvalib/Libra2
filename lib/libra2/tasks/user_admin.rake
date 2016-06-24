@@ -105,13 +105,16 @@ end
 desc "List all users"
 task list_all_users: :environment do |t, args|
 
+  count = 0
   User.order( :email ).each do |user|
     puts "User: #{user.display_name}"
     puts "  email:      #{user.email}"
     puts "  title:      #{user.title}"
     puts "  department: #{user.department}"
     puts "  created:    #{user.created_at}"
+    count += 1
   end
+  puts "#{count} user(s) listed"
 
 end
 
