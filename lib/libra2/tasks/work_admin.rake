@@ -217,7 +217,11 @@ task thesis_for_all: :environment do |t, args|
     title = "Example thesis title (#{id})"
     description = "Example thesis description (#{id})"
 
-    _ = create_thesis( user, title, description )
+    work = create_thesis( user, title, description )
+
+    filename = get_an_image( )
+    upload_file( user, work, filename )
+
     count += 1
 
   end
