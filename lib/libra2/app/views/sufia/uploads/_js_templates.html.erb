@@ -107,7 +107,7 @@
             {% } %}
         </td>
         <td>
-        <input type="text" class="string optional form-control" name="newly_uploaded_files_label[]" value="{%=createDisplayLabel() %}" />
+        <input type="text" class="string optional form-control" name="newly_uploaded_files_label[]" value="{%=createDisplayLabel(file) %}" />
                 <input type="hidden" name="uploaded_files[]" value="{%=file.id%}">
         </td>
         <td>
