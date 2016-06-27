@@ -54,15 +54,17 @@
 					<th>Filename</th>
 					<th>Display Label<div class="file-hint">Rename your file here</div></th>
 					<th></th>
+					<th></th>
 				</tr>
 				<% f.object.file_sets.each do |file| %>
 					<tr data-file-id="<%= file.id %>">
 						<td><span class="file-name"><%= file.solr_document.label %></span></td>
 						<td><input type="text" class="string optional form-control" name="previously_uploaded_files_label[]" value="<%= display_array(file.title) %>" /></td>
+						<td></td>
 						<td>
 							<button class="btn btn-danger delete delete-previous-file" data-type="DELETE" data-url="/concern/file_sets/<%= file.id %>.json">
 							<i class="glyphicon glyphicon-trash"></i>
-							<span>Delete</span>
+							<span></span>
 						</button>
 						</td>
 					</tr>
