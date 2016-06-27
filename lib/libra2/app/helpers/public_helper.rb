@@ -105,6 +105,7 @@ module PublicHelper
 
 	def display_if_non_blank(label, value)
 		return "" if value.blank?
+		value = raw(value.gsub("\n", "<br>"))
 		row = raw(content_tag(:span, label, { class: "document-label" }) + content_tag(:span, value, { class: "document-value"}))
 		return content_tag(:div, row, { class: "document-row" })
 	end

@@ -13,10 +13,17 @@ module ShowHelper
       return tr
   end
 
+  def keep_new_lines(tr)
+    return raw(tr.gsub("\n", "<br>"))
+  end
+
   def show_line(presenter, field_name, label, required)
     tr = presenter.attribute_to_html(field_name, label: label, include_empty: true, catalog_search_link: false )
     if required
       tr = show_wrap_required(tr)
+    end
+    if field_name == :description
+      tr = keep_new_lines(tr)
     end
     return tr
   end
