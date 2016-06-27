@@ -46,6 +46,9 @@ module ServiceClient
        return status
      end
 
+     #
+     # get the details for the specified doi
+     #
      def metadataget( doi )
        #puts "=====> metadataget #{doi}"
        url = "#{self.url}/#{doi}?auth=#{self.authtoken}"
@@ -57,9 +60,11 @@ module ServiceClient
      #
      # remove a DOI entry
      #
-     def remove( work )
-       # not implemented
-       return 500
+     def remove( doi )
+       #puts "=====> remove #{doi}"
+       url = "#{self.url}/#{doi}?auth=#{self.authtoken}"
+       status = rest_delete( url )
+       return status
      end
 
      #

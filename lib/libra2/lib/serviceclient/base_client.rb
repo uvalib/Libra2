@@ -71,6 +71,26 @@ module ServiceClient
        end
      end
 
+     def rest_delete( url )
+       begin
+         response = RestClient::Request.execute( method: :delete,
+                                                 url: URI.escape( url ),
+                                                 timeout: self.timeout )
+
+         return response.code
+       rescue RestClient::ResourceNotFound => e
+         return e.http_code
+       rescue RestClient::Exception => e
+         puts "DELETE, URL: #{url}"
+         puts e
+         return e.http_code
+       rescue SocketError => e
+         puts "DELETE, URL: #{url}"
+         puts e
+         return 500
+       end
+     end
+
      #
      # load the supplied configuration file
      #
