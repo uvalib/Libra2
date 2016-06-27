@@ -1,3 +1,5 @@
+require 'socket'
+
 module UrlHelper
 
   def fully_qualified_work_url( id )
@@ -9,13 +11,7 @@ module UrlHelper
   end
 
   def public_site_url
-    #TODO-DPG: fix this appropriately
-    "https://libra2dev.lib.virginia.edu"
+    return "https://#{Socket.gethostname}"
   end
-
-  #def doi_work_url( doi )
-  #  #TODO-DPG: fix this appropriately
-  #  "/DOI/#{doi}"
-  #end
 
 end

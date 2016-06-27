@@ -1,8 +1,12 @@
 require_dependency 'libra2/lib/serviceclient/base_client'
+require_dependency 'libra2/app/helpers/url_helper'
 
 module ServiceClient
 
    class EntityIdClient < BaseClient
+
+     # get the helpers
+     include UrlHelper
 
      #
      # configure with the appropriate configuration file
@@ -75,7 +79,7 @@ module ServiceClient
        h['title'] = work.title[ 0 ] if work.title && work.title[ 0 ]
        h['publisher'] = work.publisher if work.publisher
        h['creator'] = work.creator if work.creator
-       h['url'] = self.fully_qualified_work_url( work.id )
+       h['url'] = fully_qualified_work_url( work.id )
        h['publication_year'] = "#{work.date_uploaded.year}" if work.date_uploaded
        h['type'] = work.resource_type if work.resource_type
        h.to_json
@@ -95,17 +99,6 @@ module ServiceClient
 
      def url
        configuration[ :url ]
-     end
-
-     # TODO-DPG: use the helper...
-     def fully_qualified_work_url( id )
-       return "#{self.public_site_url}/public_view/#{id}" unless id.nil?
-       return public_site_url
-     end
-
-     def public_site_url
-       #TODO-DPG: fix this appropriately
-       "https://libra2dev.lib.virginia.edu"
      end
 
    end
