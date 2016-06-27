@@ -185,16 +185,35 @@ namespace :libra2 do
     puts "#{count} work(s) successfully updated"
   end
 
+  desc "Delete the specified DOI; must provide the DOI"
+  task delete_by_doi: :environment do |t, args|
+
+    doi = ARGV[ 1 ]
+    if doi.nil?
+      puts "ERROR: no DOI specified, aborting"
+      next
+    end
+
+    task doi.to_sym do ; end
+
+    status = ServiceClient::EntityIdClient.instance.remove( doi )
+    if ServiceClient::EntityIdClient.instance.ok?( status ) == false
+      puts "ERROR: EZID service returns #{status}, aborting"
+    else
+      puts "DOI successfully deleted"
+    end
+
+  end
+
   # update the DOI for the supplied work
   def update_work_doi( work )
 
       if work.identifier.nil? == false && work.identifier.empty? == false
         puts "WARNING: work #{work.id} already has a DOI (#{work.identifier}), removing it"
-        #status = ServiceClient::EntityIdClient.instance.remove( work )
-        #if ServiceClient::EntityIdClient.instance.ok?( status ) == false
-        #  puts "ERROR: remove DOI request returns #{status}, aborting"
-        #  return false
-        #end
+        status = ServiceClient::EntityIdClient.instance.remove( work.identifier )
+        if ServiceClient::EntityIdClient.instance.ok?( status ) == false
+          puts "ERROR: remove DOI request returns #{status}, continuing anyway"
+        end
       end
 
       # mint a new DOI
