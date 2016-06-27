@@ -46,7 +46,7 @@ group :development do
   gem 'spring'
 end
 
-gem 'sufia', '7.0.0.beta3'
+gem 'sufia', '7.0.0.beta4'
 
 group :development, :test do
   gem 'solr_wrapper', '>= 0.3'
