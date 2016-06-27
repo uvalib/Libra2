@@ -30,18 +30,25 @@
 
 	table {
 		table-layout: fixed;
-		td:nth-child(1) {
-			width: 10%;
+		th:nth-child(1) {
+			width: 40%;
 		}
-		td:nth-child(2) {
+		td:nth-child(1) {
+			overflow-wrap: break-word;
+		}
+		th:nth-child(2) {
 			width: 60%;
 		}
-		td:nth-child(3) {
-			width: 10%;
+		th:nth-child(3) {
+			width: 80px;
 			vertical-align: middle;
 		}
-		td:nth-child(4) {
+		th:nth-child(4) {
 			vertical-align: middle;
+			width: 44px;
+		}
+		td .progress {
+			width: 76px;
 		}
 	}
 }
@@ -64,7 +71,6 @@
 #fileupload {
 	.form-control {
 		display: inline-block;
-		width: 65%;
 	}
 }
 
@@ -175,4 +181,10 @@
 .invalid-input {
 	border-color: #d9534f;
 	background-color: rgba(217, 83, 79, 0.05);
+}
+
+#savewidget .panel-footer {
+	a, input {
+		margin-bottom: 6px;
+	}
 }
