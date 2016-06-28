@@ -28,6 +28,7 @@
 /env.unset
 /env.mike
 /env.bob
+/env.prod
 /hostfs
 
 /scripts/helpers/db_clean.ksh
