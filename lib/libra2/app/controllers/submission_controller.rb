@@ -13,8 +13,6 @@ class SubmissionController < ApplicationController
 		@id = params[:id]
 		@work = get_work_item
 
-		# TODO-DPG: handle a null work here
-
 		@can_view = can_view(@work)
 		if @can_view
 			file_sets = @work.file_sets
@@ -30,6 +28,9 @@ class SubmissionController < ApplicationController
 				a[:title].downcase <=> b[:title].downcase
 			}
 			@is_preview = @work.is_draft?
+			if !@is_preview # on the public page, there shouldn't be the the concept of logging in.
+				@hide_user_controls = true # this should either be nil or true. Then the layout file works for all pages.
+			end
 			@today = Time.now
 			@grounds_override = false
 			if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
@@ -46,28 +47,29 @@ class SubmissionController < ApplicationController
 
 	def submit
 		id = params[:id]
-    work = get_work_item
+		work = get_work_item
 
-		# TODO-DPG: handle a null work here
+		if work.present?
 
-		work.draft = 'false'
-		if work.embargo_state != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-			end_date = work.resolve_embargo_date()
-			work.embargo_end_date = DateTime.new(end_date.year, end_date.month, end_date.day)
+			work.draft = 'false'
+			if work.embargo_state != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+				end_date = work.resolve_embargo_date()
+				work.embargo_end_date = DateTime.new(end_date.year, end_date.month, end_date.day)
+			end
+			work.save!
+
+			# send the author email that they have successfully completed things
+			send_author_email(work)
+
+			# send the registrar email that they have successfully completed things
+			send_registrar_email(work)
+
+			# update the DOI service with the completed metadata
+			update_metadata(work)
+
+			# update SIS as necessary
+			update_submitted_state(work)
 		end
-		work.save!
-
-		# send the author email that they have successfully completed things
-		send_author_email( work )
-
-		# send the registrar email that they have successfully completed things
-		send_registrar_email( work )
-
-		# update the DOI service with the completed metadata
-		update_metadata( work )
-
-		# update SIS as necessary
-		update_submitted_state( work )
 
 		redirect_to locally_hosted_work_url( id ), :flash => { :notice => "Thank you for submitting your thesis. Be sure to make note of and refer to the Persistent Link when you refer to this work." }
   end
@@ -76,11 +78,10 @@ class SubmissionController < ApplicationController
 		if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
 			id = params[:id]
 			work = get_work_item
-
-			# TODO-DPG: handle a null work here
-
-			work.draft = 'true'
-			work.save!
+			if work.present?
+				work.draft = 'true'
+				work.save!
+			end
 			redirect_to locally_hosted_work_url( id )
 		end
 	end

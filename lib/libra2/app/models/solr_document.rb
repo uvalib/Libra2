@@ -109,8 +109,7 @@ class SolrDocument
     return advisors if contributors.nil?
 
     contributors.each_with_index { |person, index|
-      arr = person.split("\n")
-      arr.push("") if arr.length == 4 # if the last item is empty, the split command will miss it.
+      arr = person.split("\n", 5) # Need the 5 so that ruby doesn't swallow blank items.
       if arr.length == 5
         advisors.push("First Name: #{arr[1]}")
         advisors.push("Last Name: #{arr[2]}")
@@ -121,51 +120,8 @@ class SolrDocument
       end
       advisors.push("---") if index < contributors.length - 1
     }
-    # first_name = contributor_first_name()
-    # last_name = contributor_last_name()
-    # department = contributor_department()
-    # institution = contributor_institution()
-    # advisors = []
-    # # these should all be the same length, but we're making sure anyway.
-    # if first_name.blank? || last_name.blank? || department.blank? || institution.blank?
-    #   len = 0
-    # else
-    #   len = 1000000
-	#
-    #   len = first_name.length if first_name.length < len
-    #   len = last_name.length if last_name.length < len
-    #   len = department.length if department.length < len
-    #   len = institution.length if institution.length < len
-    # end
-    # len.times { |i|
-    #   advisors.push("First Name: #{first_name[i]}")
-    #   advisors.push("Last Name: #{last_name[i]}")
-    #   advisors.push("Department: #{department[i]}")
-    #   advisors.push("Institution: #{institution[i]}")
-    #   advisors.push("---") if i < len - 1
-    # }
     return advisors
   end
-
-  # def contributor_computing_id
-  #   self[Solrizer.solr_name('contributor_computing_id')]
-  # end
-  #
-  # def contributor_first_name
-  #   self[Solrizer.solr_name('contributor_first_name')]
-  # end
-  #
-  # def contributor_last_name
-  #   self[Solrizer.solr_name('contributor_last_name')]
-  # end
-  #
-  # def contributor_institution
-  #   self[Solrizer.solr_name('contributor_institution')]
-  # end
-  #
-  # def contributor_department
-  #   self[Solrizer.solr_name('contributor_department')]
-  # end
 
   def is_thesis?
     return false if work_type.nil?

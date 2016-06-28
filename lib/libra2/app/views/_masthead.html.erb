@@ -24,6 +24,7 @@
 			<% end %>
 		<span class="search-scope">Online Archive of University of Virginia Scholarship</span>
     </div>
+	  <% if @hide_user_controls.nil? %>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
 				<% if user_signed_in? %>
@@ -42,5 +43,6 @@
 			  <% end %>
       </ul>
     </div><!--/.nav-collapse -->
+	  <% end %>
   </div>
 </nav>
