@@ -5,7 +5,7 @@ fi
 
 echo "Cleaning $SOLR_URL ..."
 
-for i in hydra-development; do
+for i in libra2; do
 
    url="$SOLR_URL/$i/update?stream.body=<delete><query>*:*</query></delete>&commit=true"
    curl "$url"
