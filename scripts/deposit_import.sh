@@ -2,10 +2,6 @@
 # Runner process to call the rake tasks that control deposit importing from SIS and optional registration
 #
 
-# environment settings
-ENVIRONMENT=${RAILS_ENV:=development}
-SNAPSHOT_NAMESPACE=$ENVIRONMENT
-
 # determine if we are in a dockerized environment
 if [ -n "$APP_HOME" ]; then
    export LOGGER=$APP_HOME/log/deposit_import.log
@@ -14,12 +10,6 @@ else
 fi
 
 # log file location
-
-# snapshot file for optional ETD
-export OPT_SNAPSHOT=$SNAPSHOT_NAMESPACE.deposit-opt.last
-
-# snapshot file for SIS based ETD
-export SIS_SNAPSHOT=$SNAPSHOT_NAMESPACE.deposit-sis.last
 
 # our sleep time, currently 5 minutes
 export SLEEPTIME=300
@@ -33,8 +23,6 @@ function logit {
 
 # helpful message...
 logit "Starting up..."
-logit "Optional snapshot name: $OPT_SNAPSHOT"
-logit "SIS snapshot name: $SIS_SNAPSHOT"
 
 # forever...
 while true; do
@@ -47,7 +35,7 @@ while true; do
    logit "Beginning optional deposit import sequence"
 
    # do the optional import
-   bundle exec rake libra2:etd:ingest_optional_etd_deposits $OPT_SNAPSHOT >> $LOGGER 2>&1
+   bundle exec rake libra2:etd:ingest_optional_etd_deposits >> $LOGGER 2>&1
    res=$?
 
    # ending message
@@ -57,7 +45,7 @@ while true; do
    logit "Beginning SIS deposit import sequence"
 
    # do the SIS import
-   bundle exec rake libra2:etd:ingest_sis_etd_deposits $SIS_SNAPSHOT >> $LOGGER 2>&1
+   bundle exec rake libra2:etd:ingest_sis_etd_deposits >> $LOGGER 2>&1
    res=$?
 
    # ending message

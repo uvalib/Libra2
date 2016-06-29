@@ -9,22 +9,21 @@ require_dependency 'libra2/lib/helpers/deposit_request'
 require_dependency 'libra2/lib/helpers/deposit_authorization'
 require_dependency 'libra2/lib/helpers/etd_helper'
 
+require 'socket'
+
 namespace :libra2 do
 
   namespace :etd do
 
   default_last_id = "0"
-  default_optional_statekey = "#{Rails.env.to_s}.deposit-opt.last"
-  default_sis_statekey = "#{Rails.env.to_s}.deposit-sis.last"
+  statekey_optional = "libra2:#{Rails.env.to_s}:deposit:optional:#{Socket.gethostname}"
+  statekey_sis = "libra2:#{Rails.env.to_s}:deposit:sis:#{Socket.gethostname}"
 
-  desc "List new optional ETD deposit requests; optionally provide the state key name"
+  desc "List new optional ETD deposit requests"
   task list_optional_etd_deposits: :environment do |t, args|
 
-    statekey = ARGV[ 1 ]
-    statekey = default_optional_statekey if statekey.nil?
-    task statekey.to_sym do ; end
-
-    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    puts "key: #{statekey_optional}"
+    s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -50,14 +49,11 @@ namespace :libra2 do
 
   end
 
-  desc "List new SIS ETD deposit requests; optionally provide the state key name"
+  desc "List new SIS ETD deposit requests"
   task list_sis_etd_deposits: :environment do |t, args|
 
-    statekey = ARGV[ 1 ]
-    statekey = default_sis_statekey if statekey.nil?
-    task statekey.to_sym do ; end
-
-    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    puts "key: #{statekey_sis}"
+    s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -83,16 +79,13 @@ namespace :libra2 do
 
   end
 
-  desc "Ingest new optional ETD deposit requests; optionally provide the state key name"
+  desc "Ingest new optional ETD deposit requests"
   task ingest_optional_etd_deposits: :environment do |t, args|
-
-    statekey = ARGV[ 1 ]
-    statekey = default_optional_statekey if statekey.nil?
-    task statekey.to_sym do ; end
 
     count = 0
 
-    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    puts "key: #{statekey_optional}"
+    s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -128,16 +121,13 @@ namespace :libra2 do
 
   end
 
-  desc "Ingest new SIS ETD deposit requests; optionally provide the state key name"
+  desc "Ingest new SIS ETD deposit requests"
   task ingest_sis_etd_deposits: :environment do |t, args|
-
-    statekey = ARGV[ 1 ]
-    statekey = default_sis_statekey if statekey.nil?
-    task statekey.to_sym do ; end
 
     count = 0
 
-    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    puts "key: #{statekey_sis}"
+    s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -191,14 +181,11 @@ namespace :libra2 do
 
   end
 
-  desc "List last SIS ETD id; optionally provide the state key name"
+  desc "List last SIS ETD id"
   task list_last_sis_id: :environment do |t, args|
 
-    statekey = ARGV[ 1 ]
-    statekey = default_sis_statekey if statekey.nil?
-    task statekey.to_sym do ; end
-
-    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    puts "key: #{statekey_sis}"
+    s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -210,14 +197,11 @@ namespace :libra2 do
 
   end
 
-  desc "List last optional ETD id; optionally provide the state key name"
+  desc "List last optional ETD id"
   task list_last_optional_id: :environment do |t, args|
 
-    statekey = ARGV[ 1 ]
-    statekey = default_optional_statekey if statekey.nil?
-    task statekey.to_sym do ; end
-
-    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    puts "key: #{statekey_optional}"
+    s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -229,14 +213,15 @@ namespace :libra2 do
 
   end
 
-  desc "Reset last SIS ETD id; optionally provide the state key name"
+  desc "Reset last SIS ETD id; optionally provide the last id"
   task reset_last_sis_id: :environment do |t, args|
 
-    statekey = ARGV[ 1 ]
-    statekey = default_sis_statekey if statekey.nil?
-    task statekey.to_sym do ; end
+    id = ARGV[ 1 ]
+    id = default_last_id if id.nil?
+    task id.to_sym do ; end
 
-    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    puts "key: #{statekey_sis}"
+    s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -244,20 +229,21 @@ namespace :libra2 do
       next
     end
 
-    s.val = 0
+    s.val = id.to_i
 
-    puts "Reset (was #{last_id})"
+    puts "Reset to #{id}, was #{last_id}"
 
   end
 
-  desc "Reset last optional ETD id; optionally provide the state key name"
+  desc "Reset last optional ETD id; optionally provide the last id"
   task reset_last_optional_id: :environment do |t, args|
 
-    statekey = ARGV[ 1 ]
-    statekey = default_optional_statekey if statekey.nil?
-    task statekey.to_sym do ; end
+    id = ARGV[ 1 ]
+    id = default_last_id if id.nil?
+    task id.to_sym do ; end
 
-    s = Helpers::ValueSnapshot.new( statekey, default_last_id )
+    puts "key: #{statekey_optional}"
+    s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -265,9 +251,9 @@ namespace :libra2 do
       next
     end
 
-    s.val = 0
+    s.val = id.to_i
 
-    puts "Reset (was #{last_id})"
+    puts "Reset to #{id}, was #{last_id}"
 
   end
 
