@@ -14,7 +14,9 @@ module EmbargoHelper
 
 	def is_under_embargo(work)
 		return false if work.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-		return embargo_release_date(work) > @today
+		release_date = embargo_release_date(work)
+		raise "Embargo date missing: release_date = #{release_date}, today = #{@today}" if release_date.nil? || @today.nil?
+		return release_date > @today
 	end
 
 	def is_engineering_embargo(work)
