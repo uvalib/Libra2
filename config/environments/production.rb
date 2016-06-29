@@ -54,6 +54,9 @@ Rails.application.configure do
   # Use a different logger for distributed setups.
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
+  # use stdout in the production environments; this will be captured by the docker daemon
+  config.logger = Logger.new( STDOUT )
+
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
 
