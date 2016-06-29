@@ -28,6 +28,7 @@
 /env.unset
 /env.mike
 /env.bob
+/env.dev
 /env.prod
 /hostfs
 
