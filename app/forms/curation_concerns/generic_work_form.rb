@@ -59,15 +59,12 @@ module CurationConcerns
     def initialize( model, current_ability )
       #puts "=====> GenericWorkForm.initialize"
       super( model, current_ability )
-      #self.terms.each do |t|
-      #  puts "===> term #{t}"
-      #end
+      @agreement_accepted = model.accepted_agreement?
     end
 
     # override from the base class to remove tag from the list of primary fields
     # we also do some logic here to ensure that the deposit agreement must be accepted once
     def primary_terms
-      @agreement_accepted = model.accepted_agreement?
       [ ]
     end
 

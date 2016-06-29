@@ -14,9 +14,11 @@ namespace :libra2 do
      count = 0
      kh = Helpers::KeyHelper.new
      keys = kh.keys( "libra2:*:deposit:*" )
-     keys.each do |k|
-       puts " #{k} => value #{kh.value( k )}"
-       count += 1
+     if keys.nil? == false
+       keys.each do |k|
+         puts " #{k} => value #{kh.value( k )}"
+         count += 1
+       end
      end
      puts "#{count} key(s) listed"
   end
@@ -27,9 +29,11 @@ namespace :libra2 do
     count = 0
     kh = Helpers::KeyHelper.new
     keys = kh.keys( "libra2:*:timed:*" )
-    keys.each do |k|
-      puts " #{k} => ttl #{kh.ttl( k )}"
-      count += 1
+    if keys.nil? == false
+      keys.each do |k|
+        puts " #{k} => ttl #{kh.ttl( k )}"
+        count += 1
+      end
     end
     puts "#{count} key(s) listed"
 
