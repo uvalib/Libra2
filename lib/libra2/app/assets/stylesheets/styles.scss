@@ -189,6 +189,15 @@
 	}
 }
 
+#savewidget {
+	height: 1px;
+	z-index: 1000;
+}
+
+.fixedsticky {
+	top: 5px;
+}
+
 #generic_work_title {
 	margin-bottom: 16px;
 }
