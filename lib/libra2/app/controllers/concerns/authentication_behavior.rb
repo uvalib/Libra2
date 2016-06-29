@@ -20,7 +20,6 @@ module AuthenticationBehavior
     # check the request environment and see if we have a user defined by netbadge
     #
      if request.env['HTTP_REMOTE_USER'].present?
-       puts "=====> HTTP_REMOTE_USER: #{request.env['HTTP_REMOTE_USER']}"
 	   begin
 		   # TODO-PER: This fails when called when requesting the favicon. I'm not sure why, but the errors are obscuring real system errors.
 		   return if sign_in_user_id( request.env['HTTP_REMOTE_USER'] )
@@ -28,8 +27,6 @@ module AuthenticationBehavior
 		   return false
 	   end
     end
-
-    puts "=====> HTTP_REMOTE_USER NOT defined"
 
     #
     # a hack to allow us to login without netbadge
