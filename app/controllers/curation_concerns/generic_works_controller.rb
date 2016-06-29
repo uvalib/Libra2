@@ -25,7 +25,7 @@ module CurationConcerns
             newly_uploaded_files_label.each_with_index { |label, i|
               file_attributes = { title: [ label ]}
               actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[offset+i], current_user)
-              actor.update_metadata(file_attributes)
+              actor.update_metadata(file_attributes) #TODO-PER: fix this if we change to delayed file upload.
             }
           end
         end
