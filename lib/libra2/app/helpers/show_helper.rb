@@ -43,4 +43,19 @@ module ShowHelper
     end
     return tr
   end
+
+    def show_visibility_line(state)
+      th = content_tag(:th, "Visibility", {})
+      if state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+        state_str = t("libra.visibility.open.text")
+      elsif state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        state_str = t("libra.visibility.embargo_engineering.text")
+      elsif state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+        state_str = t("libra.visibility.embargo.text")
+      end
+      state_el = content_tag(:li, state_str, { class: "attribute embargo_state" })
+      ul = content_tag(:ul, state_el, { class: "tabular"})
+      td = content_tag(:td, ul, {})
+      return content_tag(:tr, raw(th + td))
+    end
 end

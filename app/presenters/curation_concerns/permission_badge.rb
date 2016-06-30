@@ -26,14 +26,14 @@ module CurationConcerns
       end
 
       def link_title
-        if open_access_with_embargo?
-          'Open Access with Embargo'
-        elsif open_access?
-          'Open Access'
-        elsif registered?
-          I18n.translate('curation_concerns.institution_name')
+        if @solr_document.draft[0] == "true"
+          return "Draft"
+        elsif @solr_document.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+          return "Restricted to Abstract View Only"
+        elsif @solr_document.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+          return "Restricted to UVA Only"
         else
-          'Private'
+          return "Visible Worldwide"
         end
       end
 

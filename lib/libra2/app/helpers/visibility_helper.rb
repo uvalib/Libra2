@@ -38,10 +38,12 @@ module VisibilityHelper
     def render_visibility_with_draft(document)
       if document.is_draft?
         return content_tag(:span, "Draft", { class: "label label-danger" })
-      elsif document.embargo_state == 'embargo'
-        return content_tag(:span, "Embargoed", { class: "label label-warning" })
+      elsif is_engineering_embargo(document)
+        return t("libra.visibility.embargo_engineering.label_html")
+      elsif is_non_engineering_embargo(document)
+        return t("libra.visibility.embargo.label_html")
       else
-        return content_tag(:span, "Open Access", { class: "label label-success" })
+        return t("libra.visibility.open.label_html")
       end
     end
 end
