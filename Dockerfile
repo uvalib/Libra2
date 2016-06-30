@@ -45,4 +45,4 @@ USER webservice
 
 # Define port and startup script
 EXPOSE 3000
-CMD /bin/bash -l -c "scripts/entry.sh"
+CMD scripts/entry.sh
