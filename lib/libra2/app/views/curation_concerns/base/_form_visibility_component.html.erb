@@ -8,16 +8,16 @@
 
   <label class="radio">
 
-    <%= f.radio_button :embargo_state, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, data: { 'target': '#collapseEmbargo' } %>
-    <% if current_user && current_user.is_engineering? %>
+ <% if current_user && current_user.is_engineering? %>
         <% embargo_label = 'libra.visibility.embargo_engineering.label_html' %>
         <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
     <% else %>
         <% embargo_label = 'libra.visibility.embargo.label_html' %>
         <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
     <% end %>
+      <%= f.radio_button :embargo_state, embargo_visibility, data: { 'target': '#collapseEmbargo' } %>
 
-    <%= t( embargo_label ) %>
+      <%= t( embargo_label ) %>
     <div class="collapse" id="collapseEmbargo">
       <div class="form-inline">
         <%= f.input :embargo_period, label: ' For ', wrapper: :inline, collection: embargo_duration_options( ), include_blank: false %>

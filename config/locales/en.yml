@@ -25,15 +25,17 @@ en:
       active_theses: 'Active Theses'
     visibility:
       open:
-        text: 'Open Access'
+        text: 'Visible Worldwide'
         label_html: '<span class="label label-success">Visible Worldwide</span>'
       restricted:
         text: 'Private'
       authenticated:
         text: 'University of Virginia'
       embargo:
+        text: 'Restricted To UVA Only'
         label_html: '<span class="label label-warning">Restricted To UVA Only</span>'
       embargo_engineering:
+        text: 'Restricted To Abstract'
         label_html: '<span class="label label-warning">Restricted To Abstract</span>'
       after_embargo:
         label_html: 'Then <span class="label label-success">Visible Worldwide</span>'
