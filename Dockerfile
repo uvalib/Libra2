@@ -24,6 +24,10 @@ nokogiri:1.6.8 \
 binding_of_caller:0.7.2 \
 --no-ri --no-rdoc"
 
+# set the timezone appropriatly
+ENV TZ=EST5EDT
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Create the run user and group
 RUN groupadd -r webservice && useradd -r -g webservice webservice
 
