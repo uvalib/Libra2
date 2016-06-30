@@ -2,13 +2,17 @@ class ThesisMailers < ActionMailer::Base
 
   add_template_helper( UrlHelper )
 
+  def is_under_embargo(work)
+	  return false if work.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+	  return work.embargo_end_date > Time.now()
+  end
+
   def visibility_string( work )
-	  visibility = work.visibility
-	  if visibility == 'open'
+	  if is_under_embargo(work)
+		  return "public access on #{work.embargo_end_date.strftime("%B %-d, %Y")}"
+	  else
 		  return "public access immediately"
 	  end
-	  embargo_release_date = work.embargo_release_date
-	  return "public access  on #{embargo_release_date.strftime("%B %-d, %Y")}"
   end
 
 	def thesis_can_be_submitted( whom, name )
@@ -27,7 +31,8 @@ class ThesisMailers < ActionMailer::Base
 		@availability = visibility_string(work)
 		@doi_link = work.permanent_url
 		@is_sis_thesis = work.is_sis_thesis?
-		mail(to: work.creator, from: MAIL_SENDER, subject: "Successful deposit of your thesis")
+		subject = "Successful deposit of your thesis#{ " or dissertation" if @is_sis_thesis}"
+		mail(to: work.creator, from: MAIL_SENDER, subject: subject)
 	end
 
 	def thesis_submitted_registrar( work, author, registrar_name, registrar_email )
