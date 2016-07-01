@@ -32,7 +32,7 @@ ENV APP_HOME /libra2
 WORKDIR $APP_HOME
 
 ADD . $APP_HOME
-RUN rm $APP_HOME/Gemfile.lock
+#RUN rm $APP_HOME/Gemfile.lock
 RUN bundle install
 RUN rake db:migrate
 RUN rake assets:precompile
