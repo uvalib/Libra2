@@ -1,14 +1,19 @@
-FROM alpine:3.4
+FROM centos:7
 
-# Add necessary packages
-RUN apk --update add bash tzdata ruby ruby-dev build-base nodejs mariadb-dev zlib-dev libxml2-dev libxslt-dev imagemagick openjdk8-jre-base
+RUN yum -y update && yum -y install which tar file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel && yum -y install nodejs
 
-# Add base gems
-RUN gem install bundler io-console --no-ri --no-rdoc
+# install rvm
+RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+RUN \curl -sSL https://get.rvm.io | /bin/bash -s stable
+
+# install ruby
+RUN /bin/bash -l -c "rvm requirements"
+RUN /bin/bash -l -c "rvm install 2.3.0"
+RUN /bin/bash -l -c "rvm use 2.3.0 --default"
+RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
 
 # attempt to preinstall dependent gems with native extensions
-RUN gem install \
-json:1.8.3 \
+RUN /bin/bash -l -c "gem install \
 bcrypt:3.1.11 \
 debug_inspector:0.0.2 \
 byebug:9.0.5 \
@@ -17,25 +22,24 @@ mysql2:0.4.4 \
 posix-spawn:0.3.11 \
 nokogiri:1.6.8 \
 binding_of_caller:0.7.2 \
-bigdecimal:1.2.7 \
---no-ri --no-rdoc
+--no-ri --no-rdoc"
 
 # set the timezone appropriatly
 ENV TZ=EST5EDT
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Create the run user and group
-RUN addgroup webservice && adduser webservice -G webservice -D
+RUN groupadd -r webservice && useradd -r -g webservice webservice
 
 # create work directory
 ENV APP_HOME /libra2
 WORKDIR $APP_HOME
 
 ADD . $APP_HOME
-#RUN rm $APP_HOME/Gemfile.lock
-RUN bundle install
-RUN rake db:migrate
-RUN rake assets:precompile
+
+RUN /bin/bash -l -c "bundle install"
+RUN /bin/bash -l -c "rake db:migrate"
+RUN /bin/bash -l -c "rake assets:precompile"
 
 # Update permissions
 RUN chown -R webservice $APP_HOME && chgrp -R webservice $APP_HOME
@@ -45,4 +49,4 @@ USER webservice
 
 # Define port and startup script
 EXPOSE 3000
-CMD scripts/entry.sh
+CMD /bin/bash -l -c "scripts/entry.sh"
