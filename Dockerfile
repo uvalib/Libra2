@@ -1,21 +1,19 @@
 FROM centos:7
 
-# Add necessary packages
 RUN yum -y update && yum -y install which tar file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel && yum -y install nodejs
 
-# install rvvm
+# install rvm
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-RUN \curl -sSL https://get.rvm.io | /bin/bash -s stable		
+RUN \curl -sSL https://get.rvm.io | /bin/bash -s stable
 
-# install ruby		
-RUN /bin/bash -l -c "rvm requirements"		
-RUN /bin/bash -l -c "rvm install 2.3.0"		
-RUN /bin/bash -l -c "rvm use 2.3.0 --default"		
+# install ruby
+RUN /bin/bash -l -c "rvm requirements"
+RUN /bin/bash -l -c "rvm install 2.3.0"
+RUN /bin/bash -l -c "rvm use 2.3.0 --default"
 RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
 
 # attempt to preinstall dependent gems with native extensions
 RUN /bin/bash -l -c "gem install \
-json:1.8.3 \
 bcrypt:3.1.11 \
 debug_inspector:0.0.2 \
 byebug:9.0.5 \
@@ -38,6 +36,7 @@ ENV APP_HOME /libra2
 WORKDIR $APP_HOME
 
 ADD . $APP_HOME
+
 RUN /bin/bash -l -c "bundle install"
 RUN /bin/bash -l -c "rake db:migrate"
 RUN /bin/bash -l -c "rake assets:precompile"

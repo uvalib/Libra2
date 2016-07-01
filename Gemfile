@@ -62,7 +62,3 @@ end
 
 gem 'resque-pool'
 gem 'rest-client'
-
-# added during the move to Alpine linux
-#gem 'bigdecimal'
-#gem 'tzinfo-data'
