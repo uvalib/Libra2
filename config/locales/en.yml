@@ -56,6 +56,11 @@ en:
       defaults:
         notes: '' # This removes the "Please keep under 300 words" message.
         description: '' # This removes the "Please keep under 300 words" message.
+      generic_work:
+        title: ''   # This removes the "A name to aid in identifying a work." message.
+        contributor_html: ''
+        description: ''
+        related_url: "A link to a website or other specific content (audio, video, PDF document) related to the work."
     labels:
       defaults:
         #creator: 'Author'
