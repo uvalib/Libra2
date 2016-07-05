@@ -8,8 +8,8 @@ namespace :libra2 do
 
   namespace :email do
 
-  desc "Resend the 'you can submit' email; must provide the computing id"
-  task send_can_submit: :environment do |t, args|
+  desc "Resend the 'you can submit optional thesis' email; must provide the computing id"
+  task send_can_submit_optional: :environment do |t, args|
 
     computing_id = ARGV[ 1 ]
     if computing_id.nil?
@@ -25,7 +25,30 @@ namespace :libra2 do
       next
     end
 
-    ThesisMailers.thesis_can_be_submitted( user.email, user.display_name ).deliver_now
+    ThesisMailers.optional_thesis_can_be_submitted( user.email, user.display_name ).deliver_now
+
+    puts "Email sent to #{user.email} successfully"
+
+  end
+
+  desc "Resend the 'you can submit sis thesis' email; must provide the computing id"
+  task send_can_submit_sis: :environment do |t, args|
+
+    computing_id = ARGV[ 1 ]
+    if computing_id.nil?
+      puts "ERROR: no computing id specified, aborting"
+      next
+    end
+
+    task computing_id.to_sym do ; end
+
+    user = Helpers::EtdHelper::lookup_user( computing_id )
+    if user.nil?
+      puts "ERROR: user #{computing_id} does not exist, aborting"
+      next
+    end
+
+    ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name ).deliver_now
 
     puts "Email sent to #{user.email} successfully"
 
