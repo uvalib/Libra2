@@ -1,15 +1,15 @@
 development:
-  shoulder: <%= ENV['EZID_SHOULDER'] || "doi:10.5072/FK2" %>
-  authtoken: <%= ENV['API_TOKEN'] || "super_secret" %>
-  url: <%= ENV['ENTITYID_URL'] || "http://docker1.lib.virginia.edu:8210/entityid" %>
+  shoulder: <%= ENV['EZID_SHOULDER'] %>
+  authtoken: <%= ENV['API_TOKEN'] %>
+  url: <%= ENV['ENTITYID_URL'] %>
   timeout: 5
 test:
-  shoulder: <%= ENV['EZID_SHOULDER'] || "doi:10.5072/FK2" %>
-  authtoken: <%= ENV['API_TOKEN'] || "super_secret" %>
-  url: <%= ENV['ENTITYID_URL'] || "http://docker1.lib.virginia.edu:8210/entityid" %>
+  shoulder: <%= ENV['EZID_SHOULDER'] %>
+  authtoken: <%= ENV['API_TOKEN'] %>
+  url: <%= ENV['ENTITYID_URL'] %>
   timeout: 5
 production:
-  shoulder: <%= ENV['EZID_SHOULDER'] || "doi:10.5072/FK2" %>
-  authtoken: <%= ENV['API_TOKEN'] || "super_secret" %>
-  url: <%= ENV['ENTITYID_URL'] || "http://docker1.lib.virginia.edu:8210/entityid" %>
+  shoulder: <%= ENV['EZID_SHOULDER'] %>
+  authtoken: <%= ENV['API_TOKEN'] %>
+  url: <%= ENV['ENTITYID_URL'] %>
   timeout: 5
