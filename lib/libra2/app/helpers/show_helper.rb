@@ -50,12 +50,15 @@ module ShowHelper
         state_str = t("libra.visibility.open.text")
       elsif state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
         state_str = t("libra.visibility.embargo_engineering.text")
+        period = period[0] if period.kind_of?(Array)
+        period = GenericWork.friendly_embargo_period(period)
+        state_str = "#{state_str} until #{period} from submitting this thesis"
       elsif state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
         state_str = t("libra.visibility.embargo.text")
+        period = period[0] if period.kind_of?(Array)
+        period = GenericWork.friendly_embargo_period(period)
+        state_str = "#{state_str} until #{period} from submitting this thesis"
       end
-      period = period[0] if period.kind_of?(Array)
-      period = GenericWork.friendly_embargo_period(period)
-      state_str = "#{state_str} until #{period} from submitting this thesis"
       state_el = content_tag(:li, state_str, { class: "attribute embargo_state" })
       ul = content_tag(:ul, state_el, { class: "tabular"})
       td = content_tag(:td, ul, {})
