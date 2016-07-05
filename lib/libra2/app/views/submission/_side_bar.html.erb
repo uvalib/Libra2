@@ -5,7 +5,7 @@
 		<% if show_proof_embargo_notice(@work) %>
 			<div class="proof-file-notice">
 				<p class="preview-warning">
-					The files listed below will <b>NOT</b> be available to the general public until the embargo date has passed.
+					The files listed below will <b>NOT</b> be available to <%= is_engineering_embargo(@work) ? "anyone" : "the general public" %> until the embargo date has passed.
 				</p>
 			</div>
 		<% end %>

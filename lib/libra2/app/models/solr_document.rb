@@ -45,6 +45,10 @@ class SolrDocument
     self[Solrizer.solr_name('embargo_end_date')]
   end
 
+  def embargo_period
+    self[Solrizer.solr_name('embargo_period')]
+  end
+
   def embargo_state
     x = self[Solrizer.solr_name('embargo_state')]
     x = x.join("") if x.kind_of?(Array)
