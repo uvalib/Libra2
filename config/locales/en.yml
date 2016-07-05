@@ -35,8 +35,8 @@ en:
         text: 'Restricted To UVA Only'
         label_html: '<span class="label label-warning">Restricted To UVA Only</span>'
       embargo_engineering:
-        text: 'Restricted To Abstract'
-        label_html: '<span class="label label-warning">Restricted To Abstract</span>'
+        text: 'Restricted To Abstract View'
+        label_html: '<span class="label label-warning">Restricted To Abstract View</span>'
       after_embargo:
         label_html: 'Then <span class="label label-success">Visible Worldwide</span>'
     duration:

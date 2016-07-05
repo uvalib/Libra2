@@ -234,7 +234,20 @@ class GenericWork < ActiveFedora::Base
     return "http://dx.doi.org/#{doi.gsub('doi:', '')}"
   end
 
-    def resolve_embargo_date()
+  def self.friendly_embargo_period(embargo_period)
+    if embargo_period == GenericWork::EMBARGO_VALUE_6_MONTH
+      return "6 months"
+    elsif embargo_period == GenericWork::EMBARGO_VALUE_1_YEAR
+      return "1 year"
+    elsif embargo_period == GenericWork::EMBARGO_VALUE_2_YEAR
+      return "2 years"
+    elsif embargo_period == GenericWork::EMBARGO_VALUE_5_YEAR
+      return "5 years"
+    end
+    raise "Unknown embargo date."
+  end
+
+  def resolve_embargo_date()
       if embargo_period == GenericWork::EMBARGO_VALUE_6_MONTH
         return Time.now() + 6.months
       elsif embargo_period == GenericWork::EMBARGO_VALUE_1_YEAR
