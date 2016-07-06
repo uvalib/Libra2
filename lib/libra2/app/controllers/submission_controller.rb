@@ -15,18 +15,6 @@ class SubmissionController < ApplicationController
 
 		@can_view = can_view(@work)
 		if @can_view
-			file_sets = @work.file_sets
-			@files = []
-			file_sets.each { |file|
-				@files.push({
-					title: file.title.join(" "),
-					location: download_path(file),
-					date: file.date_uploaded
-				})
-			}
-			@files = @files.sort { |a,b|
-				a[:title].downcase <=> b[:title].downcase
-			}
 			@is_preview = @work.is_draft?
 			if !@is_preview # on the public page, there shouldn't be the the concept of logging in.
 				@hide_user_controls = true # this should either be nil or true. Then the layout file works for all pages.
@@ -40,6 +28,7 @@ class SubmissionController < ApplicationController
 					@today = Time.now + months.months
 				end
 			end
+			@files = get_file_sets(@work)
 		else
 			response.status = 404
 		end
@@ -163,5 +152,23 @@ class SubmissionController < ApplicationController
 
 		# This work has been published.
 		return !work.is_draft?
+	end
+
+	def get_file_sets(work)
+		show_files = view_context.allow_file_access(work)
+		return [] if !show_files
+		file_sets = work.file_sets
+		files = []
+		file_sets.each { |file|
+			files.push({
+							title: file.title.join(" "),
+							location: download_path(file),
+							date: file.date_uploaded
+						})
+		}
+		files = files.sort { |a,b|
+			a[:title].downcase <=> b[:title].downcase
+		}
+		return files
 	end
 end
