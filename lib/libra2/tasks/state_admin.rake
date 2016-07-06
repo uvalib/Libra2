@@ -39,6 +39,23 @@ namespace :libra2 do
 
   end
 
+  desc "Delete a key (handle with care); provide the key to delete"
+  task delete: :environment do |t, args|
+
+    key = ARGV[ 1 ]
+    if key.nil?
+      puts "ERROR: no key provided"
+      next
+    end
+
+    task key.to_sym do ; end
+
+    kh = Helpers::KeyHelper.new
+    kh.delete( key )
+    puts "#{key} deleted"
+
+  end
+
   end   # namespace state
 
 end   # namespace libra2
