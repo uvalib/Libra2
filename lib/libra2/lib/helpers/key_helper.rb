@@ -30,6 +30,12 @@ module Helpers
       return nil if redis_close( ) == false
       return val
     end
+
+    def delete( key )
+      return if redis_connect( ) == false
+      redis_delete_key( key )
+      redis_close( )
+    end
   end
 end
 

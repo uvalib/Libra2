@@ -3,6 +3,16 @@ module CurationConcerns
   class GenericWorksController < ApplicationController
     after_action :save_file_display_name
     before_action :set_requirements, only: [ :show ]
+    before_action :is_me
+
+    def is_me
+      work = GenericWork.where({ id: params[:id] })
+      if work.empty? || current_user.nil?
+        render404()
+      elsif !work[0].is_mine?(current_user.email)
+        render404()
+        end
+    end
 
     def save_file_display_name
       # TODO-PER: This is a hack to try to figure out how to save the file's display title. There is probably a better way to do this.
