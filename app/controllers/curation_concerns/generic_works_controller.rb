@@ -7,7 +7,7 @@ module CurationConcerns
 
     def is_me
       work = GenericWork.where({ id: params[:id] })
-      if work.empty?
+      if work.empty? || current_user.nil?
         render404()
       elsif !work[0].is_mine?(current_user.email)
         render404()
