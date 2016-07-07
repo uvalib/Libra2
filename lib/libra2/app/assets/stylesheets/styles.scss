@@ -12,6 +12,11 @@
 
 #content-wrapper {
 	min-height: 550px;
+	max-width: 1180px;
+}
+
+.navbar-wrapper {
+	padding: 0px 30px;
 }
 
 .control-label {
@@ -141,6 +146,10 @@
 	& > div:nth-child(2) {
 		margin-left: 10px;
 	}
+}
+
+.navbar-wapper {
+	padding: 0px 30px;	
 }
 
 .file-hint {

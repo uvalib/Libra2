@@ -7,7 +7,7 @@ module CurationConcerns
 
     def is_me
       work = GenericWork.where({ id: params[:id] })
-      if work.empty?
+      if work.empty? || current_user.nil?
         render404()
       elsif !work[0].is_mine?(current_user.email)
         render404()
@@ -29,15 +29,15 @@ module CurationConcerns
             }
           end
 
-          newly_uploaded_files_label = params['newly_uploaded_files_label']
-          if newly_uploaded_files_label.present?
-            offset = previously_uploaded_files_label.present? ? previously_uploaded_files_label.length : 0
-            newly_uploaded_files_label.each_with_index { |label, i|
-              file_attributes = { title: [ label ]}
-              actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[offset+i], current_user)
-              actor.update_metadata(file_attributes) #TODO-PER: fix this if we change to delayed file upload.
-            }
-          end
+          # newly_uploaded_files_label = params['newly_uploaded_files_label']
+          # if newly_uploaded_files_label.present?
+          #   offset = previously_uploaded_files_label.present? ? previously_uploaded_files_label.length : 0
+          #   newly_uploaded_files_label.each_with_index { |label, i|
+          #     file_attributes = { title: [ label ]}
+          #     actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[offset+i], current_user)
+          #     actor.update_metadata(file_attributes) #TODO-PER: fix this if we change to delayed file upload.
+          #   }
+          # end
         end
       end
     end
