@@ -30,7 +30,7 @@ class SubmissionController < ApplicationController
 			end
 			@files = get_file_sets(@work)
 		else
-			response.status = 404
+			render404()
 		end
 	end
 
