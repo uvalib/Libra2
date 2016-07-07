@@ -149,7 +149,7 @@
 }
 
 .navbar-wapper {
-	padding: 0px 30px;	
+	padding: 0px 30px;
 }
 
 .file-hint {
@@ -213,4 +213,84 @@
 
 #generic_work_title {
 	margin-bottom: 16px;
+}
+
+// Panels
+.panel-default {
+	box-shadow: 0 1px 4px rgba(0,0,0,.25);
+	border: none;
+  padding-top: 5px;
+}
+
+.panel-default > .panel-heading {
+	background-color: #ffffff;
+}
+
+.panel-title {
+	font-size: 18px;
+}
+
+.panel-heading {
+	border-bottom: none;
+}
+
+.panel-heading h3 {
+	font-size: 18px;
+	margin-top: 0px;
+}
+
+.panel-user > .panel-footer {
+	display: none;
+}
+
+.table > thead > tr > th {
+	border-bottom: none;
+}
+
+#user_info dt {
+  margin-top: 10px;
+}
+
+#user_info dd {
+  margin-left: 10px;
+}
+
+.list-group-item {
+	border: 1px solid rgba(221, 221, 221, 0.47);
+}
+
+.panel > .list-group .list-group-item:last-child {
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+.table > tbody > tr > td {
+	border-radius: 3px;
+	border: none;
+}
+
+.views-downloads-dashboard {
+  padding-top: 10px;
+}
+
+.col-xs-12.col-sm-8 {
+	background-color: white;
+	border-radius: 3px;
+	padding: 28px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.25);
+	margin-top: 0px;
+}
+
+.col-xs-12.main-header {
+	padding-bottom: 9px;
+  margin: 0px 0 20px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.fixedsticky {
+  top: 0px;
+}
+
+.fixedsticky-on {
+	left: 65.4%;
 }
