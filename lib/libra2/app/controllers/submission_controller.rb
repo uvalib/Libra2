@@ -19,15 +19,7 @@ class SubmissionController < ApplicationController
 			if !@is_preview # on the public page, there shouldn't be the the concept of logging in.
 				@hide_user_controls = true # this should either be nil or true. Then the layout file works for all pages.
 			end
-			@today = Time.now
-			@grounds_override = false
-			if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
-				@grounds_override = params[:grounds] if params[:grounds].present?
-				if params[:time].present?
-					months = params[:time].to_i
-					@today = Time.now + months.months
-				end
-			end
+			set_debugging_override()
 			@files = get_file_sets(@work)
 		else
 			render404()

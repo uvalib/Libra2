@@ -32,4 +32,15 @@ class ApplicationController < ActionController::Base
     render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
   end
 
+    def set_debugging_override()
+      @today = Time.now
+      @grounds_override = false
+      if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
+        @grounds_override = params[:grounds] if params[:grounds].present?
+        if params[:time].present?
+          months = params[:time].to_i
+          @today = Time.now + months.months
+        end
+      end
+    end
 end
