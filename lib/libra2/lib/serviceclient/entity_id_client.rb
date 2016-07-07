@@ -28,6 +28,15 @@ module ServiceClient
      private_class_method :new
 
      #
+     # check the health of the endpoint
+     #
+     def healthcheck
+       url = "#{self.url}/healthcheck"
+       status, _ = rest_get( url )
+       return( status )
+     end
+
+     #
      # create a new DOI and associate any metadata we can determine from the supplied work
      #
      def newid( work )
