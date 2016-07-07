@@ -44,29 +44,22 @@ module EmbargoHelper
 			return true if @grounds_override == 'on'
 			return false if @grounds_override == 'off'
 		end
-		return true if uva_ip_blocks.any?{ |block| block.include?(request.remote_ip) }
-		return false
+		uva_ips = uva_ip_blocks
+		puts "==> Remote IP: #{request.remote_ip}"
+		puts "==> Forwarded IP: #{request.env["HTTP_X_FORWARDED_FOR"]}"
+    in_uva_ips = uva_ips.any?{ |block| block.include?( request.remote_ip ) }
+    puts "==> At UVa: #{in_uva_ips}"
+		return in_uva_ips
 	end
 
 	def uva_ip_blocks
-		ips = [ ]
+		uva_ip_ranges_list = [ ]
 		File.open( Rails.application.config.ip_whitelist, 'r' ).each_line { |line|
 			line.strip!
-			ips.push line
+			uva_ip_ranges_list.push line
 		}
 
-		uva_ip_ranges_list = []
-		ips.each { |ip_range|
-			arr = ip_range.split("/")
-			ip_arr = arr[0].split(".")
-			count = arr[1]
-			count.to_i.times { |x|
-				ip_arr[3] = ip_arr[3].to_i + x
-				uva_ip_ranges_list.push(ip_arr.join("."))
-			}
-		}
-
-		return uva_ip_ranges_list
+		return uva_ip_ranges_list.map { |subnet| IPAddr.new subnet }
 	end
 
 	def embargo_notice(work)
