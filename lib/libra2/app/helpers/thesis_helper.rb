@@ -26,6 +26,14 @@ module ThesisHelper
         return klass
     end
 
+  def pending_file_override(requirements, type, pending_file)
+    if @pending_file_test.present?
+      return "complete"
+    else
+        return requirement_class(requirements, type)
+    end
+  end
+
   def proof_link(presenter, requirements)
     if proof_is_readonly(requirements)
       edit_polymorphic_path([main_app, presenter])

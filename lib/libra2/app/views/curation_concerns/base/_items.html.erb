@@ -1,5 +1,5 @@
 <h2><%= t('.header') %></h2>
-<% if presenter.file_set_presenters.present? %>
+<% if presenter.file_set_presenters.present? || @pending_file_test.present? %>
   <table class="table table-striped related-files">
     <thead>
       <tr>
@@ -10,7 +10,10 @@
       </tr>
     </thead>
     <tbody>
-      <%= render partial: 'member', collection: presenter.file_set_presenters %>
+      <%= render partial: 'member', collection: presenter.file_set_presenters if presenter.file_set_presenters.present? %>
+        <% @pending_file_test.each { |file| %>
+    <%= render partial: "pending_files", locals: { id: file['id'], label: file['label']} %>
+        <% } if @pending_file_test.present? %>
     </tbody>
   </table>
 <% elsif can? :edit, presenter.id %>

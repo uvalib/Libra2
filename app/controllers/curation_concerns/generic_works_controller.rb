@@ -4,6 +4,7 @@ module CurationConcerns
     after_action :save_file_display_name
     before_action :set_requirements, only: [ :show ]
     before_action :is_me
+    before_action :add_pending_file_test
 
     def is_me
       work = GenericWork.where({ id: params[:id] })
@@ -13,6 +14,23 @@ module CurationConcerns
         render404()
         end
     end
+
+    def add_pending_file_test
+      # remove any files that have been processed
+      if session[:pending_files].present?
+        work = GenericWork.where({ id: params[:id] })
+        file_sets = work[0].file_sets
+        file_sets.each { |file_set|
+          session[:pending_files].delete_if { |pending|
+            pending['label'] == file_set.title[0]
+          }
+        }
+      end
+      if params['action'] == 'show'
+        # if there are still files to be processed, alert the page.
+        @pending_file_test = session[:pending_files]
+      end
+     end
 
     def save_file_display_name
       # TODO-PER: This is a hack to try to figure out how to save the file's display title. There is probably a better way to do this.
@@ -29,15 +47,8 @@ module CurationConcerns
             }
           end
 
-          # newly_uploaded_files_label = params['newly_uploaded_files_label']
-          # if newly_uploaded_files_label.present?
-          #   offset = previously_uploaded_files_label.present? ? previously_uploaded_files_label.length : 0
-          #   newly_uploaded_files_label.each_with_index { |label, i|
-          #     file_attributes = { title: [ label ]}
-          #     actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[offset+i], current_user)
-          #     actor.update_metadata(file_attributes) #TODO-PER: fix this if we change to delayed file upload.
-          #   }
-          # end
+          # If files were just uploaded, then we need to alert the show page that the files might be pending.
+          session[:pending_files] = params['uploaded_files']
         end
       end
     end
