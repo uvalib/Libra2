@@ -14,19 +14,19 @@ module CurationConcerns
     private
 
       def dom_label_class
-        if open_access_with_embargo?
-          'label-warning'
-        elsif open_access?
-          'label-success'
-        elsif registered?
-          'label-info'
+        if @solr_document.is_draft?
+          return 'label-danger'
+        elsif @solr_document.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+          return 'label-info'
+        elsif @solr_document.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+          return 'label-warning'
         else
-          'label-danger'
+          return 'label-success'
         end
       end
 
       def link_title
-        if @solr_document.draft[0] == "true"
+        if @solr_document.is_draft?
           return "Draft"
         elsif @solr_document.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
           return "Restricted to Abstract View Only"
@@ -36,6 +36,11 @@ module CurationConcerns
           return "Visible Worldwide"
         end
       end
+
+    #
+    # TODO - DPG
+    # not sure if the rest of this is in-sync with our hacked use of embargo
+    #
 
       def open_access_with_embargo?
         return embargo?
