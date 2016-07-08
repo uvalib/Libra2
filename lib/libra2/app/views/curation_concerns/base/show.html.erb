@@ -6,7 +6,9 @@
     </header>
   </div>
   <div class="col-sm-8">
-    <%= render 'metadata', presenter: @presenter %>
+    <div class="card">
+      <%= render 'metadata', presenter: @presenter %>
+    </div>
   </div>
   <div class="col-sm-4">
     <%= render "show_actions", presenter: @presenter %>

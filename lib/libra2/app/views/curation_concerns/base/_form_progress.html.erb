@@ -33,7 +33,7 @@
       <br>
       <%= link_to t(:'helpers.action.cancel'),
                   sufia.dashboard_index_path,
-                  class: 'btn btn-default' %>
+                  class: 'btn btn-default left' %>
       <%= f.submit 'Save and Exit', class: 'btn btn-secondary', onclick: "confirmation_needed = false;", id: "with_files_submit_exit", name: "save_with_files_exit" %>
       <%= f.submit 'Save and Continue', class: 'btn btn-primary', onclick: "confirmation_needed = false;", id: "with_files_submit_continue", name: "save_with_files_continue" %>
     </div>
