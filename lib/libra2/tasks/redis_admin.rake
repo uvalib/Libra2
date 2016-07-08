@@ -6,7 +6,7 @@ require_dependency 'libra2/lib/helpers/key_helper'
 
 namespace :libra2 do
 
-  namespace :state do
+  namespace :redis do
 
   desc "Show deposit state keys"
   task deposit: :environment do |t, args|
@@ -39,6 +39,22 @@ namespace :libra2 do
 
   end
 
+  desc "Show event keys"
+  task event: :environment do |t, args|
+
+    count = 0
+    kh = Helpers::KeyHelper.new
+    keys = kh.keys( "sufia:events:*" )
+    if keys.nil? == false
+      keys.each do |k|
+        puts " #{k}"
+        count += 1
+      end
+    end
+    puts "#{count} key(s) listed"
+
+  end
+
   desc "Delete a key (handle with care); provide the key to delete"
   task delete: :environment do |t, args|
 
@@ -56,7 +72,33 @@ namespace :libra2 do
 
   end
 
-  end   # namespace state
+  desc "Delete all keys (really handle with care); provide the key pattern to delete"
+  task delete_all: :environment do |t, args|
+
+    pattern = ARGV[ 1 ]
+    if pattern.nil?
+      puts "ERROR: no key pattern provided"
+      next
+    end
+
+    task pattern.to_sym do ; end
+
+    count = 0
+    kh = Helpers::KeyHelper.new
+    keys = kh.keys( pattern )
+    if keys.nil? == false
+      keys.each do |k|
+        puts " #{k}"
+        kh.delete( k )
+        count += 1
+      end
+    end
+
+    puts "#{count} key(s) deleted"
+
+  end
+
+  end   # namespace redis
 
 end   # namespace libra2
 
