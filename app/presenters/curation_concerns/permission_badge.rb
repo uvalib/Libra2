@@ -17,7 +17,7 @@ module CurationConcerns
         if @solr_document.is_draft?
           return 'label-danger'
         elsif @solr_document.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-          return 'label-info'
+          return 'label-warning'
         elsif @solr_document.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
           return 'label-warning'
         else
