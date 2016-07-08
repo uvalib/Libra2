@@ -45,10 +45,10 @@ module EmbargoHelper
 			return false if @grounds_override == 'off'
 		end
 		uva_ips = uva_ip_blocks
-		puts "==> Remote IP: #{request.remote_ip}"
-		puts "==> Forwarded IP: #{request.env["HTTP_X_FORWARDED_FOR"]}"
+		#puts "==> Remote IP: #{request.remote_ip}"
+		#puts "==> Forwarded IP: #{request.env["HTTP_X_FORWARDED_FOR"]}"
     in_uva_ips = uva_ips.any?{ |block| block.include?( request.remote_ip ) }
-    puts "==> At UVa: #{in_uva_ips}"
+    #puts "==> At UVa: #{in_uva_ips}"
 		return in_uva_ips
 	end
 
