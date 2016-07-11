@@ -1,14 +1,13 @@
 tmp/*
 log/*
-
+.dockerignore
+.gitignore
 .fcrepo_wrapper
 .git
 .idea
 .solr_wrapper
 .travis.yml
-
 env.*
-
 fcrepo4-development-data
 hostfs
 jetty
@@ -16,6 +15,7 @@ spec
 solr
 test
 scripts/helpers
+scripts/docker
 public/assets
 public/system
 public/uploads
