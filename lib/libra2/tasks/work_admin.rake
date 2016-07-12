@@ -24,6 +24,19 @@ task list_all_works: :environment do |t, args|
    puts "Listed #{count} work(s)"
 end
 
+desc "List all works (abbreviated)"
+task list_all_works_abbrev: :environment do |t, args|
+
+   count = 0
+   GenericWork.all.each do |generic_work|
+	   puts "#{generic_work.id} #{generic_work.author_email}  #{generic_work.title}"
+
+     count += 1
+   end
+
+   puts "Listed #{count} work(s)"
+end
+
 desc "List my works; optionally provide depositor email"
 task list_my_works: :environment do |t, args|
 
@@ -127,6 +140,41 @@ task del_by_id: :environment do |t, args|
 
   work.destroy
   puts "Work deleted"
+end
+
+desc "Set title of work; must provide the work id and title"
+task set_title_by_id: :environment do |t, args|
+
+  work_id = ARGV[ 1 ]
+  if work_id.nil?
+    puts "ERROR: no work id specified, aborting"
+    next
+  end
+
+  task work_id.to_sym do ; end
+
+  title = ARGV[ 2 ]
+  if title.nil?
+    puts "ERROR: no title specified, aborting"
+    next
+  end
+
+  task title.to_sym do ; end
+
+  work = nil
+  begin
+    work = GenericWork.find( work_id )
+  rescue => e
+  end
+
+  if work.nil?
+    puts "ERROR: work #{work_id} does not exist, aborting"
+    next
+  end
+
+  work.title = [ title ]
+  work.save!
+  puts "Work #{work_id} updated to #{title}"
 end
 
 desc "Create new generic work; optionally provide depositor email"
