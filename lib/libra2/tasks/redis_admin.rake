@@ -9,7 +9,7 @@ namespace :libra2 do
   namespace :redis do
 
   desc "Show deposit state keys"
-  task deposit: :environment do |t, args|
+  task show_deposit: :environment do |t, args|
 
      count = 0
      kh = Helpers::KeyHelper.new
@@ -24,7 +24,7 @@ namespace :libra2 do
   end
 
   desc "Show timed token keys"
-  task timed: :environment do |t, args|
+  task show_timed: :environment do |t, args|
 
     count = 0
     kh = Helpers::KeyHelper.new
@@ -40,7 +40,7 @@ namespace :libra2 do
   end
 
   desc "Show event keys"
-  task event: :environment do |t, args|
+  task show_event: :environment do |t, args|
 
     count = 0
     kh = Helpers::KeyHelper.new
@@ -55,8 +55,29 @@ namespace :libra2 do
 
   end
 
+  desc "Show all keys; optionally provide a key pattern"
+  task show_all: :environment do |t, args|
+
+    pattern = ARGV[ 1 ]
+    pattern = "*" if pattern.nil?
+
+    task pattern.to_sym do ; end
+
+    count = 0
+    kh = Helpers::KeyHelper.new
+    keys = kh.keys( pattern )
+    if keys.nil? == false
+      keys.each do |k|
+        puts " #{k}"
+        count += 1
+      end
+    end
+    puts "#{count} key(s) listed"
+
+  end
+
   desc "Delete a key (handle with care); provide the key to delete"
-  task delete: :environment do |t, args|
+  task delete_one: :environment do |t, args|
 
     key = ARGV[ 1 ]
     if key.nil?
