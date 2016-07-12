@@ -22,6 +22,7 @@ module Helpers
       user = User.find_by_email( email )
       user = create_user( user_info, email ) if user.nil?
 
+      ok = true
       GenericWork.create!( title: [ deposit_authorization.title ] ) do |w|
 
         # generic work attributes
@@ -54,11 +55,11 @@ module Helpers
           w.permanent_url = w.doi_url( id )
         else
           puts "Cannot mint DOI (#{status})"
-          return false
+          ok = false
         end
 
       end
-      return true
+      return ok
     end
 
     def self.new_etd_from_deposit_request( deposit_request )
@@ -79,6 +80,7 @@ module Helpers
       # default values
       default_title = 'Enter your title here'
 
+      ok = true
       GenericWork.create!( title: [ default_title ] ) do |w|
 
         # generic work attributes
@@ -114,11 +116,11 @@ module Helpers
            w.permanent_url = w.doi_url( id )
         else
           puts "Cannot mint DOI (#{status})"
-          return false
+          ok = false
         end
 
       end
-      return true
+      return ok
     end
 
     private
