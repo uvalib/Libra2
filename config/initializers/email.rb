@@ -18,7 +18,7 @@ ActionMailer::Base.smtp_settings = settings
 
 ActionMailer::Base.default_url_options[:host] = ActionMailer::Base.smtp_settings[:return_path]
 
-if config['deliver_email'] != 'true'
+if "#{config['deliver_email']}" != 'true'
 	ActionMailer::Base.register_interceptor(StagingMailInterceptor)
 	emails = config['mail_intercept_recipients'] || ""
 	MAIL_INTERCEPT_RECIPIENTS = emails.split(/[^\w\.@+-]+/)
