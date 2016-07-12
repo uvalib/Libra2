@@ -2,14 +2,14 @@ development:
   shoulder: <%= ENV['EZID_SHOULDER'] %>
   authtoken: <%= ENV['API_TOKEN'] %>
   url: <%= ENV['ENTITYID_URL'] %>
-  timeout: 5
+  timeout: 10
 test:
   shoulder: <%= ENV['EZID_SHOULDER'] %>
   authtoken: <%= ENV['API_TOKEN'] %>
   url: <%= ENV['ENTITYID_URL'] %>
-  timeout: 5
+  timeout: 10
 production:
   shoulder: <%= ENV['EZID_SHOULDER'] %>
   authtoken: <%= ENV['API_TOKEN'] %>
   url: <%= ENV['ENTITYID_URL'] %>
-  timeout: 5
+  timeout: 10
