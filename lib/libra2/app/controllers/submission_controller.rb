@@ -6,6 +6,7 @@ class SubmissionController < ApplicationController
 	include AuthenticationHelper
   include UrlHelper
 
+	skip_before_filter :require_auth, only: [ 'public_view' ]
 	before_action :authenticate_user!, only: [ 'submit']
 	layout "public"
 
