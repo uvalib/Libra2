@@ -174,7 +174,46 @@ task set_title_by_id: :environment do |t, args|
 
   work.title = [ title ]
   work.save!
-  puts "Work #{work_id} updated to #{title}"
+  puts "Work #{work_id} title updated to #{title}"
+end
+
+desc "Set contributor of work; must provide the work id and contributor computing_id"
+task set_contributor_by_id: :environment do |t, args|
+
+  work_id = ARGV[ 1 ]
+  if work_id.nil?
+    puts "ERROR: no work id specified, aborting"
+    next
+  end
+
+  task work_id.to_sym do ; end
+
+  contributor_id = ARGV[ 2 ]
+  if contributor_id.nil?
+    puts "ERROR: no contributor specified, aborting"
+    next
+  end
+
+  task contributor_id.to_sym do ; end
+
+  work = nil
+  begin
+    work = GenericWork.find( work_id )
+  rescue => e
+  end
+
+  if work.nil?
+    puts "ERROR: work #{work_id} does not exist, aborting"
+    next
+  end
+
+  contributor = contributor_fields( contributor_id )
+  if contributor.nil? == false
+     work.contributor = [ contributor ]
+     work.save!
+     puts "Work #{work_id} contributor updated to #{contributor}"
+  end
+
 end
 
 desc "Create new generic work; optionally provide depositor email"
@@ -323,7 +362,7 @@ def create_generic_work( work_type, user, title, description )
     w.language = GenericWork::DEFAULT_LANGUAGE
 
     # assume I am the contributor
-    w.contributor << "dpg3k\nDave\nGoldstein\nUVa Library\n#{GenericWork::DEFAULT_INSTITUTION}"
+    w.contributor << contributor_fields( 'dpg3k' )
     # w.contributor_computing_id << 'dpg3k'
     # w.contributor_first_name << 'Dave'
     # w.contributor_last_name << 'Goldstein'
@@ -401,6 +440,14 @@ def copy_sourcefile( source_file )
   dest_file = "#{File::SEPARATOR}tmp#{File::SEPARATOR}#{SecureRandom.hex( 5 )}#{File.extname( source_file )}"
   FileUtils.cp( source_file, dest_file )
   dest_file
+
+end
+
+def contributor_fields( computing_id )
+
+  cid = lookup_user( computing_id )
+  return nil if cid.nil?
+  return "#{computing_id}\n#{cid.first_name}\n#{cid.last_name}\n#{cid.department}\n#{GenericWork::DEFAULT_INSTITUTION}"
 
 end
 
