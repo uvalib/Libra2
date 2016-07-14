@@ -6,7 +6,7 @@ namespace :libra2 do
 
   namespace :data do
 
-  desc "Bulk export all files and data from libra2; must provide the work directory"
+  desc "Bulk export all files and data from libra2; must provide the work directory and optional hostname/port"
   task bulk_export: :environment do |t, args|
 
     work_dir = ARGV[ 1 ]
@@ -17,6 +17,13 @@ namespace :libra2 do
 
     task work_dir.to_sym do ; end
 
+    endpoint = ARGV[ 2 ]
+    if endpoint.nil?
+      endpoint = 'localhost:3000'
+    end
+
+    task endpoint.to_sym do ; end
+
     if export_dir_clean?( work_dir ) == false
       puts "ERROR: work directory already contains exported items, aborting"
       next
@@ -24,7 +31,7 @@ namespace :libra2 do
 
     count = 0
     GenericWork.all.each do | work |
-      export_work( work_dir, work, count + 1 )
+      export_work( endpoint, work_dir, work, count + 1 )
       count += 1
     end
 
@@ -54,7 +61,7 @@ namespace :libra2 do
 
   end
 
-  def export_work( export_dir, work, number )
+  def export_work( endpoint, export_dir, work, number )
 
     puts "exporting work # #{number}..."
 
@@ -83,7 +90,7 @@ namespace :libra2 do
 
        work.file_sets.each do |file_set|
          f = File.join( d, file_set.label )
-         get_file( f, file_set.label, file_set.id )
+         get_file( endpoint, f, file_set.label, file_set.id )
        end
 
     end
@@ -126,11 +133,14 @@ namespace :libra2 do
     end
   end
 
-  def get_file( filename, label, id )
+  def get_file( endpoint, filename, label, id )
 
-    print " getting file #{label}... "
+    print " getting file #{label} from #{endpoint}... "
 
-    Net::HTTP.start( 'localhost', 3000 ) do |http|
+    host = endpoint.split( ":" )[ 0 ]
+    port = endpoint.split( ":" )[ 1 ]
+    port = port.to_i
+    Net::HTTP.start( host, port ) do |http|
       resp = http.get("/downloads/#{id}")
       open( filename, "wb" ) do |file|
         file.write( resp.body )
