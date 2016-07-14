@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   get '/public_view/:id/unpublish' => 'submission#unpublish'
   get '/computing_id' => 'dashboard#computing_id'
 
+  # health chewck and version endpoints
   resources :healthcheck, only: [ :index ]
+  resources :version, only: [ :index ]
 
   Hydra::BatchEdit.add_routes(self)
   mount Blacklight::Engine => '/'
