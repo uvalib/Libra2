@@ -50,3 +50,6 @@ USER webservice
 # Define port and startup script
 EXPOSE 3000
 CMD /bin/bash -l -c "scripts/entry.sh"
+
+# move in the profile
+COPY data/container_bash_profile /home/webservice/.profile
