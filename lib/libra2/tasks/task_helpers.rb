@@ -75,9 +75,6 @@ module TaskHelpers
     return user_info
   end
 
-  def logme( prefix, message )
-
-  end
 end
 
 #
