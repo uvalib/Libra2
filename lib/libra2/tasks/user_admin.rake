@@ -2,8 +2,9 @@
 # Some helper tasks to create and delete users
 #
 
-require_dependency 'libra2/lib/serviceclient/user_info_client'
-require_dependency 'libra2/lib/helpers/user_info'
+# pull in the helpers
+require_dependency 'libra2/tasks/task_helpers'
+include TaskHelpers
 
 namespace :libra2 do
 
@@ -24,10 +25,16 @@ task del_all_users: :environment do |t, args|
 
 end
 
-desc "Delete specified user; provide email"
+desc "Delete specified user; must provide email"
 task del_user: :environment do |t, args|
 
   who = ARGV[ 1 ]
+  if who.nil?
+    puts "ERROR: no user specified, aborting"
+    next
+  end
+
+  task who.to_sym do ; end
 
   user = User.find_by_email( who )
   if user
@@ -37,27 +44,35 @@ task del_user: :environment do |t, args|
     puts "User #{who} does not exist"
   end
 
-  task who.to_sym do ; end
 end
 
-desc "Create new user; provide name and email"
+desc "Create new user; must provide name and email"
 task create_user: :environment do |t, args|
 
   name = ARGV[ 1 ]
   email = ARGV[ 2 ]
 
-  if name.nil? == false && email.nil? == false
-     user = User.find_by_email( email )
-     if user.nil?
-       if create_user( name, email, default_password )
-         puts "Created user: #{name} (#{email})"
-       end
-     else
-       puts "Email #{email} already in use"
-     end
+  if name.nil?
+    puts "ERROR: no name specified, aborting"
+    next
+  end
 
-     task name.to_sym do ; end
-     task email.to_sym do ; end
+  task name.to_sym do ; end
+
+  if email.nil?
+    puts "ERROR: no email specified, aborting"
+    next
+  end
+
+  task email.to_sym do ; end
+
+  user = User.find_by_email( email )
+  if user.nil?
+     if create_user( name, email, default_password )
+        puts "Created user: #{name} (#{email})"
+     end
+  else
+    puts "Email #{email} already in use"
   end
 
 end
@@ -135,7 +150,7 @@ end
 def create_user( name, email, password )
 
   # extract computing ID and look up...
-  info = lookup_user( User.cid_from_email( email ) )
+  info = TaskHelpers.user_info_by_email( email )
 
   display_name = info.nil? ? name : info.display_name
   title = info.nil? ? name : info.description
@@ -157,8 +172,8 @@ end
 #
 def sync_user( user )
 
-  # extract computing ID and look up...
-  info = lookup_user( User.cid_from_email( user.email ) )
+  # look up...
+  info = TaskHelpers.user_info_by_email( user.email )
   updated = false
 
   if info.nil? == false
@@ -194,23 +209,6 @@ def sync_user( user )
   end
 
   return updated
-end
-
-#
-# lookup user information from the user info service
-#
-def lookup_user( id )
-
-  info = nil
-  status, resp = ServiceClient::UserInfoClient.instance.get_by_id( id )
-  if ServiceClient::UserInfoClient.instance.ok?( status )
-    info = Helpers::UserInfo.create( resp )
-    puts "User #{id} lookup OK"
-  else
-    puts "User #{id} lookup failed (#{status})"
-  end
-
-  return( info )
 end
 
 end   # namespace user

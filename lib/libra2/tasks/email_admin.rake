@@ -2,7 +2,9 @@
 # Some helper tasks to manage email submission
 #
 
-require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
+# pull in the helpers
+require_dependency 'libra2/tasks/task_helpers'
+include TaskHelpers
 
 namespace :libra2 do
 
@@ -19,7 +21,7 @@ namespace :libra2 do
 
     task computing_id.to_sym do ; end
 
-    user = Helpers::EtdHelper::lookup_user( computing_id )
+    user = TaskHelpers.user_info_by_cid( computing_id )
     if user.nil?
       puts "ERROR: user #{computing_id} does not exist, aborting"
       next
@@ -42,7 +44,7 @@ namespace :libra2 do
 
     task computing_id.to_sym do ; end
 
-    user = Helpers::EtdHelper::lookup_user( computing_id )
+    user = TaskHelpers.user_info_by_cid( computing_id )
     if user.nil?
       puts "ERROR: user #{computing_id} does not exist, aborting"
       next
@@ -65,12 +67,7 @@ namespace :libra2 do
 
     task work_id.to_sym do ; end
 
-    work = nil
-    begin
-      work = GenericWork.find( work_id )
-    rescue => e
-    end
-
+    work = TaskHelpers.get_work_by_id( work_id )
     if work.nil?
       puts "ERROR: work #{work_id} does not exist, aborting"
       next
@@ -93,12 +90,7 @@ namespace :libra2 do
 
     task work_id.to_sym do ; end
 
-    work = nil
-    begin
-      work = GenericWork.find( work_id )
-    rescue => e
-    end
-
+    work = TaskHelpers.get_work_by_id( work_id )
     if work.nil?
       puts "ERROR: work #{work_id} does not exist, aborting"
       next
@@ -109,7 +101,7 @@ namespace :libra2 do
       next
     end
 
-    registrar = Helpers::EtdHelper::lookup_user( work.registrar_computing_id )
+    registrar = TaskHelpers.user_info_by_cid( work.registrar_computing_id )
     if registrar.nil?
       puts "ERROR: registrar #{work.registrar_computing_id} does not exist, aborting"
       next

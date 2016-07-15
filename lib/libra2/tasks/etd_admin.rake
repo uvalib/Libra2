@@ -2,6 +2,10 @@
 # Some helper tasks to manage ETD creation
 #
 
+# pull in the helpers
+require_dependency 'libra2/tasks/task_helpers'
+include TaskHelpers
+
 require_dependency 'libra2/lib/serviceclient/deposit_reg_client'
 require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
 require_dependency 'libra2/lib/helpers/value_snapshot'
@@ -28,7 +32,7 @@ namespace :libra2 do
   desc "List new optional ETD deposit requests"
   task list_optional_etd_deposits: :environment do |t, args|
 
-    puts "key: #{statekey_optional}"
+    #puts "key: #{statekey_optional}"
     s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
@@ -58,7 +62,7 @@ namespace :libra2 do
   desc "List new SIS ETD deposit requests"
   task list_sis_etd_deposits: :environment do |t, args|
 
-    puts "key: #{statekey_sis}"
+    #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
@@ -88,7 +92,7 @@ namespace :libra2 do
   desc "Ingest new optional ETD deposit requests"
   task ingest_optional_etd_deposits: :environment do |t, args|
 
-    puts "key: #{permissionkey}"
+    #puts "key: #{permissionkey}"
     t = Helpers::TimedToken.new( permissionkey, permission_timeout )
     if t.is_available? == false
       puts "ERROR: permission token already exists, aborting"
@@ -98,7 +102,7 @@ namespace :libra2 do
 
     count = 0
 
-    puts "key: #{statekey_optional}"
+    #puts "key: #{statekey_optional}"
     s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
@@ -143,7 +147,7 @@ namespace :libra2 do
   desc "Ingest new SIS ETD deposit requests"
   task ingest_sis_etd_deposits: :environment do |t, args|
 
-    puts "key: #{permissionkey}"
+    #puts "key: #{permissionkey}"
     t = Helpers::TimedToken.new( permissionkey, permission_timeout )
     if t.is_available? == false
       puts "ERROR: permission token already exists, aborting"
@@ -153,7 +157,7 @@ namespace :libra2 do
 
     count = 0
 
-    puts "key: #{statekey_sis}"
+    #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
@@ -215,7 +219,7 @@ namespace :libra2 do
   desc "List last SIS ETD id"
   task list_last_sis_id: :environment do |t, args|
 
-    puts "key: #{statekey_sis}"
+    #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
@@ -231,7 +235,7 @@ namespace :libra2 do
   desc "List last optional ETD id"
   task list_last_optional_id: :environment do |t, args|
 
-    puts "key: #{statekey_optional}"
+    #puts "key: #{statekey_optional}"
     s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
@@ -251,7 +255,7 @@ namespace :libra2 do
     id = default_last_id if id.nil?
     task id.to_sym do ; end
 
-    puts "key: #{statekey_sis}"
+    #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
@@ -273,7 +277,7 @@ namespace :libra2 do
     id = default_last_id if id.nil?
     task id.to_sym do ; end
 
-    puts "key: #{statekey_optional}"
+    #puts "key: #{statekey_optional}"
     s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
@@ -299,12 +303,7 @@ namespace :libra2 do
 
     task work_id.to_sym do ; end
 
-    work = nil
-    begin
-       work = GenericWork.find( work_id )
-    rescue => e
-    end
-
+    work = TaskHelpers.get_work_by_id( work_id )
     if work.nil?
       puts "ERROR: ETD #{work_id} does not exist, aborting"
       next

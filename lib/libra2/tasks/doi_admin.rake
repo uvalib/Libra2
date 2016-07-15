@@ -2,6 +2,10 @@
 # Some helper tasks to manage DOI submission
 #
 
+# pull in the helpers
+require_dependency 'libra2/tasks/task_helpers'
+include TaskHelpers
+
 require_dependency 'libra2/lib/serviceclient/entity_id_client'
 
 namespace :libra2 do
@@ -21,12 +25,7 @@ namespace :libra2 do
 
     task work_id.to_sym do ; end
 
-    work = nil
-    begin
-      work = GenericWork.find( work_id )
-    rescue => e
-    end
-
+    work = TaskHelpers.get_work_by_id( work_id )
     if work.nil?
       puts "ERROR: work #{work_id} does not exist, aborting"
       next
@@ -72,12 +71,7 @@ namespace :libra2 do
 
     task work_id.to_sym do ; end
 
-    work = nil
-    begin
-       work = GenericWork.find( work_id )
-    rescue => e
-    end
-
+    work = TaskHelpers.get_work_by_id( work_id )
     if work.nil?
       puts "ERROR: work #{work_id} does not exist, aborting"
       next
@@ -134,12 +128,7 @@ namespace :libra2 do
 
     task work_id.to_sym do ; end
 
-    work = nil
-    begin
-      work = GenericWork.find( work_id )
-    rescue => e
-    end
-
+    work = TaskHelpers.get_work_by_id( work_id )
     if work.nil?
       puts "ERROR: work #{work_id} does not exist, aborting"
       next

@@ -2,8 +2,11 @@
 # Some helper tasks to create and delete works
 #
 
+# pull in the helpers
+require_dependency 'libra2/tasks/task_helpers'
+include TaskHelpers
+
 require_dependency 'libra2/lib/serviceclient/entity_id_client'
-require_dependency 'libra2/lib/helpers/etd_helper'
 
 namespace :libra2 do
 
@@ -29,7 +32,7 @@ task list_all_works_abbrev: :environment do |t, args|
 
    count = 0
    GenericWork.all.each do |generic_work|
-	   puts "#{generic_work.id} #{generic_work.author_email}  #{generic_work.title}"
+	   puts "#{generic_work.id}\t#{generic_work.author_email}\t#{generic_work.identifier}\t#{generic_work.title}"
 
      count += 1
    end
@@ -66,12 +69,7 @@ task list_by_id: :environment do |t, args|
 
   task work_id.to_sym do ; end
 
-  work = nil
-  begin
-    work = GenericWork.find( work_id )
-  rescue => e
-  end
-
+  work = TaskHelpers.get_work_by_id( work_id )
   if work.nil?
     puts "ERROR: work #{work_id} does not exist, aborting"
     next
@@ -127,12 +125,7 @@ task del_by_id: :environment do |t, args|
 
   task work_id.to_sym do ; end
 
-  work = nil
-  begin
-    work = GenericWork.find( work_id )
-  rescue => e
-  end
-
+  work = TaskHelpers.get_work_by_id( work_id )
   if work.nil?
     puts "ERROR: work #{work_id} does not exist, aborting"
     next
@@ -140,80 +133,6 @@ task del_by_id: :environment do |t, args|
 
   work.destroy
   puts "Work deleted"
-end
-
-desc "Set title of work; must provide the work id and title"
-task set_title_by_id: :environment do |t, args|
-
-  work_id = ARGV[ 1 ]
-  if work_id.nil?
-    puts "ERROR: no work id specified, aborting"
-    next
-  end
-
-  task work_id.to_sym do ; end
-
-  title = ARGV[ 2 ]
-  if title.nil?
-    puts "ERROR: no title specified, aborting"
-    next
-  end
-
-  task title.to_sym do ; end
-
-  work = nil
-  begin
-    work = GenericWork.find( work_id )
-  rescue => e
-  end
-
-  if work.nil?
-    puts "ERROR: work #{work_id} does not exist, aborting"
-    next
-  end
-
-  work.title = [ title ]
-  work.save!
-  puts "Work #{work_id} title updated to #{title}"
-end
-
-desc "Set contributor of work; must provide the work id and contributor computing_id"
-task set_contributor_by_id: :environment do |t, args|
-
-  work_id = ARGV[ 1 ]
-  if work_id.nil?
-    puts "ERROR: no work id specified, aborting"
-    next
-  end
-
-  task work_id.to_sym do ; end
-
-  contributor_id = ARGV[ 2 ]
-  if contributor_id.nil?
-    puts "ERROR: no contributor specified, aborting"
-    next
-  end
-
-  task contributor_id.to_sym do ; end
-
-  work = nil
-  begin
-    work = GenericWork.find( work_id )
-  rescue => e
-  end
-
-  if work.nil?
-    puts "ERROR: work #{work_id} does not exist, aborting"
-    next
-  end
-
-  contributor = contributor_fields( contributor_id )
-  if contributor.nil? == false
-     work.contributor = [ contributor ]
-     work.save!
-     puts "Work #{work_id} contributor updated to #{contributor}"
-  end
-
 end
 
 desc "Create new generic work; optionally provide depositor email"
@@ -227,7 +146,6 @@ task create_new_work: :environment do |t, args|
   user = User.find_by_email( who )
   if user.nil?
     puts "ERROR: locating user #{who}, aborting"
-    task who.to_sym do ; end
     next
   end
 
@@ -237,7 +155,7 @@ task create_new_work: :environment do |t, args|
 
   work = create_work( user, title, description )
 
-  filename = get_an_image( )
+  filename = TaskHelpers.get_random_image( )
   upload( user, work, filename )
 
   dump_work work
@@ -284,7 +202,7 @@ task works_for_all: :environment do |t, args|
 
     work = create_work( user, title, description )
 
-    filename = get_an_image( )
+    filename = TaskHelpers.get_random_image( )
     upload( user, work, filename )
 
     count += 1
@@ -306,7 +224,7 @@ task thesis_for_all: :environment do |t, args|
 
     work = create_thesis( user, title, description )
 
-    filename = get_an_image( )
+    filename = TaskHelpers.get_random_image( )
     upload( user, work, filename )
 
     count += 1
@@ -362,12 +280,7 @@ def create_generic_work( work_type, user, title, description )
     w.language = GenericWork::DEFAULT_LANGUAGE
 
     # assume I am the contributor
-    w.contributor << contributor_fields( 'dpg3k' )
-    # w.contributor_computing_id << 'dpg3k'
-    # w.contributor_first_name << 'Dave'
-    # w.contributor_last_name << 'Goldstein'
-    # w.contributor_institution << GenericWork::DEFAULT_INSTITUTION
-    # w.contributor_department << 'UVa Library'
+    w.contributor << TaskHelpers.contributor_fields( 'dpg3k' )
 
     w.rights << 'Determine your rights assignments here'
     w.license = GenericWork::DEFAULT_LICENSE
@@ -418,53 +331,12 @@ def dump_work( work )
 
 end
 
-# download a random cat image to be used for the item
-def get_an_image( )
-
-  print "getting image... "
-
-  dest_file = "#{File::SEPARATOR}tmp#{File::SEPARATOR}#{SecureRandom.hex( 5 )}.jpg"
-  Net::HTTP.start( "lorempixel.com" ) do |http|
-    resp = http.get("/640/480/cats/")
-    open( dest_file, "wb" ) do |file|
-      file.write( resp.body )
-    end
-  end
-  puts "done"
-  dest_file
-
-end
-
 def copy_sourcefile( source_file )
 
   dest_file = "#{File::SEPARATOR}tmp#{File::SEPARATOR}#{SecureRandom.hex( 5 )}#{File.extname( source_file )}"
   FileUtils.cp( source_file, dest_file )
   dest_file
 
-end
-
-def contributor_fields( computing_id )
-
-  cid = lookup_user( computing_id )
-  return nil if cid.nil?
-  return "#{computing_id}\n#{cid.first_name}\n#{cid.last_name}\n#{cid.department}\n#{GenericWork::DEFAULT_INSTITUTION}"
-
-end
-
-def user_info_by_email( email )
-
-    id = User.cid_from_email( email )
-    print "Looking up user details for #{id}..."
-
-    # lookup the user by computing id
-    user_info = Helpers::EtdHelper::lookup_user( id )
-    if user_info.nil?
-      puts "not found"
-      return nil
-    end
-
-    puts "done"
-    return user_info
 end
 
 end   # namespace work
