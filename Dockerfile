@@ -29,7 +29,7 @@ ENV TZ=EST5EDT
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Create the run user and group
-RUN groupadd -r webservice && useradd -r -g webservice webservice
+RUN groupadd -r webservice && useradd -r -g webservice webservice && mkdir /home/webservice
 
 # create work directory
 ENV APP_HOME /libra2
@@ -42,7 +42,7 @@ RUN /bin/bash -l -c "rake db:migrate"
 RUN /bin/bash -l -c "rake assets:precompile"
 
 # Update permissions
-RUN chown -R webservice $APP_HOME && chgrp -R webservice $APP_HOME
+RUN chown -R webservice $APP_HOME /home/webservice && chgrp -R webservice $APP_HOME /home/webservice
 
 # Specify the user
 USER webservice
