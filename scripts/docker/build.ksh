@@ -6,4 +6,13 @@ fi
 echo "*****************************************"
 echo "building on $DOCKER_HOST"
 echo "*****************************************"
-docker build -t uvadave/libra2 .
+
+# set the definitions
+INSTANCE=libra2
+NAMESPACE=uvadave
+
+# build the image
+docker build -t $NAMESPACE/$INSTANCE .
+
+# return status
+exit $?
