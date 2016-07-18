@@ -30,6 +30,8 @@
 /env.bob
 /env.dev
 /env.prod
+/env.staging
 /hostfs
 
 /scripts/helpers/db_clean.ksh
+/reingest.sh
