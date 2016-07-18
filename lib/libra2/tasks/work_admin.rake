@@ -31,11 +31,18 @@ desc "List all works (abbreviated)"
 task list_all_works_abbrev: :environment do |t, args|
 
    count = 0
+   output = []
    GenericWork.all.each do |generic_work|
-	   puts "#{generic_work.id}\t#{generic_work.author_email}\t#{generic_work.identifier}\t#{generic_work.title.join(' ')}"
+	   output.push({ id: generic_work.id, email: generic_work.author_email, identifier: generic_work.identifier,  title: generic_work.title.join(' ')})
 
      count += 1
    end
+   output = output.sort { |a,b|
+	   a[:email] <=> b[:email]
+   }
+   output.each { |line|
+	   puts "#{line[:id]}\t#{line[:email]}\t#{line[:identifier]}\t#{line[:title]}"
+   }
 
    puts "Listed #{count} work(s)"
 end
