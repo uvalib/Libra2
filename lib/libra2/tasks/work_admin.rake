@@ -32,7 +32,20 @@ task list_all_works_abbrev: :environment do |t, args|
 
    count = 0
    GenericWork.all.each do |generic_work|
-	   puts "#{generic_work.id}\t#{generic_work.author_email}\t#{generic_work.identifier}\t#{generic_work.title}"
+	   puts "#{generic_work.id}\t#{generic_work.author_email}\t#{generic_work.identifier}\t#{generic_work.title.join(' ')}"
+
+     count += 1
+   end
+
+   puts "Listed #{count} work(s)"
+end
+
+desc "List all works (submitted)"
+task list_all_works_submitted: :environment do |t, args|
+
+   count = 0
+   GenericWork.where({draft: "false"}).each do |generic_work|
+	   puts "#{generic_work.id}\t#{generic_work.author_email}\t#{generic_work.identifier}\t#{generic_work.title.join(' ')}"
 
      count += 1
    end
