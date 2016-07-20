@@ -23,7 +23,7 @@ class SubmissionController < ApplicationController
 			set_debugging_override()
 			@files = get_file_sets(@work)
 		else
-			render404()
+			render404public()
 		end
 	end
 

@@ -32,6 +32,10 @@ class ApplicationController < ActionController::Base
     render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
   end
 
+  def render404public
+    render :file => "#{Rails.root}/public/404-public.html", :status => :not_found, :layout => false
+  end
+
     def set_debugging_override()
       @today = Time.now
       @grounds_override = false

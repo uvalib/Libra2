@@ -30,34 +30,19 @@ end
 desc "List all works (abbreviated)"
 task list_all_works_abbrev: :environment do |t, args|
 
-   count = 0
-   output = []
-   GenericWork.all.each do |generic_work|
-	   output.push({ id: generic_work.id, email: generic_work.author_email, identifier: generic_work.identifier,  title: generic_work.title.join(' ')})
-
-     count += 1
-   end
-   output = output.sort { |a,b|
-	   a[:email] <=> b[:email]
-   }
-   output.each { |line|
-	   puts "#{line[:id]}\t#{line[:email]}\t#{line[:identifier]}\t#{line[:title]}"
-   }
-
-   puts "Listed #{count} work(s)"
+    abbrev_output(GenericWork.all)
 end
 
 desc "List all works (submitted)"
 task list_all_works_submitted: :environment do |t, args|
 
-   count = 0
-   GenericWork.where({draft: "false"}).each do |generic_work|
-	   puts "#{generic_work.id}\t#{generic_work.author_email}\t#{generic_work.identifier}\t#{generic_work.title.join(' ')}"
+    abbrev_output(GenericWork.where({draft: "false"}))
+end
 
-     count += 1
-   end
+desc "List all works (draft)"
+task list_all_works_draft: :environment do |t, args|
 
-   puts "Listed #{count} work(s)"
+    abbrev_output(GenericWork.where({draft: "true"}))
 end
 
 desc "List my works; optionally provide depositor email"
@@ -253,6 +238,24 @@ task thesis_for_all: :environment do |t, args|
 
   puts "Created #{count} theses"
 
+end
+
+def abbrev_output(recs)
+    count = 0
+    output = []
+    recs.each do |generic_work|
+        output.push({ id: generic_work.id, email: generic_work.author_email, identifier: generic_work.identifier,  title: generic_work.title.join(' ')})
+
+        count += 1
+    end
+    output = output.sort { |a,b|
+        a[:email] <=> b[:email]
+    }
+    output.each { |line|
+        puts "#{line[:id]}\t#{line[:email]}\t#{line[:identifier]}\t#{line[:title]}"
+    }
+
+    puts "Listed #{count} work(s)"
 end
 
 def create_work( user, title, description )
