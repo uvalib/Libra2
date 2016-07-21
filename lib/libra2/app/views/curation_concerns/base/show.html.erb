@@ -13,7 +13,9 @@
   <div class="col-sm-4">
     <%= render "show_actions", presenter: @presenter %>
     Last modified: <%= file_date_created(@presenter.date_modified) %>
+      <div class="thesis-thumbnail">
     <%= render 'representative_media', presenter: @presenter %>
+      </div>
     <%= render 'social_media' %>
     <%= render 'citations', presenter: @presenter %>
   </div>
