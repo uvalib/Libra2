@@ -340,4 +340,10 @@
 	tr:nth-of-type(odd) {
 		background-color:#ccc;
 	}
+	.title {
+		display: inline-block;
+	}
+	form {
+		display: inline-block;
+	}
 }

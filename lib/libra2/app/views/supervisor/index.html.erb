@@ -9,7 +9,14 @@
 		<td><%= draft[:identifier] %></td>
 		<td><%= draft[:created] %></td>
 		<td><%= draft[:modified] %></td>
-		<td><%= draft[:title] %></td>
+		<td><button class="btn btn-default admin-edit-title">Edit</button>
+			<div class="title"><%= draft[:title] %></div>
+			<%= form_tag("/supervisor/title", method: :post, class: "title-form", style: "display:none;") do %>
+				<input type="text" name="title" value="<%= draft[:title] %>" />
+				<input type="hidden" name="identifier" value="<%= draft[:id] %>" />
+				<%= submit_tag 'Save', { class: "btn btn-default"} %>
+			<% end %>
+		</td>
 	</tr>
 	<% } %>
 </table>

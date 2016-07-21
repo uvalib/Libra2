@@ -41,6 +41,18 @@ class SupervisorController < ApplicationController
 		end
 	end
 
+	def title
+		id = params[:identifier]
+		title = params[:title]
+		work = GenericWork.where(id: id)
+		if work.length > 0
+			work = work[0]
+			work.title = [ title ]
+			work.save!
+		end
+		redirect_to :back
+	end
+
   private
 	def must_be_supervisor
 		return false if !user_signed_in?

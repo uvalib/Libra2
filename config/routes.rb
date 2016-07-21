@@ -10,7 +10,11 @@ Rails.application.routes.draw do
   get '/public_view/:id/unpublish' => 'submission#unpublish'
   get '/computing_id' => 'dashboard#computing_id'
 
-  resources :supervisor, only: [ :index ]
+  resources :supervisor, only: [ :index ] do
+	  collection do
+		  post 'title'
+	  end
+  end
 
   # health check and version endpoints
   resources :healthcheck, only: [ :index ]
