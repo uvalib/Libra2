@@ -9,6 +9,30 @@ include TaskHelpers
 namespace :libra2 do
 
 namespace :edit do
+  desc "Delete a work; must provide the work id and that work must be untouched by the user."
+  task delete_work_by_id: :environment do |t, args|
+
+    work_id = ARGV[ 1 ]
+    if work_id.nil?
+      puts "ERROR: no work id specified, aborting"
+      next
+    end
+
+    task work_id.to_sym do ; end
+
+    work = TaskHelpers.get_work_by_id( work_id )
+    if work.nil?
+      puts "ERROR: work #{work_id} does not exist, aborting"
+      next
+    end
+    if work.date_modified.present?
+      puts "ERROR: work #{work_id} must not have been modified by the user, aborting"
+      next
+    end
+
+    work.destroy!
+    puts "Work #{work_id} deleted."
+  end
 
 desc "Set title of work; must provide the work id and title"
 task set_title_by_id: :environment do |t, args|
