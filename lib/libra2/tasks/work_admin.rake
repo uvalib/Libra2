@@ -45,6 +45,12 @@ task list_all_works_draft: :environment do |t, args|
     abbrev_output(GenericWork.where({draft: "true"}))
 end
 
+desc "List all works (unmodified)"
+task list_all_works_unmodified: :environment do |t, args|
+
+    abbrev_output(GenericWork.where({draft: "true"}), true)
+end
+
 desc "List my works; optionally provide depositor email"
 task list_my_works: :environment do |t, args|
 
@@ -240,19 +246,20 @@ task thesis_for_all: :environment do |t, args|
 
 end
 
-def abbrev_output(recs)
+def abbrev_output(recs,unmodified_only = false)
     count = 0
     output = []
     recs.each do |generic_work|
-        output.push({ id: generic_work.id, email: generic_work.author_email, identifier: generic_work.identifier,  title: generic_work.title.join(' ')})
-
+        if !unmodified_only || !generic_work.date_modified.present?
+        output.push({ id: generic_work.id, email: generic_work.author_email, identifier: generic_work.identifier,  title: generic_work.title.join(' '), created_at: generic_work.date_created, updated_at: generic_work.date_modified })
         count += 1
+        end
     end
     output = output.sort { |a,b|
         a[:email] <=> b[:email]
     }
     output.each { |line|
-        puts "#{line[:id]}\t#{line[:email]}\t#{line[:identifier]}\t#{line[:title]}"
+        puts "#{line[:id]}\t#{line[:email]}\t#{line[:identifier]}\t#{line[:title]}\t#{line[:created_at]}\t#{line[:updated_at]}"
     }
 
     puts "Listed #{count} work(s)"
