@@ -1,0 +1,47 @@
+<h1>Unstarted</h1>
+<table class="work-index">
+	<tr><th>Id</th><th>Name</th><th>Email</th><th>DOI</th><th>Created</th><th>Updated</th><th>Title</th></tr>
+	<% @untouched.each { |draft| %>
+	<tr>
+		<td><%= draft[:id] %></td>
+		<td><%= draft[:name] %></td>
+		<td><%= draft[:email] %></td>
+		<td><%= draft[:identifier] %></td>
+		<td><%= draft[:created] %></td>
+		<td><%= draft[:modified] %></td>
+		<td><%= draft[:title] %></td>
+	</tr>
+	<% } %>
+</table>
+
+<h1>Ibn Progress</h1>
+<table class="work-index">
+	<tr><th>Id</th><th>Name</th><th>Email</th><th>DOI</th><th>Created</th><th>Updated</th><th>Title</th></tr>
+	<% @in_progress.each { |draft| %>
+	<tr>
+		<td><%= draft[:id] %></td>
+		<td><%= draft[:name] %></td>
+		<td><%= draft[:email] %></td>
+		<td><%= draft[:identifier] %></td>
+		<td><%= draft[:created] %></td>
+		<td><%= draft[:modified] %></td>
+		<td><%= draft[:title] %></td>
+	</tr>
+	<% } %>
+</table>
+
+<h1>Submitted</h1>
+<table class="work-index">
+	<tr><th>Id</th><th>Name</th><th>Email</th><th>DOI</th><th>Created</th><th>Updated</th><th>Title</th></tr>
+	<% @submitted.each { |draft| %>
+		<tr>
+			<td><%= draft[:id] %></td>
+			<td><%= draft[:name] %></td>
+			<td><%= draft[:email] %></td>
+			<td><%= draft[:identifier] %></td>
+			<td><%= draft[:created] %></td>
+			<td><%= draft[:modified] %></td>
+			<td><%= draft[:title] %></td>
+		</tr>
+	<% } %>
+</table>
