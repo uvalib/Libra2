@@ -25,6 +25,10 @@ namespace :edit do
       puts "ERROR: work #{work_id} does not exist, aborting"
       next
     end
+    if work.draft != "true"
+      puts "ERROR: work #{work_id} must not have been submitted, aborting"
+      next
+    end
     if work.date_modified.present?
       puts "ERROR: work #{work_id} must not have been modified by the user, aborting"
       next
