@@ -13,6 +13,7 @@ module AuthenticationBehavior
     # if the user is already signed in, then we are good...
     #
 		if user_signed_in?
+			logger.info("Active User: #{current_user.email}")
 			return
 		end
 
