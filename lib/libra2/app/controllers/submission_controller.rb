@@ -40,17 +40,19 @@ class SubmissionController < ApplicationController
 			end
 			work.save!
 
-			# send the author email that they have successfully completed things
-			send_author_email(work)
-
-			# send the registrar email that they have successfully completed things
-			send_registrar_email(work)
-
 			# update the DOI service with the completed metadata
 			update_metadata(work)
 
 			# update SIS as necessary
 			update_submitted_state(work)
+
+			# PER: All actual work is done before the emails are sent in case the email system crashes again.
+
+			# send the author email that they have successfully completed things
+			send_author_email(work)
+
+			# send the registrar email that they have successfully completed things
+			send_registrar_email(work)
 		end
 
 		redirect_to locally_hosted_work_url( id ), :flash => { :notice => "Thank you for submitting your thesis. Be sure to make note of and refer to the Persistent Link when you refer to this work." }
