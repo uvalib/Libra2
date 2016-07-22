@@ -15,6 +15,8 @@ module AuthenticationBehavior
 		if user_signed_in?
 			logger.info("Active User: #{current_user.email}")
 			return
+		else
+			logger.info("No Active User")
 		end
 
     #
