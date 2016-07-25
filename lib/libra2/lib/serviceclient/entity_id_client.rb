@@ -91,7 +91,7 @@ module ServiceClient
        h['url'] = fully_qualified_work_url( work.id )
        h['affiliation'] = "#{work.department} #{work.author_institution}"
        h['publication_year'] = "#{work.date_created.split("/")[0]}" if work.date_created
-       h['type'] = work.resource_type if work.resource_type
+       h['type'] = "Text/Dissertation" # work.resource_type if work.resource_type
        h.to_json
      end
 
