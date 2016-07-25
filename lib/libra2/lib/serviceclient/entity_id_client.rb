@@ -87,9 +87,10 @@ module ServiceClient
        h = {}
        h['title'] = work.title[ 0 ] if work.title && work.title[ 0 ]
        h['publisher'] = work.publisher if work.publisher
-       h['creator'] = work.creator if work.creator
+       h['creator'] = "#{work.author_first_name} #{work.author_last_name}" if work.creator
        h['url'] = fully_qualified_work_url( work.id )
-       h['publication_year'] = "#{work.date_uploaded.year}" if work.date_uploaded
+       h['affiliation'] = "University of Virginia"
+       h['publication_year'] = "#{work.date_created.split("/")[0]}" if work.date_created
        h['type'] = work.resource_type if work.resource_type
        h.to_json
      end
