@@ -146,6 +146,12 @@ class GenericWork < ActiveFedora::Base
   # the last name of the author
   property :registrar_computing_id, predicate: ::RDF::URI('http://example.org/terms/registrar_computing_id'), multiple: false
 
+  # the id that sis attached to this thesis
+  property :sis_id, predicate: ::RDF::URI('http://example.org/terms/sis_id'), multiple: false
+
+  # the entire line that was passed when this thesis was created
+  property :sis_entry, predicate: ::RDF::URI('http://example.org/terms/sis_entry'), multiple: false
+
   # # set of contributor computing ids
   # property :contributor_computing_id, predicate: ::RDF::URI('http://example.org/terms/contributor_computing_id') do |index|
   #   index.as :stored_searchable

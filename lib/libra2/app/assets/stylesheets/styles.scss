@@ -346,4 +346,7 @@
 	form {
 		display: inline-block;
 	}
+	&.sis td:nth-child(2) {
+		white-space: normal;
+	}
 }

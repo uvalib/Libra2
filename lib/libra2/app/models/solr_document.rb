@@ -107,6 +107,14 @@ class SolrDocument
     self[Solrizer.solr_name('registrar_computing_id')]
   end
 
+  def sis_id
+    self[Solrizer.solr_name('sis_id')]
+  end
+
+  def sis_entry
+    self[Solrizer.solr_name('sis_entry')]
+  end
+
   def contributor
     advisors = []
     contributors = self[Solrizer.solr_name('contributor')]

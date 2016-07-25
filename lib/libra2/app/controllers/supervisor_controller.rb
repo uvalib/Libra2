@@ -53,6 +53,33 @@ class SupervisorController < ApplicationController
 		redirect_to :back
 	end
 
+	def sis
+		sis_file = "#{Rails.root}/tmp/from_sis/UV_Libra_From_SIS_160721.txt"
+		@sis_new = []
+		@sis_changed = []
+		f = File.open(sis_file, "r")
+		f.each_line do |line|
+			line = line.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '[BAD CHAR]')
+			arr = line.split("|")
+			work = GenericWork.where({ sis_id: arr[0] })
+			if work.length == 0
+				# the work has never been imported before
+				@sis_new.push({ sis_id: arr[0], sis_entry: line, computing_id: arr[1], name: "#{arr[2]} #{arr[3]} #{arr[4]}", title: arr[8] })
+			elsif work[0].sis_entry == line
+				# the work is exactly the same as what was imported before
+			else
+				# The work was imported, but with a change. Probably the title changed.
+				@sis_changed.push({ sis_id: arr[0], sis_entry: line, computing_id: arr[1], name: "#{arr[2]} #{arr[3]} #{arr[4]}", title: arr[8], work: work[0] })
+			end
+		end
+
+	end
+
+	def sis_import
+		line = params[:sis_entry]
+		redirect_to :back
+	end
+
   private
 	def must_be_supervisor
 		return false if !user_signed_in?

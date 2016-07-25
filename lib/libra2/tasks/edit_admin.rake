@@ -38,6 +38,52 @@ namespace :edit do
     puts "Work #{work_id} deleted."
   end
 
+  desc "Delete my optional, untouched works."
+  task delete_my_optional_untouched_works: :environment do |t, args|
+
+	  works = GenericWork.where({ author_email: "per4k@virginia.edu" })
+	  works.each { |work|
+     if work.draft != "true"
+      puts "Skipping work #{work.id} [already submitted]"
+    end
+    if work.date_modified.present?
+      puts "Skipping work #{work.id} [already modified]"
+    end
+
+    work.destroy!
+    puts "Work #{work.id} deleted. #{work.author_email} #{work.title}"
+	  }
+  end
+
+  desc "Backfill all the sis data for existing docs"
+  task backfill_sis_data: :environment do |t, args|
+    sis_file_path = ARGV[ 1 ]
+    if sis_file_path.nil?
+      puts "ERROR: no sis file specified, aborting"
+      next
+    end
+
+    task sis_file_path.to_sym do ; end
+
+    f = File.open(sis_file_path, "r")
+    f.each_line do |line|
+      line = line.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '[BAD CHAR]')
+      arr = line.split("|")
+      work = GenericWork.where({ author_email: "#{arr[1]}@virginia.edu" })
+      if work.length == 0
+        # the work has never been imported before
+		  puts "skipping #{arr[1]}: not imported yet"
+      else
+        # The work was imported, add the sis parameters
+		  puts "editing #{arr[1]}"
+		  work.sis_id = arr[0]
+		  work.sis_entry = line
+		  work.save!
+      end
+    end
+
+  end
+
 desc "Set title of work; must provide the work id and title"
 task set_title_by_id: :environment do |t, args|
 
