@@ -1,5 +1,6 @@
 require_dependency 'libra2/lib/serviceclient/user_info_client'
 require_dependency 'libra2/lib/helpers/user_info'
+require_dependency 'libra2/lib/serviceclient/entity_id_client'
 
 module Helpers
 

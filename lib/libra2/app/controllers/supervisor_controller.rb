@@ -1,4 +1,13 @@
+require_dependency 'libra2/tasks/task_helpers'
+include TaskHelpers
+
+require_dependency 'libra2/lib/serviceclient/deposit_reg_client'
+require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
+require_dependency 'libra2/lib/helpers/value_snapshot'
+require_dependency 'libra2/lib/helpers/deposit_request'
+require_dependency 'libra2/lib/helpers/deposit_authorization'
 require_dependency 'libra2/lib/helpers/etd_helper'
+require_dependency 'libra2/lib/helpers/timed_token'
 
 class SupervisorController < ApplicationController
 	before_action :must_be_supervisor
@@ -77,6 +86,28 @@ class SupervisorController < ApplicationController
 
 	def sis_import
 		line = params[:sis_entry]
+		arr = line.split("|")
+		entry = {
+			'id' => arr[0],
+			'computing_id' => arr[1],
+			'first_name' => arr[2],
+			'last_name' => arr[4],
+			'title' => arr[8],
+			'department' => arr[7],
+			'degree' => arr[10]
+		}
+		req = Helpers::DepositAuthorization.create( entry )
+		if Helpers::EtdHelper::new_etd_from_sis_request( req ) == true
+			work = GenericWork.where({ work_source: "#{GenericWork::THESIS_SOURCE_SIS}:#{arr[0]}"})
+			work.sis_id = arr[0]
+			work.sis_entry = line
+			work.save!
+			user = Helpers::EtdHelper::lookup_user( req.who )
+			ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name ).deliver_now
+			puts "Created placeholder (SIS) ETD for #{req.who} (request #{req.id})"
+		else
+			puts "ERROR ingesting sis authorization #{req.id} for #{req.who}; ignoring"
+		end
 		redirect_to :back
 	end
 
