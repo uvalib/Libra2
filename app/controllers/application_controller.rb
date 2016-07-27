@@ -29,7 +29,15 @@ class ApplicationController < ActionController::Base
   #end
 
   def render404
-    render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
+    if user_signed_in?
+      render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
+    else
+      # This is the case where someone logs in with Shiboleth but does not have an account. This happens because of one of the following:
+      # 1) They work here and are trying to see if Libra is active, but have no reason to upload,
+      # 2) They are a student who has submitted to SIS, but has jumped the gun and went to Libra before their thesis had been created,
+      # 3) They are a random UVA student who stumbled here but has no business here.
+      render :file => "#{Rails.root}/public/401.html", :status => :unauthorized, :layout => false
+    end
   end
 
   def render404public

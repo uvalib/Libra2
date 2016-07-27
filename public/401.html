@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>You do not have access to this site (401)</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	<style>
+		.error-content {
+			font-family: 'Open Sans', sans-serif;
+			position: absolute;
+			margin: auto;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			display: inline-flex;
+			vertical-align: middle;
+			width: 600px;
+			height: 250px;
+		}
+		.error-code {
+			background-color: #d6d6d6;
+			width: 180px;
+			height: 120px;
+			color: white;
+			font-size: 45px;
+		}
+		.error-message {
+			padding-left: 25px;
+			line-height: 28px;
+		}
+		h3 {
+			padding: 0px 14px;
+		}
+		h1 {
+			margin-top: 0;
+			margin-bottom: 0;
+			font-size: 28px;
+		}
+		p {
+			margin-top: 5px;
+			color: #8c8c8c;
+		}
+		a {
+			color: #8c8c8c;
+		}
+		a:hover {
+			color: #424242;
+		}
+		.error-code {
+			background:
+				linear-gradient(#002F6C 0%, #E57200 90%),
+				linear-gradient(to right, #002F6C 0%, #E57200 90%),
+				url('https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/UVA_Rotunda_Logo.svg/1005px-UVA_Rotunda_Logo.svg.png') 30px,
+				url('https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/UVA_Rotunda_Logo.svg/1005px-UVA_Rotunda_Logo.svg.png') 20px;
+			background-blend-mode: screen, difference, lighten;
+			border-radius: 30px;
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-attachment: initial;
+			background-position: center;
+		}
+	</style>
+</head>
+
+<body>
+<!-- This file lives in public/401.html -->
+<div class="error-content">
+	<div class="error-code">
+		<h3>401</h3>
+	</div>
+	<div class="error-message">
+		<h1>You do not have permission to log into this site.</h1>
+		<p>Graduate Students: if you can't log in to deposit to Libra, check with your departmental administrator.</p>
+		<p>If you believe you should have access but are receiving this page, <a href="mailto:libra@virginia.edu">contact us</a> for assistance</p>
+		<p>If you are looking for UVA Open Scholarship, please visit <a href="http://search.lib.virginia.edu/catalog?author=&call_number=&catalog_select=catalog&commit=Search&f%5Bsource_facet%5D%5B%5D=Libra+Repository&journal=&keyword=&op=AND&publication_date_end=&publication_date_start=&published=&search_field=advanced&sort=score+desc%2C+year_multisort_i+desc&sort_key=relevancy&subject=&title=">Virgo</a>.</p>
+	</div>
+</div>
+<script type="text/javascript">
+	var _paq = _paq || [];
+	_paq.push(['trackPageView']);
+	_paq.push(['enableLinkTracking']);
+	(function() {
+		var u="//analytics.lib.virginia.edu/";
+		_paq.push(['setTrackerUrl', u+'piwik.php']);
+		_paq.push(['setSiteId', 24]);
+		var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+		g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+	})();
+</script>
+<noscript><p><img src="//analytics.lib.virginia.edu/piwik.php?idsite=24" style="border:0;" alt="" /></p>
+</noscript>
+</body>
+</html>
