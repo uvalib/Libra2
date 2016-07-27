@@ -86,7 +86,7 @@ namespace :libra2 do
 			last_timestamp = ""
 			File.open(input, "r").each_line do |line|
 				index = line.index("]:")
-				line = line[index+3,line.length] # get rid of the tacked on stuff that looks like: 2016-07-14T09:49:00-04:00 dockerprod1 docker/49a126baed37[6764]:
+				line = line[index+3,line.length] if index.present? # get rid of the tacked on stuff that looks like: 2016-07-14T09:49:00-04:00 dockerprod1 docker/49a126baed37[6764]:
 				if !(is_noise(line))
 					# If there is no timestamp on the line, then insert one
 					#D, [2016-07-17T14:35:51.693245 #90]
