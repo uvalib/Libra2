@@ -41,9 +41,10 @@ module PublicHelper
 	def display_related_links(links)
 		a = []
 		links.each { |link|
-			a.push(content_tag(:a, link, { href: link, target: "_blank" }))
+			display = links.length > 1 ? raw("&bull; #{link}") : link
+			a.push(content_tag(:a, display, { href: link, target: "_blank" }))
 		}
-		return raw(a.join(", "))
+		return raw(a.join(""))
 	end
 
 	def display_keywords(work)
