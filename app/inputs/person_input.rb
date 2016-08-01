@@ -15,7 +15,7 @@ class PersonInput < MultiValueInput
 				end
 			end
 		end
-		return content_tag(:div, "Enter your committee chair as the first advisor.", { class: "field_help" }) + raw(ret)
+		return raw(ret)
 	end
 
 	private
