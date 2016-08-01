@@ -7,6 +7,13 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 module TaskHelpers
 
   #
+  # the default user for various admin activities
+  #
+  def default_user
+    return 'dpg3k@virginia.edu'
+  end
+
+  #
   # turn a computing ID into the format needed for the contributor field
   #
   def contributor_fields( computing_id )
@@ -73,6 +80,69 @@ module TaskHelpers
 
     puts "done"
     return user_info
+  end
+
+  #
+  # upload the specified file to the specified work on behalf of the specified user
+  #
+  def upload_file( user, work, filename, title = nil )
+
+    print "uploading #{filename}... "
+
+    fileset = ::FileSet.new
+    fileset.title << title unless title.nil?
+    file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, user )
+    file_actor.create_metadata( work )
+    file_actor.create_content( File.open( filename ) )
+
+    puts "done"
+
+  end
+
+  #
+  # delete the specified file from the specified work on behalf of the specified user
+  #
+  def delete_fileset( user, fileset )
+
+    print "deleting file set #{fileset.id}... "
+
+    file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, user )
+    file_actor.destroy
+
+    puts "done"
+
+  end
+
+  #
+  # list full details of a work
+  #
+  def list_full_work( work )
+
+    return if work.nil?
+    j = JSON.parse( work.to_json )
+    j.keys.sort.each do |k|
+      val = j[ k ]
+      if k.end_with?( "_id" ) == false && val.nil? == false
+        next if val.respond_to?( :empty? ) && val.empty? == true
+        puts " #{k} => #{val}"
+      end
+    end
+    puts " visibility => #{work.visibility}"
+    puts " embargo_end_date => #{work.embargo_end_date}"
+    puts " registrar_computing_id => #{work.registrar_computing_id}"
+    puts " sis_id => #{work.sis_id}"
+    puts " sis_entry => #{work.sis_entry}"
+
+    if work.file_sets
+      file_number = 1
+      work.file_sets.each do |file_set|
+        puts " file #{file_number} => #{file_set.label}/#{file_set.title[0]}"
+        file_number += 1
+      end
+    end
+
+    puts '*' * 40
+
   end
 
 end

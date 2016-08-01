@@ -129,7 +129,7 @@ namespace :libra2 do
 
     filelist = get_file_list( dirname )
     filelist.each do |f|
-      upload_file( user, work, File.join( dirname, f[ :filename ] ), f[ :label ] )
+      TaskHelpers.upload_file( user, work, File.join( dirname, f[ :filename ] ), f[ :label ] )
     end
   end
 
@@ -231,21 +231,7 @@ namespace :libra2 do
     return work
   end
 
-  def upload_file( user, work, filename, title )
-
-    print "uploading #{filename}... "
-
-    fileset = ::FileSet.new
-    fileset.title << title
-    file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, user )
-    file_actor.create_metadata( work )
-    file_actor.create_content( File.open( filename ) )
-
-    puts "done"
-
-  end
-
-  end   # namespace data
+end   # namespace data
 
 end   # namespace libra2
 

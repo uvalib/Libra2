@@ -57,6 +57,7 @@ namespace :edit do
 
   desc "Backfill all the sis data for existing docs"
   task backfill_sis_data: :environment do |t, args|
+
     sis_file_path = ARGV[ 1 ]
     if sis_file_path.nil?
       puts "ERROR: no sis file specified, aborting"
@@ -182,6 +183,77 @@ task add_contributor_by_id: :environment do |t, args|
     puts "Work #{work_id} contributor added \"#{contributor_id}\""
   end
 
+end
+
+desc "Add new file to existing work; must provide the work id and file name to add"
+task add_file_to_work: :environment do |t, args|
+
+  work_id = ARGV[ 1 ]
+  if work_id.nil?
+    puts "ERROR: no work id specified, aborting"
+    next
+  end
+
+  task work_id.to_sym do ; end
+
+  file_name = ARGV[ 2 ]
+  if file_name.nil?
+    puts "ERROR: no filename specified, aborting"
+    next
+  end
+
+  task file_name.to_sym do ; end
+
+  work = TaskHelpers.get_work_by_id( work_id )
+  if work.nil?
+    puts "ERROR: work #{work_id} does not exist, aborting"
+    next
+  end
+
+  puts "ERROR: not yet implemented"
+end
+
+desc "Delete a file from an existing work; must provide the work id and file number to delete"
+task del_file_from_work: :environment do |t, args|
+
+  work_id = ARGV[ 1 ]
+  if work_id.nil?
+    puts "ERROR: no work id specified, aborting"
+    next
+  end
+
+  task work_id.to_sym do ; end
+
+  file_number = ARGV[ 2 ]
+  if file_number.nil?
+    puts "ERROR: no file number specified, aborting"
+    next
+  end
+
+  task file_number.to_sym do ; end
+
+  work = TaskHelpers.get_work_by_id( work_id )
+  if work.nil?
+    puts "ERROR: work #{work_id} does not exist, aborting"
+    next
+  end
+
+  fn = file_number.to_i
+  if fn <= 0
+    puts "ERROR: #{file_number} is not a valid file number, aborting"
+    next
+  end
+
+  if work.file_sets.nil? || work.file_sets.length < fn
+    puts "ERROR: work #{work_id} does not have a file number #{file_number}, aborting"
+    next
+  end
+
+  user = User.find_by_email( TaskHelpers.default_user )
+  
+  TaskHelpers.delete_fileset( user, work.file_sets[ fn - 1 ] )
+
+  puts "File number #{file_number} deleted from work id #{work_id}"
 end
 
 end   # namespace edit

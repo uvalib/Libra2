@@ -12,7 +12,6 @@ namespace :libra2 do
 
 namespace :work do
 
-default_user = "dpg3k@virginia.edu"
 sample_pdf_file = "data/sample.pdf"
 
 desc "List all works"
@@ -20,7 +19,7 @@ task list_all_works: :environment do |t, args|
 
    count = 0
    GenericWork.all.each do |generic_work|
-     dump_work( generic_work )
+     TaskHelpers.list_full_work( generic_work )
      count += 1
    end
 
@@ -55,13 +54,13 @@ desc "List my works; optionally provide depositor email"
 task list_my_works: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = default_user if who.nil?
+  who = TaskHelpers.default_user if who.nil?
   task who.to_sym do ; end
 
   count = 0
   GenericWork.all.each do |generic_work|
     if generic_work.is_mine?( who )
-       dump_work( generic_work )
+       TaskHelpers.list_full_work( generic_work )
        count += 1
     end
   end
@@ -86,7 +85,7 @@ task list_by_id: :environment do |t, args|
     next
   end
 
-  dump_work( work )
+  TaskHelpers.list_full_work( work )
 end
 
 desc "Delete all works"
@@ -107,7 +106,7 @@ desc "Delete my works; optionally provide depositor email"
 task del_my_works: :environment do |t, args|
 
    who = ARGV[ 1 ]
-   who = default_user if who.nil?
+   who = TaskHelpers.default_user if who.nil?
    task who.to_sym do ; end
 
    count = 0
@@ -150,7 +149,7 @@ desc "Create new generic work; optionally provide depositor email"
 task create_new_work: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = default_user if who.nil?
+  who = TaskHelpers.default_user if who.nil?
   task who.to_sym do ; end
 
   # lookup user and exit if error
@@ -167,9 +166,9 @@ task create_new_work: :environment do |t, args|
   work = create_work( user, title, description )
 
   filename = TaskHelpers.get_random_image( )
-  upload( user, work, filename )
+  TaskHelpers.upload_file( user, work, filename )
 
-  dump_work work
+  TaskHelpers.list_full_work work
 
 end
 
@@ -177,7 +176,7 @@ desc "Create new thesis; optionally provide depositor email"
 task create_new_thesis: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = default_user if who.nil?
+  who = TaskHelpers.default_user if who.nil?
   task who.to_sym do ; end
 
   # lookup user and exit if error
@@ -195,9 +194,9 @@ task create_new_thesis: :environment do |t, args|
   work = create_thesis( user, title, description )
 
   #filename = copy_sourcefile( sample_pdf_file )
-  #upload( user, work, filename )
+  #TaskHelpers.upload_file( user, work, filename )
 
-  dump_work work
+  TaskHelpers.list_full_work work
 
 end
 
@@ -214,7 +213,7 @@ task works_for_all: :environment do |t, args|
     work = create_work( user, title, description )
 
     filename = TaskHelpers.get_random_image( )
-    upload( user, work, filename )
+    TaskHelpers.upload_file( user, work, filename )
 
     count += 1
   end
@@ -236,7 +235,7 @@ task thesis_for_all: :environment do |t, args|
     work = create_thesis( user, title, description )
 
     filename = TaskHelpers.get_random_image( )
-    upload( user, work, filename )
+    TaskHelpers.upload_file( user, work, filename )
 
     count += 1
 
@@ -327,40 +326,6 @@ def create_generic_work( work_type, user, title, description )
   end
 
   return work
-end
-
-def upload( user, work, filename )
-
-  print "uploading #{filename}... "
-
-  fileset = ::FileSet.new
-  file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, user )
-  file_actor.create_metadata( work )
-  file_actor.create_content( File.open( filename ) )
-
-  puts "done"
-
-end
-
-def dump_work( work )
-
-  return if work.nil?
-  j = JSON.parse( work.to_json )
-  j.keys.sort.each do |k|
-     val = j[ k ]
-     if k.end_with?( "_id" ) == false && val.nil? == false
-       next if val.respond_to?( :empty? ) && val.empty? == true
-       puts " #{k} => #{val}"
-     end
-  end
-  puts " visibility => #{work.visibility}"
-  puts " embargo_end_date => #{work.embargo_end_date}"
-  puts " registrar_computing_id => #{work.registrar_computing_id}"
-  puts " sis_id => #{work.sis_id}"
-  puts " sis_entry => #{work.sis_entry}"
-
-  puts '*' * 40
-
 end
 
 def copy_sourcefile( source_file )

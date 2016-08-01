@@ -12,8 +12,6 @@ namespace :libra2 do
 
   namespace :doi do
 
-  default_user = "dpg3k@virginia.edu"
-
   desc "Get EZID metadata for the specified work; must provide the work id"
   task get_ezid_metadata_by_work: :environment do |t, args|
 
@@ -87,7 +85,7 @@ namespace :libra2 do
   task assign_doi_my_works: :environment do |t, args|
 
     who = ARGV[ 1 ]
-    who = default_user if who.nil?
+    who = TaskHelpers.default_user if who.nil?
     task who.to_sym do ; end
 
     count = 0
@@ -144,7 +142,7 @@ namespace :libra2 do
   task update_doi_metadata_my_works: :environment do |t, args|
 
     who = ARGV[ 1 ]
-    who = default_user if who.nil?
+    who = TaskHelpers.default_user if who.nil?
     task who.to_sym do ; end
 
     count = 0
