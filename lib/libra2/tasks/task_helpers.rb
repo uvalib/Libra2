@@ -136,7 +136,7 @@ module TaskHelpers
     if work.file_sets
       file_number = 1
       work.file_sets.each do |file_set|
-        puts " file #{file_number} => #{file_set.label}/#{file_set.title[0]}"
+        puts " file #{file_number} => #{file_set.label}/#{file_set.title[0]} (/downloads/#{file_set.id})"
         file_number += 1
       end
     end
