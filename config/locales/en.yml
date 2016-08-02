@@ -61,7 +61,7 @@ en:
         contributor_html: ''
         description: ''
         related_url: "A link to a website or other specific content (audio, video, PDF document) related to the work."
-        rights: "Libra lets you choose an open license when you post your work, and will prominently display the license you choose as part of the record for your work. This license helps readers find your work, and makes it more likely that it will be read and re-used."
+        rights: "Libra lets you choose an open license when you post your work, and will prominently display the license you choose as part of the record for your work. See the <a target='_blank' href='http://www.library.virginia.edu/libra/etds/etds-checklist/'>ETD Submission Checklist</a> for license option details."
     labels:
       defaults:
         #creator: 'Author'
