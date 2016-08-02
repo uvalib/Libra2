@@ -1,0 +1,16 @@
+<tr>
+	<td><%= work[:id] %></td>
+	<td><%= work[:name] %></td>
+	<td><%= work[:email] %></td>
+	<td><%= work[:identifier] %></td>
+	<td><%= work[:created] %></td>
+	<td><%= work[:modified] %></td>
+	<td><button class="btn btn-default admin-edit-title">Edit</button>
+		<div class="title"><%= work[:title] %></div>
+		<%= form_tag("/supervisor/title", method: :post, class: "title-form", style: "display:none;") do %>
+				<input type="text" name="title" value="<%= work[:title] %>" />
+				<input type="hidden" name="identifier" value="<%= work[:id] %>" />
+				<%= submit_tag 'Save', { class: "btn btn-default"} %>
+		<% end %>
+	</td>
+</tr>

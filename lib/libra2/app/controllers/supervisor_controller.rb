@@ -112,13 +112,10 @@ class SupervisorController < ApplicationController
 	end
 
   private
+
 	def must_be_supervisor
 		return false if !user_signed_in?
-		return true if current_user.email == "per4k@eservices.virginia.edu"
-		return true if current_user.email == "dpg3k@virginia.edu"
-		return true if current_user.email == "ecr2c@virginia.edu"
-		return true if current_user.email == "sah@virginia.edu"
-		return false
+		return [ 'per4k@eservices.virginia.edu', 'dpg3k@virginia.edu', 'ecr2c@virginia.edu', 'sah@virginia.edu' ].include? current_user.email
 	end
 
 

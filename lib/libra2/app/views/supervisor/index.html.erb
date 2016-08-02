@@ -1,54 +1,23 @@
 <h1>Unstarted</h1>
 <table class="work-index">
-	<tr><th>Id</th><th>Name</th><th>Email</th><th>DOI</th><th>Created</th><th>Updated</th><th>Title</th></tr>
-	<% @untouched.each { |draft| %>
-	<tr>
-		<td><%= draft[:id] %></td>
-		<td><%= draft[:name] %></td>
-		<td><%= draft[:email] %></td>
-		<td><%= draft[:identifier] %></td>
-		<td><%= draft[:created] %></td>
-		<td><%= draft[:modified] %></td>
-		<td><button class="btn btn-default admin-edit-title">Edit</button>
-			<div class="title"><%= draft[:title] %></div>
-			<%= form_tag("/supervisor/title", method: :post, class: "title-form", style: "display:none;") do %>
-				<input type="text" name="title" value="<%= draft[:title] %>" />
-				<input type="hidden" name="identifier" value="<%= draft[:id] %>" />
-				<%= submit_tag 'Save', { class: "btn btn-default"} %>
-			<% end %>
-		</td>
-	</tr>
+	<%= render :partial => 'header' %>
+	<% @untouched.each { |work| %>
+			<%= render :partial => 'work', :locals => { :work => work } %>
 	<% } %>
 </table>
 
 <h1>In Progress</h1>
 <table class="work-index">
-	<tr><th>Id</th><th>Name</th><th>Email</th><th>DOI</th><th>Created</th><th>Updated</th><th>Title</th></tr>
-	<% @in_progress.each { |draft| %>
-	<tr>
-		<td><%= draft[:id] %></td>
-		<td><%= draft[:name] %></td>
-		<td><%= draft[:email] %></td>
-		<td><%= draft[:identifier] %></td>
-		<td><%= draft[:created] %></td>
-		<td><%= draft[:modified] %></td>
-		<td><%= draft[:title] %></td>
-	</tr>
+	<%= render :partial => 'header' %>
+	<% @in_progress.each { |work| %>
+			<%= render :partial => 'work', :locals => { :work => work } %>
 	<% } %>
 </table>
 
 <h1>Submitted</h1>
 <table class="work-index">
-	<tr><th>Id</th><th>Name</th><th>Email</th><th>DOI</th><th>Created</th><th>Updated</th><th>Title</th></tr>
-	<% @submitted.each { |draft| %>
-		<tr>
-			<td><%= draft[:id] %></td>
-			<td><%= draft[:name] %></td>
-			<td><%= draft[:email] %></td>
-			<td><%= draft[:identifier] %></td>
-			<td><%= draft[:created] %></td>
-			<td><%= draft[:modified] %></td>
-			<td><%= draft[:title] %></td>
-		</tr>
+	<%= render :partial => 'header' %>
+	<% @submitted.each { |work| %>
+			<%= render :partial => 'work', :locals => { :work => work } %>
 	<% } %>
 </table>
