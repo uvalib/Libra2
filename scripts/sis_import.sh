@@ -20,7 +20,7 @@ logit "Starting up..."
 while true; do
 
    # sleeping message...
-   logit "Sleeping until $ACTION_TIME ..."
+   logit "Sleeping until $ACTION_TIME..."
    sleep_until $ACTION_TIME
 
    # determine if we are the active host... only run on one host even though we may be deployed on many

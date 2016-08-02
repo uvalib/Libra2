@@ -20,7 +20,7 @@ logit "Starting up..."
 while true; do
 
    # sleeping message...
-   logit "Sleeping for $SLEEPTIME seconds ..."
+   logit "Sleeping for $SLEEPTIME seconds..."
    sleep $SLEEPTIME
 
    # starting message
