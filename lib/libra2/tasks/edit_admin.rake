@@ -273,6 +273,74 @@ task del_file_from_work: :environment do |t, args|
   puts "File number #{file_number} deleted from work id #{work_id}"
 end
 
+desc "Set embargo of work; must provide the work id and embargo type and embargo period"
+task set_embargo_by_id: :environment do |t, args|
+
+  work_id = ARGV[ 1 ]
+  if work_id.nil?
+    puts "ERROR: no work id specified, aborting"
+    next
+  end
+
+  task work_id.to_sym do ; end
+
+  embargo_type = ARGV[ 2 ]
+  if embargo_type.nil?
+    puts "ERROR: no embargo type specified, aborting"
+    next
+  end
+
+  task embargo_type.to_sym do ; end
+
+  embargo_period = ARGV[ 3 ]
+  if embargo_period.nil?
+    puts "ERROR: no embargo period specified, aborting"
+    next
+  end
+
+  task embargo_period.to_sym do ; end
+
+  case embargo_type
+    when 'engineering'
+      embargo_type = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+    when 'non'
+      embargo_type = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+    else
+      puts "ERROR: must specify \"engineering\" or \"non\" for embargo type"
+      next
+  end
+
+  case embargo_period
+    when GenericWork::EMBARGO_VALUE_6_MONTH,
+         GenericWork::EMBARGO_VALUE_1_YEAR,
+         GenericWork::EMBARGO_VALUE_2_YEAR,
+         GenericWork::EMBARGO_VALUE_5_YEAR
+    else
+      puts "ERROR: must specify \"#{GenericWork::EMBARGO_VALUE_6_MONTH}\", \"#{GenericWork::EMBARGO_VALUE_1_YEAR}\", \"#{GenericWork::EMBARGO_VALUE_2_YEAR}\" or \"#{GenericWork::EMBARGO_VALUE_5_YEAR}\" for embargo period, aborting"
+      next
+  end
+
+  work = TaskHelpers.get_work_by_id( work_id )
+  if work.nil?
+    puts "ERROR: work #{work_id} does not exist, aborting"
+    next
+  end
+
+  if work.is_draft?
+    puts "ERROR: work #{work_id} has not been submitted, aborting"
+    next
+  end
+
+  work.embargo_state = embargo_type
+  work.embargo_period = embargo_period
+
+  end_date = work.resolve_embargo_date()
+  work.embargo_end_date = DateTime.new(end_date.year, end_date.month, end_date.day)
+  work.save!
+
+  puts "Work #{work_id} embargo period updated to #{GenericWork.friendly_embargo_period embargo_period}"
+end
+
 end   # namespace edit
 
 end   # namespace libra2
