@@ -12,7 +12,6 @@ export LOGGER=$(logger_name "$NAME.log")
 
 # our sleep time, currently 5 minutes
 export SLEEPTIME=300
-export SLEEPTIME=30
 
 # helpful message...
 logit "Starting up..."
