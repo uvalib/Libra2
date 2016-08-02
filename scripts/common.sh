@@ -21,7 +21,11 @@ function dockerized {
 function logger_name {
    local name=$1
    if dockerized; then
-      echo "$APP_HOME/log/$name"
+      DH="unknown"
+      if [ -n "$DOCKER_HOST" ]; then
+         DH=$(echo $DOCKER_HOST|awk -F. '{print $1}')
+      fi
+      echo "$APP_HOME/hostfs/logs/$DH.$name"
    else
       echo "/dev/stdout"
    fi
