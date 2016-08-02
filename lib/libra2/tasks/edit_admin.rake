@@ -204,13 +204,26 @@ task add_file_to_work: :environment do |t, args|
 
   task file_name.to_sym do ; end
 
+  if File.file?( file_name ) == false
+    puts "ERROR: file #{file_name} does not exist, aborting"
+    next
+  end
+
   work = TaskHelpers.get_work_by_id( work_id )
   if work.nil?
     puts "ERROR: work #{work_id} does not exist, aborting"
     next
   end
 
-  puts "ERROR: not yet implemented"
+  user = User.find_by_email( TaskHelpers.default_user )
+  if user.nil?
+    puts "ERROR: default user #{TaskHelpers.default_user} is not available, aborting"
+    next
+  end
+
+  TaskHelpers.upload_file( user, work, file_name )
+  puts "File #{file_name} added to work id #{work_id}"
+
 end
 
 desc "Delete a file from an existing work; must provide the work id and file number to delete"
@@ -250,7 +263,11 @@ task del_file_from_work: :environment do |t, args|
   end
 
   user = User.find_by_email( TaskHelpers.default_user )
-  
+  if user.nil?
+    puts "ERROR: default user #{TaskHelpers.default_user} is not available, aborting"
+    next
+  end
+
   TaskHelpers.delete_fileset( user, work.file_sets[ fn - 1 ] )
 
   puts "File number #{file_number} deleted from work id #{work_id}"
