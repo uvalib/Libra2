@@ -2,24 +2,17 @@
 # Runner process to call the rake tasks that control deposit importing from SIS and optional registration
 #
 
-# determine if we are in a dockerized environment
-if [ -n "$APP_HOME" ]; then
-   export LOGGER=$APP_HOME/log/deposit_import.log
-else
-   export LOGGER=/dev/stdout
-fi
+# source the helper...
+DIR=$(dirname $0)
+. $DIR/common.sh
 
-# log file location
+# set the appropriate logger
+export NAME=$(basename $0 .sh)
+export LOGGER=$(logger_name "$NAME.log")
 
 # our sleep time, currently 5 minutes
 export SLEEPTIME=300
-
-# the logging function
-function logit {
-   local msg=$1
-   TS=$(date "+%Y-%m-%d %H:%M:%S")
-   echo "$TS: $msg" >> $LOGGER
-}
+export SLEEPTIME=30
 
 # helpful message...
 logit "Starting up..."
