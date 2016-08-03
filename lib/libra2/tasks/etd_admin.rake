@@ -95,7 +95,7 @@ namespace :libra2 do
     #puts "key: #{permissionkey}"
     t = Helpers::TimedToken.new( permissionkey, permission_timeout )
     if t.is_available? == false
-      puts "ERROR: permission token already exists, aborting"
+      puts "ERROR: cannot acqure permission token, aborting"
       next
     end
     puts "Acquired permission token"
@@ -150,7 +150,7 @@ namespace :libra2 do
     #puts "key: #{permissionkey}"
     t = Helpers::TimedToken.new( permissionkey, permission_timeout )
     if t.is_available? == false
-      puts "ERROR: permission token already exists, aborting"
+      puts "ERROR: cannot acqure permission token, aborting"
       next
     end
     puts "Acquired permission token"

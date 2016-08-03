@@ -61,6 +61,7 @@ module Helpers
     def redis_connect
        begin
          @redis = Redis.new( :host => @host, :port => @port, :timeout => @timeout, :thread_safe => true )
+         @redis.ping
          return true
        rescue Exception => e
          puts e.message
