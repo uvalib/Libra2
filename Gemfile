@@ -62,3 +62,4 @@ end
 
 gem 'resque-pool'
 gem 'rest-client'
+gem 'net-scp'

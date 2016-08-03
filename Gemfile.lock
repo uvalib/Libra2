@@ -361,6 +361,9 @@ GEM
     nest (1.1.2)
       redis
     net-http-persistent (2.9.4)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-ssh (3.2.0)
     netrc (0.11.0)
     noid (0.9.0)
     nokogiri (1.6.8)
@@ -672,6 +675,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   mysql2 (>= 0.3.13, < 0.5)
+  net-scp
   rails (= 4.2.6)
   resque-pool
   rest-client
