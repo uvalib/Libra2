@@ -2,9 +2,23 @@
 #
 #
 
+require 'net/scp'
+
 require_dependency 'libra2/lib/helpers/etd_helper'
 
 module TaskHelpers
+
+  #
+  # hardcoded host names
+  #
+  @dev_hostname = 'docker1.lib.virginia.edu'
+  @prod_hostname = 'dockerprod1.lib.virginia.edu'
+
+  #
+  # hardcoded directory names
+  #
+  @dev_root = '/docker/libra2/uploads/originals'
+  @prod_root = '/lib_content22/libra2/uploads/originals'
 
   #
   # the default user for various admin activities
@@ -144,6 +158,42 @@ module TaskHelpers
     puts '*' * 40
 
   end
+
+  #
+  # download a fileset from the server
+  #
+  def download_fileset( fileset, target_dir, username )
+
+    src_name = "#{dir_from_fileset_id fileset.id}/#{fileset.label}"
+    dst_name = "#{target_dir}/#{fileset.label}"
+
+    # try production first
+    if scp_file( @prod_hostname, username, "#{@prod_root}/#{src_name}", dst_name ) == false
+      # then try development
+      if scp_file( @dev_hostname, username, "#{@dev_root}/#{src_name}", dst_name ) == false
+        puts "ERROR: downloading #{src_name}"
+      end
+    end
+
+  end
+
+  def scp_file( hostname, username, src, dst )
+
+    begin
+      Net::SCP.download!( hostname, username, src, dst )
+      puts "  scp #{username}@#{hostname}:#{src} => #{dst} OK"
+      return true
+    rescue => e
+      #puts "  scp #{username}@#{hostname}:#{src} => #{dst} ERROR"
+      return false
+    end
+
+  end
+
+  def dir_from_fileset_id( id )
+    return "#{id[0]}#{id[1]}/#{id[2]}#{id[3]}/#{id[4]}#{id[5]}/#{id[6]}#{id[7]}"
+  end
+
 
 end
 
