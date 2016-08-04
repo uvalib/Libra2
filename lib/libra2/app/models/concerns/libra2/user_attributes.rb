@@ -14,6 +14,14 @@ module Libra2::UserAttributes
     return department.match( /-?eng$/ )
   end
 
+  # placeholder until we can do better
+  def is_supervisor?
+    return [ 'per4k@eservices.virginia.edu',
+             'dpg3k@virginia.edu',
+             'ecr2c@virginia.edu',
+             'sah@virginia.edu' ].include? email
+  end
+
   included do
 
      # extract the computing ID from the supplied email address; assumes computing_id@blablabla.bla
