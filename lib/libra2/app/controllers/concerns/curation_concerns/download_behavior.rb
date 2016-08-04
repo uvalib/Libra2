@@ -41,18 +41,22 @@ module CurationConcerns
       work = works[0]
       set_debugging_override()
       # can see the file according to these rules:
+      # - if the work is draft and the current_user is the one who owns the work
       # - if the work is publicly available
       # - if the embargo period is over
       # - if the work is under UVA embargo and the user is on grounds
-      # - if the work is draft and the current_user is the one who owns the work
-      if work.is_draft? && (current_user.nil? || !work.is_mine?( current_user.email ))
-        return false # it's someone else's draft
+      if work.is_draft?
+        # only the owner can see files from a draft work
+        return (!current_user.nil? && work.is_mine?( current_user.email ))
       elsif !view_context.is_under_embargo(work)
-        return true # it's not embargoed
+        # it's not embargoed so we can see it
+        return true
       elsif view_context.is_engineering_embargo(work)
-        return false # can never see engineering embargoed files
+        # can never see engineering embargoed files
+        return false
       else
-        return view_context.is_on_grounds()  # must be UVA embargo, so only see files on grounds.
+        # must be UVA embargo, so only see files on grounds.
+        return view_context.is_on_grounds()
       end
     end
 
