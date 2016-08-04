@@ -12,7 +12,7 @@ en:
   simple_form:
     hints:
       generic_work:
-        keyword: "Select at least 2 to 3 keywords that best describe the content of your thesis or dissertation. Use keywords that will be easily recognized by others in your discipline."
+        keyword: "Add one keyword or keyword phrase per line. Click \"More\" to add additional phrases."
   curation_concerns:
     base:
       items:
