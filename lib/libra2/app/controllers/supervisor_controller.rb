@@ -24,7 +24,7 @@ class SupervisorController < ApplicationController
 			arr = generic_work.date_created.split("/")
 			work[:created] = DateTime.new(arr[0].to_i,arr[1].to_i,arr[2].to_i).strftime("%B %d, %Y")
 			work[:modified] = generic_work.date_modified.strftime("%B %d, %Y") if generic_work.date_modified.present?
-			computing_id = generic_work.author_email.split("@")[0]
+			computing_id = User.cid_from_email( generic_work.author_email )
 			status, resp = ldap.get_by_id( computing_id )
 			if status == 200
 				work[:name] = resp['display_name']
@@ -114,8 +114,10 @@ class SupervisorController < ApplicationController
   private
 
 	def must_be_supervisor
-		return false if !user_signed_in?
-		return [ 'per4k@eservices.virginia.edu', 'dpg3k@virginia.edu', 'ecr2c@virginia.edu', 'sah@virginia.edu' ].include? current_user.email
+		if user_signed_in? && current_user.is_supervisor?
+		   return
+		end
+		render404
 	end
 
 
