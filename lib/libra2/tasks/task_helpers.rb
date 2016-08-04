@@ -9,18 +9,6 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 module TaskHelpers
 
   #
-  # hardcoded host names
-  #
-  @dev_hostname = 'docker1.lib.virginia.edu'
-  @prod_hostname = 'dockerprod1.lib.virginia.edu'
-
-  #
-  # hardcoded directory names
-  #
-  @dev_root = '/docker/libra2/uploads/originals'
-  @prod_root = '/lib_content22/libra2/uploads/originals'
-
-  #
   # the default user for various admin activities
   #
   def default_user
@@ -164,17 +152,33 @@ module TaskHelpers
   #
   def download_fileset( fileset, target_dir, username )
 
+    #
+    # hardcoded host names
+    #
+    dev_hostname = 'docker1.lib.virginia.edu'
+    prod_hostname = 'dockerprod1.lib.virginia.edu'
+
+    #
+    # hardcoded directory names
+    #
+    dev_root = '/docker/libra2/uploads/originals'
+    prod_root = '/lib_content22/libra2/uploads/originals'
+
     src_name = "#{dir_from_fileset_id fileset.id}/#{fileset.label}"
     dst_name = "#{target_dir}/#{fileset.label}"
 
+    puts "  downloading fileset #{fileset.id}..."
+
     # try production first
-    if scp_file( @prod_hostname, username, "#{@prod_root}/#{src_name}", dst_name ) == false
+    if scp_file( prod_hostname, username, "#{prod_root}/#{src_name}", dst_name ) == false
       # then try development
-      if scp_file( @dev_hostname, username, "#{@dev_root}/#{src_name}", dst_name ) == false
+      if scp_file( dev_hostname, username, "#{dev_root}/#{src_name}", dst_name ) == false
         puts "ERROR: downloading #{src_name}"
+        return false
       end
     end
 
+    return true
   end
 
   def scp_file( hostname, username, src, dst )

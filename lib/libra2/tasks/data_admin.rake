@@ -6,7 +6,7 @@ namespace :libra2 do
 
   namespace :data do
 
-  desc "Bulk export all files and data from libra2; must provide the work directory and optional hostname/port"
+  desc "Bulk export all files and data; must provide the work directory"
   task bulk_export: :environment do |t, args|
 
     work_dir = ARGV[ 1 ]
@@ -17,13 +17,6 @@ namespace :libra2 do
 
     task work_dir.to_sym do ; end
 
-    endpoint = ARGV[ 2 ]
-    if endpoint.nil?
-      endpoint = 'localhost:3000'
-    end
-
-    task endpoint.to_sym do ; end
-
     if export_dir_clean?( work_dir ) == false
       puts "ERROR: work directory already contains exported items, aborting"
       next
@@ -31,7 +24,7 @@ namespace :libra2 do
 
     count = 0
     GenericWork.all.each do | work |
-      export_work( endpoint, work_dir, work, count + 1 )
+      export_work( work_dir, work, count + 1 )
       count += 1
     end
 
@@ -61,7 +54,7 @@ namespace :libra2 do
 
   end
 
-  def export_work( endpoint, export_dir, work, number )
+  def export_work( export_dir, work, number )
 
     puts "exporting work # #{number}..."
 
@@ -89,8 +82,9 @@ namespace :libra2 do
        end
 
        work.file_sets.each do |file_set|
-         f = File.join( d, file_set.label )
-         get_file( endpoint, f, file_set.label, file_set.id )
+         #f = File.join( d, file_set.label )
+         #get_file( endpoint, f, file_set.label, file_set.id )
+         TaskHelpers.download_fileset( file_set, d, 'dpg3k' )
        end
 
     end
