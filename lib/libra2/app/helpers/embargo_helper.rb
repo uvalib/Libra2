@@ -48,7 +48,7 @@ module EmbargoHelper
 		#puts "==> Remote IP: #{request.remote_ip}"
 		#puts "==> Forwarded IP: #{request.env["HTTP_X_FORWARDED_FOR"]}"
     in_uva_ips = uva_ips.any?{ |block| block.include?( request.remote_ip ) }
-    #puts "==> At UVa: #{in_uva_ips}"
+    puts "===> #{request.remote_ip} @ UVa is #{in_uva_ips}"
 		return in_uva_ips
 	end
 
