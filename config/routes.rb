@@ -12,9 +12,9 @@ Rails.application.routes.draw do
 
   resources :supervisor, only: [ :index ] do
 	  collection do
-		  post 'title'
-		  get 'sis'
-		  post 'sis_import'
+		  post 'update_title'
+#		  get 'sis'
+#		  post 'sis_import'
 	  end
   end
 

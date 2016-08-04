@@ -7,7 +7,7 @@
 	<td><%= work[:modified] %></td>
 	<td><button class="btn btn-default admin-edit-title">Edit</button>
 		<div class="title"><%= work[:title] %></div>
-		<%= form_tag("/supervisor/title", method: :post, class: "title-form", style: "display:none;") do %>
+		<%= form_tag("/supervisor/update_title", method: :post, class: "title-form", style: "display:none;") do %>
 				<input type="text" name="title" value="<%= work[:title] %>" />
 				<input type="hidden" name="identifier" value="<%= work[:id] %>" />
 				<%= submit_tag 'Save', { class: "btn btn-default"} %>

@@ -10,6 +10,7 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 require_dependency 'libra2/lib/helpers/timed_token'
 
 class SupervisorController < ApplicationController
+
 	before_action :must_be_supervisor
 
 	def index
@@ -29,7 +30,7 @@ class SupervisorController < ApplicationController
 			if status == 200
 				work[:name] = resp['display_name']
 			end
-			if generic_work.draft == 'true'
+			if generic_work.is_draft?
 				if work[:modified].present?
 					@in_progress.push(work)
 				else
@@ -50,7 +51,7 @@ class SupervisorController < ApplicationController
 		end
 	end
 
-	def title
+	def update_title
 		id = params[:identifier]
 		title = params[:title]
 		work = GenericWork.where(id: id)
@@ -58,10 +59,16 @@ class SupervisorController < ApplicationController
 			work = work[0]
 			work.title = [ title ]
 			work.save!
+
+			# if this work published, send the metadata to the DOI service
+			#if work.is_draft? == false
+
+			#end
 		end
 		redirect_to :back
 	end
 
+=begin
 	def sis
 		sis_file = "#{Rails.root}/tmp/from_sis/UV_Libra_From_SIS_160721.txt"
 		@sis_new = []
@@ -110,6 +117,7 @@ class SupervisorController < ApplicationController
 		end
 		redirect_to :back
 	end
+=end
 
   private
 
