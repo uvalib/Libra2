@@ -124,16 +124,17 @@ module TaskHelpers
     j = JSON.parse( work.to_json )
     j.keys.sort.each do |k|
       val = j[ k ]
-      if k.end_with?( "_id" ) == false && val.nil? == false
-        next if val.respond_to?( :empty? ) && val.empty? == true
-        puts " #{k} => #{val}"
+      if k.end_with?( "_id" ) == false
+        show_work_field( k, val )
       end
     end
-    puts " visibility => #{work.visibility}"
-    puts " embargo_end_date => #{work.embargo_end_date}"
-    puts " registrar_computing_id => #{work.registrar_computing_id}"
-    puts " sis_id => #{work.sis_id}"
-    puts " sis_entry => #{work.sis_entry}"
+
+    show_work_field( 'visibility', work.visibility )
+    #show_work_field( 'embargo_end_date', work.embargo_end_date )
+    #show_work_field( 'embargo_release_date', work.embargo_end_date )
+    show_work_field( 'registrar_computing_id', work.registrar_computing_id )
+    show_work_field( 'sis_id', work.sis_id )
+    show_work_field( 'sis_entry', work.sis_entry )
 
     if work.file_sets
       file_number = 1
@@ -145,6 +146,15 @@ module TaskHelpers
 
     puts '*' * 40
 
+  end
+
+  #
+  # show a work field if it is not empty
+  #
+  def show_work_field( name, val )
+    return if val.nil?
+    return if val.respond_to?( :empty? ) && val.empty?
+    puts " #{name} => #{val}"
   end
 
   #
