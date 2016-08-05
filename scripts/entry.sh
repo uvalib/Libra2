@@ -8,7 +8,7 @@ nohup scripts/deposit_import.sh &
 nohup scripts/sis_export.sh &
 
 # run the SIS importer process
-#nohup scripts/sis_import.sh &
+nohup scripts/sis_import.sh &
 
 # run the server
 rails server -b 0.0.0.0 -p 3000
