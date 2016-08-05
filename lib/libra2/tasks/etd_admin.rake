@@ -20,17 +20,17 @@ namespace :libra2 do
 
   namespace :etd do
 
-    # keys definitions for state
-    default_last_id = "0"
-    statekey_optional = "libra2:#{Rails.env.to_s}:deposit:optional:#{Socket.gethostname}"
-    statekey_sis = "libra2:#{Rails.env.to_s}:deposit:sis:#{Socket.gethostname}"
+  # keys definitions for state
+  default_last_id = "0"
+  statekey_optional = "libra2:#{Rails.env.to_s}:deposit:optional:#{Socket.gethostname}"
+  statekey_sis = "libra2:#{Rails.env.to_s}:deposit:sis:#{Socket.gethostname}"
 
-    # key definitions for exclusive access
-    permission_timeout = 300   # 300 seconds
-    permissionkey = "libra2:#{Rails.env.to_s}:timed:etdimport:#{Socket.gethostname}"
+  # key definitions for exclusive access
+  permission_timeout = 300   # 300 seconds
+  permissionkey = "libra2:#{Rails.env.to_s}:timed:etdimport:#{Socket.gethostname}"
 
   desc "List new optional ETD deposit requests"
-  task list_optional_etd_deposits: :environment do |t, args|
+  task list_new_optional_etd_deposits: :environment do |t, args|
 
     #puts "key: #{statekey_optional}"
     s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
@@ -41,26 +41,17 @@ namespace :libra2 do
       next
     end
 
-    puts "Listing new optional ETD deposits since id: #{last_id}"
-    count = 0
-
-    status, resp = ServiceClient::DepositRegClient.instance.list_requests( last_id )
-    if ServiceClient::DepositRegClient.instance.ok?( status )
-      resp.each do |r|
-        dump_etd_request r
-        count += 1
-      end
-
-      puts "#{count} optional ETD deposit(s) listed"
-    else
-      puts "No optional ETD deposit requests located" if status == 404
-      puts "ERROR: request returned #{status}" unless status == 404
-    end
+    show_optional_since( last_id )
 
   end
 
+  desc "List all optional ETD deposit requests"
+  task list_all_optional_etd_deposits: :environment do |t, args|
+    show_optional_since( 0 )
+  end
+
   desc "List new SIS ETD deposit requests"
-  task list_sis_etd_deposits: :environment do |t, args|
+  task list_new_sis_etd_deposits: :environment do |t, args|
 
     #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
@@ -71,22 +62,13 @@ namespace :libra2 do
       next
     end
 
-    puts "Listing new SIS ETD deposits since id: #{last_id}"
-    count = 0
+    show_sis_since( last_id )
 
-    status, resp = ServiceClient::DepositAuthClient.instance.list_requests( last_id )
-    if ServiceClient::DepositAuthClient.instance.ok?( status )
-      resp.each do |r|
-        dump_etd_request r
-        count += 1
-      end
+  end
 
-      puts "#{count} SIS ETD deposit(s) listed"
-    else
-      puts "No SIS ETD deposit requests located" if status == 404
-      puts "ERROR: request returned #{status}" unless status == 404
-    end
-
+  desc "List all SIS ETD deposit requests"
+  task list_all_sis_etd_deposits: :environment do |t, args|
+    show_sis_since( 0 )
   end
 
   desc "Ingest new optional ETD deposit requests"
@@ -324,16 +306,53 @@ namespace :libra2 do
 
   end
 
+  def show_sis_since( since_id )
+
+    puts "Listing SIS ETD deposits since id: #{since_id}"
+    count = 0
+
+    status, resp = ServiceClient::DepositAuthClient.instance.list_requests( since_id )
+    if ServiceClient::DepositAuthClient.instance.ok?( status )
+      resp.each do |r|
+        dump_etd_request r
+        count += 1
+      end
+
+      puts "#{count} SIS ETD deposit(s) listed"
+    else
+      puts "No SIS ETD deposit requests located" if status == 404
+      puts "ERROR: request returned #{status}" unless status == 404
+    end
+
+  end
+
+  def show_optional_since( since_id )
+
+    puts "Listing optional ETD deposits since id: #{since_id}"
+    count = 0
+
+    status, resp = ServiceClient::DepositRegClient.instance.list_requests( since_id )
+    if ServiceClient::DepositRegClient.instance.ok?( status )
+      resp.each do |r|
+        dump_etd_request r
+        count += 1
+      end
+
+      puts "#{count} optional ETD deposit(s) listed"
+    else
+      puts "No optional ETD deposit requests located" if status == 404
+      puts "ERROR: request returned #{status}" unless status == 404
+    end
+
+  end
+
   def dump_etd_request( req )
 
     req.keys.each do |k|
-      val = req[ k ]
-      if val.nil? == false && val.empty? == false
-        puts " #{k} => #{val}"
-      end
+      show_field( k, req[ k ] )
     end
 
-    puts "*" * 30
+    puts "*" * 40
   end
 
   end   # namespace etd

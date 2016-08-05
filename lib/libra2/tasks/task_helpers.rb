@@ -125,16 +125,16 @@ module TaskHelpers
     j.keys.sort.each do |k|
       val = j[ k ]
       if k.end_with?( "_id" ) == false
-        show_work_field( k, val )
+        show_field( k, val )
       end
     end
 
-    show_work_field( 'visibility', work.visibility )
-    #show_work_field( 'embargo_end_date', work.embargo_end_date )
-    #show_work_field( 'embargo_release_date', work.embargo_end_date )
-    show_work_field( 'registrar_computing_id', work.registrar_computing_id )
-    show_work_field( 'sis_id', work.sis_id )
-    show_work_field( 'sis_entry', work.sis_entry )
+    show_field( 'visibility', work.visibility )
+    #show_field( 'embargo_end_date', work.embargo_end_date )
+    #show_field( 'embargo_release_date', work.embargo_end_date )
+    show_field( 'registrar_computing_id', work.registrar_computing_id )
+    show_field( 'sis_id', work.sis_id )
+    show_field( 'sis_entry', work.sis_entry )
 
     if work.file_sets
       file_number = 1
@@ -149,9 +149,9 @@ module TaskHelpers
   end
 
   #
-  # show a work field if it is not empty
+  # show a field if it is not empty
   #
-  def show_work_field( name, val )
+  def show_field( name, val )
     return if val.nil?
     return if val.respond_to?( :empty? ) && val.empty?
     puts " #{name} => #{val}"
