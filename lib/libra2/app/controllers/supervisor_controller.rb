@@ -1,15 +1,8 @@
-require_dependency 'libra2/tasks/task_helpers'
-include TaskHelpers
-
-require_dependency 'libra2/lib/serviceclient/deposit_reg_client'
-require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
-require_dependency 'libra2/lib/helpers/value_snapshot'
-require_dependency 'libra2/lib/helpers/deposit_request'
-require_dependency 'libra2/lib/helpers/deposit_authorization'
 require_dependency 'libra2/lib/helpers/etd_helper'
-require_dependency 'libra2/lib/helpers/timed_token'
 
 class SupervisorController < ApplicationController
+
+	include ServiceHelper
 
 	before_action :must_be_supervisor
 
@@ -19,17 +12,17 @@ class SupervisorController < ApplicationController
 		@untouched = []
 		@in_progress = []
 		@submitted = []
-		ldap = ServiceClient::UserInfoClient.instance
+
 		works.each do |generic_work|
 			work = {id: generic_work.id, email: generic_work.author_email, identifier: generic_work.identifier, title: generic_work.title.join(' ')}
 			arr = generic_work.date_created.split("/")
 			work[:created] = DateTime.new(arr[0].to_i,arr[1].to_i,arr[2].to_i).strftime("%B %d, %Y")
 			work[:modified] = generic_work.date_modified.strftime("%B %d, %Y") if generic_work.date_modified.present?
-			computing_id = User.cid_from_email( generic_work.author_email )
-			status, resp = ldap.get_by_id( computing_id )
-			if status == 200
-				work[:name] = resp['display_name']
-			end
+
+			# lookup display name
+			author = Helpers::EtdHelper::lookup_user( User.cid_from_email( generic_work.author_email ) )
+			work[:name] = author.display_name if author.nil? == false
+
 			if generic_work.is_draft?
 				if work[:modified].present?
 					@in_progress.push(work)
@@ -61,9 +54,9 @@ class SupervisorController < ApplicationController
 			work.save!
 
 			# if this work published, send the metadata to the DOI service
-			#if work.is_draft? == false
-
-			#end
+			if work.is_draft? == false
+				update_doi_metadata( work )
+			end
 		end
 		redirect_to :back
 	end
