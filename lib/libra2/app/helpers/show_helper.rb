@@ -31,8 +31,8 @@ module ShowHelper
     return raw(tr.gsub("\n", "<br>"))
   end
 
-  def show_line(presenter, field_name, label, required)
-    tr = presenter.attribute_to_html(field_name, label: label, include_empty: true, catalog_search_link: false )
+  def show_line(presenter, field_name, label, required, options )
+    tr = presenter.attribute_to_html(field_name, options.merge( { label: label } ) )
     if field_name == :contributor
       tr = show_contributor_required(tr)
     elsif required

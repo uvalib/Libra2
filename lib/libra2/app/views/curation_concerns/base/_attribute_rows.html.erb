@@ -1,18 +1,18 @@
-<%= show_line(presenter, :title, "Title", true ) %>
+<%= show_line(presenter, :title, "Title", true, include_empty: true, catalog_search_link: false ) %>
 
-<%= show_line(presenter, :author_first_name, t( 'simple_form.labels.defaults.author_first_name' ), true ) %>
-<%= show_line(presenter, :author_last_name, t( 'simple_form.labels.defaults.author_last_name' ), true ) %>
-<%= show_line(presenter, :department, "Department", true ) %>
-<%= show_line(presenter, :author_institution, t( 'simple_form.labels.defaults.author_institution' ), true ) %>
+<%= show_line(presenter, :author_first_name, t( 'simple_form.labels.defaults.author_first_name' ), true, include_empty: true, catalog_search_link: false ) %>
+<%= show_line(presenter, :author_last_name, t( 'simple_form.labels.defaults.author_last_name' ), true, include_empty: true, catalog_search_link: false ) %>
+<%= show_line(presenter, :department, "Department", true, include_empty: true, catalog_search_link: false ) %>
+<%= show_line(presenter, :author_institution, t( 'simple_form.labels.defaults.author_institution' ), true, include_empty: true, catalog_search_link: false ) %>
 
-<%= show_line(presenter, :contributor, t( 'simple_form.labels.defaults.contributor' ), true ) %>
-<%= show_line(presenter, :description, t( 'simple_form.labels.defaults.description' ), true ) %>
+<%= show_line(presenter, :contributor, t( 'simple_form.labels.defaults.contributor' ), true, include_empty: true, catalog_search_link: false ) %>
+<%= show_line(presenter, :description, t( 'simple_form.labels.defaults.description' ), true, include_empty: true, catalog_search_link: false, render_as: :custom_show ) %>
 <%= show_wrap_required(CurationConcerns::Renderers::AttributeRenderer.new("Rights", presenter.solr_document.rights, {include_empty: true}).render) %>
-<%= presenter.attribute_to_html( :keyword, label: t( 'simple_form.labels.defaults.keyword' ), include_empty: true ) %>
+<%= presenter.attribute_to_html( :keyword, label: t( 'simple_form.labels.defaults.keyword' ), include_empty: true, render_as: :custom_show ) %>
 <%= presenter.attribute_to_html( :language, include_empty: true) %>
-<%= presenter.attribute_to_html( :related_url, label: t( 'simple_form.labels.defaults.related_url' ), include_empty: true ) %>
-<%= presenter.attribute_to_html( :sponsoring_agency, label: t( 'simple_form.labels.defaults.sponsoring_agency' ), include_empty: true ) %>
-<%= presenter.attribute_to_html( :notes, include_empty: true) %>
+<%= presenter.attribute_to_html( :related_url, label: t( 'simple_form.labels.defaults.related_url' ), include_empty: true, render_as: :custom_show ) %>
+<%= presenter.attribute_to_html( :sponsoring_agency, label: t( 'simple_form.labels.defaults.sponsoring_agency' ), include_empty: true, render_as: :custom_show ) %>
+<%= presenter.attribute_to_html( :notes, include_empty: true, render_as: :custom_show) %>
 <%= presenter.attribute_to_html( :publisher, include_empty: true, catalog_search_link: false ) %>
 <%= presenter.attribute_to_html( :degree, include_empty: true, catalog_search_link: false ) %>
 <%= CurationConcerns::Renderers::AttributeRenderer.new("Date created", file_date_created(presenter.solr_document.date_created), {include_empty: true}).render %>
