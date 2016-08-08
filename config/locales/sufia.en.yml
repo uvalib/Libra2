@@ -12,7 +12,7 @@ en:
   simple_form:
     hints:
       generic_work:
-        keyword: "Add one keyword or keyword phrase per line. Click \"More\" to add additional phrases."
+        keyword: "Add one keyword or keyword phrase per line. Click \"More\" to add another keyword."
   curation_concerns:
     base:
       items:
