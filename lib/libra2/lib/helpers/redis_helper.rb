@@ -60,7 +60,7 @@ module Helpers
 
     def redis_connect
        begin
-         @redis = Redis.new( :host => @host, :port => @port, :timeout => @timeout, :thread_safe => true )
+         @redis = Redis.new( @redis_config.merge( :thread_safe => true ) )
          @redis.ping
          return true
        rescue Exception => e
@@ -76,10 +76,7 @@ module Helpers
     end
 
     def redis_config
-       config = YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 'redis.yml'))).result)[Rails.env].with_indifferent_access
-       @host = config[:host]
-       @port = config[:port]
-       @timeout = config[:timeout]
+       @redis_config = YAML.load(ERB.new(IO.read(File.join(Rails.root, 'config', 'redis.yml'))).result)[Rails.env].with_indifferent_access
        return true
     end
   end
