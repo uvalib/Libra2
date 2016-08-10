@@ -22,6 +22,12 @@ Rails.application.routes.draw do
   resources :healthcheck, only: [ :index ]
   resources :version, only: [ :index ]
 
+  # api endpoint
+  get '/api/v1/all' => 'api#all'
+  get '/api/v1/:id' => 'api#get'
+  delete '/api/v1/:id' => 'api#delete'
+  post '/api/v1/:id/title/:title' => 'api#update_title'
+
   Hydra::BatchEdit.add_routes(self)
   mount Blacklight::Engine => '/'
   

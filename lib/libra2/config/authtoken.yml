@@ -1,0 +1,9 @@
+development:
+  url: <%= ENV['TOKENAUTH_URL'] %>
+  timeout: 10
+test:
+  url: <%= ENV['TOKENAUTH_URL'] %>
+  timeout: 10
+production:
+  url: <%= ENV['TOKENAUTH_URL'] %>
+  timeout: 10
