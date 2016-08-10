@@ -9,17 +9,17 @@
 				<div id="document">
 					<% if @work.present? %>
 					<h1><%= raw(@work[:title].join(raw("<br>"))) %></h1>
-					<%= display_if_non_blank("Author:", display_author(@work)) %>
-					<%= display_if_non_blank("Advisors:", display_advisors(@work)) %>
-					<%= display_if_non_blank("Abstract:", @work.description) %>
-					<%= display_if_non_blank("Degree:", @work.degree) %>
-					<%= display_if_non_blank("Keywords:", display_keywords(@work)) %>
-					<%= display_if_non_blank("Sponsoring Agency:", @work.sponsoring_agency.join(" ")) %>
-					<%= display_if_non_blank("Related Links:", display_related_links(@work.related_url)) %>
-					<%= display_if_non_blank("Notes:", @work.notes) %>
-					<%= display_if_non_blank("Language:", @work.language) %>
-					<%= display_if_non_blank("Rights:", display_rights(@work.rights)) %>
-					<%= display_if_non_blank("Persistent Link:", public_doi_link(@work)) %>
+					<%= display_author( @work ) %>
+					<%= display_advisors( @work ) %>
+					<%= display_description( @work.description ) %>
+					<%= display_degree( @work.degree ) %>
+					<%= display_keywords( @work ) %>
+					<%= display_sponsoring_agency( @work.sponsoring_agency ) %>
+					<%= display_related_links( @work.related_url ) %>
+					<%= display_notes( @work.notes ) %>
+					<%= display_language( @work.language ) %>
+					<%= display_rights(@work.rights) %>
+					<%= display_doi_link( @work ) %>
 					<% end %>
 				</div>
 			</div>
