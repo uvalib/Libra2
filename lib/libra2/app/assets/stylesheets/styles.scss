@@ -234,8 +234,8 @@
 
 // Panels
 .panel-default {
-	box-shadow: 0 1px 4px rgba(0,0,0,.25);
-	border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  border: none;
   padding-top: 5px;
 }
 
@@ -245,6 +245,11 @@
 
 .panel-title {
 	font-size: 18px;
+	display:inline-block;
+}
+
+.panel-instructions {
+	float: right;
 }
 
 .panel-heading {
