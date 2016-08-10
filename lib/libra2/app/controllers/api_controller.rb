@@ -16,10 +16,12 @@ class APIController < ApplicationController
   class WorksResponse
 
     attr_accessor :status
+    attr_accessor :message
     attr_accessor :works
 
     def initialize( status, works )
-      @status = status
+      @status = Rack::Utils.status_code( status )
+      @message = Rack::Utils::HTTP_STATUS_CODES[ @status ]
       @works = works
     end
   end
@@ -28,9 +30,11 @@ class APIController < ApplicationController
   class CommandResponse
 
     attr_accessor :status
+    attr_accessor :message
 
     def initialize( status )
-      @status = status
+      @status = Rack::Utils.status_code( status )
+      @message = Rack::Utils::HTTP_STATUS_CODES[ @status ]
     end
   end
 
@@ -40,10 +44,10 @@ class APIController < ApplicationController
   def all
     works = GenericWork.all
     if works.empty?
-       status = 404
+       status = :not_found
        render json: WorksResponse.new( status, [] ), :status => status
     else
-       status = 200
+       status = :ok
        render json: WorksResponse.new( status, works ), :status => status
     end
 
@@ -55,10 +59,10 @@ class APIController < ApplicationController
   def get
     work = get_the_work
     if work.nil?
-      status = 404
+      status = :not_found
       render json: WorksResponse.new( status, [] ), :status => status
     else
-      status = 200
+      status = :ok
       render json: WorksResponse.new( status, [ work ] ), :status => status
     end
 
@@ -70,11 +74,11 @@ class APIController < ApplicationController
   def delete
     work = get_the_work
     if work.nil?
-      status = 404
+      status = :not_found
       render json: CommandResponse.new( status ), :status => status
     else
       # actually do the delete
-      status = 200
+      status = :ok
       render json: CommandResponse.new( status ), :status => status
     end
   end
@@ -85,11 +89,11 @@ class APIController < ApplicationController
   def update_title
     work = get_the_work
     if work.nil?
-      status = 404
+      status = :not_found
       render json: CommandResponse.new( status ), :status => status
     else
       # actually update the title
-      status = 200
+      status = :ok
       render json: CommandResponse.new( status ), :status => status
     end
   end
@@ -110,7 +114,7 @@ class APIController < ApplicationController
     if valid_auth( auth )
       return
     end
-    status = 401
+    status = :unauthorized
     render json: CommandResponse.new( status ), :status => status
   end
 
