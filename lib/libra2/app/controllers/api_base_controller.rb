@@ -2,6 +2,8 @@ require_dependency 'libra2/lib/serviceclient/auth_token_client'
 
 class APIBaseController < ApplicationController
 
+  include ServiceHelper
+
   # disable rails auth behavior and add our own
   skip_before_filter :require_auth
   skip_before_filter :verify_authenticity_token
@@ -43,5 +45,9 @@ class APIBaseController < ApplicationController
 
   def valid_user?( user )
     return !user.blank?
+  end
+
+  def audit_log( message )
+    logger.info "API: #{message}"
   end
 end

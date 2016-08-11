@@ -56,7 +56,13 @@ class APIV1Controller < APIBaseController
       status = :not_found
       render json: API::BaseResponse.new( status ), :status => status
     else
+      user = params[:user]
+
+      # audit the information
+      audit_log( "Work id #{work.id} (#{work.identifier}) deleted by by #{user}" )
+
       # actually do the delete
+      work.destroy
       status = :ok
       render json: API::BaseResponse.new( status ), :status => status
     end
@@ -71,9 +77,30 @@ class APIV1Controller < APIBaseController
       status = :not_found
       render json: API::BaseResponse.new( status ), :status => status
     else
-      # actually update the title
-      status = :ok
-      render json: API::BaseResponse.new( status ), :status => status
+
+      title = params[:title]
+      user = params[:user]
+
+      if title.blank? == false
+
+        # audit the information
+        audit_log( "Title of work id #{work.id} (#{work.identifier}) changed from #{work.title} to #{title} by #{user}" )
+
+        # actually update the title
+        work.title = [ title ]
+        work.save!
+
+        # if this work published, send the metadata to the DOI service
+        if work.is_draft? == false
+           update_doi_metadata( work )
+        end
+
+        status = :ok
+        render json: API::BaseResponse.new( status ), :status => status
+      else
+        status = :bad_request
+        render json: API::BaseResponse.new( status, 'Missing title parameter' ), :status => status
+      end
     end
   end
 

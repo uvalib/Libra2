@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   get '/api/v1/search' => 'api_v1#search'
   get '/api/v1/:id' => 'api_v1#get'
   delete '/api/v1/:id' => 'api_v1#delete'
-  post '/api/v1/:id/title/:title' => 'api_v1#update_title'
+  post '/api/v1/:id/title' => 'api_v1#update_title'
 
   Hydra::BatchEdit.add_routes(self)
   mount Blacklight::Engine => '/'
