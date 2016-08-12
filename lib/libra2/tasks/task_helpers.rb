@@ -12,7 +12,14 @@ module TaskHelpers
   # the default user for various admin activities
   #
   def default_user
-    return 'dpg3k@virginia.edu'
+    return 'dpg3k@' + default_domain
+  end
+
+  #
+  # the default domain for various admin activities
+  #
+  def default_domain
+    return 'virginia.edu'
   end
 
   #
