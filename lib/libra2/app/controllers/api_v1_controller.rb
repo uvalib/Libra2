@@ -1,6 +1,8 @@
 class APIV1Controller < APIBaseController
 
-  before_action :validate_user, only: [ :delete_work, :update_work_title ]
+  before_action :validate_user, only: [ :delete_work,
+                                        :update_work_title,
+                                        :update_work_embargo ]
 
   #
   # get all works
@@ -8,13 +10,10 @@ class APIV1Controller < APIBaseController
   def all_works
     works = GenericWork.all
     if works.empty?
-       status = :not_found
-       render json: API::WorkListResponse.new( status, [] ), :status => status
+       render_works_response( :not_found )
     else
-       status = :ok
-       render json: API::WorkListResponse.new( status, work_transform( works ) ), :status => status
+       render_works_response( :ok, work_transform( works ) )
     end
-
   end
 
   #
@@ -23,13 +22,10 @@ class APIV1Controller < APIBaseController
   def search_works
     works = do_works_search
     if works.empty?
-      status = :not_found
-      render json: API::WorkListResponse.new( status, [] ), :status => status
+      render_works_response( :not_found )
     else
-      status = :ok
-      render json: API::WorkListResponse.new( status, work_transform( works ) ), :status => status
+      render_works_response( :ok, work_transform( works ) )
     end
-
   end
 
   #
@@ -38,13 +34,10 @@ class APIV1Controller < APIBaseController
   def get_work
     work = get_the_work
     if work.nil?
-      status = :not_found
-      render json: API::WorkListResponse.new( status, [] ), :status => status
+      render_works_response( :not_found )
     else
-      status = :ok
-      render json: API::WorkListResponse.new( status, work_transform( [ work ] ) ), :status => status
+      render_works_response( :ok, work_transform( [ work ] ) )
     end
-
   end
 
   #
@@ -53,18 +46,16 @@ class APIV1Controller < APIBaseController
   def delete_work
     work = get_the_work
     if work.nil?
-      status = :not_found
-      render json: API::BaseResponse.new( status ), :status => status
+      render_standard_response( :not_found )
     else
-      user = params[:user]
+      user = params[:user]  # already validated by the before_action
 
       # audit the information
       audit_log( "Work id #{work.id} (#{work.identifier}) deleted by by #{user}" )
 
       # actually do the delete
       work.destroy
-      status = :ok
-      render json: API::BaseResponse.new( status ), :status => status
+      render_standard_response( :ok )
     end
   end
 
@@ -74,14 +65,13 @@ class APIV1Controller < APIBaseController
   def update_work_title
     work = get_the_work
     if work.nil?
-      status = :not_found
-      render json: API::BaseResponse.new( status ), :status => status
+      render_standard_response( :not_found )
     else
 
       title = params[:title]
-      user = params[:user]
-
       if title.blank? == false
+
+        user = params[:user] # already validated by the before_action
 
         # audit the information
         audit_log( "Title of work id #{work.id} (#{work.identifier}) changed from #{work.title} to #{title} by #{user}" )
@@ -95,13 +85,20 @@ class APIV1Controller < APIBaseController
            update_doi_metadata( work )
         end
 
-        status = :ok
-        render json: API::BaseResponse.new( status ), :status => status
+        render_standard_response( :ok )
       else
-        status = :bad_request
-        render json: API::BaseResponse.new( status, 'Missing title parameter' ), :status => status
+        render_standard_response( :bad_request, 'Missing title parameter' )
       end
     end
+  end
+
+  def update_work_embargo
+    work = get_the_work
+    if work.nil?
+      render_standard_response( :not_found )
+    else
+
+    render_standard_response( :bad_request, 'Not implemented' )
   end
 
   private
@@ -140,5 +137,13 @@ class APIV1Controller < APIBaseController
   def work_transform( generic_works )
     return [] if generic_works.empty?
     return generic_works.map{ | gw | API::Work.new( gw ) }
+  end
+
+  def render_standard_response( status, message = nil )
+    render json: API::BaseResponse.new( status, message ), :status => status
+  end
+
+  def render_works_response( status, works = [] )
+    render json: API::WorkListResponse.new( status, works ), :status => status
   end
 end
