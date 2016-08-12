@@ -22,13 +22,16 @@ Rails.application.routes.draw do
   resources :healthcheck, only: [ :index ]
   resources :version, only: [ :index ]
 
-  # api endpoints
-  get '/api/v1/works' => 'api_v1#all_works'
-  get '/api/v1/works/search' => 'api_v1#search_works'
-  get '/api/v1/works/:id' => 'api_v1#get_work'
-  delete '/api/v1/works/:id' => 'api_v1#delete_work'
-  post '/api/v1/works/:id/title' => 'api_v1#update_work_title'
-  post '/api/v1/works/:id/embargo' => 'api_v1#update_work_embargo'
+  # api work endpoints
+  get '/api/v1/works' => 'api_v1_works#all_works'
+  get '/api/v1/works/search' => 'api_v1_works#search_works'
+  get '/api/v1/works/:id' => 'api_v1_works#get_work'
+  delete '/api/v1/works/:id' => 'api_v1_works#delete_work'
+  post '/api/v1/works/:id/title' => 'api_v1_works#update_work_title'
+  post '/api/v1/works/:id/embargo' => 'api_v1_works#update_work_embargo'
+
+  # api deposit endpoints
+  get '/api/v1/deposits' => 'api_v1_deposits#all_deposits'
 
   Hydra::BatchEdit.add_routes(self)
   mount Blacklight::Engine => '/'

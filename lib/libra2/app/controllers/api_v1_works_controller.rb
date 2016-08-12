@@ -1,4 +1,4 @@
-class APIV1Controller < APIBaseController
+class APIV1WorksController < APIBaseController
 
   before_action :validate_user, only: [ :delete_work,
                                         :update_work_title,
@@ -97,8 +97,8 @@ class APIV1Controller < APIBaseController
     if work.nil?
       render_standard_response( :not_found )
     else
-
-    render_standard_response( :bad_request, 'Not implemented' )
+       render_standard_response( :bad_request, 'Not implemented' )
+    end
   end
 
   private
@@ -146,4 +146,6 @@ class APIV1Controller < APIBaseController
   def render_works_response( status, works = [] )
     render json: API::WorkListResponse.new( status, works ), :status => status
   end
+
 end
+
