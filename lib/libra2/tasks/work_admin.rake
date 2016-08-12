@@ -58,11 +58,9 @@ task list_my_works: :environment do |t, args|
   task who.to_sym do ; end
 
   count = 0
-  GenericWork.all.each do |generic_work|
-    if generic_work.is_mine?( who )
-       TaskHelpers.list_full_work( generic_work )
-       count += 1
-    end
+  GenericWork.where({ depositor: who }).each do |generic_work|
+     TaskHelpers.list_full_work( generic_work )
+     count += 1
   end
 
   puts "Listed #{count} work(s)"
@@ -111,12 +109,10 @@ task del_my_works: :environment do |t, args|
 
    count = 0
 
-   GenericWork.all.each do |generic_work|
-     if generic_work.is_mine?( who )
-        count += 1
-        print "."
-        generic_work.destroy
-     end
+   GenericWork.where({ depositor: who }).each do |generic_work|
+     count += 1
+     print "."
+     generic_work.destroy
    end
 
    puts "done" unless count == 0
