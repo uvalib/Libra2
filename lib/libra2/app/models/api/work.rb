@@ -33,7 +33,7 @@ class Work
     @title = generic_work.title.join(' ')
     @abstract = generic_work.description if generic_work.description.present?
 
-    @create_date = generic_work.date_created
+    @create_date = generic_work.date_created.gsub( '/', '-' )
     @modified_date = generic_work.date_modified if generic_work.date_modified.present?
 
     @creator_email = generic_work.creator
