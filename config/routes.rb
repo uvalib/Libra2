@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   resources :version, only: [ :index ]
 
   # api endpoints
-  get '/api/v1/all' => 'api_v1#all'
+  get '/api/v1' => 'api_v1#all'
   get '/api/v1/search' => 'api_v1#search'
   get '/api/v1/:id' => 'api_v1#get'
   delete '/api/v1/:id' => 'api_v1#delete'
