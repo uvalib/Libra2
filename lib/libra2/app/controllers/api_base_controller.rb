@@ -9,6 +9,8 @@ class APIBaseController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_action :validate_token
 
+  attr_accessor :api_user
+
   private
 
   def get_the_work
@@ -25,8 +27,7 @@ class APIBaseController < ApplicationController
     if valid_auth?( auth )
       return
     end
-    status = :unauthorized
-    render json: API::BaseResponse.new( status, 'Missing or incorrect authentication token' ), :status => status
+    render_standard_response( :unauthorized, 'Missing or incorrect authentication token' )
   end
 
   def validate_user
@@ -34,8 +35,11 @@ class APIBaseController < ApplicationController
     if valid_user?( user )
       return
     end
-    status = :unauthorized
-    render json: API::BaseResponse.new( status, 'Missing user parameter' ), :status => status
+    render_standard_response( :unauthorized, 'Missing or incorrect user parameter' )
+  end
+
+  def render_standard_response( status, message = nil )
+    render json: API::BaseResponse.new( status, message ), :status => status
   end
 
   def valid_auth?( auth )
@@ -44,7 +48,9 @@ class APIBaseController < ApplicationController
   end
 
   def valid_user?( user )
-    return !user.blank?
+    return false if user.blank?
+    @api_user = User.find_by_email( "#{user}@virginia.edu" )
+    return @api_user.nil? == false
   end
 
   def audit_log( message )

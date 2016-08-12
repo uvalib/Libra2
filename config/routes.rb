@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   get '/api/v1/works/search' => 'api_v1_works#search_works'
   get '/api/v1/works/:id' => 'api_v1_works#get_work'
   delete '/api/v1/works/:id' => 'api_v1_works#delete_work'
+  delete '/api/v1/works/:id/fileset/:fsid' => 'api_v1_works#remove_work_fileset'
   post '/api/v1/works/:id/title' => 'api_v1_works#update_work_title'
   post '/api/v1/works/:id/embargo' => 'api_v1_works#update_work_embargo'
 

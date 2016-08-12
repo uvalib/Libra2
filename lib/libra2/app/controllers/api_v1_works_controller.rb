@@ -2,7 +2,10 @@ class APIV1WorksController < APIBaseController
 
   before_action :validate_user, only: [ :delete_work,
                                         :update_work_title,
-                                        :update_work_embargo ]
+                                        :update_work_embargo,
+                                        :add_work_fileset,
+                                        :remove_work_fileset
+                                      ]
 
   #
   # get all works
@@ -48,10 +51,8 @@ class APIV1WorksController < APIBaseController
     if work.nil?
       render_standard_response( :not_found )
     else
-      user = params[:user]  # already validated by the before_action
-
       # audit the information
-      audit_log( "Work id #{work.id} (#{work.identifier}) deleted by by #{user}" )
+      audit_log( "Work id #{work.id} (#{work.identifier}) deleted by by #{User.cid_from_email( @api_user.email)}" )
 
       # actually do the delete
       work.destroy
@@ -71,10 +72,8 @@ class APIV1WorksController < APIBaseController
       title = params[:title]
       if title.blank? == false
 
-        user = params[:user] # already validated by the before_action
-
         # audit the information
-        audit_log( "Title of work id #{work.id} (#{work.identifier}) changed from #{work.title} to #{title} by #{user}" )
+        audit_log( "Title of work id #{work.id} (#{work.identifier}) changed from #{work.title} to #{title} by #{User.cid_from_email( @api_user.email)}" )
 
         # actually update the title
         work.title = [ title ]
@@ -92,12 +91,48 @@ class APIV1WorksController < APIBaseController
     end
   end
 
+  #
+  # update the work embargo
+  #
   def update_work_embargo
     work = get_the_work
     if work.nil?
       render_standard_response( :not_found )
     else
        render_standard_response( :bad_request, 'Not implemented' )
+    end
+  end
+
+  #
+  # add a file to the specified work
+  #
+  def add_work_fileset
+    work = get_the_work
+    if work.nil?
+      render_standard_response( :not_found )
+    else
+      render_standard_response( :bad_request, 'Not implemented' )
+    end
+  end
+
+  def remove_work_fileset
+    work = get_the_work
+    if work.nil?
+      render_standard_response( :not_found )
+    else
+
+      fileset = find_fileset( work, params[:fsid] )
+      if fileset.nil?
+        render_standard_response( :not_found, 'Fileset not available' )
+      else
+        # audit the information
+        audit_log( "File #{fileset.title[0]} for work id #{work.id} (#{work.identifier}) deleted by #{User.cid_from_email( @api_user.email)}" )
+
+        file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, @api_user )
+        file_actor.destroy
+        render_standard_response( :ok )
+      end
+
     end
   end
 
@@ -139,13 +174,15 @@ class APIV1WorksController < APIBaseController
     return generic_works.map{ | gw | API::Work.new( gw ) }
   end
 
-  def render_standard_response( status, message = nil )
-    render json: API::BaseResponse.new( status, message ), :status => status
-  end
-
   def render_works_response( status, works = [] )
     render json: API::WorkListResponse.new( status, works ), :status => status
   end
 
+  def find_fileset( work, fsid )
+    return nil if fsid.nil?
+    return nil if work.file_sets.nil?
+    work.file_sets.each { |fs | return fs if fs.id == fsid }
+    return nil
+  end
 end
 
