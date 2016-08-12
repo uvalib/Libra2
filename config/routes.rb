@@ -23,11 +23,11 @@ Rails.application.routes.draw do
   resources :version, only: [ :index ]
 
   # api endpoints
-  get '/api/v1' => 'api_v1#all'
-  get '/api/v1/search' => 'api_v1#search'
-  get '/api/v1/:id' => 'api_v1#get'
-  delete '/api/v1/:id' => 'api_v1#delete'
-  post '/api/v1/:id/title' => 'api_v1#update_title'
+  get '/api/v1/works' => 'api_v1#all_works'
+  get '/api/v1/works/search' => 'api_v1#search_works'
+  get '/api/v1/works/:id' => 'api_v1#get_work'
+  delete '/api/v1/works/:id' => 'api_v1#delete_work'
+  post '/api/v1/works/:id/title' => 'api_v1#update_work_title'
 
   Hydra::BatchEdit.add_routes(self)
   mount Blacklight::Engine => '/'

@@ -18,6 +18,7 @@ class Work
   attr_accessor :embargo_period
   attr_accessor :embargo_end_date
   attr_accessor :notes
+  attr_accessor :admin_notes
 
   attr_accessor :status
   attr_accessor :files
@@ -40,6 +41,8 @@ class Work
     @embargo_state = generic_work.embargo_state
     @embargo_period = generic_work.embargo_period if generic_work.embargo_period.present?
     @notes = generic_work.notes if generic_work.notes.present?
+
+    @admin_notes = generic_work.admin_notes if generic_work.admin_notes.present?
 
     if generic_work.is_draft?
       if generic_work.date_modified.present?

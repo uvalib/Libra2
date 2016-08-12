@@ -1,11 +1,11 @@
 class APIV1Controller < APIBaseController
 
-  before_action :validate_user, only: [ :delete, :update_title ]
+  before_action :validate_user, only: [ :delete_work, :update_work_title ]
 
   #
-  # /api/v1/all
+  # get all works
   #
-  def all
+  def all_works
     works = GenericWork.all
     if works.empty?
        status = :not_found
@@ -18,10 +18,10 @@ class APIV1Controller < APIBaseController
   end
 
   #
-  # /api/v1/search
+  # search works
   #
-  def search
-    works = GenericWork.all
+  def search_works
+    works = do_works_search
     if works.empty?
       status = :not_found
       render json: API::WorkListResponse.new( status, [] ), :status => status
@@ -33,9 +33,9 @@ class APIV1Controller < APIBaseController
   end
 
   #
-  # /api/v1/:id
+  # get a specific work details
   #
-  def get
+  def get_work
     work = get_the_work
     if work.nil?
       status = :not_found
@@ -48,9 +48,9 @@ class APIV1Controller < APIBaseController
   end
 
   #
-  # /api/v1/:id
+  # delete a work
   #
-  def delete
+  def delete_work
     work = get_the_work
     if work.nil?
       status = :not_found
@@ -69,9 +69,9 @@ class APIV1Controller < APIBaseController
   end
 
   #
-  # /api/v1/:id/title/:title
+  # update a work title
   #
-  def update_title
+  def update_work_title
     work = get_the_work
     if work.nil?
       status = :not_found
@@ -105,6 +105,37 @@ class APIV1Controller < APIBaseController
   end
 
   private
+
+  def do_works_search
+
+    field = params[:state]
+    if field.present?
+      if field == 'pending'
+         draft = 'true'
+      else
+         draft = 'false'
+      end
+      return GenericWork.where( { draft: draft } )
+    end
+
+    field = params[:author_email]
+    if field.present?
+      return GenericWork.where( { author_email: field } )
+    end
+
+    field = params[:create_date]
+    if field.present?
+      return GenericWork.where( { date_created: field.gsub( '-', '/' ) } )
+    end
+
+#    field = params[:modified_date]
+#    if field.present?
+#      return GenericWork.where( { date_modified: field } )
+#      return GenericWork.where( date_modified: "[#{field}T00:00:00.000Z TO *]" )
+#    end
+
+    return []
+  end
 
   def work_transform( generic_works )
     return [] if generic_works.empty?
