@@ -140,7 +140,7 @@ class APIV1WorksController < APIBaseController
 
   def do_works_search
 
-    field = params[:state]
+    field = params[:status]
     if field.present?
       if field == 'pending'
          draft = 'true'
