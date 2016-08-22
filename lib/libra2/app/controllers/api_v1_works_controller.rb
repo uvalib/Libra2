@@ -7,11 +7,14 @@ class APIV1WorksController < APIBaseController
                                         :remove_work_fileset
                                       ]
 
+  @default_limit = 100
+
   #
   # get all works
   #
   def all_works
-    works = GenericWork.all
+    limit = params[:limit] || @default_limit
+    works = GenericWork.all.limit( limit )
     if works.empty?
        render_works_response( :not_found )
     else
@@ -140,6 +143,8 @@ class APIV1WorksController < APIBaseController
 
   def do_works_search
 
+    limit = params[:limit] || @default_limit
+
     field = params[:status]
     if field.present?
       if field == 'pending'
@@ -147,17 +152,17 @@ class APIV1WorksController < APIBaseController
       else
          draft = 'false'
       end
-      return GenericWork.where( { draft: draft } )
+      return GenericWork.where( { draft: draft } ).limit( limit )
     end
 
     field = params[:author_email]
     if field.present?
-      return GenericWork.where( { author_email: field } )
+      return GenericWork.where( { author_email: field } ).limit( limit )
     end
 
     field = params[:create_date]
     if field.present?
-      return GenericWork.where( { date_created: field.gsub( '-', '/' ) } )
+      return GenericWork.where( { date_created: field.gsub( '-', '/' ) } ).limit( limit )
     end
 
 #    field = params[:modified_date]
