@@ -169,10 +169,10 @@ class APIV1WorksController < APIBaseController
     return true if work_update.author_last_name.blank? == false
     return true if work_update.title.blank? == false
     return true if work_update.abstract.blank? == false
-    return true if work_update.embargo_state.blank? == false && ['open','authenticated','restricted'].contains?( work_update.embargo_state )
-    return true if work_update.embargo_period.blank? == false && ['6_month','1_year','2_year','5_year'].contains?( work_update.embargo_period )
+    return true if work_update.embargo_state.blank? == false && ['open','authenticated','restricted'].include?( work_update.embargo_state )
     return true if work_update.embargo_end_date.blank? == false
     return true if work_update.admin_notes.blank? == false
+    return true if work_update.status.blank? == false && ['pending','submitted'].include?( work_update.status )
     return false
   end
 
@@ -208,11 +208,6 @@ class APIV1WorksController < APIBaseController
       audit_change(work, 'Embargo type', work.embargo_state, work_update.embargo_state )
       work.embargo_state = work_update.embargo_state
     end
-    if work_update.embargo_period.blank? == false && work_update.embargo_period != work.embargo_period
-      # update and audit the information
-      audit_change(work, 'Embargo period', work.embargo_period, work_update.embargo_period )
-      work.embargo_period = work_update.embargo_period
-    end
     if work_update.embargo_end_date.blank? == false && work_update.embargo_end_date != work.embargo_end_date
       # update and audit the information
       audit_change(work, 'Embargo end date', work.embargo_end_date, work_update.embargo_end_date )
@@ -239,7 +234,7 @@ class APIV1WorksController < APIBaseController
 
   def work_transform( generic_works )
     return [] if generic_works.empty?
-    return generic_works.map{ | gw | API::Work.new.from_generic_work( gw, request.base_url ) }
+    return generic_works.map{ | gw | API::Work.new.from_generic_work( gw, "#{request.base_url}/api/v1" ) }
   end
 
   def render_works_response( status, works = [] )
@@ -260,7 +255,6 @@ class APIV1WorksController < APIBaseController
                                   :title,
                                   :abstract,
                                   :embargo_state,
-                                  :embargo_period,
                                   :embargo_end_date,
                                   :admin_notes
                                 )

@@ -4,21 +4,17 @@ class APIV1DownloadsController < APIBaseController
   # get content
   #
   def get_content
-    render_deposits_response( :bad_request )
+    send_file "#{Rails.application.root}/data/sample.pdf", :type => 'application/pdf', :disposition => 'inline'
   end
 
   #
   # get thumbnail
   #
   def get_thumbnail
-    render_deposits_response( :bad_request )
+    send_file "#{Rails.application.root}/data/sample.pdf", :type => 'application/pdf', :disposition => 'inline'
   end
 
   private
-
-  def render_deposits_response( status, deposits = [] )
-    render json: API::DepositListResponse.new( status, deposits ), :status => status
-  end
 
 end
 

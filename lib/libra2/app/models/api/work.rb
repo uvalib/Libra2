@@ -15,7 +15,6 @@ class Work
 
   attr_accessor :creator_email
   attr_accessor :embargo_state
-  attr_accessor :embargo_period
   attr_accessor :embargo_end_date
   attr_accessor :notes
   attr_accessor :admin_notes
@@ -37,7 +36,6 @@ class Work
 
     @creator_email = ''
     @embargo_state = ''
-    @embargo_period = ''
     @embargo_end_date = ''
     @notes = ''
     @admin_notes = ''
@@ -56,9 +54,9 @@ class Work
     @abstract = json[:abstract] unless json[:abstract].blank?
 
     @embargo_state = json[:embargo_state] unless json[:embargo_state].blank?
-    @embargo_period = json[:embargo_period] unless json[:embargo_period].blank?
     @embargo_end_date = json[:embargo_end_date] unless json[:embargo_end_date].blank?
 
+    @notes = json[:notes] unless json[:notes].blank?
     @admin_notes = json[:admin_notes] unless json[:admin_notes].blank?
 
     return self
@@ -80,9 +78,9 @@ class Work
 
     @creator_email = generic_work.creator
     @embargo_state = generic_work.embargo_state
-    @embargo_period = generic_work.embargo_period
-    @notes = generic_work.notes
+    @embargo_end_date = generic_work.embargo_end_date
 
+    @notes = generic_work.notes
     @admin_notes = generic_work.admin_notes
 
     if generic_work.is_draft?
@@ -93,7 +91,6 @@ class Work
       end
     else
       @status = 'submitted'
-      @embargo_end_date = generic_work.embargo_end_date
     end
 
     if generic_work.file_sets
