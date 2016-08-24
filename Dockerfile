@@ -22,6 +22,7 @@ mysql2:0.4.4 \
 posix-spawn:0.3.11 \
 nokogiri:1.6.8 \
 binding_of_caller:0.7.2 \
+hiredis:0.6.1 \
 --no-ri --no-rdoc"
 
 # set the timezone appropriatly
