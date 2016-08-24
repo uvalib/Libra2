@@ -22,6 +22,15 @@ class APIBaseController < ApplicationController
     return nil
   end
 
+  def get_the_fileset
+    id = params[:id]
+    begin
+      return FileSet.find( id )
+    rescue => e
+    end
+    return nil
+  end
+
   def validate_token
     auth = params[:auth]
     if valid_auth?( auth )

@@ -85,9 +85,6 @@ module CurationConcerns
     # Adds Sufia behaviors to the controller.
     include Sufia::WorksControllerBehavior
 
-    # Adds identifier behavior to the controller.
-    include Libra2::CreateIdentifierBehavior
-
     # Adds license application behavior to the controller.
     include Libra2::ApplyLicenseBehavior
 

@@ -93,7 +93,7 @@ module CurationConcerns
           # { contributor_department: [] },
           # { contributor_last_name: [] },
           # { contributor_institution: [] },
-          :embargo_state, :embargo_end_date, :embargo_period, :visibility_during_embargo, :on_behalf_of, :rights, { collection_ids: [] }]
+          :embargo_state, :embargo_end_date, :embargo_period, :visibility_during_embargo, :rights, :license ]
     end
   end
 end

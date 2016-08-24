@@ -13,8 +13,6 @@ Rails.application.routes.draw do
   resources :supervisor, only: [ :index ] do
 	  collection do
 		  post 'update_title'
-#		  get 'sis'
-#		  post 'sis_import'
 	  end
   end
 
@@ -27,14 +25,21 @@ Rails.application.routes.draw do
   get '/api/v1/works/search' => 'api_v1_works#search_works'
   get '/api/v1/works/:id' => 'api_v1_works#get_work'
   delete '/api/v1/works/:id' => 'api_v1_works#delete_work'
-  delete '/api/v1/works/:id/fileset/:fsid' => 'api_v1_works#remove_work_fileset'
-  post '/api/v1/works/:id/title' => 'api_v1_works#update_work_title'
-  post '/api/v1/works/:id/embargo' => 'api_v1_works#update_work_embargo'
+  post '/api/v1/works/:id' => 'api_v1_works#update_work'
+
+  # api fileset endpoints
+  get '/api/v1/filesets/:id' => 'api_v1_filesets#get_fileset'
+  #delete '/api/v1/works/:id/fileset/:id' => 'api_v1_works#remove_work_fileset'
+
+  # api download endpoints
+  get '/api/v1/downloads/:id/content' => 'api_v1_downloads#get_content'
+  get '/api/v1/downloads/:id/thumbnail' => 'api_v1_downloads#get_thumbnail'
 
   # api deposit endpoints
   get '/api/v1/deposits' => 'api_v1_deposits#all_deposits'
 
   Hydra::BatchEdit.add_routes(self)
+  mount Qa::Engine => '/authorities'
   mount Blacklight::Engine => '/'
   
     concern :searchable, Blacklight::Routes::Searchable.new

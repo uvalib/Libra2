@@ -9,20 +9,10 @@ Sufia.config do |config|
   # config.subject_prefix = "Contact form:"
 
   # How many notifications should be displayed on the dashboard
-  config.max_notifications_for_dashboard = 5
+  #config.max_notifications_for_dashboard = 5
 
   # How frequently should a file be audited.
-  config.max_days_between_audits = 7
-
-  #config.permission_levels = {
-  #  "Choose Access" => "none",
-  #  "View/Download" => "read",
-  #  "Edit" => "edit"
-  #}
-
-  #config.owner_permission_levels = {
-  #  "Edit" => "edit"
-  #}
+  #config.max_days_between_audits = 7
 
   # Enable displaying usage statistics in the UI
   # Defaults to FALSE
@@ -91,6 +81,11 @@ Sufia.config do |config|
   # The default is true.
   # config.active_deposit_agreement_acceptance = true
 
+  # Should work creation require file upload, or can a work be created first
+  # and a file added at a later time?
+  # The default is true.
+  # config.work_requires_files = true
+
   # Should a button with "Share my work" show on the front page to all users (even those not logged in)?
   # config.always_display_share_button = true
 
@@ -117,3 +112,8 @@ Sufia.config do |config|
 end
 
 Date::DATE_FORMATS[:standard] = "%m/%d/%Y"
+
+Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
+#Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
+Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
+

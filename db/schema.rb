@@ -11,16 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160627153661) do
+ActiveRecord::Schema.define(version: 20160816141975) do
 
   create_table "bookmarks", force: :cascade do |t|
-    t.integer  "user_id",       limit: 4,   null: false
+    t.integer  "user_id",       limit: 4,     null: false
     t.string   "user_type",     limit: 255
     t.string   "document_id",   limit: 255
     t.string   "document_type", limit: 255
-    t.string   "title",         limit: 255
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.binary   "title",         limit: 65535
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   add_index "bookmarks", ["document_id"], name: "index_bookmarks_on_document_id", using: :btree
@@ -192,6 +192,9 @@ ActiveRecord::Schema.define(version: 20160627153661) do
     t.string   "mailbox_type",    limit: 25
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
+    t.boolean  "is_delivered",                default: false
+    t.string   "delivery_method", limit: 255
+    t.string   "message_id",      limit: 255
   end
 
   add_index "mailboxer_receipts", ["notification_id"], name: "index_mailboxer_receipts_on_notification_id", using: :btree
@@ -222,8 +225,27 @@ ActiveRecord::Schema.define(version: 20160627153661) do
   add_index "proxy_deposit_rights", ["grantee_id"], name: "index_proxy_deposit_rights_on_grantee_id", using: :btree
   add_index "proxy_deposit_rights", ["grantor_id"], name: "index_proxy_deposit_rights_on_grantor_id", using: :btree
 
+  create_table "qa_local_authorities", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "qa_local_authorities", ["name"], name: "index_qa_local_authorities_on_name", unique: true, using: :btree
+
+  create_table "qa_local_authority_entries", force: :cascade do |t|
+    t.integer  "local_authority_id", limit: 4
+    t.string   "label",              limit: 255
+    t.string   "uri",                limit: 255
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "qa_local_authority_entries", ["local_authority_id"], name: "index_qa_local_authority_entries_on_local_authority_id", using: :btree
+  add_index "qa_local_authority_entries", ["uri"], name: "index_qa_local_authority_entries_on_uri", unique: true, using: :btree
+
   create_table "searches", force: :cascade do |t|
-    t.text     "query_params", limit: 65535
+    t.binary   "query_params", limit: 65535
     t.integer  "user_id",      limit: 4
     t.string   "user_type",    limit: 255
     t.datetime "created_at",                 null: false
@@ -352,5 +374,6 @@ ActiveRecord::Schema.define(version: 20160627153661) do
   add_foreign_key "mailboxer_conversation_opt_outs", "mailboxer_conversations", column: "conversation_id", name: "mb_opt_outs_on_conversations_id"
   add_foreign_key "mailboxer_notifications", "mailboxer_conversations", column: "conversation_id", name: "notifications_on_conversation_id"
   add_foreign_key "mailboxer_receipts", "mailboxer_notifications", column: "notification_id", name: "receipts_on_notification_id"
+  add_foreign_key "qa_local_authority_entries", "local_authorities"
   add_foreign_key "uploaded_files", "users"
 end

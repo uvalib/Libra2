@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.6'
+gem 'rails', '4.2.7.1'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 # Use SCSS for stylesheets
@@ -46,7 +46,7 @@ group :development do
   gem 'spring'
 end
 
-gem 'sufia', '7.0.0.beta4'
+gem 'sufia', '7.1.0'
 
 group :development, :test do
   gem 'solr_wrapper', '>= 0.3'
@@ -54,7 +54,7 @@ end
 
 gem 'rsolr', '~> 1.0'
 gem 'devise'
-gem 'devise-guests', '~> 0.3'
+gem 'devise-guests', '~> 0.5'
 group :development, :test do
   gem 'fcrepo_wrapper'
   gem 'rspec-rails'
@@ -63,3 +63,4 @@ end
 gem 'resque-pool'
 gem 'rest-client'
 gem 'net-scp'
+gem 'json', '1.8.3'
