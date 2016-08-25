@@ -25,12 +25,17 @@ class APIV1WorksController < APIBaseController
   # search works
   #
   def search_works
-    works = do_works_search
-    if works.empty?
-      render_works_response( :not_found )
+    if valid_search_params
+       works = do_works_search
+       if works.empty?
+         render_works_response( :not_found )
+       else
+         render_works_response( :ok, work_transform( works ) )
+       end
     else
-      render_works_response( :ok, work_transform( works ) )
+      render_works_response( :bad_request, nil, 'Missing or incorrect parameter' )
     end
+
   end
 
   #
@@ -73,7 +78,7 @@ class APIV1WorksController < APIBaseController
 
       work_update = API::Work.new.from_json( params_whitelist )
 
-      if valid_update( work_update )
+      if valid_update_params( work_update )
 
         apply_and_audit( work, work_update )
 
@@ -85,7 +90,7 @@ class APIV1WorksController < APIBaseController
         render_standard_response( :ok )
 
       else
-        render_standard_response( :bad_request, 'Missing parameter' )
+        render_standard_response( :bad_request, 'Missing or incorrect parameter' )
       end
 
     end
@@ -162,18 +167,49 @@ class APIV1WorksController < APIBaseController
     return []
   end
 
-  def valid_update( work_update )
-    puts "====> #{work_update.to_json}"
+  def valid_search_params( )
+    return true if params[:status].blank? == false && ['pending','submitted'].include?( params[:status] )
+    return true if params[:author_email].blank? == false
+    return true if params[:create_date].blank? == false && valid_create_date( params[:create_date] )
+    return false
+  end
+
+  def valid_update_params( work_update )
+
+    #puts "==> #{work_update.to_json}"
     return true if work_update.author_email.blank? == false
     return true if work_update.author_first_name.blank? == false
     return true if work_update.author_last_name.blank? == false
+
     return true if work_update.title.blank? == false
     return true if work_update.abstract.blank? == false
+
     return true if work_update.embargo_state.blank? == false && ['open','authenticated','restricted'].include?( work_update.embargo_state )
-    return true if work_update.embargo_end_date.blank? == false
+    return true if work_update.embargo_end_date.blank? == false && valid_embargo_date( work_update.embargo_end_date )
+
+    return true if work_update.notes.blank? == false
     return true if work_update.admin_notes.blank? == false
+
+    return true if work_update.rights.blank? == false
+    return true if work_update.advisers.blank? == false
     return true if work_update.status.blank? == false && ['pending','submitted'].include?( work_update.status )
     return false
+  end
+
+  def valid_embargo_date( date )
+     return convert_date( date ) != nil
+  end
+
+  def valid_create_date( date )
+    return convert_date( date ) != nil
+  end
+
+  def convert_date( date )
+    begin
+       return DateTime.strptime( date, '%Y-%m-%d' )
+    rescue => e
+      return nil
+    end
   end
 
   def apply_and_audit( work, work_update )
@@ -208,15 +244,33 @@ class APIV1WorksController < APIBaseController
       audit_change(work, 'Embargo type', work.embargo_state, work_update.embargo_state )
       work.embargo_state = work_update.embargo_state
     end
-    if work_update.embargo_end_date.blank? == false && work_update.embargo_end_date != work.embargo_end_date
+    if work_update.embargo_end_date.blank? == false
+      new_end_date = convert_date( work_update.embargo_end_date ).to_s
+      if new_end_date != work.embargo_end_date
+         # update and audit the information
+         audit_change(work, 'Embargo end date', work.embargo_end_date, new_end_date )
+         work.embargo_end_date = new_end_date
+      end
+    end
+    if work_update.notes.blank? == false
       # update and audit the information
-      audit_change(work, 'Embargo end date', work.embargo_end_date, work_update.embargo_end_date )
-      work.embargo_end_date = work_update.embargo_end_date
+      audit_change(work, 'Notes', work.notes, work_update.notes )
+      work.notes = work_update.notes
     end
     if work_update.admin_notes.blank? == false
       # update and audit the information
       audit_add(work, 'Admin notes', work_update.admin_notes )
-      work.admin_notes << work_update.admin_notes
+      work.admin_notes = work.admin_notes.concat( work_update.admin_notes )
+    end
+    if work_update.rights.blank? == false
+      # update and audit the information
+      audit_change(work, 'Rights', work.rights, work_update.rights )
+      work.rights = [ work_update.rights ]
+    end
+    if work_update.advisers.blank? == false
+      # update and audit the information
+      audit_change(work, 'Advisers', work.contributor, work_update.advisers )
+      work.contributor = work_update.advisers
     end
 
     # actually update the work
@@ -237,8 +291,8 @@ class APIV1WorksController < APIBaseController
     return generic_works.map{ | gw | API::Work.new.from_generic_work( gw, "#{request.base_url}/api/v1" ) }
   end
 
-  def render_works_response( status, works = [] )
-    render json: API::WorkListResponse.new( status, works ), :status => status
+  def render_works_response( status, works = [], message = nil )
+    render json: API::WorkListResponse.new( status, works, message ), :status => status
   end
 
   def find_fileset( work, fsid )
@@ -256,7 +310,10 @@ class APIV1WorksController < APIBaseController
                                   :abstract,
                                   :embargo_state,
                                   :embargo_end_date,
-                                  :admin_notes
+                                  :notes,
+                                  :rights,
+                                  :admin_notes => [],
+                                  :advisers => []
                                 )
   end
 

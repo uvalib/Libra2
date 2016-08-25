@@ -19,6 +19,9 @@ class Work
   attr_accessor :notes
   attr_accessor :admin_notes
 
+  attr_accessor :rights
+  attr_accessor :advisers
+
   attr_accessor :status
   attr_accessor :filesets
 
@@ -38,7 +41,10 @@ class Work
     @embargo_state = ''
     @embargo_end_date = ''
     @notes = ''
-    @admin_notes = ''
+    @admin_notes = []
+
+    @rights = ''
+    @advisers = []
 
     @status = ''
     @filesets = []
@@ -59,6 +65,9 @@ class Work
     @notes = json[:notes] unless json[:notes].blank?
     @admin_notes = json[:admin_notes] unless json[:admin_notes].blank?
 
+    @rights = json[:rights] unless json[:rights].blank?
+    @advisers = json[:advisers] unless json[:advisers].blank?
+
     return self
   end
 
@@ -70,7 +79,7 @@ class Work
     @author_last_name = generic_work.author_last_name
 
     @identifier = generic_work.identifier
-    @title = generic_work.title.join(' ')
+    @title = generic_work.title[ 0 ] unless generic_work.title.blank?
     @abstract = generic_work.description
 
     @create_date = generic_work.date_created.gsub( '/', '-' )
@@ -82,6 +91,9 @@ class Work
 
     @notes = generic_work.notes
     @admin_notes = generic_work.admin_notes
+
+    @rights = generic_work.rights[ 0 ] unless generic_work.rights.blank?
+    @advisers = generic_work.contributor
 
     if generic_work.is_draft?
       if generic_work.date_modified.present?
