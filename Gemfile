@@ -47,6 +47,7 @@ group :development do
 end
 
 gem 'sufia', '7.1.0'
+gem 'curation_concerns', '1.3.3', :path => 'vendor/gems/curation_concerns-1.3.3'
 
 group :development, :test do
   gem 'solr_wrapper', '>= 0.3'
