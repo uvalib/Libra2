@@ -1,9 +1,9 @@
-default: &default
+development:
   url: <%= "redis://:#{ENV['REDIS_PASSWD']}@#{ENV['REDIS_HOST']}:#{ENV['REDIS_PORT']}" %>
   timeout: 5
-development:
-  <<: *default
 test:
-  <<: *default
+  url: <%= "redis://:#{ENV['REDIS_PASSWD']}@#{ENV['REDIS_HOST']}:#{ENV['REDIS_PORT']}" %>
+  timeout: 5
 production:
-  <<: *default
+  url: <%= "redis://:#{ENV['REDIS_PASSWD']}@#{ENV['REDIS_HOST']}:#{ENV['REDIS_PORT']}" %>
+  timeout: 5
