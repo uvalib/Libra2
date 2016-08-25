@@ -24,13 +24,7 @@
 
 /fcrepo4-data
 /fcrepo4-development-data
-/env.set
-/env.unset
-/env.mike
-/env.bob
-/env.dev
-/env.prod
-/env.staging
+/env.*
 /hostfs
 
 /scripts/helpers/db_clean.ksh
