@@ -16,6 +16,11 @@ module Helpers
       attr_accessor :department
       attr_accessor :degree
 
+      attr_accessor :accepted_at
+      attr_accessor :approved_at
+      attr_accessor :created_at
+      attr_accessor :exported_at
+
       def initialize( json )
         @id = json['id'] || '0'
         @who = json[ 'computing_id'] || ''
@@ -24,6 +29,11 @@ module Helpers
         @title = json[ 'title'] || ''
         @department = json[ 'department'] || ''
         @degree = json[ 'degree'] || ''
+
+        @accepted_at = json[ 'accepted_at'] || ''
+        @approved_at = json[ 'approved_at'] || ''
+        @created_at = json[ 'created_at'] || ''
+        @exported_at = json[ 'exported_at'] || ''
       end
 
       def self.create( json )

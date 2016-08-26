@@ -33,10 +33,20 @@ module ServiceClient
      end
 
      #
-     # get any pending requests later than the supplied request identifier (requests come in sequence)
+     # get any requests later than the supplied request identifier (requests come in sequence)
      #
      def list_requests( id )
        url = "#{self.url}?auth=#{self.authtoken}&later=#{id}"
+       status, response = rest_get( url )
+       return status, response['details'] if ok?( status ) && response['details']
+       return status, ''
+     end
+
+     #
+     # get any requests that match the supplied computing Id
+     #
+     def search_requests( cid )
+       url = "#{self.url}?auth=#{self.authtoken}&cid=#{cid}"
        status, response = rest_get( url )
        return status, response['details'] if ok?( status ) && response['details']
        return status, ''

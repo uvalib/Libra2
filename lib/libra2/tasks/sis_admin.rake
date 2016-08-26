@@ -36,6 +36,32 @@ namespace :libra2 do
 
   end
 
+  desc "Report SIS status; must provide a computingId (or part thereof)"
+  task report_status: :environment do |t, args|
+
+    cid = ARGV[ 1 ]
+    if cid.nil?
+      puts "ERROR: no computing Id, aborting"
+      next
+    end
+
+    task cid.to_sym do ; end
+
+    status, resp = ServiceClient::DepositAuthClient.instance.search_requests( cid )
+    if ServiceClient::DepositAuthClient.instance.ok?( status )
+      resp.each do |r|
+        req = Helpers::DepositAuthorization.create( r )
+        puts "Computing Id:   #{req.who}"
+        puts "  from SIS:     #{req.created_at}"
+        puts "  completed:    #{req.accepted_at.blank? ? 'incomplete' : req.accepted_at}"
+        puts "  to SIS:       #{req.exported_at.blank? ? 'pending' : req.exported_at}"
+      end
+    else
+      puts "No ETD deposit status located" if status == 404
+      puts "ERROR: request returned #{status}" unless status == 404
+    end
+  end
+
   end   # namespace sis
 
 end   # namespace libra2
