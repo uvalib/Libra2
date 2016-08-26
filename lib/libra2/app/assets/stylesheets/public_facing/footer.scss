@@ -27,7 +27,7 @@
     margin-bottom: 5px;
   }
 
-  img {
+  .centered-img {
     padding-top: 25%;
   }
 }
@@ -72,6 +72,7 @@
 .footer-extended-right {
   margin-right: 40px;
   float: right;
+  margin-top: 15px;
 
   img {
     width: 50px;
@@ -80,7 +81,5 @@
 
 .build-version {
   color: #9DB0CE;
-  position: absolute;
-  right: 110px;
-  bottom: 20px;
+  padding-right: 20px;
 }
