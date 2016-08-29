@@ -85,13 +85,16 @@ module ServiceClient
      #
      def construct_payload( work )
        h = {}
-       h['title'] = work.title[ 0 ] if work.title && work.title[ 0 ]
-       h['publisher'] = work.publisher if work.publisher
-       h['creator'] = "#{work.author_last_name}, #{work.author_first_name}" if work.creator
        h['url'] = fully_qualified_work_url( work.id )
-       h['affiliation'] = "#{work.department} #{work.author_institution}"
-       h['publication_year'] = "#{work.date_created.split("/")[0]}" if work.date_created
-       h['type'] = "Text" # work.resource_type if work.resource_type
+       h['title'] = work.title.join( ' ' ) if work.title
+       h['publisher'] = work.publisher if work.publisher
+       h['creator_firstname'] = work.author_first_name if work.author_first_name
+       h['creator_lastname'] = work.author_last_name if work.author_last_name
+       h['creator_department'] = work.department if work.department
+       h['creator_institution'] = work.author_institution if work.author_institution
+       h['publication_date'] = work.date_created.gsub( '/', '-' ) if work.date_created
+       h['publication_milestone'] = work.degree if work.degree
+       h['type'] = 'Text'
        h.to_json
      end
 
