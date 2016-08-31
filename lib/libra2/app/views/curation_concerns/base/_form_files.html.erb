@@ -49,6 +49,31 @@
 		<th></th>
 	</tr>
 	</tbody></table>
+	<% if @pending_file_test.present? %>
+		<fieldset id="uploaded-files">
+			<legend>Pending Files</legend>
+			<div class="file-hint">These files have not yet been processed. Please wait a few minutes and refresh this page.</div>
+			<table role="presentation" class="table table-striped uploaded-files">
+				<tbody>
+				<tr>
+					<th>Filename</th>
+					<th>Display Label</th>
+					<th></th>
+					<th></th>
+				</tr>
+	<% @pending_file_test.each { |file| %>
+				<tr>
+					<td><%= file['name'] %></td>
+					<td class="pending-file-label"><%= file['label'] %></td>
+					<td></td>
+					<td></td>
+				</tr>
+	<% } %>
+				</tbody>
+				</table>
+			</fieldset>
+	<% end %>
+
 	<% if defined?(f.object.file_sets) && f.object.file_sets.present? %>
 		<fieldset id="uploaded-files">
 			<legend>Previously Uploaded Files</legend>

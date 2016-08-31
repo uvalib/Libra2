@@ -12,7 +12,7 @@
     <tbody>
       <%= render partial: 'member', collection: presenter.file_set_presenters if presenter.file_set_presenters.present? %>
         <% @pending_file_test.each { |file| %>
-    <%= render partial: "pending_files", locals: { id: file['id'], label: file['label']} %>
+    <%= render partial: "pending_files", locals: { id: file['id'], label: file['label'], name: file['name']} %>
         <% } if @pending_file_test.present? %>
     </tbody>
   </table>

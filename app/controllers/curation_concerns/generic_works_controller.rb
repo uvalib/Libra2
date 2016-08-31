@@ -26,10 +26,8 @@ module CurationConcerns
           }
         }
       end
-      if params['action'] == 'show'
         # if there are still files to be processed, alert the page.
         @pending_file_test = session[:pending_files]
-      end
      end
 
     def save_file_display_name
@@ -48,7 +46,12 @@ module CurationConcerns
           end
 
           # If files were just uploaded, then we need to alert the show page that the files might be pending.
-          session[:pending_files] = params['uploaded_files']
+          if params['uploaded_files'].present?
+          session[:pending_files] = [] if session[:pending_files].nil?
+          params['uploaded_files'].each { |file|
+            session[:pending_files].push({ 'id' => file['id'], 'label' => file['label'], 'name' => file['name'] })
+          }
+            end
         end
       end
     end

@@ -78,6 +78,11 @@
 	margin-left: 75px;
 }
 
+.currently-processing .save-message {
+	margin-left: 0;
+	margin-top: 10px;
+}
+
 .show-actions {
 	background-color: #fff;
 	border-radius: 3px;
@@ -375,6 +380,7 @@
 }
 
 #form-progress {
-	//position: fixed;
+	position: fixed;
 	width: 361px;
+	z-index: 99999;
 }

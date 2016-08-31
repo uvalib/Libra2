@@ -108,6 +108,7 @@
         <td>
         <input type="text" class="string optional form-control" name="uploaded_files[][label]" value="{%=createDisplayLabel(file) %}" />
                 <input type="hidden" name="uploaded_files[][id]" value="{%=file.id%}">
+                <input type="hidden" name="uploaded_files[][name]" value="{%=file.name%}">
         </td>
         <td>
             <span class="size">{%=o.formatFileSize(file.size)%}</span>

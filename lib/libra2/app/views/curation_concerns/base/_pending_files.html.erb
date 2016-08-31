@@ -2,7 +2,10 @@
   <td class="thumbnail">
       <%= image_tag(image_path("default.png"), { alt: "No preview available" }) %>
   </td>
-  <td class="attribute filename">This file is being processed. Please wait a few minutes and refresh this page.</td>
+  <td class="attribute filename">
+      <%= name %>
+      <div class="save-message">This file is being processed. Please wait a few minutes and refresh this page.</div>
+  </td>
   <td class="attribute permission"><%= label %></td>
   <td class="attribute date_uploaded">Pending</td>
   <td>
