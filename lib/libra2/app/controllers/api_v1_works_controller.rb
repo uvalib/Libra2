@@ -1,9 +1,7 @@
 class APIV1WorksController < APIBaseController
 
   before_action :validate_user, only: [ :delete_work,
-                                        :update_work,
-                                        :add_work_fileset,
-                                        :remove_work_fileset
+                                        :update_work
                                       ]
 
   @default_limit = 100
@@ -91,42 +89,6 @@ class APIV1WorksController < APIBaseController
 
       else
         render_standard_response( :bad_request, 'Missing or incorrect parameter' )
-      end
-
-    end
-  end
-
-  #
-  # add a file to the specified work
-  #
-  def add_work_fileset
-    work = get_the_work
-    if work.nil?
-      render_standard_response( :not_found )
-    else
-      render_standard_response( :bad_request, 'Not implemented' )
-    end
-  end
-
-  #
-  # remove a file from the specified work
-  #
-  def remove_work_fileset
-    work = get_the_work
-    if work.nil?
-      render_standard_response( :not_found )
-    else
-
-      fileset = find_fileset( work, params[:fsid] )
-      if fileset.nil?
-        render_standard_response( :not_found, 'Fileset not available' )
-      else
-        # audit the information
-        audit_log( "File #{fileset.title[0]} for work id #{work.id} (#{work.identifier}) deleted by #{User.cid_from_email( @api_user.email)}" )
-
-        file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, @api_user )
-        file_actor.destroy
-        render_standard_response( :ok )
       end
 
     end
