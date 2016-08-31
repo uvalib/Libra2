@@ -220,8 +220,8 @@
 }
 
 #savewidget {
-	//height: 1px;
-	z-index: 1;
+	height: 1px;
+	z-index: 99999;
 }
 
 .fixedsticky {
@@ -375,6 +375,6 @@
 }
 
 #form-progress {
-	position: fixed;
+	//position: fixed;
 	width: 361px;
 }
