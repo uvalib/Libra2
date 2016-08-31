@@ -380,6 +380,7 @@
 }
 
 #form-progress {
-	//position: fixed;
+	position: fixed;
 	width: 361px;
+	z-index: 99999;
 }
