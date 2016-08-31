@@ -10,7 +10,7 @@ class APIV1FilesetsController < APIBaseController
   def get_fileset
     fileset = get_the_fileset
     if fileset.nil? == false
-      render_fileset_response( :ok, API::Fileset.new.from_fileset( fileset ) )
+      render_fileset_response( :ok, API::Fileset.new.from_fileset( fileset, "#{request.base_url}/api/v1" ) )
     else
       render_fileset_response( :not_found )
     end
