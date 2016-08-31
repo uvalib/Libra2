@@ -56,8 +56,7 @@ class APIV1DownloadsController < APIBaseController
   end
 
   def thumbnail_from_fileset( fileset )
-    id = fileset.id
-    return "#{dirname_from_fileset( id )}/#{id[8]}-thumbnail.jpeg"
+    return "#{dirname_from_fileset( fileset )}/#{fileset.id[8]}-thumbnail.jpeg"
   end
 
   def dirname_from_fileset( fileset )
