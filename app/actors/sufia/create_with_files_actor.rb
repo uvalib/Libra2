@@ -8,6 +8,7 @@ module Sufia
 
     def update(attributes)
       parse_parameters(attributes)
+      attributes.delete(:ordered_member_ids) # Leaving these will cause a crash if a file is deleted.
       validate_files && next_actor.update(attributes) && attach_files
     end
 
