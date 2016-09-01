@@ -35,14 +35,18 @@ class APIV1FilesetsController < APIBaseController
 
     fileset = get_the_fileset
     if fileset.nil? == false
-      render_standard_response( :not_found, 'Fileset not available' )
-    else
-      # audit the information
-    #  audit_log( "File #{fileset.title[0]} for work id #{work.id} (#{work.identifier}) deleted by #{User.cid_from_email( @api_user.email)}" )
+      works = fileset.in_works
+      work_id = works.empty? ? 'unknown' : works[0].id
+      work_identifier = works.empty? ? 'unknown' : works[0].identifier
 
-    #  file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, @api_user )
-    #  file_actor.destroy
+      # audit the information
+      audit_log( "File #{fileset.title[0]} for work id #{work_id} (#{work_identifier}) deleted by #{User.cid_from_email( @api_user.email)}" )
+
+      file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, @api_user )
+      file_actor.destroy
       render_standard_response( :ok )
+    else
+      render_standard_response( :not_found, 'Fileset not available' )
     end
 
   end
