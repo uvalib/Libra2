@@ -47,10 +47,12 @@ class APIV1FilesetsController < APIBaseController
   #
   def add_fileset
 
+    # grab the parameters
     work_id = params[:work]
     file_id = params[:file]
     label = params[:label]
 
+    # validate them
     if work_id.blank? == false && file_id.blank? == false && label.blank? == false
        work = get_the_work( work_id )
        if work.nil? == false
@@ -62,6 +64,9 @@ class APIV1FilesetsController < APIBaseController
             file_actor.create_metadata( work )
             file_actor.create_content( File.open( filename ) )
 
+            # audit the information
+            audit_log( "File #{label} for work id #{work_id} (#{work.identifier}) added by #{User.cid_from_email( @api_user.email)}" )
+
             render_standard_response( :ok )
          else
             render_standard_response( :not_found, 'File not found' )
@@ -72,19 +77,6 @@ class APIV1FilesetsController < APIBaseController
     else
       render_standard_response( :unauthorized, 'Missing work identifier or file identifier or file label' )
     end
-
-  end
-
-  #
-  # add a new file
-  #
-  def add_file
-
-    uploaded = UploadedFile.create params.permit( :file )
-    filename = upload_name( uploaded.file.url )
-    key = upload_key( uploaded.file.url )
-    audit_log( "File #{filename} uploaded by #{User.cid_from_email( @api_user.email)}" )
-    render_upload_response( :ok, key )
 
   end
 
@@ -108,6 +100,22 @@ class APIV1FilesetsController < APIBaseController
     else
       render_standard_response( :not_found, 'Fileset not available' )
     end
+
+  end
+
+  #
+  # add a new file
+  #
+  def add_file
+
+    uploaded = UploadedFile.create params.permit( :file )
+    filename = upload_name( uploaded.file.url )
+    key = upload_key( uploaded.file.url )
+
+    # audit the information
+    audit_log( "File #{filename} uploaded by #{User.cid_from_email( @api_user.email)}" )
+
+    render_upload_response( :ok, key )
 
   end
 
