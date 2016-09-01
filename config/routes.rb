@@ -30,7 +30,8 @@ Rails.application.routes.draw do
   # api fileset endpoints
   get '/api/v1/filesets/:id' => 'api_v1_filesets#get_fileset'
   delete '/api/v1/filesets/:id' => 'api_v1_filesets#remove_fileset'
-  put '/api/v1/filesets/:id' => 'api_v1_filesets#add_fileset'
+  post '/api/v1/filesets' => 'api_v1_filesets#add_file'
+  put '/api/v1/filesets' => 'api_v1_filesets#add_fileset'
 
   # api download endpoints
   get '/api/v1/downloads/:id/content' => 'api_v1_downloads#get_content'

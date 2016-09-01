@@ -13,8 +13,8 @@ class APIBaseController < ApplicationController
 
   private
 
-  def get_the_work
-    id = params[:id]
+  def get_the_work( id = nil )
+    id = params[:id] if id.nil?
     begin
       return GenericWork.find( id )
     rescue => e
@@ -22,8 +22,8 @@ class APIBaseController < ApplicationController
     return nil
   end
 
-  def get_the_fileset
-    id = params[:id]
+  def get_the_fileset( id = nil )
+    id = params[:id] if id.nil?
     begin
       return FileSet.find( id )
     rescue => e
