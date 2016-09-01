@@ -3,7 +3,7 @@ rm -f $APP_HOME/tmp/pids/resque-pool.pid > /dev/null 2>&1
 rm -f $APP_HOME/tmp/pids/server.pid > /dev/null 2>&1
 
 # start the resque pool daemon
-RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool --daemon --environment $RAILS_ENV start
+scripts/start_workers.sh
 
 # run the deposit importer process
 nohup scripts/deposit_import.sh &
