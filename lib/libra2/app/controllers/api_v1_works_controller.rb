@@ -211,7 +211,7 @@ class APIV1WorksController < APIBaseController
       if new_end_date != work.embargo_end_date
          # update and audit the information
          audit_change(work, 'Embargo end date', work.embargo_end_date, new_end_date )
-         work.embargo_end_date = new_end_date
+         work.embargo_end_date = convert_date( work_update.embargo_end_date )
       end
     end
     if work_update.notes.blank? == false
