@@ -396,6 +396,7 @@ GEM
       blankslate (>= 2.0, <= 4.0)
     pkg-config (1.1.7)
     posix-spawn (0.3.11)
+    puma (3.6.0)
     qa (0.9.0)
       activerecord-import
       deprecation
@@ -680,6 +681,7 @@ DEPENDENCIES
   json (= 1.8.3)
   mysql2 (>= 0.3.13, < 0.5)
   net-scp
+  puma (~> 3.0)
   rails (= 4.2.7.1)
   resque-pool
   rest-client
