@@ -125,7 +125,6 @@ class APIV1FilesetsController < APIBaseController
   def add_file
 
     uploaded = UploadedFile.create params.permit( :file )
-    puts "===> #{uploaded.to_json}"
     filename = upload_name( uploaded.file.url )
     key = upload_key( uploaded.file.url )
 
