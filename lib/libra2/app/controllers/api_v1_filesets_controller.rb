@@ -23,12 +23,23 @@ class APIV1FilesetsController < APIBaseController
   end
 
   # no token validation for the file upload
-  skip_before_filter :validate_token, only: [:add_file]
+  skip_before_filter :validate_token, only: [:add_file, :add_file_options]
 
   before_action :validate_user, only: [ :add_fileset,
                                         :add_file,
                                         :remove_fileset
                                       ]
+
+  #
+  # cors preflight so we can upload from unknown domains
+  #
+  after_filter :set_access_control_headers, only: [:add_file_options]
+
+  def set_access_control_headers
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Allow-Methods'] = 'POST'
+    headers['Access-Control-Allow-Headers'] = 'Content-Type'
+  end
 
   @default_limit = 100
 
@@ -56,6 +67,13 @@ class APIV1FilesetsController < APIBaseController
     else
       render_fileset_response( :not_found )
     end
+  end
+
+  #
+  # preflight/cors stuff
+  #
+  def add_file_options
+    head(:ok) if request.request_method == 'OPTIONS'
   end
 
   #
