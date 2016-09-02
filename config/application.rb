@@ -11,7 +11,7 @@ module Libra2
 
     #
     # enable the background job queue behavior
-    config.active_job.queue_adapter = :resque # TODO-PER: uncomment to do delayed file upload.
+    #config.active_job.queue_adapter = :resque # TODO-PER: uncomment to do delayed file upload.
 
     #
     # specify the name of the IP whitelist file
