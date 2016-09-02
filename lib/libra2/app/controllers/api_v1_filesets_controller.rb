@@ -30,13 +30,29 @@ class APIV1FilesetsController < APIBaseController
                                         :remove_fileset
                                       ]
 
+  @default_limit = 100
+
+  #
+  # get all filesets
+  #
+  def all_filesets
+    limit = params[:limit] || @default_limit
+    filesets = FileSet.all.limit( limit )
+    if filesets.empty? == false
+      render_fileset_response( :ok, fileset_transform( filesets ) )
+    else
+      render_fileset_response( :not_found )
+    end
+
+  end
+
   #
   # get the specified fileset
   #
   def get_fileset
     fileset = get_the_fileset
     if fileset.nil? == false
-      render_fileset_response( :ok, API::Fileset.new.from_fileset( fileset, "#{request.base_url}/api/v1" ) )
+      render_fileset_response( :ok, fileset_transform( [ fileset ] ) )
     else
       render_fileset_response( :not_found )
     end
@@ -109,6 +125,7 @@ class APIV1FilesetsController < APIBaseController
   def add_file
 
     uploaded = UploadedFile.create params.permit( :file )
+    puts "===> #{uploaded.to_json}"
     filename = upload_name( uploaded.file.url )
     key = upload_key( uploaded.file.url )
 
@@ -133,8 +150,8 @@ class APIV1FilesetsController < APIBaseController
      return ''
   end
 
-  def render_fileset_response( status, fileset = nil )
-    render json: API::FilesetResponse.new( status, fileset ), :status => status
+  def render_fileset_response( status, filesets = nil )
+    render json: API::FilesetListResponse.new( status, filesets ), :status => status
   end
 
   def render_upload_response( status, id = nil )
@@ -152,6 +169,12 @@ class APIV1FilesetsController < APIBaseController
   def self.upload_basedir
      return File.join( Rails.root, 'hostfs', 'uploads', 'tmp' )
   end
+
+  def fileset_transform( filesets )
+    return [] if filesets.empty?
+    return filesets.map { | fs | API::Fileset.new.from_fileset( fs, "#{request.base_url}/api/v1" ) }
+  end
+
 end
 
 

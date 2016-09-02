@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   put '/api/v1/works/:id' => 'api_v1_works#update_work'
 
   # api fileset endpoints
+  get '/api/v1/filesets' => 'api_v1_filesets#all_filesets'
   get '/api/v1/filesets/:id' => 'api_v1_filesets#get_fileset'
   delete '/api/v1/filesets/:id' => 'api_v1_filesets#remove_fileset'
   post '/api/v1/filesets' => 'api_v1_filesets#add_file'

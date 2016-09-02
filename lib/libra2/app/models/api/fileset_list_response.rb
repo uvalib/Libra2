@@ -1,12 +1,12 @@
 module API
 
-class FilesetResponse < BaseResponse
+class FilesetListResponse < BaseResponse
 
-  attr_accessor :fileset
+  attr_accessor :filesets
 
-  def initialize( status, fileset, message = nil )
+  def initialize( status, filesets, message = nil )
     super( status, message )
-    @fileset = fileset
+    @filesets = filesets
   end
 
 end
