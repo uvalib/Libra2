@@ -15,4 +15,4 @@ nohup scripts/sis_export.sh &
 nohup scripts/sis_import.sh &
 
 # run the server
-rails server -b 0.0.0.0 -p 3000
+rails server -b 0.0.0.0 -p 3000 Puma
