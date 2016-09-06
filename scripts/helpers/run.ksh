@@ -1,1 +1,1 @@
-rails server -p 3000
+rails server -p 3000 Puma
