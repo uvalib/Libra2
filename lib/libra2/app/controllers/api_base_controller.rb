@@ -9,6 +9,12 @@ class APIBaseController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_action :validate_token
 
+  # handle exceptions in a special manner
+  rescue_from Exception do |exception|
+    #puts "======> #{exception.class}"
+    render_standard_response( :internal_error, exception )
+  end
+
   attr_accessor :api_user
 
   private
