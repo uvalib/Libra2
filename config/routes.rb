@@ -31,9 +31,11 @@ Rails.application.routes.draw do
   get '/api/v1/filesets' => 'api_v1_filesets#all_filesets'
   get '/api/v1/filesets/:id' => 'api_v1_filesets#get_fileset'
   delete '/api/v1/filesets/:id' => 'api_v1_filesets#remove_fileset'
-  match '/api/v1/filesets' => 'api_v1_filesets#add_file_options', via: :options
-  post '/api/v1/filesets' => 'api_v1_filesets#add_file'
   put '/api/v1/filesets' => 'api_v1_filesets#add_fileset'
+
+  # api file endpoints
+  match '/api/v1/files' => 'api_v1_files#add_file_options', via: :options
+  post '/api/v1/files' => 'api_v1_files#add_file'
 
   # api download endpoints
   get '/api/v1/downloads/:id/content' => 'api_v1_downloads#get_content'

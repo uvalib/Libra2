@@ -22,6 +22,11 @@ class Work
   attr_accessor :rights
   attr_accessor :advisers
 
+  attr_accessor :keywords
+  attr_accessor :language
+  attr_accessor :related_links
+  attr_accessor :sponsoring_agency
+
   attr_accessor :status
   attr_accessor :filesets
 
@@ -45,6 +50,11 @@ class Work
 
     @rights = ''
     @advisers = []
+
+    @keywords = []
+    @language = ''
+    @related_links = []
+    @sponsoring_agency = []
 
     @status = ''
     @filesets = []
@@ -94,6 +104,11 @@ class Work
 
     @rights = generic_work.rights[ 0 ] unless generic_work.rights.blank?
     @advisers = generic_work.contributor
+
+    @keywords = generic_work.keyword
+    @language = generic_work.language
+    @related_links = generic_work.related_url
+    @sponsoring_agency = generic_work.sponsoring_agency
 
     if generic_work.is_draft?
       if generic_work.date_modified.present?
