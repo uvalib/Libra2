@@ -1,7 +1,7 @@
 <h3>Requirements</h3>
 <ul class="requirements">
-	<li class="<%= requirement_class(@requirements, :metadata) %>" id="required-metadata-libra"><a href="/concern/generic_works/<%= id %>/edit#metadata">Enter required metadata</a></li>
-	<li class="<%= pending_file_override(@requirements, :files, @pending_file_test) %>" id="required-files-libra"><a href="/concern/generic_works/<%= id %>/edit#files">Add files</a></li>
+	<li class="<%= requirement_class(@requirements, :metadata) %>" id="required-metadata-libra"><%= link_if( action_name != 'edit', "Enter required metadata", "/concern/generic_works/#{id}/edit#metadata" ) %></li>
+	<li class="<%= pending_file_override(@requirements, :files, @pending_file_test) %>" id="required-files-libra"><%= link_if( action_name != 'edit', "Add files", "/concern/generic_works/#{id}/edit#files" ) %></li>
 	<!-- change the names of the requirements items so that sufia doesn't interfere. -->
 	<li style="display:none;" id="required-metadata"></li>
 	<li style="display:none;" id="required-files"></li>
