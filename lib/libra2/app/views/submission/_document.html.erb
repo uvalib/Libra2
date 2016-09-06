@@ -10,7 +10,7 @@
 					<% if @work.present? %>
 					<h1><%= raw(@work[:title].join(raw("<br>"))) %></h1>
 					<%= display_author( @work ) %>
-					<%= display_advisors( @work ) %>
+					<%= display_advisers( @work ) %>
 					<%= display_description( @work.description ) %>
 					<%= display_degree( @work.degree ) %>
 					<%= display_keywords( @work ) %>

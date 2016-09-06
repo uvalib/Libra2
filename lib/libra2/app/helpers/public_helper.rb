@@ -40,7 +40,7 @@ module PublicHelper
 		return "#{work.author_last_name}, #{work.author_first_name}, #{work.department}, #{work.author_institution}"
 	end
 
-	def display_advisors(work)
+	def display_advisers(work)
 		return '' if work.nil?
 		return '' if work.contributor.blank?
 
@@ -56,7 +56,7 @@ module PublicHelper
 				advisors.push(contributor) # this shouldn't happen, but perhaps it will if old data gets in there.
 			end
 		}
-		return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Advisors:", advisors.join("<br>") ).render )
+		return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Advisors:", raw( advisors.join( '<br>' ) ) ).render )
 	end
 
 	def display_description( description )
