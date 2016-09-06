@@ -5,6 +5,6 @@ class CreateQaLocalAuthorities < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    add_index :qa_local_authorities, :name, unique: true
+    #add_index :qa_local_authorities, :name, unique: true
   end
 end

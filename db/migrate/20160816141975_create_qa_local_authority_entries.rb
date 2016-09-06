@@ -7,6 +7,6 @@ class CreateQaLocalAuthorityEntries < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    add_index :qa_local_authority_entries, :uri, unique: true
+    #add_index :qa_local_authority_entries, :uri, unique: true
   end
 end
