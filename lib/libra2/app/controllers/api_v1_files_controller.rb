@@ -9,7 +9,7 @@ class APIV1FilesController < APIBaseController
   #
   class FilesetAssetUploader < CarrierWave::Uploader::Base
     def store_dir
-      return new_cache
+      return APIV1FilesController.new_cache
     end
   end
 
@@ -55,8 +55,8 @@ class APIV1FilesController < APIBaseController
   def add_file
 
     uploaded = UploadedFile.create params.permit( :file )
-    filename = cache_file_from_url( uploaded.file.url )
-    key = cache_key_from_url( uploaded.file.url )
+    filename = APIV1FilesController.cache_file_from_url( uploaded.file.url )
+    key = APIV1FilesController.cache_key_from_url( uploaded.file.url )
 
     # audit the information
     audit_log( "File #{filename} uploaded by #{User.cid_from_email( @api_user.email)}" )

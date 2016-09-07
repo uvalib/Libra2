@@ -50,7 +50,7 @@ class APIV1FilesetsController < APIBaseController
     if work_id.blank? == false && file_id.blank? == false && label.blank? == false
        work = get_the_work( work_id )
        if work.nil? == false
-         filename = cache_contents( file_id )
+         filename = APIV1FilesetsController.cache_contents( file_id )
          if filename.blank? == false
             fileset = ::FileSet.new
             fileset.title << label
