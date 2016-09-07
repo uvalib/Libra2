@@ -11,7 +11,8 @@ class APIBaseController < ApplicationController
 
   # handle exceptions in a special manner
   rescue_from Exception do |exception|
-    #puts "======> #{exception.class}"
+    puts "======> #{exception.class}"
+    puts exception.backtrace.join("\n")
     render_standard_response( :internal_error, exception )
   end
 
