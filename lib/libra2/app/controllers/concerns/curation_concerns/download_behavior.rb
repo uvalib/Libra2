@@ -13,7 +13,7 @@ module CurationConcerns
     # Render the 404 page if the file doesn't exist.
     # Otherwise renders the file.
     def show
-      puts "===> DownloadBehavior:show"
+      #puts "===> DownloadBehavior:show"
       if is_allowed_to_see_file(params['id'])
       case file
       when ActiveFedora::File
