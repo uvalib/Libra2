@@ -9,6 +9,7 @@ module UploadCacheBehavior
       # generates a new cache location
       #
       def self.new_cache
+        self.purge_cache
         return File.join( cache_dir, SecureRandom.hex( 5 ) )
       end
 
@@ -46,14 +47,28 @@ module UploadCacheBehavior
         return File.join( Rails.root, 'hostfs', 'uploads', 'admin' )
       end
 
+      private
+
       #
-      # purge the cache of any stale stuf
+      # purge the cache of any stale stuff
       #
       def self.purge_cache
 
+        max_cache_age = 300 # seconds
+
+        basedir = self.cache_dir
+        Dir.foreach( basedir ) do |item|
+          next if item == '.' or item == '..'
+          ftime = File.ctime( File.join( basedir, item ) )
+          age = Time.now.to_i - ftime.to_i
+          if age > max_cache_age
+             dirname = File.join( basedir, item )
+             puts "purging upload cache (#{dirname}) because it is #{age} seconds old"
+             FileUtils.rm_rf( dirname )
+          end
+        end
       end
 
-      private
     end
 
 end
