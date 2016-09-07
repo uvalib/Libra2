@@ -154,6 +154,12 @@ class APIV1WorksController < APIBaseController
 
     return true if work_update.rights.blank? == false
     return true if work_update.advisers.blank? == false
+
+    return true if work_update.keywords.blank? == false
+    return true if work_update.language.blank? == false
+    return true if work_update.related_links.blank? == false
+    return true if work_update.sponsoring_agency.blank? == false
+
     return true if work_update.status.blank? == false && ['pending','submitted'].include?( work_update.status )
     return false
   end
@@ -234,6 +240,26 @@ class APIV1WorksController < APIBaseController
       audit_change(work, 'Advisers', work.contributor, work_update.advisers )
       work.contributor = work_update.advisers
     end
+    if work_update.keywords.blank? == false
+      # update and audit the information
+      audit_change(work, 'Keywords', work.keyword, work_update.keywords )
+      work.keyword = work_update.keywords
+    end
+    if work_update.language.blank? == false
+      # update and audit the information
+      audit_change(work, 'Language', work.language, work_update.language )
+      work.language = work_update.language
+    end
+    if work_update.related_links.blank? == false
+      # update and audit the information
+      audit_change(work, 'Related Links', work.related_url, work_update.related_links )
+      work.related_url = work_update.related_links
+    end
+    if work_update.sponsoring_agency.blank? == false
+      # update and audit the information
+      audit_change(work, 'Sponsoring Agency', work.sponsoring_agency, work_update.sponsoring_agency )
+      work.sponsoring_agency = work_update.sponsoring_agency
+    end
 
     # actually update the work
     work.save!
@@ -274,8 +300,12 @@ class APIV1WorksController < APIBaseController
                                   :embargo_end_date,
                                   :notes,
                                   :rights,
+                                  :language,
                                   :admin_notes => [],
-                                  :advisers => []
+                                  :advisers => [],
+                                  :keywords => [],
+                                  :related_links => [],
+                                  :sponsoring_agency => []
                                 )
   end
 

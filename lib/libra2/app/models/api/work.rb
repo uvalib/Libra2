@@ -78,6 +78,11 @@ class Work
     @rights = json[:rights] unless json[:rights].blank?
     @advisers = json[:advisers] unless json[:advisers].blank?
 
+    @keywords = json[:keywords] unless json[:keywords].blank?
+    @language = json[:language] unless json[:language].blank?
+    @related_links = json[:related_links] unless json[:related_links].blank?
+    @sponsoring_agency = json[:sponsoring_agency] unless json[:sponsoring_agency].blank?
+
     return self
   end
 
