@@ -13,7 +13,6 @@ module CurationConcerns
     # Render the 404 page if the file doesn't exist.
     # Otherwise renders the file.
     def show
-      #puts "===> DownloadBehavior:show"
       if is_allowed_to_see_file(params['id'])
       case file
       when ActiveFedora::File
@@ -28,11 +27,15 @@ module CurationConcerns
         render_404
       end
       else
-          render_404
-        end
+        render_404
+      end
     end
 
     protected
+
+    def content_options
+      { disposition: "attachment; filename=#{file_name}", type: file.mime_type, filename: file_name }
+    end
 
     def is_allowed_to_see_file(id)
       file_set = ::FileSet.find(id)
