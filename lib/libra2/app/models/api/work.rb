@@ -1,6 +1,10 @@
+require_dependency 'concerns/libra2/solr_extract'
+
 module API
 
 class Work
+
+  include Libra2::SolrExtract
 
   attr_accessor :id
   attr_accessor :author_email
@@ -86,50 +90,46 @@ class Work
     return self
   end
 
-  def from_generic_work( generic_work, base_url )
+  def from_solr( solr )
 
-    @id = generic_work.id
-    @author_email = generic_work.author_email
-    @author_first_name = generic_work.author_first_name
-    @author_last_name = generic_work.author_last_name
+    @id = solr['id'] unless solr['id'].blank?
+    @author_email = solr_extract_first( solr, 'author_email' )
+    @author_first_name = solr_extract_first( solr, 'author_first_name' )
+    @author_last_name = solr_extract_first( solr, 'author_last_name' )
 
-    @identifier = generic_work.identifier
-    @title = generic_work.title[ 0 ] unless generic_work.title.blank?
-    @abstract = generic_work.description
+    @identifier = solr_extract_first( solr, 'identifier' )
+    @title = solr_extract_first( solr, 'title' )
+    @abstract = solr_extract_first( solr, 'description' )
 
-    @create_date = generic_work.date_created.gsub( '/', '-' )
-    @modified_date = generic_work.date_modified
+    @create_date = solr_extract_first( solr, 'date_created' ).gsub( '/', '-' )
+    @modified_date = solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
 
-    @creator_email = generic_work.creator
-    @embargo_state = generic_work.embargo_state
-    @embargo_end_date = generic_work.embargo_end_date
+    @creator_email = solr_extract_first( solr, 'creator' )
+    @embargo_state = solr_extract_first( solr, 'embargo_state' )
+    @embargo_end_date = solr_extract_first( solr, 'embargo_end_date', 'embargo_end_date_dtsim' )
 
-    @notes = generic_work.notes
-    @admin_notes = generic_work.admin_notes
+    @notes = solr_extract_first( solr, 'notes' )
+    @admin_notes = solr_extract_all( solr, 'admin_notes' )
 
-    @rights = generic_work.rights[ 0 ] unless generic_work.rights.blank?
-    @advisers = generic_work.contributor
+    @rights = solr_extract_first( solr, 'rights' )
+    @advisers = solr_extract_all( solr, 'contributor' )
 
-    @keywords = generic_work.keyword
-    @language = generic_work.language
-    @related_links = generic_work.related_url
-    @sponsoring_agency = generic_work.sponsoring_agency
+    @keywords = solr_extract_all( solr, 'keyword' )
+    @language = solr_extract_first( solr, 'language' )
+    @related_links = solr_extract_all( solr, 'related_url' )
+    @sponsoring_agency = solr_extract_all( solr, 'sponsoring_agency' )
 
-    if generic_work.is_draft?
-      if generic_work.date_modified.present?
+    if solr_extract_first( solr, 'draft') == 'true'
+       if @modified_date.blank? == false
          @status = 'in-progress'
-      else
-        @status = 'pending'
-      end
+       else
+         @status = 'pending'
+       end
     else
       @status = 'submitted'
     end
 
-    if generic_work.file_sets
-      generic_work.file_sets.each do |file_set|
-        @filesets << API::Fileset.new.from_fileset( file_set, base_url )
-      end
-    end
+    @filesets = solr_extract_all( solr, 'member_ids', 'member_ids_ssim' )
 
     return self
   end

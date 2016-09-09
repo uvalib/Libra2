@@ -11,7 +11,7 @@ class APIV1WorksController < APIBaseController
   #
   def all_works
     limit = params[:limit] || @default_limit
-    works = GenericWork.all.limit( limit )
+    works = batched_get( {}, 0, limit )
     if works.empty?
        render_works_response( :not_found )
     else
@@ -40,11 +40,11 @@ class APIV1WorksController < APIBaseController
   # get a specific work details
   #
   def get_work
-    work = get_the_work
-    if work.nil?
+    works = batched_get( { id: params[:id] }, 0, 1 )
+    if works.empty?
       render_works_response( :not_found )
     else
-      render_works_response( :ok, work_transform( [ work ] ) )
+      render_works_response( :ok, work_transform( works ) )
     end
   end
 
@@ -107,24 +107,18 @@ class APIV1WorksController < APIBaseController
       else
          draft = 'false'
       end
-      return GenericWork.where( { draft: draft } ).limit( limit )
+      return batched_get( { draft: draft }, 0, limit )
     end
 
     field = params[:author_email]
     if field.present?
-      return GenericWork.where( { author_email: field } ).limit( limit )
+      return batched_get( { author_email: field }, 0, limit )
     end
 
     field = params[:create_date]
     if field.present?
-      return GenericWork.where( { date_created: field.gsub( '-', '/' ) } ).limit( limit )
+      return batched_get( { date_created: field.gsub( '-', '/' ) }, 0, limit )
     end
-
-#    field = params[:modified_date]
-#    if field.present?
-#      return GenericWork.where( { date_modified: field } )
-#      return GenericWork.where( date_modified: "[#{field}T00:00:00.000Z TO *]" )
-#    end
 
     return []
   end
@@ -274,9 +268,33 @@ class APIV1WorksController < APIBaseController
     return false
   end
 
-  def work_transform( generic_works )
-    return [] if generic_works.empty?
-    return generic_works.map{ | gw | API::Work.new.from_generic_work( gw, "#{request.base_url}/api/v1" ) }
+  def work_transform( solr_works )
+    return [] if solr_works.empty?
+    res = []
+    solr_works.each do |solr|
+
+      # make an API work record
+      w = API::Work.new.from_solr( solr )
+
+      filesets = w.filesets
+      w.filesets = []
+      # add the fileset information if necessary
+      filesets.each do |fsid|
+        tstart = Time.now
+        FileSet.search_in_batches( { id: fsid }, {:batch_size => 1 } ) do |fsg|
+          elapsed = Time.now - tstart
+          puts "===> extracted #{fsg.length} fileset(s) in #{elapsed}"
+          fsg.each do |fsid|
+            fs = API::Fileset.new.from_solr( fsid, "#{request.base_url}/api/v1" )
+            w.filesets << fs
+          end
+          tstart = Time.now
+        end
+
+      end
+      res << w
+    end
+    return res
   end
 
   def render_works_response( status, works = [], message = nil )
@@ -288,6 +306,20 @@ class APIV1WorksController < APIBaseController
     return nil if work.file_sets.nil?
     work.file_sets.each { |fs | return fs if fs.id == fsid }
     return nil
+  end
+
+  def batched_get( constraints = {}, start_ix = 0, end_ix = @default_limit )
+
+    res = []
+    tstart = Time.now
+    GenericWork.search_in_batches( constraints, {:batch_size => 25 } ) do |group|
+      elapsed = Time.now - tstart
+      puts "===> extracted #{group.length} work(s) in #{elapsed}"
+      #group.each { |r| puts "#{r.class}" }
+      res.push( *group )
+      tstart = Time.now
+    end
+    return res
   end
 
   def params_whitelist

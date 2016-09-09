@@ -1,6 +1,10 @@
+require_dependency 'concerns/libra2/solr_extract'
+
 module API
 
 class Fileset
+
+  include Libra2::SolrExtract
 
   attr_accessor :id
   attr_accessor :source_name
@@ -27,17 +31,35 @@ class Fileset
     return self
   end
 
+  def from_solr( solr, base_url )
+
+    @id = solr['id'] unless solr['id'].blank?
+    @source_name = solr_extract_first( solr, 'label' )
+    @file_name = solr_extract_first( solr, 'title' )
+    @file_url, @thumb_url = content_urls( base_url, @id )
+
+    return self
+  end
+
   def from_fileset( file_set, base_url )
 
     @id = file_set.id
     @source_name = file_set.label
     @file_name = file_set.title[0]
-    @file_url = "#{base_url}/downloads/#{file_set.id}/content"
-    @thumb_url = "#{base_url}/downloads/#{file_set.id}/thumbnail"
+    @file_url, @thumb_url = content_urls( base_url, file_set.id )
 
     return self
   end
 
+  private
+
+  def content_urls( base, id )
+    return "#{download_url( base, id )}/content", "#{download_url( base, id )}/thumbnail"
+  end
+
+  def download_url( base, id )
+     return "#{base}/downloads/#{id}"
+  end
 end
 
 end
