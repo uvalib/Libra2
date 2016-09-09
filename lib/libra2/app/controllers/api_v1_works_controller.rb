@@ -312,7 +312,7 @@ class APIV1WorksController < APIBaseController
 
     res = []
     tstart = Time.now
-    GenericWork.search_in_batches( constraints, {:batch_size => 25 } ) do |group|
+    GenericWork.search_in_batches( constraints, {:batch_size => 25, :rows => end_ix } ) do |group|
       elapsed = Time.now - tstart
       puts "===> extracted #{group.length} work(s) in #{elapsed}"
       #group.each { |r| puts "#{r.class}" }
