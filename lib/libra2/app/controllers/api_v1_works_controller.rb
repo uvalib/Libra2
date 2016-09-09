@@ -4,14 +4,14 @@ class APIV1WorksController < APIBaseController
                                         :update_work
                                       ]
 
-  @default_limit = 100
-
   #
   # get all works
   #
   def all_works
-    limit = params[:limit] || @default_limit
-    works = batched_get( {}, 0, limit )
+    start = numeric( params[:start], DEFAULT_START )
+    limit = numeric( params[:limit], DEFAULT_LIMIT )
+
+    works = batched_get( {}, start, limit )
     if works.empty?
        render_works_response( :not_found )
     else
@@ -98,7 +98,8 @@ class APIV1WorksController < APIBaseController
 
   def do_works_search
 
-    limit = params[:limit] || @default_limit
+    start = numeric( params[:start], DEFAULT_START )
+    limit = numeric( params[:limit], DEFAULT_LIMIT )
 
     field = params[:status]
     if field.present?
@@ -107,17 +108,17 @@ class APIV1WorksController < APIBaseController
       else
          draft = 'false'
       end
-      return batched_get( { draft: draft }, 0, limit )
+      return batched_get( { draft: draft }, start, limit )
     end
 
     field = params[:author_email]
     if field.present?
-      return batched_get( { author_email: field }, 0, limit )
+      return batched_get( { author_email: field }, start, limit )
     end
 
     field = params[:create_date]
     if field.present?
-      return batched_get( { date_created: field.gsub( '-', '/' ) }, 0, limit )
+      return batched_get( { date_created: field.gsub( '-', '/' ) }, start, limit )
     end
 
     return []
@@ -279,9 +280,9 @@ class APIV1WorksController < APIBaseController
       filesets = w.filesets
       w.filesets = []
       # add the fileset information if necessary
-      filesets.each do |fsid|
+      if filesets.empty? == false
         tstart = Time.now
-        FileSet.search_in_batches( { id: fsid }, {:batch_size => 1 } ) do |fsg|
+        FileSet.search_in_batches( { id: filesets } ) do |fsg|
           elapsed = Time.now - tstart
           puts "===> extracted #{fsg.length} fileset(s) in #{elapsed}"
           fsg.each do |fsid|
@@ -308,11 +309,12 @@ class APIV1WorksController < APIBaseController
     return nil
   end
 
-  def batched_get( constraints = {}, start_ix = 0, end_ix = @default_limit )
+  def batched_get( constraints, start_ix, end_ix )
 
     res = []
+    count = end_ix - start_ix
     tstart = Time.now
-    GenericWork.search_in_batches( constraints, {:batch_size => 25, :rows => end_ix } ) do |group|
+    GenericWork.search_in_batches( constraints, {:rows => count} ) do |group|
       elapsed = Time.now - tstart
       puts "===> extracted #{group.length} work(s) in #{elapsed}"
       #group.each { |r| puts "#{r.class}" }

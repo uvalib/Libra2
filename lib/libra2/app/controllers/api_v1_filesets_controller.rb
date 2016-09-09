@@ -8,13 +8,11 @@ class APIV1FilesetsController < APIBaseController
                                         :remove_fileset
                                       ]
 
-  @default_limit = 100
-
   #
   # get all filesets
   #
   def all_filesets
-    limit = params[:limit] || @default_limit
+    limit = numeric( params[:limit], DEFAULT_LIMIT )
     filesets = FileSet.all.limit( limit )
     if filesets.empty? == false
       render_fileset_response( :ok, fileset_transform( filesets ) )

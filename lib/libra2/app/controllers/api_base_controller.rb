@@ -9,6 +9,10 @@ class APIBaseController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_action :validate_token
 
+  # default query limits
+  DEFAULT_START = 0
+  DEFAULT_LIMIT = 999
+
   # handle exceptions in a special manner
   rescue_from Exception do |exception|
     puts "======> #{exception.class}"
@@ -72,4 +76,14 @@ class APIBaseController < ApplicationController
   def audit_log( message )
     logger.info "API: #{message}"
   end
+
+  def numeric( str, default )
+    begin
+      return default if str.blank?
+      return str.to_i
+    rescue => e
+      return default
+    end
+  end
+
 end
