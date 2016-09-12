@@ -7,9 +7,13 @@ class Work
   include Libra2::SolrExtract
 
   attr_accessor :id
+  attr_accessor :depositor_email
+
   attr_accessor :author_email
   attr_accessor :author_first_name
   attr_accessor :author_last_name
+  attr_accessor :author_institution
+  attr_accessor :author_department
 
   attr_accessor :identifier
   attr_accessor :title
@@ -31,14 +35,21 @@ class Work
   attr_accessor :related_links
   attr_accessor :sponsoring_agency
 
+  attr_accessor :degree
+
   attr_accessor :status
   attr_accessor :filesets
 
   def initialize
+
     @id = ''
+    @depositor_email = ''
+
     @author_email = ''
     @author_first_name =  ''
     @author_last_name = ''
+    @author_institution = ''
+    @author_department = ''
 
     @identifier = ''
     @title = ''
@@ -60,15 +71,21 @@ class Work
     @related_links = []
     @sponsoring_agency = []
 
+    @degree = ''
+
     @status = ''
     @filesets = []
   end
 
   def from_json( json )
 
+    @depositor_email = json[:depositor_email] unless json[:depositor_email].blank?
+
     @author_email = json[:author_email] unless json[:author_email].blank?
     @author_first_name = json[:author_first_name] unless json[:author_first_name].blank?
     @author_last_name = json[:author_last_name] unless json[:author_last_name].blank?
+    @author_institution = json[:author_institution] unless json[:author_institution].blank?
+    @author_department = json[:author_department] unless json[:author_department].blank?
 
     @title = json[:title] unless json[:title].blank?
     @abstract = json[:abstract] unless json[:abstract].blank?
@@ -87,15 +104,21 @@ class Work
     @related_links = json[:related_links] unless json[:related_links].blank?
     @sponsoring_agency = json[:sponsoring_agency] unless json[:sponsoring_agency].blank?
 
+    @degree = json[:degree] unless json[:degree].blank?
+
     return self
   end
 
   def from_solr( solr )
 
     @id = solr['id'] unless solr['id'].blank?
+    @depositor_email = solr_extract_first( solr, 'depositor' )
+
     @author_email = solr_extract_first( solr, 'author_email' )
     @author_first_name = solr_extract_first( solr, 'author_first_name' )
     @author_last_name = solr_extract_first( solr, 'author_last_name' )
+    @author_institution = solr_extract_first( solr, 'publisher' )
+    @author_department = solr_extract_first( solr, 'department' )
 
     @identifier = solr_extract_first( solr, 'identifier' )
     @title = solr_extract_first( solr, 'title' )
@@ -118,6 +141,8 @@ class Work
     @language = solr_extract_first( solr, 'language' )
     @related_links = solr_extract_all( solr, 'related_url' )
     @sponsoring_agency = solr_extract_all( solr, 'sponsoring_agency' )
+
+    @degree = solr_extract_first( solr, 'degree' )
 
     if solr_extract_first( solr, 'draft') == 'true'
        if @modified_date.blank? == false

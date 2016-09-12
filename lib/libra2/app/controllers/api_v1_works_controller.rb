@@ -134,9 +134,14 @@ class APIV1WorksController < APIBaseController
   def valid_update_params( work_update )
 
     #puts "==> #{work_update.to_json}"
+
+    return true if work_update.depositor_email.blank? == false
+
     return true if work_update.author_email.blank? == false
     return true if work_update.author_first_name.blank? == false
     return true if work_update.author_last_name.blank? == false
+    return true if work_update.author_institution.blank? == false
+    return true if work_update.author_department.blank? == false
 
     return true if work_update.title.blank? == false
     return true if work_update.abstract.blank? == false
@@ -154,6 +159,8 @@ class APIV1WorksController < APIBaseController
     return true if work_update.language.blank? == false
     return true if work_update.related_links.blank? == false
     return true if work_update.sponsoring_agency.blank? == false
+
+    return true if work_update.degree.blank? == false
 
     return true if work_update.status.blank? == false && ['pending','submitted'].include?( work_update.status )
     return false
@@ -177,6 +184,11 @@ class APIV1WorksController < APIBaseController
 
   def apply_and_audit( work, work_update )
 
+    if work_update.abstract.blank? == false && work_update.abstract != work.description
+      # update and audit the information
+      audit_change(work, 'Abstract', work.description, work_update.abstract )
+      work.description = work_update.abstract
+    end
     if work_update.author_email.blank? == false && work_update.author_email != work.author_email
       # update and audit the information
       audit_change(work, 'Author email', work.author_email, work_update.author_email )
@@ -192,15 +204,29 @@ class APIV1WorksController < APIBaseController
       audit_change(work, 'Author last name', work.author_last_name, work_update.author_last_name )
       work.author_last_name = work_update.author_last_name
     end
-    if work_update.title.blank? == false && work_update.title != [ work_update.title ]
-       # update and audit the information
-       audit_change(work, 'Title', work.title, work_update.title )
-       work.title = [ work_update.title ]
-    end
-    if work_update.abstract.blank? == false && work_update.abstract != work.description
+    if work_update.author_institution.blank? == false && work_update.author_institution != work.publisher
       # update and audit the information
-      audit_change(work, 'Abstract', work.description, work_update.abstract )
-      work.description = work_update.abstract
+      audit_change(work, 'Publisher', work.publisher, work_update.author_institution )
+      work.publisher = work_update.author_institution
+    end
+    if work_update.author_department.blank? == false && work_update.author_department != work.department
+      # update and audit the information
+      audit_change(work, 'Department', work.department, work_update.author_department )
+      work.department = work_update.author_department
+    end
+    if work_update.depositor_email.blank? == false && work_update.depositor_email != work.depositor
+      # update and audit the information
+      audit_change(work, 'Depositor email', work.depositor, work_update.depositor_email )
+
+      # ensure depositor has edit access and remove previous depositor access
+      work.edit_users -= [ work.depositor ]
+      work.edit_users += [ work_update.depositor_email ]
+      work.depositor = work_update.depositor_email
+    end
+    if work_update.degree.blank? == false && work_update.degree != work.degree
+      # update and audit the information
+      audit_change(work, 'Degree', work.degree, work_update.degree )
+      work.degree = work_update.degree
     end
     if work_update.embargo_state.blank? == false && work_update.embargo_state != work.embargo_state
       # update and audit the information
@@ -229,6 +255,11 @@ class APIV1WorksController < APIBaseController
       # update and audit the information
       audit_change(work, 'Rights', work.rights, work_update.rights )
       work.rights = [ work_update.rights ]
+    end
+    if work_update.title.blank? == false && work_update.title != [ work_update.title ]
+      # update and audit the information
+      audit_change(work, 'Title', work.title, work_update.title )
+      work.title = [ work_update.title ]
     end
     if work_update.advisers.blank? == false
       # update and audit the information
@@ -325,16 +356,20 @@ class APIV1WorksController < APIBaseController
   end
 
   def params_whitelist
-    params.require(:work).permit( :author_email,
+    params.require(:work).permit( :abstract,
+                                  :author_email,
                                   :author_first_name,
                                   :author_last_name,
-                                  :title,
-                                  :abstract,
+                                  :author_department,
+                                  :author_institution,
+                                  :degree,
+                                  :depositor_email,
                                   :embargo_state,
                                   :embargo_end_date,
+                                  :language,
                                   :notes,
                                   :rights,
-                                  :language,
+                                  :title,
                                   :admin_notes => [],
                                   :advisers => [],
                                   :keywords => [],
