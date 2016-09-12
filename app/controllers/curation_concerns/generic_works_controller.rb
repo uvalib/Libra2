@@ -17,17 +17,17 @@ module CurationConcerns
 
     def add_pending_file_test
       # remove any files that have been processed
-      if session[:pending_files].present?
+      if session[:files_pending].present? && session[:files_pending][params[:id]].present?
         work = GenericWork.where({ id: params[:id] })
         file_sets = work[0].file_sets
         file_sets.each { |file_set|
-          session[:pending_files].delete_if { |pending|
+          session[:files_pending][params[:id]].delete_if { |pending|
             pending['label'] == file_set.title[0]
           }
         }
       end
         # if there are still files to be processed, alert the page.
-        @pending_file_test = session[:pending_files]
+        @pending_file_test = session[:files_pending].present? ? session[:files_pending][params[:id]] : nil
      end
 
     def save_file_display_name
@@ -47,9 +47,10 @@ module CurationConcerns
 
           # If files were just uploaded, then we need to alert the show page that the files might be pending.
           if params['uploaded_files'].present?
-          session[:pending_files] = [] if session[:pending_files].nil?
+          session[:files_pending] = {} if session[:files_pending].nil?
+          session[:files_pending][params[:id]] = [] if session[:files_pending][params[:id]].nil?
           params['uploaded_files'].each { |file|
-            session[:pending_files].push({ 'id' => file['id'], 'label' => file['label'], 'name' => file['name'] })
+            session[:files_pending][params[:id]].push({ 'id' => file['id'], 'label' => file['label'], 'name' => file['name'] })
           }
             end
         end
