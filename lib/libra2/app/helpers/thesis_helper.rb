@@ -28,9 +28,17 @@ module ThesisHelper
 
   def pending_file_override(requirements, type, pending_file)
     if @pending_file_test.present?
-      return "complete"
+      return "pending"
     else
       return requirement_class(requirements, type)
+    end
+  end
+
+  def add_files_text(pending_file)
+    if @pending_file_test.present?
+      return "Add Files (upload in progress)"
+    else
+      return "Add Files"
     end
   end
 

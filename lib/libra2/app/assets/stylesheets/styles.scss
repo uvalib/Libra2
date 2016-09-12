@@ -203,6 +203,12 @@
 		font-family: 'Glyphicons Halflings';
 		padding-right: 5px;
 	}
+	.pending::before {
+		content: "\231b";
+		color: #d9534f;
+		font-family: 'Glyphicons Halflings';
+		padding-right: 5px;
+	}
 }
 
 #collapseEmbargo {
