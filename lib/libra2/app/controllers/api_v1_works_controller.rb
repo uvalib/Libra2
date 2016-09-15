@@ -191,23 +191,23 @@ class APIV1WorksController < APIBaseController
     end
     if work_update.author_email.blank? == false && work_update.author_email != work.author_email
       # update and audit the information
-      audit_change(work, 'Author email', work.author_email, work_update.author_email )
+      audit_change(work, 'Author Email', work.author_email, work_update.author_email )
       work.author_email = work_update.author_email
     end
     if work_update.author_first_name.blank? == false && work_update.author_first_name != work.author_first_name
       # update and audit the information
-      audit_change(work, 'Author first name', work.author_first_name, work_update.author_first_name )
+      audit_change(work, 'Author First Name', work.author_first_name, work_update.author_first_name )
       work.author_first_name = work_update.author_first_name
     end
     if work_update.author_last_name.blank? == false && work_update.author_last_name != work.author_last_name
       # update and audit the information
-      audit_change(work, 'Author last name', work.author_last_name, work_update.author_last_name )
+      audit_change(work, 'Author Last Name', work.author_last_name, work_update.author_last_name )
       work.author_last_name = work_update.author_last_name
     end
-    if work_update.author_institution.blank? == false && work_update.author_institution != work.publisher
+    if work_update.author_institution.blank? == false && work_update.author_institution != work.author_institution
       # update and audit the information
-      audit_change(work, 'Publisher', work.publisher, work_update.author_institution )
-      work.publisher = work_update.author_institution
+      audit_change(work, 'Author Institution', work.author_institution, work_update.author_institution )
+      work.author_institution = work_update.author_institution
     end
     if work_update.author_department.blank? == false && work_update.author_department != work.department
       # update and audit the information
@@ -216,9 +216,9 @@ class APIV1WorksController < APIBaseController
     end
     if work_update.depositor_email.blank? == false && work_update.depositor_email != work.depositor
       # update and audit the information
-      audit_change(work, 'Depositor email', work.depositor, work_update.depositor_email )
+      audit_change(work, 'Depositor Email', work.depositor, work_update.depositor_email )
 
-      # ensure depositor has edit access and remove previous depositor access
+
       work.edit_users -= [ work.depositor ]
       work.edit_users += [ work_update.depositor_email ]
       work.depositor = work_update.depositor_email
@@ -230,14 +230,14 @@ class APIV1WorksController < APIBaseController
     end
     if work_update.embargo_state.blank? == false && work_update.embargo_state != work.embargo_state
       # update and audit the information
-      audit_change(work, 'Embargo type', work.embargo_state, work_update.embargo_state )
+      audit_change(work, 'Embargo Type', work.embargo_state, work_update.embargo_state )
       work.embargo_state = work_update.embargo_state
     end
     if work_update.embargo_end_date.blank? == false
       new_end_date = convert_date( work_update.embargo_end_date ).to_s
       if new_end_date != work.embargo_end_date
          # update and audit the information
-         audit_change(work, 'Embargo end date', work.embargo_end_date, new_end_date )
+         audit_change(work, 'Embargo End Date', work.embargo_end_date, new_end_date )
          work.embargo_end_date = convert_date( work_update.embargo_end_date )
       end
     end
@@ -248,7 +248,7 @@ class APIV1WorksController < APIBaseController
     end
     if work_update.admin_notes.blank? == false
       # update and audit the information
-      audit_add(work, 'Admin notes', work_update.admin_notes )
+      audit_add(work, 'Admin Notes', work_update.admin_notes )
       work.admin_notes = work.admin_notes.concat( work_update.admin_notes )
     end
     if work_update.rights.blank? == false
