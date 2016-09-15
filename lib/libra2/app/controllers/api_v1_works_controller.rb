@@ -23,8 +23,11 @@ class APIV1WorksController < APIBaseController
   # search works
   #
   def search_works
-    if valid_search_params
-       works = do_works_search
+
+    work_search = API::Work.new.from_json( params )
+    if work_search.valid_for_search?
+
+       works = do_works_search( work_search )
        if works.empty?
          render_works_response( :not_found )
        else
@@ -75,8 +78,7 @@ class APIV1WorksController < APIBaseController
     else
 
       work_update = API::Work.new.from_json( params_whitelist )
-
-      if valid_update_params( work_update )
+      if work_update.valid_for_update?
 
         apply_and_audit( work, work_update )
 
@@ -96,12 +98,12 @@ class APIV1WorksController < APIBaseController
 
   private
 
-  def do_works_search
+  def do_works_search( search )
 
     start = numeric( params[:start], DEFAULT_START )
     limit = numeric( params[:limit], DEFAULT_LIMIT )
 
-    field = params[:status]
+    field = search.status
     if field.present?
       if field == 'pending'
          draft = 'true'
@@ -111,12 +113,12 @@ class APIV1WorksController < APIBaseController
       return batched_get( { draft: draft }, start, limit )
     end
 
-    field = params[:author_email]
+    field = search.author_email
     if field.present?
       return batched_get( { author_email: field }, start, limit )
     end
 
-    field = params[:create_date]
+    field = search.create_date
     if field.present?
       return batched_get( { date_created: field.gsub( '-', '/' ) }, start, limit )
     end
@@ -124,180 +126,143 @@ class APIV1WorksController < APIBaseController
     return []
   end
 
-  def valid_search_params( )
-    return true if params[:status].blank? == false && ['pending','submitted'].include?( params[:status] )
-    return true if params[:author_email].blank? == false
-    return true if params[:create_date].blank? == false && valid_create_date( params[:create_date] )
-    return false
-  end
-
-  def valid_update_params( work_update )
-
-    #puts "==> #{work_update.to_json}"
-
-    return true if work_update.depositor_email.blank? == false
-
-    return true if work_update.author_email.blank? == false
-    return true if work_update.author_first_name.blank? == false
-    return true if work_update.author_last_name.blank? == false
-    return true if work_update.author_institution.blank? == false
-    return true if work_update.author_department.blank? == false
-
-    return true if work_update.title.blank? == false
-    return true if work_update.abstract.blank? == false
-
-    return true if work_update.embargo_state.blank? == false && ['open','authenticated','restricted'].include?( work_update.embargo_state )
-    return true if work_update.embargo_end_date.blank? == false && valid_embargo_date( work_update.embargo_end_date )
-
-    return true if work_update.notes.blank? == false
-    return true if work_update.admin_notes.blank? == false
-
-    return true if work_update.rights.blank? == false
-    return true if work_update.advisers.blank? == false
-
-    return true if work_update.keywords.blank? == false
-    return true if work_update.language.blank? == false
-    return true if work_update.related_links.blank? == false
-    return true if work_update.sponsoring_agency.blank? == false
-
-    return true if work_update.degree.blank? == false
-
-    return true if work_update.status.blank? == false && ['pending','submitted'].include?( work_update.status )
-    return false
-  end
-
-  def valid_embargo_date( date )
-     return convert_date( date ) != nil
-  end
-
-  def valid_create_date( date )
-    return convert_date( date ) != nil
-  end
-
-  def convert_date( date )
-    begin
-       return DateTime.strptime( date, '%Y-%m-%d' )
-    rescue => e
-      return nil
-    end
-  end
-
   def apply_and_audit( work, work_update )
 
-    if work_update.abstract.blank? == false && work_update.abstract != work.description
+    if field_changed( :abstract, work_update, work.description, work_update.abstract )
       # update and audit the information
       audit_change(work, 'Abstract', work.description, work_update.abstract )
       work.description = work_update.abstract
     end
-    if work_update.author_email.blank? == false && work_update.author_email != work.author_email
+    if field_changed( :author_email, work_update, work.author_email, work_update.author_email )
       # update and audit the information
       audit_change(work, 'Author Email', work.author_email, work_update.author_email )
       work.author_email = work_update.author_email
     end
-    if work_update.author_first_name.blank? == false && work_update.author_first_name != work.author_first_name
+    if field_changed( :author_first_name, work_update, work.author_first_name, work_update.author_first_name )
       # update and audit the information
       audit_change(work, 'Author First Name', work.author_first_name, work_update.author_first_name )
       work.author_first_name = work_update.author_first_name
     end
-    if work_update.author_last_name.blank? == false && work_update.author_last_name != work.author_last_name
+    if field_changed( :author_last_name, work_update, work.author_last_name, work_update.author_last_name )
       # update and audit the information
       audit_change(work, 'Author Last Name', work.author_last_name, work_update.author_last_name )
       work.author_last_name = work_update.author_last_name
     end
-    if work_update.author_institution.blank? == false && work_update.author_institution != work.author_institution
+    if field_changed( :author_institution, work_update, work.author_institution, work_update.author_institution )
       # update and audit the information
       audit_change(work, 'Author Institution', work.author_institution, work_update.author_institution )
       work.author_institution = work_update.author_institution
     end
-    if work_update.author_department.blank? == false && work_update.author_department != work.department
+    if field_changed( :author_department, work_update, work.department, work_update.author_department )
       # update and audit the information
       audit_change(work, 'Department', work.department, work_update.author_department )
       work.department = work_update.author_department
     end
-    if work_update.depositor_email.blank? == false && work_update.depositor_email != work.depositor
+    if field_changed( :depositor_email, work_update, work.depositor, work_update.depositor_email )
       # update and audit the information
       audit_change(work, 'Depositor Email', work.depositor, work_update.depositor_email )
-
 
       work.edit_users -= [ work.depositor ]
       work.edit_users += [ work_update.depositor_email ]
       work.depositor = work_update.depositor_email
     end
-    if work_update.degree.blank? == false && work_update.degree != work.degree
+    if field_changed( :degree, work_update, work.degree, work_update.degree )
       # update and audit the information
       audit_change(work, 'Degree', work.degree, work_update.degree )
       work.degree = work_update.degree
     end
-    if work_update.embargo_state.blank? == false && work_update.embargo_state != work.embargo_state
+    if field_changed( :embargo_state, work_update, work.embargo_state, work_update.embargo_state )
       # update and audit the information
       audit_change(work, 'Embargo Type', work.embargo_state, work_update.embargo_state )
       work.embargo_state = work_update.embargo_state
     end
-    if work_update.embargo_end_date.blank? == false
-      new_end_date = convert_date( work_update.embargo_end_date ).to_s
-      if new_end_date != work.embargo_end_date
+
+    # special case where date formats are converted
+    if work_update.field_set?( :embargo_end_date )
+      new_end_date = work_update.convert_date( work_update.embargo_end_date )
+      if new_end_date.to_s != work.embargo_end_date
          # update and audit the information
-         audit_change(work, 'Embargo End Date', work.embargo_end_date, new_end_date )
-         work.embargo_end_date = convert_date( work_update.embargo_end_date )
+         audit_change(work, 'Embargo End Date', work.embargo_end_date, new_end_date.to_s )
+         work.embargo_end_date = new_end_date
       end
     end
-    if work_update.notes.blank? == false
+    if field_changed( :notes, work_update, work.notes, work_update.notes )
       # update and audit the information
       audit_change(work, 'Notes', work.notes, work_update.notes )
       work.notes = work_update.notes
     end
-    if work_update.admin_notes.blank? == false
+    # special case, we always *add* to an existing set of notes
+    if work_update.field_set?( :admin_notes ) && work_update.admin_notes.blank? == false
       # update and audit the information
       audit_add(work, 'Admin Notes', work_update.admin_notes )
       work.admin_notes = work.admin_notes.concat( work_update.admin_notes )
     end
-    if work_update.rights.blank? == false
+    if field_changed( :rights, work_update, work.rights, [ work_update.rights ] )
       # update and audit the information
-      audit_change(work, 'Rights', work.rights, work_update.rights )
+      audit_change(work, 'Rights', work.rights, [ work_update.rights ] )
       work.rights = [ work_update.rights ]
     end
-    if work_update.title.blank? == false && work_update.title != [ work_update.title ]
+    if field_changed( :title, work_update, work.title, [ work_update.title ] )
       # update and audit the information
-      audit_change(work, 'Title', work.title, work_update.title )
+      audit_change(work, 'Title', work.title, [ work_update.title ] )
       work.title = [ work_update.title ]
     end
-    if work_update.advisers.blank? == false
+    if field_changed( :advisers, work_update, work.contributor, work_update.advisers )
       # update and audit the information
       audit_change(work, 'Advisers', work.contributor, work_update.advisers )
       work.contributor = work_update.advisers
     end
-    if work_update.keywords.blank? == false
+    if field_changed( :keywords, work_update, work.keyword, work_update.keywords )
       # update and audit the information
       audit_change(work, 'Keywords', work.keyword, work_update.keywords )
       work.keyword = work_update.keywords
     end
-    if work_update.language.blank? == false
+    if field_changed( :language, work_update, work.language, work_update.language )
       # update and audit the information
       audit_change(work, 'Language', work.language, work_update.language )
       work.language = work_update.language
     end
-    if work_update.related_links.blank? == false
+    if field_changed( :related_links, work_update, work.related_url, work_update.related_links )
       # update and audit the information
       audit_change(work, 'Related Links', work.related_url, work_update.related_links )
       work.related_url = work_update.related_links
     end
-    if work_update.sponsoring_agency.blank? == false
+    if field_changed( :sponsoring_agency, work_update, work.sponsoring_agency, work_update.sponsoring_agency )
       # update and audit the information
       audit_change(work, 'Sponsoring Agency', work.sponsoring_agency, work_update.sponsoring_agency )
       work.sponsoring_agency = work_update.sponsoring_agency
     end
 
     # actually update the work
+    work.date_modified = DateTime.now
     work.save!
   end
 
+  #
+  # resubmit the metadata if any of the fields that are included have changed
+  #
   def must_resubmit_metadata( work_update )
-#    return true if work_update.author_email.blank? == false
-#    return true if work_update.author_first_name.blank? == false
-#    return true if work_update.author_last_name.blank? == false
-    return true if work_update.title.blank? == false
-#    return true if work_update.abstract.blank? == false
+    return true if work_update.field_set?( :author_email )
+    return true if work_update.field_set?( :author_first_name )
+    return true if work_update.field_set?( :author_last_name )
+    return true if work_update.field_set?( :author_department )
+    return true if work_update.field_set?( :author_institution )
+    return true if work_update.field_set?( :title )
+    return true if work_update.field_set?( :degree )
     return false
+  end
+
+  def field_changed( field, update, before, after )
+
+     # if we did not set the field then it has not changed
+     return false if update.field_set?( field ) == false
+
+     # if they are the same, then it has not changed
+     return false if after == before
+
+
+     puts "==> #{field} has changed"
+     return true
   end
 
   def work_transform( solr_works )

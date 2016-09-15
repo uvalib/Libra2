@@ -75,40 +75,56 @@ class Work
 
     @status = ''
     @filesets = []
+
+    # the set of fields specified during construction
+    @field_set = []
+
   end
 
+  #
+  # we create these work items from JSON records when accepting a set of updates
+  # we have to keep track of what was set so we can distinguish it from a default
+  # value that was not specifically set
+  #
   def from_json( json )
 
-    @depositor_email = json[:depositor_email] unless json[:depositor_email].blank?
+    @depositor_email = set_field( :depositor_email, json ) unless set_field( :depositor_email, json ) == nil
 
-    @author_email = json[:author_email] unless json[:author_email].blank?
-    @author_first_name = json[:author_first_name] unless json[:author_first_name].blank?
-    @author_last_name = json[:author_last_name] unless json[:author_last_name].blank?
-    @author_institution = json[:author_institution] unless json[:author_institution].blank?
-    @author_department = json[:author_department] unless json[:author_department].blank?
+    @author_email = set_field( :author_email, json ) unless set_field( :author_email, json ) == nil
+    @author_first_name = set_field( :author_first_name, json ) unless set_field( :author_first_name, json ) == nil
+    @author_last_name = set_field( :author_last_name, json ) unless set_field( :author_last_name, json ) == nil
+    @author_institution = set_field( :author_institution, json ) unless set_field( :author_institution, json ) == nil
+    @author_department = set_field( :author_department, json ) unless set_field( :author_department, json ) == nil
 
-    @title = json[:title] unless json[:title].blank?
-    @abstract = json[:abstract] unless json[:abstract].blank?
+    @title = set_field( :title, json ) unless set_field( :title, json ) == nil
+    @abstract = set_field( :abstract, json ) unless set_field( :abstract, json ) == nil
+    @create_date = set_field( :create_date, json ) unless set_field( :create_date, json ) == nil
+    @modified_date = set_field( :modified_date, json ) unless set_field( :modified_date, json ) == nil
 
-    @embargo_state = json[:embargo_state] unless json[:embargo_state].blank?
-    @embargo_end_date = json[:embargo_end_date] unless json[:embargo_end_date].blank?
+    @embargo_state = set_field( :embargo_state, json ) unless set_field( :embargo_state, json ) == nil
+    @embargo_end_date = set_field( :embargo_end_date, json ) unless set_field( :embargo_end_date, json ) == nil
 
-    @notes = json[:notes] unless json[:notes].blank?
-    @admin_notes = json[:admin_notes] unless json[:admin_notes].blank?
+    @notes = set_field( :notes, json ) unless set_field( :notes, json ) == nil
+    @admin_notes = set_field( :admin_notes, json ) unless set_field( :admin_notes, json ) == nil
 
-    @rights = json[:rights] unless json[:rights].blank?
-    @advisers = json[:advisers] unless json[:advisers].blank?
+    @rights = set_field( :rights, json ) unless set_field( :rights, json ) == nil
+    @advisers = set_field( :advisers, json ) unless set_field( :advisers, json ) == nil
 
-    @keywords = json[:keywords] unless json[:keywords].blank?
-    @language = json[:language] unless json[:language].blank?
-    @related_links = json[:related_links] unless json[:related_links].blank?
-    @sponsoring_agency = json[:sponsoring_agency] unless json[:sponsoring_agency].blank?
+    @keywords = set_field( :keywords, json ) unless set_field( :keywords, json ) == nil
+    @language = set_field( :language, json ) unless set_field( :language, json ) == nil
+    @related_links = set_field( :related_links, json ) unless set_field( :related_links, json ) == nil
+    @sponsoring_agency = set_field( :sponsoring_agency, json ) unless set_field( :sponsoring_agency, json ) == nil
 
-    @degree = json[:degree] unless json[:degree].blank?
+    @degree = set_field( :degree, json ) unless set_field( :degree, json ) == nil
+
+    @status = set_field( :status, json ) unless set_field( :status, json ) == nil
 
     return self
   end
 
+  #
+  # we create these work items from SOLR records when delivering results
+  #
   def from_solr( solr )
 
     @id = solr['id'] unless solr['id'].blank?
@@ -117,7 +133,7 @@ class Work
     @author_email = solr_extract_first( solr, 'author_email' )
     @author_first_name = solr_extract_first( solr, 'author_first_name' )
     @author_last_name = solr_extract_first( solr, 'author_last_name' )
-    @author_institution = solr_extract_first( solr, 'publisher' )
+    @author_institution = solr_extract_first( solr, 'author_institution' )
     @author_department = solr_extract_first( solr, 'department' )
 
     @identifier = solr_extract_first( solr, 'identifier' )
@@ -157,6 +173,66 @@ class Work
     @filesets = solr_extract_all( solr, 'member_ids', 'member_ids_ssim' )
 
     return self
+  end
+
+  def valid_for_update?
+
+    # handle special cases...
+    return false if field_set?( :embargo_state ) && ['open','authenticated','restricted'].include?( @embargo_state ) == false
+    return false if field_set?( :embargo_end_date ) && valid_embargo_date?( @embargo_end_date ) == false
+    return false if field_set?( :status ) && ['pending','submitted'].include?( @status ) == false
+
+    # if we specified anything else
+    return @field_set.empty? == false
+
+  end
+
+  def valid_for_search?
+
+    # is this suitable for search?
+    return true if field_set?( :status ) && ['pending','submitted'].include?( @status )
+    return true if field_set?( :author_email ) && @author_email.blank? == false
+    return true if field_set?( :create_date ) && valid_create_date?( @create_date )
+    return false
+  end
+
+  # was this field specifically set during construction
+  def field_set?( field )
+    return @field_set.include?( field )
+  end
+
+  def convert_date( date )
+    begin
+      return DateTime.strptime( date, '%Y-%m-%d' )
+    rescue => e
+      return nil
+    end
+  end
+
+  # ignore the @field_set when creating JSON
+  def as_json(options={})
+    options[:except] ||= ['field_set']
+    super( options )
+  end
+
+  private
+
+  def valid_embargo_date?( date )
+    return convert_date( date ) != nil
+  end
+
+  def valid_create_date?( date )
+    return convert_date( date ) != nil
+  end
+
+  def set_field( field, json )
+    if json.key?( field )
+      #puts "==> #{field} was set"
+      @field_set << field unless @field_set.include?( field )
+      return json[field] unless json[field] == ['']
+      return []
+    end
+    return nil
   end
 
 end
