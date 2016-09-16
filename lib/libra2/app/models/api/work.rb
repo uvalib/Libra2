@@ -187,15 +187,6 @@ class Work
 
   end
 
-  def valid_for_search?
-
-    # is this suitable for search?
-    return true if field_set?( :status ) && ['pending','submitted'].include?( @status )
-    return true if field_set?( :author_email ) && @author_email.blank? == false
-    return true if field_set?( :create_date ) && valid_create_date?( @create_date )
-    return false
-  end
-
   # was this field specifically set during construction
   def field_set?( field )
     return @field_set.include?( field )
@@ -218,10 +209,6 @@ class Work
   private
 
   def valid_embargo_date?( date )
-    return convert_date( date ) != nil
-  end
-
-  def valid_create_date?( date )
     return convert_date( date ) != nil
   end
 

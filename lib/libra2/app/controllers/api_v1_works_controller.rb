@@ -24,7 +24,7 @@ class APIV1WorksController < APIBaseController
   #
   def search_works
 
-    work_search = API::Work.new.from_json( params )
+    work_search = API::WorkSearch.new.from_json( params )
     if work_search.valid_for_search?
 
        works = do_works_search( work_search )
@@ -103,6 +103,26 @@ class APIV1WorksController < APIBaseController
     start = numeric( params[:start], DEFAULT_START )
     limit = numeric( params[:limit], DEFAULT_LIMIT )
 
+    field = search.author_email
+    if field.present?
+      return batched_get( { author_email: field }, start, limit )
+    end
+
+    field = search.create_date
+    if field.present?
+      return batched_get( "system_create_dtsi: #{search.make_solr_date_search( field )}", start, limit )
+    end
+
+    field = search.depositor_email
+    if field.present?
+      return batched_get( { depositor_email: field }, start, limit )
+    end
+
+    field = search.modified_date
+    if field.present?
+      return batched_get( "system_modified_dtsi: #{search.make_solr_date_search( field )}", start, limit )
+    end
+
     field = search.status
     if field.present?
       if field == 'pending'
@@ -111,16 +131,6 @@ class APIV1WorksController < APIBaseController
          draft = 'false'
       end
       return batched_get( { draft: draft }, start, limit )
-    end
-
-    field = search.author_email
-    if field.present?
-      return batched_get( { author_email: field }, start, limit )
-    end
-
-    field = search.create_date
-    if field.present?
-      return batched_get( { date_created: field.gsub( '-', '/' ) }, start, limit )
     end
 
     return []
