@@ -115,7 +115,7 @@ class APIV1WorksController < APIBaseController
 
     field = search.depositor_email
     if field.present?
-      return batched_get( { depositor_email: field }, start, limit )
+      return batched_get( { depositor: field }, start, limit )
     end
 
     field = search.modified_date
