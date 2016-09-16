@@ -35,8 +35,11 @@ Rails.application.routes.draw do
   get '/api/v1/downloads/:id/content' => 'api_v1_downloads#get_content'
   get '/api/v1/downloads/:id/thumbnail' => 'api_v1_downloads#get_thumbnail'
 
-  # api deposit endpoints
-  get '/api/v1/deposits' => 'api_v1_deposits#all_deposits'
+  # api options endpoints
+  get '/api/v1/options/degrees' => 'api_v1_options#degrees'
+  get '/api/v1/options/departments' => 'api_v1_options#departments'
+  get '/api/v1/options/languages' => 'api_v1_options#languages'
+  get '/api/v1/options/rights' => 'api_v1_options#rights'
 
   Hydra::BatchEdit.add_routes(self)
   mount Qa::Engine => '/authorities'
