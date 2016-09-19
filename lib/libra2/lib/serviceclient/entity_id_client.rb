@@ -92,7 +92,7 @@ module ServiceClient
        h['creator_lastname'] = work.author_last_name if work.author_last_name
        h['creator_department'] = work.department if work.department
        h['creator_institution'] = work.author_institution if work.author_institution
-       h['publication_date'] = work.date_created.gsub( '/', '-' ) if work.date_created
+       h['publication_date'] = work.date_published.gsub( '/', '-' ) if work.date_published
        h['publication_milestone'] = work.degree if work.degree
        h['type'] = 'Text'
        h.to_json

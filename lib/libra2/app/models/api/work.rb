@@ -20,6 +20,7 @@ class Work
   attr_accessor :abstract
   attr_accessor :create_date
   attr_accessor :modified_date
+  attr_accessor :published_date
 
   attr_accessor :creator_email
   attr_accessor :embargo_state
@@ -56,6 +57,7 @@ class Work
     @abstract = ''
     @create_date = ''
     @modified_date = ''
+    @published_date = ''
 
     @creator_email = ''
     @embargo_state = ''
@@ -100,6 +102,7 @@ class Work
     @abstract = set_field( :abstract, json ) unless set_field( :abstract, json ) == nil
     @create_date = set_field( :create_date, json ) unless set_field( :create_date, json ) == nil
     @modified_date = set_field( :modified_date, json ) unless set_field( :modified_date, json ) == nil
+    @published_date = set_field( :published_date, json ) unless set_field( :published_date, json ) == nil
 
     @embargo_state = set_field( :embargo_state, json ) unless set_field( :embargo_state, json ) == nil
     @embargo_end_date = set_field( :embargo_end_date, json ) unless set_field( :embargo_end_date, json ) == nil
@@ -142,6 +145,7 @@ class Work
 
     @create_date = solr_extract_first( solr, 'date_created' ).gsub( '/', '-' )
     @modified_date = solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
+    @published_date = solr_extract_first( solr, 'date_published' ).gsub( '/', '-' )
 
     @creator_email = solr_extract_first( solr, 'creator' )
     @embargo_state = solr_extract_first( solr, 'embargo_state' )

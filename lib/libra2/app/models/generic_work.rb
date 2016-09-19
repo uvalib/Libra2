@@ -152,30 +152,10 @@ class GenericWork < ActiveFedora::Base
   # the entire line that was passed when this thesis was created
   property :sis_entry, predicate: ::RDF::URI('http://example.org/terms/sis_entry'), multiple: false
 
-  # # set of contributor computing ids
-  # property :contributor_computing_id, predicate: ::RDF::URI('http://example.org/terms/contributor_computing_id') do |index|
-  #   index.as :stored_searchable
-  # end
-  #
-  # # set of contributor first names
-  # property :contributor_first_name, predicate: ::RDF::URI('http://example.org/terms/contributor_first_name') do |index|
-  #   index.as :stored_searchable
-  # end
-  #
-  # # set of contributor last names
-  # property :contributor_last_name, predicate: ::RDF::URI('http://example.org/terms/contributor_last_name') do |index|
-  #   index.as :stored_searchable
-  # end
-  #
-  # # set of contributor institution names
-  # property :contributor_institution, predicate: ::RDF::URI('http://example.org/terms/contributor_institution') do |index|
-  #   index.as :stored_searchable
-  # end
-  #
-  # # which school/department (from SIS or the deposit registration process)
-  # property :contributor_department, predicate: ::RDF::URI('http://example.org/terms/contributor_department') do |index|
-  #   index.as :stored_searchable
-  # end
+  property :date_published, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    #property :date_created, predicate: ::RDF::Vocab::DC.created do |index|
+    index.as :stored_searchable
+  end
 
   # specify the indexer used to create the SOLR document
   def self.indexer

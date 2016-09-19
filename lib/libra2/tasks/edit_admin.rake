@@ -341,6 +341,34 @@ task set_embargo_by_id: :environment do |t, args|
   puts "Work #{work_id} embargo period updated to #{GenericWork.friendly_embargo_period embargo_period}"
 end
 
+  desc "Apply publication_date to all published works."
+  task apply_publication_date: :environment do |t, args|
+
+    count = 0
+    works = GenericWork.where({ draft: 'false' })
+    works.each { |work|
+
+      if work.date_published.nil? == false
+        puts "Skipping work #{work.id} (already has a publication date of #{work.date_published})"
+        next
+      end
+
+      # if we have a modification date use it, otherwise use the create date
+      if work.modified_date.nil? == false
+        pub_date = work.modified_date.strftime( "%Y/%m/%d" )
+        puts "Using modified_date as publication date for #{work.id} (#{pub_date})"
+        work.date_published = pub_date
+      else
+        puts "Using create_date as publication date for #{work.id} (#{work.date_created})"
+        work.date_published = work.date_created
+      end
+
+      work.save!
+      count += 1
+    }
+    puts "#{count} works updated"
+  end
+
 end   # namespace edit
 
 end   # namespace libra2

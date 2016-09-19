@@ -90,33 +90,13 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
 
       Solrizer.set_field( solr_doc,
                           'sis_entry',
-                          object.registrar_computing_id,
+                          object.sis_entry,
                           :searchable )
 
-      # Solrizer.set_field( solr_doc,
-      #                     'contributor_computing_id',
-      #                     object.contributor_computing_id,
-      #                     :searchable )
-	  #
-      # Solrizer.set_field( solr_doc,
-      #                     'contributor_first_name',
-      #                     object.contributor_first_name,
-      #                     :searchable )
-	  #
-      # Solrizer.set_field( solr_doc,
-      #                     'contributor_last_name',
-      #                     object.contributor_last_name,
-      #                     :searchable )
-	  #
-      # Solrizer.set_field( solr_doc,
-      #                     'contributor_institution',
-      #                     object.contributor_institution,
-      #                     :searchable )
-	  #
-      # Solrizer.set_field( solr_doc,
-      #                     'contributor_department',
-      #                     object.contributor_department,
-      #                     :searchable )
+      Solrizer.set_field( solr_doc,
+                          'date_published',
+                          object.date_published,
+                          :searchable )
     end
   end
 

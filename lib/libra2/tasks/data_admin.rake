@@ -197,7 +197,8 @@ namespace :libra2 do
 
       w.date_uploaded = DateTime.parse( h['date_uploaded'] ) if h['date_uploaded']
       w.date_modified = DateTime.parse( h['date_modified'] ) if h['date_modified']
-      w.date_created = DateTime.parse( h['date_created'] ) if h['date_created']
+      w.date_created = h['date_created'] if h['date_created']
+      w.date_published = h['date_published'] if h['date_published']
       w.visibility = h['visibility']
       w.visibility_during_embargo = h['visibility_during_embargo']
       w.embargo_state = h['embargo_state']

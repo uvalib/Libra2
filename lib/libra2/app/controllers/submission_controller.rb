@@ -38,6 +38,11 @@ class SubmissionController < ApplicationController
 				end_date = work.resolve_embargo_date()
 				work.embargo_end_date = DateTime.new(end_date.year, end_date.month, end_date.day)
 			end
+
+			# set the publication date
+			work.date_published = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
+
+			# save the changes
 			work.save!
 
 			# update the DOI service with the completed metadata

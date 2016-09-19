@@ -242,6 +242,11 @@ class APIV1WorksController < APIBaseController
       audit_change(work, 'Sponsoring Agency', work.sponsoring_agency, work_update.sponsoring_agency )
       work.sponsoring_agency = work_update.sponsoring_agency
     end
+    if field_changed( :published_date, work_update, work.date_published, work_update.published_date )
+      # update and audit the information
+      audit_change(work, 'Publication Date', work.date_published, work_update.published_date )
+      work.date_published = work_update.published_date
+    end
 
     # actually update the work
     work.date_modified = DateTime.now
@@ -259,6 +264,7 @@ class APIV1WorksController < APIBaseController
     return true if work_update.field_set?( :author_institution )
     return true if work_update.field_set?( :title )
     return true if work_update.field_set?( :degree )
+    return true if work_update.field_set?( :published_date )
     return false
   end
 
@@ -270,8 +276,7 @@ class APIV1WorksController < APIBaseController
      # if they are the same, then it has not changed
      return false if after == before
 
-
-     puts "==> #{field} has changed"
+     #puts "==> #{field} has changed"
      return true
   end
 
@@ -343,6 +348,7 @@ class APIV1WorksController < APIBaseController
                                   :embargo_end_date,
                                   :language,
                                   :notes,
+                                  :published_date,
                                   :rights,
                                   :title,
                                   :admin_notes => [],
