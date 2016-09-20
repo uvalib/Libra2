@@ -11,7 +11,11 @@ module UrlHelper
   end
 
   def public_site_url
-    return "https://#{Socket.gethostname}"
+    return "#{protocol}://#{Socket.gethostname}"
   end
 
+  def protocol
+    return 'https' if Rails.env.to_s != 'development'
+    return 'http'
+  end
 end

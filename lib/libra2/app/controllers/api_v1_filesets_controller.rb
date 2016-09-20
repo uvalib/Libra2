@@ -3,6 +3,7 @@ require 'securerandom'
 class APIV1FilesetsController < APIBaseController
 
   include UploadCacheBehavior
+  include UrlHelper
 
   before_action :validate_user, only: [ :add_fileset,
                                         :remove_fileset
@@ -103,7 +104,7 @@ class APIV1FilesetsController < APIBaseController
 
   def fileset_transform( filesets )
     return [] if filesets.empty?
-    return filesets.map { | fs | API::Fileset.new.from_fileset( fs, "#{request.base_url}/api/v1" ) }
+    return filesets.map { | fs | API::Fileset.new.from_fileset( fs, "#{public_site_url}/api/v1" ) }
   end
 
 end

@@ -1,5 +1,7 @@
 class APIV1WorksController < APIBaseController
 
+  include UrlHelper
+
   before_action :validate_user, only: [ :delete_work,
                                         :update_work
                                       ]
@@ -297,7 +299,7 @@ class APIV1WorksController < APIBaseController
           elapsed = Time.now - tstart
           puts "===> extracted #{fsg.length} fileset(s) in #{elapsed}"
           fsg.each do |fsid|
-            fs = API::Fileset.new.from_solr( fsid, "#{request.base_url}/api/v1" )
+            fs = API::Fileset.new.from_solr( fsid, "#{public_site_url}/api/v1" )
             w.filesets << fs
           end
           tstart = Time.now
