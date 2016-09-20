@@ -13,7 +13,7 @@
 			<% @files.each { |file| %>
 			<div class="file_asset_record">
 			<p><%= link_to(file[:title], "#{file[:location]}?filename=#{file[:title]}") %></p>
-			<p><span class="file_label">Created:</span><%= file_date_created(file[:date]) %></p>
+			<p><span class="file_label">Uploaded:</span><%= file_date_created(file[:date]) %></p>
 			</div>
 			<% } %>
 
