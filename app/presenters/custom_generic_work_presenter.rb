@@ -9,6 +9,7 @@ class CustomGenericWorkPresenter < Sufia::WorkShowPresenter
            :notes,
            :department,
            :degree,
+           :date_published,
      to: :solr_document
 
 end

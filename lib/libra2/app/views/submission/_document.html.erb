@@ -1,31 +1,32 @@
 <div class="row">
-	<div id="hd">
-	</div>
+   <div id="hd">
+   </div>
 
-	<div id="bd" class="no-search">
-		<div id="main" class="clearfix">
-			<div id="main_content" role="main" class="col-xs-12 col-sm-9 col-sm-push-3">
-				<span class='Z3988' title='rft.btitle=<%= CGI.escape(display_title(@work)) %>'></span>
-				<div id="document">
-					<% if @work.present? %>
-					<h1><%= raw(@work[:title].join(raw("<br>"))) %></h1>
-					<%= display_author( @work ) %>
-					<%= display_advisers( @work ) %>
-					<%= display_description( @work.description ) %>
-					<%= display_degree( @work.degree ) %>
-					<%= display_keywords( @work ) %>
-					<%= display_sponsoring_agency( @work.sponsoring_agency ) %>
-					<%= display_related_links( @work.related_url ) %>
-					<%= display_notes( @work.notes ) %>
-					<%= display_language( @work.language ) %>
-					<%= display_rights(@work.rights) %>
-					<%= display_doi_link( @work ) %>
-					<% end %>
-				</div>
-			</div>
-			<% if @work.present? %>
-			<%= render "side_bar" %>
-			<% end %>
-		</div>
-	</div>
+   <div id="bd" class="no-search">
+      <div id="main" class="clearfix">
+         <div id="main_content" role="main" class="col-xs-12 col-sm-9 col-sm-push-3">
+            <span class='Z3988' title='rft.btitle=<%= CGI.escape(display_title(@work)) %>'></span>
+            <div id="document">
+               <% if @work.present? %>
+               <h1><%= raw(@work[:title].join(raw("<br>"))) %></h1>
+               <%= display_author( @work ) %>
+               <%= display_advisers( @work ) %>
+               <%= display_description( @work.description ) %>
+               <%= display_degree( @work.degree ) %>
+               <%= display_keywords( @work ) %>
+               <%= display_sponsoring_agency( @work.sponsoring_agency ) %>
+               <%= display_related_links( @work.related_url ) %>
+               <%= display_notes( @work.notes ) %>
+               <%= display_language( @work.language ) %>
+               <%= display_rights(@work.rights) %>
+               <%= display_publication_date(@work.date_published) %>
+               <%= display_doi_link( @work ) %>
+               <% end %>
+            </div>
+         </div>
+         <% if @work.present? %>
+         <%= render "side_bar" %>
+         <% end %>
+      </div>
+   </div>
 </div>

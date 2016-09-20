@@ -135,6 +135,10 @@ class SolrDocument
     return advisors
   end
 
+  def date_published
+    self[Solrizer.solr_name('date_published')]
+  end
+
   def is_thesis?
     return false if work_type.nil?
     return work_type[ 0 ] == GenericWork::WORK_TYPE_THESIS
