@@ -11,7 +11,7 @@ class APIV1OptionsController < APIBaseController
       options = resp['degree']
       render_options_response( :ok, options )
     else
-       render_options_response( status )
+      render_options_response( status )
     end
   end
 
@@ -41,6 +41,14 @@ class APIV1OptionsController < APIBaseController
   #
   def rights
     options = RightsService.select_active_options.map { |op| op[0] }
+    render_options_response( :ok, options )
+  end
+
+  #
+  # get embargo status options
+  #
+  def embargos
+    options = ['No Embargo', 'UVA Only Embargo', 'Metadata Only Embargo' ]
     render_options_response( :ok, options )
   end
 

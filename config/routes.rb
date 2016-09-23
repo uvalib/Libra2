@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   # api options endpoints
   get '/api/v1/options/degrees' => 'api_v1_options#degrees'
   get '/api/v1/options/departments' => 'api_v1_options#departments'
+  get '/api/v1/options/embargos' => 'api_v1_options#embargos'
   get '/api/v1/options/languages' => 'api_v1_options#languages'
   get '/api/v1/options/rights' => 'api_v1_options#rights'
 
