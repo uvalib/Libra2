@@ -29,7 +29,7 @@ class Work
   attr_accessor :admin_notes
 
   attr_accessor :rights
-  attr_accessor :advisers
+  attr_accessor :advisors
 
   attr_accessor :keywords
   attr_accessor :language
@@ -72,7 +72,7 @@ class Work
     @admin_notes = []
 
     @rights = ''
-    @advisers = []
+    @advisors = []
 
     @keywords = []
     @language = ''
@@ -117,7 +117,7 @@ class Work
     @admin_notes = set_field( :admin_notes, json ) unless set_field( :admin_notes, json ) == nil
 
     @rights = set_field( :rights, json ) unless set_field( :rights, json ) == nil
-    @advisers = set_field( :advisers, json ) unless set_field( :advisers, json ) == nil
+    @advisors = set_field( :advisors, json ) unless set_field( :advisors, json ) == nil
 
     @keywords = set_field( :keywords, json ) unless set_field( :keywords, json ) == nil
     @language = set_field( :language, json ) unless set_field( :language, json ) == nil
@@ -161,7 +161,7 @@ class Work
     @admin_notes = solr_extract_all( solr, 'admin_notes' )
 
     @rights = solr_extract_first( solr, 'rights' )
-    @advisers = solr_extract_all( solr, 'contributor' )
+    @advisors = solr_extract_all( solr, 'contributor' )
 
     @keywords = solr_extract_all( solr, 'keyword' )
     @language = solr_extract_first( solr, 'language' )

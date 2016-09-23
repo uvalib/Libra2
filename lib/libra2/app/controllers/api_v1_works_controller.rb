@@ -220,10 +220,10 @@ class APIV1WorksController < APIBaseController
       audit_change(work, 'Title', work.title, [ work_update.title ] )
       work.title = [ work_update.title ]
     end
-    if field_changed( :advisers, work_update, work.contributor, work_update.advisers )
+    if field_changed( :advisors, work_update, work.contributor, work_update.advisors )
       # update and audit the information
-      audit_change(work, 'Advisers', work.contributor, work_update.advisers )
-      work.contributor = work_update.advisers
+      audit_change(work, 'Advisors', work.contributor, work_update.advisors )
+      work.contributor = work_update.advisors
     end
     if field_changed( :keywords, work_update, work.keyword, work_update.keywords )
       # update and audit the information
@@ -355,7 +355,7 @@ class APIV1WorksController < APIBaseController
                                   :rights,
                                   :title,
                                   :admin_notes => [],
-                                  :advisers => [],
+                                  :advisors => [],
                                   :keywords => [],
                                   :related_links => [],
                                   :sponsoring_agency => []
