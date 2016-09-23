@@ -183,10 +183,11 @@ class APIV1WorksController < APIBaseController
       audit_change(work, 'Degree', work.degree, work_update.degree )
       work.degree = work_update.degree
     end
-    if field_changed( :embargo_state, work_update, work.embargo_state, work_update.embargo_state )
+
+    if field_changed( :embargo_state, work_update, work.embargo_state, work_update.embargo_state_name )
       # update and audit the information
-      audit_change(work, 'Embargo Type', work.embargo_state, work_update.embargo_state )
-      work.embargo_state = work_update.embargo_state
+      audit_change(work, 'Embargo Type', work.embargo_state, work_update.embargo_state_name )
+      work.embargo_state = work_update.embargo_state_name
     end
 
     # special case where date formats are converted

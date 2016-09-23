@@ -41,6 +41,12 @@ class Work
   attr_accessor :status
   attr_accessor :filesets
 
+  EMBARGO_STATE_MAP = {
+     'No Embargo' => 'open',
+     'UVA Only Embargo' => 'authenticated',
+     'Metadata Only Embargo' => 'restricted'
+  }
+
   def initialize
 
     @id = ''
@@ -148,7 +154,7 @@ class Work
     @published_date = solr_extract_first( solr, 'date_published' ).gsub( '/', '-' )
 
     @creator_email = solr_extract_first( solr, 'creator' )
-    @embargo_state = solr_extract_first( solr, 'embargo_state' )
+    @embargo_state = translate_embargo_name( solr_extract_first( solr, 'embargo_state' ) )
     @embargo_end_date = solr_extract_first( solr, 'embargo_end_date', 'embargo_end_date_dtsim' )
 
     @notes = solr_extract_first( solr, 'notes' )
@@ -182,7 +188,7 @@ class Work
   def valid_for_update?
 
     # handle special cases...
-    return false if field_set?( :embargo_state ) && ['open','authenticated','restricted'].include?( @embargo_state ) == false
+    return false if field_set?( :embargo_state ) && valid_embargo_state?( @embargo_state ) == false
     return false if field_set?( :embargo_end_date ) && valid_embargo_date?( @embargo_end_date ) == false
     return false if field_set?( :status ) && ['pending','submitted'].include?( @status ) == false
 
@@ -210,10 +216,26 @@ class Work
     super( options )
   end
 
+  def embargo_state_name
+    return EMBARGO_STATE_MAP[ @embargo_state ] unless EMBARGO_STATE_MAP[ @embargo_state ].nil?
+    return 'unknown'
+  end
+
   private
 
   def valid_embargo_date?( date )
     return convert_date( date ) != nil
+  end
+
+  def valid_embargo_state?( state )
+    return EMBARGO_STATE_MAP.keys.include? state
+  end
+
+  def translate_embargo_name( state )
+    EMBARGO_STATE_MAP.keys.each do |key|
+      return key if state == EMBARGO_STATE_MAP[key]
+    end
+    return ''
   end
 
   def set_field( field, json )
