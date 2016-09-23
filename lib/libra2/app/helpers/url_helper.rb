@@ -11,11 +11,18 @@ module UrlHelper
   end
 
   def public_site_url
-    return "#{protocol}://#{Socket.gethostname}"
+    return "#{protocol}://#{hostname}"
+  end
+
+  private
+
+  def hostname
+    return Socket.gethostname unless Rails.env.to_s == 'development'
+    return 'localhost:3000'
   end
 
   def protocol
-    return 'https' if Rails.env.to_s != 'development'
+    return 'https' unless Rails.env.to_s == 'development'
     return 'http'
   end
 end
