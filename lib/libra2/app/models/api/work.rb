@@ -41,6 +41,8 @@ class Work
   attr_accessor :status
   attr_accessor :filesets
 
+  attr_accessor :field_set
+
   EMBARGO_STATE_MAP = {
      'No Embargo' => 'open',
      'UVA Only Embargo' => 'authenticated',

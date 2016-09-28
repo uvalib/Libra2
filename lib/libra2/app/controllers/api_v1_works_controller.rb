@@ -188,6 +188,13 @@ class APIV1WorksController < APIBaseController
       # update and audit the information
       audit_change(work, 'Embargo Type', work.embargo_state, work_update.embargo_state_name )
       work.embargo_state = work_update.embargo_state_name
+
+      # special case, we are setting the embargo without setting the end date
+      if work_update.embargo_state_name != 'open' && work_update.field_set?( :embargo_end_date ) == false
+        work_update.embargo_end_date = ( Time.now + 6.months ).strftime( '%Y-%m-%d' )
+        # really breaking the abstraction here...
+        work_update.field_set << :embargo_end_date
+      end
     end
 
     # special case where date formats are converted
