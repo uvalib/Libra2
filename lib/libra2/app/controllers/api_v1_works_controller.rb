@@ -62,7 +62,8 @@ class APIV1WorksController < APIBaseController
       render_standard_response( :not_found )
     else
       # audit the information
-      audit_log( "Work id #{work.id} (#{work.identifier}) deleted by by #{User.cid_from_email( @api_user.email)}" )
+      #audit_log( "Work id #{work.id} (#{work.identifier}) deleted by by #{User.cid_from_email( @api_user.email)}" )
+      WorkAudit.audit( work.id, User.cid_from_email( @api_user.email), 'Deleted' )
 
       # actually do the delete
       work.destroy
@@ -370,11 +371,13 @@ class APIV1WorksController < APIBaseController
   end
 
   def audit_change(work, what, old_value, new_value )
-    audit_log( "#{what} for work id #{work.id} (#{work.identifier}) changed from '#{old_value}' to '#{new_value}' by #{User.cid_from_email( @api_user.email)}" )
+    #audit_log( "#{what} for work id #{work.id} (#{work.identifier}) changed from '#{old_value}' to '#{new_value}' by #{User.cid_from_email( @api_user.email)}" )
+    WorkAudit.audit( work.id, User.cid_from_email( @api_user.email), "#{what} updated from: '#{old_value}' to: '#{new_value}'" )
   end
 
   def audit_add(work, what, new_value )
-    audit_log( "#{what} for work id #{work.id} (#{work.identifier}) updated to include '#{new_value}' by #{User.cid_from_email( @api_user.email)}" )
+    #audit_log( "#{what} for work id #{work.id} (#{work.identifier}) updated to include '#{new_value}' by #{User.cid_from_email( @api_user.email)}" )
+    WorkAudit.audit( work.id, User.cid_from_email( @api_user.email), "#{what} updated to include '#{new_value}'" )
   end
 
 end

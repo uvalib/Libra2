@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906090000) do
+ActiveRecord::Schema.define(version: 20160929085375) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,     null: false
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.datetime "updated_at",                  null: false
   end
 
-  add_index "bookmarks", ["document_id"], name: "index_bookmarks_on_document_id", length: {"document_id"=>191}, using: :btree
+  add_index "bookmarks", ["document_id"], name: "index_bookmarks_on_document_id", using: :btree
   add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
 
   create_table "checksum_audit_logs", force: :cascade do |t|
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.datetime "updated_at",                  null: false
   end
 
-  add_index "checksum_audit_logs", ["file_set_id", "file_id"], name: "by_file_set_id_and_file_id", length: {"file_set_id"=>191, "file_id"=>191}, using: :btree
+  add_index "checksum_audit_logs", ["file_set_id", "file_id"], name: "by_file_set_id_and_file_id", using: :btree
 
   create_table "content_blocks", force: :cascade do |t|
     t.string   "name",         limit: 255
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.string "term",  limit: 255
   end
 
-  add_index "domain_terms", ["model", "term"], name: "terms_by_model_and_term", length: {"model"=>191, "term"=>191}, using: :btree
+  add_index "domain_terms", ["model", "term"], name: "terms_by_model_and_term", using: :btree
 
   create_table "domain_terms_local_authorities", id: false, force: :cascade do |t|
     t.integer "domain_term_id",     limit: 4
@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
   end
 
   add_index "featured_works", ["order"], name: "index_featured_works_on_order", using: :btree
-  add_index "featured_works", ["work_id"], name: "index_featured_works_on_work_id", length: {"work_id"=>191}, using: :btree
+  add_index "featured_works", ["work_id"], name: "index_featured_works_on_work_id", using: :btree
 
   create_table "file_download_stats", force: :cascade do |t|
     t.datetime "date"
@@ -103,7 +103,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.integer  "user_id",    limit: 4
   end
 
-  add_index "file_download_stats", ["file_id"], name: "index_file_download_stats_on_file_id", length: {"file_id"=>191}, using: :btree
+  add_index "file_download_stats", ["file_id"], name: "index_file_download_stats_on_file_id", using: :btree
   add_index "file_download_stats", ["user_id"], name: "index_file_download_stats_on_user_id", using: :btree
 
   create_table "file_view_stats", force: :cascade do |t|
@@ -115,7 +115,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.integer  "user_id",    limit: 4
   end
 
-  add_index "file_view_stats", ["file_id"], name: "index_file_view_stats_on_file_id", length: {"file_id"=>191}, using: :btree
+  add_index "file_view_stats", ["file_id"], name: "index_file_view_stats_on_file_id", using: :btree
   add_index "file_view_stats", ["user_id"], name: "index_file_view_stats_on_user_id", using: :btree
 
   create_table "follows", force: :cascade do |t|
@@ -128,8 +128,8 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.datetime "updated_at",                                  null: false
   end
 
-  add_index "follows", ["followable_id", "followable_type"], name: "fk_followables", length: {"followable_id"=>nil, "followable_type"=>191}, using: :btree
-  add_index "follows", ["follower_id", "follower_type"], name: "fk_follows", length: {"follower_id"=>nil, "follower_type"=>191}, using: :btree
+  add_index "follows", ["followable_id", "followable_type"], name: "fk_followables", using: :btree
+  add_index "follows", ["follower_id", "follower_type"], name: "fk_follows", using: :btree
 
   create_table "local_authorities", force: :cascade do |t|
     t.string "name", limit: 255
@@ -141,8 +141,8 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.string  "uri",                limit: 255
   end
 
-  add_index "local_authority_entries", ["local_authority_id", "label"], name: "entries_by_term_and_label", length: {"local_authority_id"=>nil, "label"=>191}, using: :btree
-  add_index "local_authority_entries", ["local_authority_id", "uri"], name: "entries_by_term_and_uri", length: {"local_authority_id"=>nil, "uri"=>191}, using: :btree
+  add_index "local_authority_entries", ["local_authority_id", "label"], name: "entries_by_term_and_label", using: :btree
+  add_index "local_authority_entries", ["local_authority_id", "uri"], name: "entries_by_term_and_uri", using: :btree
 
   create_table "mailboxer_conversation_opt_outs", force: :cascade do |t|
     t.integer "unsubscriber_id",   limit: 4
@@ -151,7 +151,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
   end
 
   add_index "mailboxer_conversation_opt_outs", ["conversation_id"], name: "index_mailboxer_conversation_opt_outs_on_conversation_id", using: :btree
-  add_index "mailboxer_conversation_opt_outs", ["unsubscriber_id", "unsubscriber_type"], name: "index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type", length: {"unsubscriber_id"=>nil, "unsubscriber_type"=>191}, using: :btree
+  add_index "mailboxer_conversation_opt_outs", ["unsubscriber_id", "unsubscriber_type"], name: "index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type", using: :btree
 
   create_table "mailboxer_conversations", force: :cascade do |t|
     t.string   "subject",    limit: 255, default: ""
@@ -178,9 +178,9 @@ ActiveRecord::Schema.define(version: 20160906090000) do
   end
 
   add_index "mailboxer_notifications", ["conversation_id"], name: "index_mailboxer_notifications_on_conversation_id", using: :btree
-  add_index "mailboxer_notifications", ["notified_object_id", "notified_object_type"], name: "index_mailboxer_notifications_on_notified_object_id_and_type", length: {"notified_object_id"=>nil, "notified_object_type"=>191}, using: :btree
-  add_index "mailboxer_notifications", ["sender_id", "sender_type"], name: "index_mailboxer_notifications_on_sender_id_and_sender_type", length: {"sender_id"=>nil, "sender_type"=>191}, using: :btree
-  add_index "mailboxer_notifications", ["type"], name: "index_mailboxer_notifications_on_type", length: {"type"=>191}, using: :btree
+  add_index "mailboxer_notifications", ["notified_object_id", "notified_object_type"], name: "index_mailboxer_notifications_on_notified_object_id_and_type", using: :btree
+  add_index "mailboxer_notifications", ["sender_id", "sender_type"], name: "index_mailboxer_notifications_on_sender_id_and_sender_type", using: :btree
+  add_index "mailboxer_notifications", ["type"], name: "index_mailboxer_notifications_on_type", using: :btree
 
   create_table "mailboxer_receipts", force: :cascade do |t|
     t.integer  "receiver_id",     limit: 4
@@ -198,7 +198,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
   end
 
   add_index "mailboxer_receipts", ["notification_id"], name: "index_mailboxer_receipts_on_notification_id", using: :btree
-  add_index "mailboxer_receipts", ["receiver_id", "receiver_type"], name: "index_mailboxer_receipts_on_receiver_id_and_receiver_type", length: {"receiver_id"=>nil, "receiver_type"=>191}, using: :btree
+  add_index "mailboxer_receipts", ["receiver_id", "receiver_type"], name: "index_mailboxer_receipts_on_receiver_id_and_receiver_type", using: :btree
 
   create_table "proxy_deposit_requests", force: :cascade do |t|
     t.string   "work_id",           limit: 255,                       null: false
@@ -266,7 +266,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.string "url",        limit: 255
   end
 
-  add_index "subject_local_authority_entries", ["lowerLabel"], name: "entries_by_lower_label", length: {"lowerLabel"=>191}, using: :btree
+  add_index "subject_local_authority_entries", ["lowerLabel"], name: "entries_by_lower_label", using: :btree
 
   create_table "tinymce_assets", force: :cascade do |t|
     t.string   "file",       limit: 255
@@ -289,7 +289,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.datetime "updated_at",               null: false
   end
 
-  add_index "uploaded_files", ["file_set_uri"], name: "index_uploaded_files_on_file_set_uri", length: {"file_set_uri"=>191}, using: :btree
+  add_index "uploaded_files", ["file_set_uri"], name: "index_uploaded_files_on_file_set_uri", using: :btree
   add_index "uploaded_files", ["user_id"], name: "index_uploaded_files_on_user_id", using: :btree
 
   create_table "user_stats", force: :cascade do |t|
@@ -305,42 +305,42 @@ ActiveRecord::Schema.define(version: 20160906090000) do
   add_index "user_stats", ["user_id"], name: "index_user_stats_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                  limit: 191,   default: "",    null: false
-    t.string   "encrypted_password",     limit: 191,   default: "",    null: false
-    t.string   "reset_password_token",   limit: 191
+    t.string   "email",                  limit: 255,   default: "",    null: false
+    t.string   "encrypted_password",     limit: 255,   default: "",    null: false
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.integer  "sign_in_count",          limit: 4,     default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip",     limit: 191
-    t.string   "last_sign_in_ip",        limit: 191
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
     t.boolean  "guest",                                default: false
-    t.string   "facebook_handle",        limit: 191
-    t.string   "twitter_handle",         limit: 191
-    t.string   "googleplus_handle",      limit: 191
-    t.string   "display_name",           limit: 191
-    t.string   "address",                limit: 191
-    t.string   "admin_area",             limit: 191
-    t.string   "department",             limit: 191
-    t.string   "title",                  limit: 191
-    t.string   "office",                 limit: 191
-    t.string   "chat_id",                limit: 191
-    t.string   "website",                limit: 191
-    t.string   "affiliation",            limit: 191
-    t.string   "telephone",              limit: 191
-    t.string   "avatar_file_name",       limit: 191
-    t.string   "avatar_content_type",    limit: 191
+    t.string   "facebook_handle",        limit: 255
+    t.string   "twitter_handle",         limit: 255
+    t.string   "googleplus_handle",      limit: 255
+    t.string   "display_name",           limit: 255
+    t.string   "address",                limit: 255
+    t.string   "admin_area",             limit: 255
+    t.string   "department",             limit: 255
+    t.string   "title",                  limit: 255
+    t.string   "office",                 limit: 255
+    t.string   "chat_id",                limit: 255
+    t.string   "website",                limit: 255
+    t.string   "affiliation",            limit: 255
+    t.string   "telephone",              limit: 255
+    t.string   "avatar_file_name",       limit: 255
+    t.string   "avatar_content_type",    limit: 255
     t.integer  "avatar_file_size",       limit: 4
     t.datetime "avatar_updated_at"
-    t.string   "linkedin_handle",        limit: 191
-    t.string   "orcid",                  limit: 191
-    t.string   "arkivo_token",           limit: 191
-    t.string   "arkivo_subscription",    limit: 191
+    t.string   "linkedin_handle",        limit: 255
+    t.string   "orcid",                  limit: 255
+    t.string   "arkivo_token",           limit: 255
+    t.string   "arkivo_subscription",    limit: 255
     t.binary   "zotero_token",           limit: 65535
-    t.string   "zotero_userid",          limit: 191
+    t.string   "zotero_userid",          limit: 255
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
@@ -355,6 +355,18 @@ ActiveRecord::Schema.define(version: 20160906090000) do
     t.datetime "updated_at",                  null: false
   end
 
+  create_table "work_audits", force: :cascade do |t|
+    t.string   "work_id",    limit: 255, null: false
+    t.string   "user_id",    limit: 255, null: false
+    t.string   "what",       limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "work_audits", ["created_at"], name: "index_work_audits_on_created_at", using: :btree
+  add_index "work_audits", ["user_id"], name: "index_work_audits_on_user_id", using: :btree
+  add_index "work_audits", ["work_id"], name: "index_work_audits_on_work_id", using: :btree
+
   create_table "work_view_stats", force: :cascade do |t|
     t.datetime "date"
     t.integer  "work_views", limit: 4
@@ -365,7 +377,7 @@ ActiveRecord::Schema.define(version: 20160906090000) do
   end
 
   add_index "work_view_stats", ["user_id"], name: "index_work_view_stats_on_user_id", using: :btree
-  add_index "work_view_stats", ["work_id"], name: "index_work_view_stats_on_work_id", length: {"work_id"=>191}, using: :btree
+  add_index "work_view_stats", ["work_id"], name: "index_work_view_stats_on_work_id", using: :btree
 
   add_foreign_key "curation_concerns_operations", "users"
   add_foreign_key "mailboxer_conversation_opt_outs", "mailboxer_conversations", column: "conversation_id", name: "mb_opt_outs_on_conversations_id"

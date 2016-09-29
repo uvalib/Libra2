@@ -42,6 +42,11 @@ Rails.application.routes.draw do
   get '/api/v1/options/languages' => 'api_v1_options#languages'
   get '/api/v1/options/rights' => 'api_v1_options#rights'
 
+  # api audit endpoints
+  get '/api/v1/audit/work/:id' => 'api_v1_audit#by_work'
+  get '/api/v1/audit/user/:id' => 'api_v1_audit#by_user'
+  get '/api/v1/audit' => 'api_v1_audit#search'
+
   Hydra::BatchEdit.add_routes(self)
   mount Qa::Engine => '/authorities'
   mount Blacklight::Engine => '/'
