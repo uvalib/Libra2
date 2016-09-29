@@ -2,6 +2,10 @@
 
 class APIV1AuditController < APIBaseController
 
+  DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+  DEFAULT_START_DATE = '2000-01-01'
+  DEFAULT_END_DATE = '2999-01-01'
+
   def search
     start_date = normalize_start_date( params[ :start ] )
     end_date = normalize_end_date( params[ :end ] )
@@ -23,11 +27,26 @@ class APIV1AuditController < APIBaseController
   private
 
   def normalize_start_date( date )
-    return '2000-01-01'
+    return "#{normalize_date( date, DEFAULT_START_DATE )} 00:00:00"
   end
 
   def normalize_end_date( date )
-    return '2999-01-01'
+    return "#{normalize_date( date, DEFAULT_END_DATE )} 23:59:59"
+  end
+
+  def normalize_date( date, default_date )
+    return default_date if date.nil?
+    dt = convert_date( date )
+    return default_date if dt.nil?
+    return dt.strftime( DEFAULT_DATE_FORMAT )
+  end
+
+  def convert_date( date )
+    begin
+      return DateTime.strptime( date, DEFAULT_DATE_FORMAT )
+    rescue => e
+      return nil
+    end
   end
 
   def render_audit_list_response( status, audits = [], message = nil )
