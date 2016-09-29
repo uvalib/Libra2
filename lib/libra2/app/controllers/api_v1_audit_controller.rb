@@ -11,17 +11,17 @@ class APIV1AuditController < APIBaseController
     end_date = normalize_end_date( params[ :end ] )
 
     audits = WorkAudit.where( 'created_at >= ? AND created_at <= ?', start_date, end_date ).order( created_at: :desc )
-    render_audit_list_response( :ok, audits )
+    render_audit_list_response( audits.empty? ? :not_found : :ok, audits )
   end
 
   def by_work
     audits = WorkAudit.where( 'work_id = ?', params[:id] ).order( created_at: :desc )
-    render_audit_list_response( :ok, audits )
+    render_audit_list_response( audits.empty? ? :not_found : :ok, audits )
   end
 
   def by_user
     audits = WorkAudit.where( 'user_id = ?', params[:id] ).order( created_at: :desc )
-    render_audit_list_response( :ok, audits )
+    render_audit_list_response( audits.empty? ? :not_found : :ok, audits )
   end
 
   private
