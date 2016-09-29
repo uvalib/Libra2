@@ -356,8 +356,8 @@ ActiveRecord::Schema.define(version: 20160929085375) do
   end
 
   create_table "work_audits", force: :cascade do |t|
-    t.string   "work_id",    limit: 255, null: false
-    t.string   "user_id",    limit: 255, null: false
+    t.string   "work_id",    limit: 64,  null: false
+    t.string   "user_id",    limit: 64,  null: false
     t.string   "what",       limit: 255, null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
