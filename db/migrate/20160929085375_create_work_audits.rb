@@ -4,7 +4,7 @@ class CreateWorkAudits < ActiveRecord::Migration
     create_table :work_audits do |t|
       t.string :work_id, :limit => 64, :null => false
       t.string :user_id, :limit => 64, :null => false
-      t.string :what, null: false
+      t.text :what, null: false
 
       t.timestamps null: false
     end
