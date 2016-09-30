@@ -192,9 +192,13 @@ class APIV1WorksController < APIBaseController
 
       # special case, we are setting the embargo without setting the end date
       if work_update.embargo_state_name != 'open' && work_update.field_set?( :embargo_end_date ) == false
-        work_update.embargo_end_date = ( Time.now + 6.months ).strftime( '%Y-%m-%d' )
-        # really breaking the abstraction here...
-        work_update.field_set << :embargo_end_date
+
+        # and we dont already have an embargo date set
+        if work.embargo_end_date.blank?
+           work_update.embargo_end_date = ( Time.now + 6.months ).strftime( '%Y-%m-%d' )
+           # really breaking the abstraction here...
+           work_update.field_set << :embargo_end_date
+        end
       end
     end
 
