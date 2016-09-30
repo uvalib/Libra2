@@ -215,7 +215,7 @@ class GenericWork < ActiveFedora::Base
     return depositor == me
   end
 
-  def doi_url( doi )
+  def self.doi_url( doi )
     return '' if doi.nil?
     return "http://dx.doi.org/#{doi.gsub('doi:', '')}"
   end

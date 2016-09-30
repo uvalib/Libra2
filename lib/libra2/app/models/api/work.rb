@@ -37,6 +37,7 @@ class Work
   attr_accessor :sponsoring_agency
 
   attr_accessor :degree
+  attr_accessor :url
 
   attr_accessor :status
   attr_accessor :filesets
@@ -82,6 +83,7 @@ class Work
     @sponsoring_agency = []
 
     @degree = ''
+    @url = ''
 
     @status = ''
     @filesets = []
@@ -171,6 +173,7 @@ class Work
     @sponsoring_agency = solr_extract_all( solr, 'sponsoring_agency' )
 
     @degree = solr_extract_first( solr, 'degree' )
+    @url = GenericWork.doi_url( @identifier )
 
     if solr_extract_first( solr, 'draft') == 'true'
        if @modified_date.blank? == false
