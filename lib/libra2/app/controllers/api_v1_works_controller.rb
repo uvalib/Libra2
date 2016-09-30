@@ -263,6 +263,16 @@ class APIV1WorksController < APIBaseController
       work.date_published = work_update.published_date
     end
 
+    # another special case where status is updated
+    if work_update.field_set?( :status )
+
+      # if we are moving from a published work to a non-published one
+      if work_update.status == 'pending' && work.is_draft? == false
+        audit_change( work, 'Published', 'true', 'false' )
+        work.draft = 'true'
+      end
+    end
+
     # actually update the work
     work.date_modified = DateTime.now
     work.save!
@@ -365,6 +375,7 @@ class APIV1WorksController < APIBaseController
                                   :notes,
                                   :published_date,
                                   :rights,
+                                  :status,
                                   :title,
                                   :admin_notes => [],
                                   :advisors => [],
