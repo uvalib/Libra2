@@ -314,7 +314,7 @@ def create_generic_work( work_type, user, title, description )
     status, id = ServiceClient::EntityIdClient.instance.newid( w )
     if ServiceClient::EntityIdClient.instance.ok?( status )
        w.identifier = id
-       w.permanent_url = w.doi_url( id )
+       w.permanent_url = GenericWork.doi_url( id )
        puts "done"
     else
        puts "error"

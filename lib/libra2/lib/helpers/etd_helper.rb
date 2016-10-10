@@ -53,7 +53,7 @@ module Helpers
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
         if ServiceClient::EntityIdClient.instance.ok?( status )
           w.identifier = id
-          w.permanent_url = w.doi_url( id )
+          w.permanent_url = GenericWork.doi_url( id )
         else
           puts "Cannot mint DOI (#{status})"
           ok = false
@@ -114,7 +114,7 @@ module Helpers
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
         if ServiceClient::EntityIdClient.instance.ok?( status )
            w.identifier = id
-           w.permanent_url = w.doi_url( id )
+           w.permanent_url = GenericWork.doi_url( id )
         else
           puts "Cannot mint DOI (#{status})"
           ok = false

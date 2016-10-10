@@ -212,7 +212,7 @@ namespace :libra2 do
 
       # update the identifier
       work.identifier = id
-      work.permanent_url = work.doi_url( id )
+      work.permanent_url = GenericWork.doi_url( id )
       work.save!
 
      if work.is_draft? == false
