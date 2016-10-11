@@ -42,7 +42,7 @@ class Work
   attr_accessor :status
   attr_accessor :filesets
 
-  #attr_accessor :field_set
+  attr_accessor :source
 
   EMBARGO_STATE_MAP = {
      'No Embargo' => 'open',
@@ -87,6 +87,8 @@ class Work
 
     @status = ''
     @filesets = []
+
+    @source = ''
 
     # the set of fields specified during construction
     @field_set = []
@@ -186,6 +188,9 @@ class Work
     end
 
     @filesets = solr_extract_all( solr, 'member_ids', 'member_ids_ssim' )
+
+    work_source = solr_extract_first( solr, 'work_source' )
+    @source = work_source.split( ':' )[ 0 ] unless work_source.blank?
 
     return self
   end
