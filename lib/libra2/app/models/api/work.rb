@@ -42,7 +42,7 @@ class Work
   attr_accessor :status
   attr_accessor :filesets
 
-  attr_accessor :field_set
+  #attr_accessor :field_set
 
   EMBARGO_STATE_MAP = {
      'No Embargo' => 'open',
@@ -202,12 +202,171 @@ class Work
 
   end
 
+  #
+  # resubmit the metadata if any of the fields that are included have changed
+  #
+  def resubmit_metadata?
+    return true if field_set?( :author_email )
+    return true if field_set?( :author_first_name )
+    return true if field_set?( :author_last_name )
+    return true if field_set?( :author_department )
+    return true if field_set?( :author_institution )
+    return true if field_set?( :title )
+    return true if field_set?( :degree )
+    return true if field_set?( :published_date )
+    return false
+  end
+
+  def apply_to_work( work, by_whom )
+
+    if field_changed?(:abstract, work.description, @abstract )
+      # update and audit the information
+      audit_change( work.id, 'Abstract', work.description, @abstract, by_whom )
+      work.description = @abstract
+    end
+    if field_changed?(:author_email, work.author_email, @author_email )
+      # update and audit the information
+      audit_change( work.id, 'Author Email', work.author_email, @author_email, by_whom )
+      work.author_email = @author_email
+    end
+    if field_changed?(:author_first_name, work.author_first_name, @author_first_name )
+      # update and audit the information
+      audit_change( work.id, 'Author First Name', work.author_first_name, @author_first_name, by_whom )
+      work.author_first_name = @author_first_name
+    end
+    if field_changed?(:author_last_name, work.author_last_name, @author_last_name )
+      # update and audit the information
+      audit_change( work.id, 'Author Last Name', work.author_last_name, @author_last_name, by_whom )
+      work.author_last_name = @author_last_name
+    end
+    if field_changed?(:author_institution, work.author_institution, @author_institution )
+      # update and audit the information
+      audit_change( work.id, 'Author Institution', work.author_institution, @Rauthor_institution, by_whom )
+      work.author_institution = @author_institution
+    end
+    if field_changed?(:author_department, work.department, @author_department )
+      # update and audit the information
+      audit_change( work.id, 'Department', work.department, @author_department, by_whom )
+      work.department = @author_department
+    end
+    if field_changed?(:depositor_email, work.depositor, @depositor_email )
+      # update and audit the information
+      audit_change( work.id, 'Depositor Email', work.depositor, @depositor_email, by_whom )
+
+      work.edit_users -= [ work.depositor ]
+      work.edit_users += [ @depositor_email ]
+      work.depositor = @depositor_email
+    end
+    if field_changed?(:degree, work.degree, @degree )
+      # update and audit the information
+      audit_change( work.id, 'Degree', work.degree, @degree, by_whom )
+      work.degree = @degree
+    end
+
+    if field_changed?(:embargo_state, work.embargo_state, embargo_state_name )
+      # update and audit the information
+      audit_change( work.id, 'Embargo Type', work.embargo_state, embargo_state_name, by_whom )
+      work.embargo_state = embargo_state_name
+
+      # special case, we are setting the embargo without setting the end date
+      if embargo_state_name != 'open' && field_set?( :embargo_end_date ) == false
+
+        # and we dont already have an embargo date set
+        if work.embargo_end_date.blank?
+          @embargo_end_date = ( Time.now + 6.months ).strftime( '%Y-%m-%d' )
+          @field_set << :embargo_end_date
+        end
+      end
+    end
+
+    # special case where date formats are converted
+    if field_set?( :embargo_end_date )
+      current = extract_date_from_datetime( work.embargo_end_date )
+      if @embargo_end_date != current
+        # update and audit the information
+        audit_change( work.id, 'Embargo End Date', current, @embargo_end_date, by_whom )
+        work.embargo_end_date = convert_string_to_datetime( @embargo_end_date )
+      end
+    end
+    if field_changed?(:notes, work.notes, @notes )
+      # update and audit the information
+      audit_change( work.id, 'Notes', work.notes, @notes, by_whom )
+      work.notes = @notes
+    end
+    # special case, we always *add* to an existing set of notes
+    if field_set?( :admin_notes ) && @admin_notes.blank? == false
+      # update and audit the information
+      audit_add( work.id, 'Admin Notes', @admin_notes, by_whom )
+      work.admin_notes = work.admin_notes.concat( @admin_notes )
+    end
+    if field_changed?(:rights, work.rights, [ @rights ] )
+      # update and audit the information
+      audit_change( work.id, 'Rights', work.rights, [ @rights ], by_whom )
+      work.rights = [ @rights ]
+    end
+    if field_changed?(:title, work.title, [ @title ] )
+      # update and audit the information
+      audit_change( work.id, 'Title', work.title, [ @title ], by_whom )
+      work.title = [ @title ]
+    end
+    if field_changed?(:advisors, work.contributor, @advisors )
+      # update and audit the information
+      audit_change( work.id, 'Advisors', work.contributor, @advisors, by_whom )
+      work.contributor = @advisors
+    end
+    if field_changed?(:keywords, work.keyword, @keywords )
+      # update and audit the information
+      audit_change( work.id, 'Keywords', work.keyword, @keywords, by_whom )
+      work.keyword = @keywords
+    end
+    if field_changed?(:language, work.language, @language )
+      # update and audit the information
+      audit_change( work.id, 'Language', work.language, @language, by_whom )
+      work.language = @language
+    end
+    if field_changed?(:related_links, work.related_url, @related_links )
+      # update and audit the information
+      audit_change( work.id, 'Related Links', work.related_url, @related_links, by_whom )
+      work.related_url = @related_links
+    end
+    if field_changed?(:sponsoring_agency, work.sponsoring_agency, @sponsoring_agency )
+      # update and audit the information
+      audit_change( work.id, 'Sponsoring Agency', work.sponsoring_agency, @sponsoring_agency, by_whom )
+      work.sponsoring_agency = @sponsoring_agency
+    end
+    if field_changed?(:published_date, work.date_published, @published_date )
+      # update and audit the information
+      audit_change( work.id, 'Publication Date', work.date_published, @published_date, by_whom )
+      work.date_published = @published_date
+    end
+
+    # another special case where status is updated
+    if field_set?( :status )
+
+      # if we are moving from a published work to a non-published one
+      if @status == 'pending' && work.is_draft? == false
+        audit_change( work.id, 'Published', 'true', 'false', by_whom )
+        work.draft = 'true'
+      end
+
+      # if we are moving from a non-published (draft) work to a published one
+      if @status == 'submitted' && work.is_draft? == true
+        audit_change( work.id, 'Published', 'false', 'true', by_whom )
+        # dont actually do anything yet...
+      end
+
+    end
+
+    # update the last modified date too
+    work.date_modified = DateTime.now
+  end
+
   # was this field specifically set during construction
   def field_set?( field )
     return @field_set.include?( field )
   end
 
-  def convert_date( date )
+  def convert_string_to_datetime( date )
     begin
       return DateTime.strptime( date, '%Y-%m-%d' )
     rescue => e
@@ -228,8 +387,25 @@ class Work
 
   private
 
+  def extract_date_from_datetime( dt )
+     return dt.strftime( '%Y-%m-%d' )
+  end
+
+  def field_changed?(field, before, after )
+
+    # if we did not set the field then it has not changed
+    return false if field_set?( field ) == false
+
+    # if they are the same, then it has not changed
+    return false if after == before
+
+    #puts "==> #{field} has changed"
+    return true
+  end
+
+
   def valid_embargo_date?( date )
-    return convert_date( date ) != nil
+    return convert_string_to_datetime( date ) != nil
   end
 
   def valid_embargo_state?( state )
@@ -251,6 +427,14 @@ class Work
       return []
     end
     return nil
+  end
+
+  def audit_change( id, what, old_value, new_value, by_whom )
+    WorkAudit.audit( id, by_whom, "#{what} updated from: '#{old_value}' to: '#{new_value}'" )
+  end
+
+  def audit_add( id, what, new_value, by_whom )
+    WorkAudit.audit( id, by_whom, "#{what} updated to include '#{new_value}'" )
   end
 
 end

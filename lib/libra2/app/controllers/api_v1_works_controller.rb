@@ -81,12 +81,14 @@ class APIV1WorksController < APIBaseController
     else
 
       work_update = API::Work.new.from_json( params_whitelist )
-      if work_update.valid_for_update?
+      if work_update.valid_for_update? == true
 
-        apply_and_audit( work, work_update )
+        # apply the update and save the work
+        work_update.apply_to_work( work, User.cid_from_email( @api_user.email) )
+        work.save!
 
         # if this work published, send the metadata to the DOI service
-        if work.is_draft? == false && must_resubmit_metadata( work_update )
+        if work.is_draft? == false && work_update.resubmit_metadata? == true
           update_doi_metadata( work )
         end
 
@@ -137,172 +139,6 @@ class APIV1WorksController < APIBaseController
     end
 
     return []
-  end
-
-  def apply_and_audit( work, work_update )
-
-    if field_changed( :abstract, work_update, work.description, work_update.abstract )
-      # update and audit the information
-      audit_change(work, 'Abstract', work.description, work_update.abstract )
-      work.description = work_update.abstract
-    end
-    if field_changed( :author_email, work_update, work.author_email, work_update.author_email )
-      # update and audit the information
-      audit_change(work, 'Author Email', work.author_email, work_update.author_email )
-      work.author_email = work_update.author_email
-    end
-    if field_changed( :author_first_name, work_update, work.author_first_name, work_update.author_first_name )
-      # update and audit the information
-      audit_change(work, 'Author First Name', work.author_first_name, work_update.author_first_name )
-      work.author_first_name = work_update.author_first_name
-    end
-    if field_changed( :author_last_name, work_update, work.author_last_name, work_update.author_last_name )
-      # update and audit the information
-      audit_change(work, 'Author Last Name', work.author_last_name, work_update.author_last_name )
-      work.author_last_name = work_update.author_last_name
-    end
-    if field_changed( :author_institution, work_update, work.author_institution, work_update.author_institution )
-      # update and audit the information
-      audit_change(work, 'Author Institution', work.author_institution, work_update.author_institution )
-      work.author_institution = work_update.author_institution
-    end
-    if field_changed( :author_department, work_update, work.department, work_update.author_department )
-      # update and audit the information
-      audit_change(work, 'Department', work.department, work_update.author_department )
-      work.department = work_update.author_department
-    end
-    if field_changed( :depositor_email, work_update, work.depositor, work_update.depositor_email )
-      # update and audit the information
-      audit_change(work, 'Depositor Email', work.depositor, work_update.depositor_email )
-
-      work.edit_users -= [ work.depositor ]
-      work.edit_users += [ work_update.depositor_email ]
-      work.depositor = work_update.depositor_email
-    end
-    if field_changed( :degree, work_update, work.degree, work_update.degree )
-      # update and audit the information
-      audit_change(work, 'Degree', work.degree, work_update.degree )
-      work.degree = work_update.degree
-    end
-
-    if field_changed( :embargo_state, work_update, work.embargo_state, work_update.embargo_state_name )
-      # update and audit the information
-      audit_change(work, 'Embargo Type', work.embargo_state, work_update.embargo_state_name )
-      work.embargo_state = work_update.embargo_state_name
-
-      # special case, we are setting the embargo without setting the end date
-      if work_update.embargo_state_name != 'open' && work_update.field_set?( :embargo_end_date ) == false
-
-        # and we dont already have an embargo date set
-        if work.embargo_end_date.blank?
-           work_update.embargo_end_date = ( Time.now + 6.months ).strftime( '%Y-%m-%d' )
-           # really breaking the abstraction here...
-           work_update.field_set << :embargo_end_date
-        end
-      end
-    end
-
-    # special case where date formats are converted
-    if work_update.field_set?( :embargo_end_date )
-      new_end_date = work_update.convert_date( work_update.embargo_end_date )
-      if new_end_date.to_s != work.embargo_end_date
-         # update and audit the information
-         audit_change(work, 'Embargo End Date', work.embargo_end_date, new_end_date.to_s )
-         work.embargo_end_date = new_end_date
-      end
-    end
-    if field_changed( :notes, work_update, work.notes, work_update.notes )
-      # update and audit the information
-      audit_change(work, 'Notes', work.notes, work_update.notes )
-      work.notes = work_update.notes
-    end
-    # special case, we always *add* to an existing set of notes
-    if work_update.field_set?( :admin_notes ) && work_update.admin_notes.blank? == false
-      # update and audit the information
-      audit_add(work, 'Admin Notes', work_update.admin_notes )
-      work.admin_notes = work.admin_notes.concat( work_update.admin_notes )
-    end
-    if field_changed( :rights, work_update, work.rights, [ work_update.rights ] )
-      # update and audit the information
-      audit_change(work, 'Rights', work.rights, [ work_update.rights ] )
-      work.rights = [ work_update.rights ]
-    end
-    if field_changed( :title, work_update, work.title, [ work_update.title ] )
-      # update and audit the information
-      audit_change(work, 'Title', work.title, [ work_update.title ] )
-      work.title = [ work_update.title ]
-    end
-    if field_changed( :advisors, work_update, work.contributor, work_update.advisors )
-      # update and audit the information
-      audit_change(work, 'Advisors', work.contributor, work_update.advisors )
-      work.contributor = work_update.advisors
-    end
-    if field_changed( :keywords, work_update, work.keyword, work_update.keywords )
-      # update and audit the information
-      audit_change(work, 'Keywords', work.keyword, work_update.keywords )
-      work.keyword = work_update.keywords
-    end
-    if field_changed( :language, work_update, work.language, work_update.language )
-      # update and audit the information
-      audit_change(work, 'Language', work.language, work_update.language )
-      work.language = work_update.language
-    end
-    if field_changed( :related_links, work_update, work.related_url, work_update.related_links )
-      # update and audit the information
-      audit_change(work, 'Related Links', work.related_url, work_update.related_links )
-      work.related_url = work_update.related_links
-    end
-    if field_changed( :sponsoring_agency, work_update, work.sponsoring_agency, work_update.sponsoring_agency )
-      # update and audit the information
-      audit_change(work, 'Sponsoring Agency', work.sponsoring_agency, work_update.sponsoring_agency )
-      work.sponsoring_agency = work_update.sponsoring_agency
-    end
-    if field_changed( :published_date, work_update, work.date_published, work_update.published_date )
-      # update and audit the information
-      audit_change(work, 'Publication Date', work.date_published, work_update.published_date )
-      work.date_published = work_update.published_date
-    end
-
-    # another special case where status is updated
-    if work_update.field_set?( :status )
-
-      # if we are moving from a published work to a non-published one
-      if work_update.status == 'pending' && work.is_draft? == false
-        audit_change( work, 'Published', 'true', 'false' )
-        work.draft = 'true'
-      end
-    end
-
-    # actually update the work
-    work.date_modified = DateTime.now
-    work.save!
-  end
-
-  #
-  # resubmit the metadata if any of the fields that are included have changed
-  #
-  def must_resubmit_metadata( work_update )
-    return true if work_update.field_set?( :author_email )
-    return true if work_update.field_set?( :author_first_name )
-    return true if work_update.field_set?( :author_last_name )
-    return true if work_update.field_set?( :author_department )
-    return true if work_update.field_set?( :author_institution )
-    return true if work_update.field_set?( :title )
-    return true if work_update.field_set?( :degree )
-    return true if work_update.field_set?( :published_date )
-    return false
-  end
-
-  def field_changed( field, update, before, after )
-
-     # if we did not set the field then it has not changed
-     return false if update.field_set?( field ) == false
-
-     # if they are the same, then it has not changed
-     return false if after == before
-
-     #puts "==> #{field} has changed"
-     return true
   end
 
   def work_transform( solr_works )
@@ -383,16 +219,6 @@ class APIV1WorksController < APIBaseController
                                   :related_links => [],
                                   :sponsoring_agency => []
                                 )
-  end
-
-  def audit_change(work, what, old_value, new_value )
-    #audit_log( "#{what} for work id #{work.id} (#{work.identifier}) changed from '#{old_value}' to '#{new_value}' by #{User.cid_from_email( @api_user.email)}" )
-    WorkAudit.audit( work.id, User.cid_from_email( @api_user.email), "#{what} updated from: '#{old_value}' to: '#{new_value}'" )
-  end
-
-  def audit_add(work, what, new_value )
-    #audit_log( "#{what} for work id #{work.id} (#{work.identifier}) updated to include '#{new_value}' by #{User.cid_from_email( @api_user.email)}" )
-    WorkAudit.audit( work.id, User.cid_from_email( @api_user.email), "#{what} updated to include '#{new_value}'" )
   end
 
 end
