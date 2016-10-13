@@ -12,7 +12,7 @@ module Libra2
       def my_orcid
         return '' if depositor.blank?
         user = ::User.find_by_user_key( depositor )
-        return '' if user.nil?
+        return '' if user.nil? || user.orcid.nil?
         return user.orcid.gsub( 'http://orcid.org/', '' )
       end
     end
