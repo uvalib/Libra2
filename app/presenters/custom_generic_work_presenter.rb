@@ -10,6 +10,7 @@ class CustomGenericWorkPresenter < Sufia::WorkShowPresenter
            :department,
            :degree,
            :date_published,
+           :my_orcid,
      to: :solr_document
 
 end

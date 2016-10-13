@@ -2,6 +2,7 @@
 #  `rails generate curation_concerns:work GenericWork`
 module CurationConcerns
   class GenericWorkForm < Sufia::Forms::WorkForm
+
     self.model_class = ::GenericWork
 
     attr_accessor :file_sets
@@ -12,9 +13,10 @@ module CurationConcerns
     delegate :sponsoring_agency,          to: :model
     delegate :license,                    to: :model
     delegate :embargo_period,             to: :model
-    delegate :embargo_state,             to: :model
-    delegate :embargo_end_date,             to: :model
+    delegate :embargo_state,              to: :model
+    delegate :embargo_end_date,           to: :model
     delegate :visibility_during_embargo,  to: :model
+    delegate :my_orcid,                   to: :model
 
     #delegate :required?,  to: :model
     #delegate :readonly?,  to: :model
