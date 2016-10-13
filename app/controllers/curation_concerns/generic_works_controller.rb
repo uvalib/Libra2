@@ -1,10 +1,13 @@
 module CurationConcerns
 
   class GenericWorksController < ApplicationController
-    after_action :save_file_display_name
+
+    after_action  :save_file_display_name
+
     before_action :set_requirements, only: [ :show ]
     before_action :is_me
     before_action :add_pending_file_test
+    before_action :save_orcid_if_provided, only: [ :update ]
 
     def is_me
       work = GenericWork.where({ id: params[:id] })
@@ -12,7 +15,7 @@ module CurationConcerns
         render404()
       elsif !work[0].is_mine?(current_user.email)
         render404()
-        end
+      end
     end
 
     def add_pending_file_test
@@ -54,6 +57,19 @@ module CurationConcerns
           }
             end
         end
+      end
+    end
+
+    #
+    # save an updated value if appropriate and remove it as it is a special/fake field
+    #
+    def save_orcid_if_provided
+      if params[:generic_work][:my_orcid].nil? == false
+         if current_user.orcid != "http://orcid.org/#{params[:generic_work][:my_orcid]}"
+            current_user.orcid = params[:generic_work][:my_orcid]
+            current_user.save!
+         end
+         params[:generic_work].delete( :my_orcid )
       end
     end
 

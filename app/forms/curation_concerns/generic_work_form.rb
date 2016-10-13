@@ -28,6 +28,7 @@ module CurationConcerns
         :author_last_name,
         :department,
         :author_institution,
+        :my_orcid,
 
         :contributor,
         :description,
@@ -95,7 +96,7 @@ module CurationConcerns
           # { contributor_department: [] },
           # { contributor_last_name: [] },
           # { contributor_institution: [] },
-          :embargo_state, :embargo_end_date, :embargo_period, :visibility_during_embargo, :rights, :license ]
+          :embargo_state, :embargo_end_date, :embargo_period, :visibility_during_embargo, :rights, :license, :my_orcid ]
     end
   end
 end

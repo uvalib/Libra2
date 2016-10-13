@@ -10,10 +10,10 @@ module Libra2
       # get the depositor's ORCID if possible
       #
       def my_orcid
-        return 'unknown' if depositor.blank?
+        return '' if depositor.blank?
         user = ::User.find_by_user_key( depositor )
-        return 'unknown' if user.nil?
-        return user.orcid
+        return '' if user.nil?
+        return user.orcid.gsub( 'http://orcid.org/', '' )
       end
     end
   end
