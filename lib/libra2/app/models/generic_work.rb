@@ -219,7 +219,7 @@ class GenericWork < ActiveFedora::Base
 
   def self.doi_url( doi )
     return '' if doi.nil?
-    return "http://dx.doi.org/#{doi.gsub('doi:', '')}"
+    return "https://doi.org/#{doi.gsub('doi:', '')}"
   end
 
   def self.friendly_embargo_period(embargo_period)
