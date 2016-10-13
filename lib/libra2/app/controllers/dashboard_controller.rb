@@ -80,7 +80,7 @@ class DashboardController < ApplicationController
         if status == 404
           resp = { }
         else
-            resp[:institution] = "University of Virginia"
+            resp[:institution] = GenericWork::DEFAULT_INSTITUTION
             resp[:index] = params[:index]
         end
         render json: resp, status: :ok
