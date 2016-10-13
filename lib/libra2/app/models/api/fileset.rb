@@ -9,6 +9,7 @@ class Fileset
   attr_accessor :id
   attr_accessor :source_name
   attr_accessor :file_name
+  attr_accessor :file_size
   attr_accessor :file_url
   attr_accessor :thumb_url
 
@@ -16,26 +17,32 @@ class Fileset
     @id = ''
     @source_name = ''
     @file_name = ''
+    @file_size = 0
     @file_url = ''
     @thumb_url = ''
   end
 
-  def from_json( json )
+  #def from_json( json )
 
-    @id = json[:id] unless json[:id].blank?
-    @source_name = json[:source_name] unless json[:source_name].blank?
-    @file_name = json[:file_name] unless json[:file_name].blank?
-    @file_url = json[:file_url] unless json[:file_url].blank?
-    @thumb_url = json[:thumb_url] unless json[:thumb_url].blank?
+  #  @id = json[:id] unless json[:id].blank?
+  #  @source_name = json[:source_name] unless json[:source_name].blank?
+  #  @file_name = json[:file_name] unless json[:file_name].blank?
+  #  @file_url = json[:file_url] unless json[:file_url].blank?
+  #  @thumb_url = json[:thumb_url] unless json[:thumb_url].blank?
 
-    return self
-  end
+  #  return self
+  #end
 
   def from_solr( solr, base_url )
 
+    #puts "==> SOLR #{solr.inspect}"
     @id = solr['id'] unless solr['id'].blank?
     @source_name = solr_extract_first( solr, 'label' )
     @file_name = solr_extract_first( solr, 'title' )
+    @file_size = solr_extract_only( solr, 'file_size', 'file_size_is' )
+    # handle case where attribute was not found
+    @file_size = 0 if @file_size == ''
+
     @file_url, @thumb_url = content_urls( base_url, @id )
 
     return self
@@ -43,9 +50,12 @@ class Fileset
 
   def from_fileset( file_set, base_url )
 
+    #puts "==> FILESET #{file_set.inspect}"
     @id = file_set.id
     @source_name = file_set.label
     @file_name = file_set.title[0]
+    # nowhere to get this from
+    #@file_size =
     @file_url, @thumb_url = content_urls( base_url, file_set.id )
 
     return self
