@@ -28,7 +28,7 @@
               ] -%>
 <%= CSV.generate_line headers %>
 <%- @records.each do |rec| -%>
-   <%= CSV.generate_line( [ rec.id,
+   <%= raw( CSV.generate_line( [ rec.id,
                             rec.depositor_email,
                             rec.author_email,
                             rec.author_first_name,
@@ -55,5 +55,5 @@
                             rec.degree,
                             rec.status,
                             rec.source
-                          ] ) -%>
+                          ] ) ) -%>
 <%- end -%>

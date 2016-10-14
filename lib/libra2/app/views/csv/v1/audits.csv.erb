@@ -1,13 +1,13 @@
-<%- headers = ['Work Id',
-               'User Id',
-               'Message',
-               'Created At'
+<%- headers = [ 'Created At',
+                'Work Id',
+                'User Id',
+                'Message'
               ] -%>
 <%= CSV.generate_line headers %>
 <%- @records.each do |rec| -%>
-   <%= CSV.generate_line( [ rec.work_id,
+   <%= raw( CSV.generate_line( [ rec.created_at,
+                            rec.work_id,
                             rec.user_id,
-                            rec.what,
-                            rec.created_at
-                          ] ) -%>
+                            rec.what
+                          ] ) ) -%>
 <%- end -%>

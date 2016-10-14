@@ -7,11 +7,11 @@
               ] -%>
 <%= CSV.generate_line headers %>
 <%- @records.each do |rec| -%>
-   <%= CSV.generate_line( [ rec.id,
+   <%= raw( CSV.generate_line( [ rec.id,
                             rec.source_name,
                             rec.file_name,
                             rec.file_size,
                             rec.file_url,
                             rec.thumb_url
-                          ] ) -%>
+                          ] ) ) -%>
 <%- end -%>
