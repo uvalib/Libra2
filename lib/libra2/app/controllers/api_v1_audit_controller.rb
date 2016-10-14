@@ -11,17 +11,42 @@ class APIV1AuditController < APIBaseController
     end_date = normalize_end_date( params[ :end ] )
 
     audits = WorkAudit.where( 'created_at >= ? AND created_at <= ?', start_date, end_date ).order( created_at: :desc )
-    render_audit_list_response( audits.empty? ? :not_found : :ok, audits )
+
+    respond_to do |format|
+      format.json do
+         render_json_audit_list_response( audits.empty? ? :not_found : :ok, audits )
+      end
+      format.csv do
+        render_csv_audit_list_response( audits )
+      end
+    end
+
   end
 
   def by_work
     audits = WorkAudit.where( 'work_id = ?', params[:id] ).order( created_at: :desc )
-    render_audit_list_response( audits.empty? ? :not_found : :ok, audits )
+
+    respond_to do |format|
+      format.json do
+        render_json_audit_list_response( audits.empty? ? :not_found : :ok, audits )
+      end
+      format.csv do
+        render_csv_audit_list_response( audits )
+      end
+    end
   end
 
   def by_user
     audits = WorkAudit.where( 'user_id = ?', params[:id] ).order( created_at: :desc )
-    render_audit_list_response( audits.empty? ? :not_found : :ok, audits )
+
+    respond_to do |format|
+      format.json do
+        render_json_audit_list_response( audits.empty? ? :not_found : :ok, audits )
+      end
+      format.csv do
+        render_csv_audit_list_response( audits )
+      end
+    end
   end
 
   private
@@ -49,8 +74,21 @@ class APIV1AuditController < APIBaseController
     end
   end
 
-  def render_audit_list_response( status, audits = [], message = nil )
+  #
+  # render a json response
+  #
+  def render_json_audit_list_response(status, audits = [], message = nil )
     render json: API::AuditListResponse.new( status, audits, message ), :status => status
+  end
+
+  #
+  # render a csv response
+  #
+  def render_csv_audit_list_response( audits )
+    @records = audits
+    headers['Content-Disposition'] = 'attachment; filename="audit-list.csv"'
+    headers['Content-Type'] ||= 'text/csv'
+    render 'csv/v1/audits'
   end
 
 end

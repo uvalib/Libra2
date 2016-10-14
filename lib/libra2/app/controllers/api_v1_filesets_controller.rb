@@ -15,12 +15,18 @@ class APIV1FilesetsController < APIBaseController
   def all_filesets
     limit = numeric( params[:limit], DEFAULT_LIMIT )
     filesets = FileSet.all.limit( limit )
-    if filesets.empty? == false
-      render_fileset_response( :ok, fileset_transform( filesets ) )
-    else
-      render_fileset_response( :not_found )
+    respond_to do |format|
+      format.json do
+         if filesets.empty?
+            render_json_fileset_response(:not_found )
+         else
+            render_json_fileset_response(:ok, fileset_transform( filesets ) )
+         end
+      end
+      format.csv do
+        render_csv_fileset_response( fileset_transform( filesets ) )
+      end
     end
-
   end
 
   #
@@ -29,9 +35,9 @@ class APIV1FilesetsController < APIBaseController
   def get_fileset
     fileset = get_the_fileset
     if fileset.nil? == false
-      render_fileset_response( :ok, fileset_transform( [ fileset ] ) )
+      render_json_fileset_response(:ok, fileset_transform([fileset ] ) )
     else
-      render_fileset_response( :not_found )
+      render_json_fileset_response(:not_found )
     end
   end
 
@@ -83,10 +89,8 @@ class APIV1FilesetsController < APIBaseController
     if fileset.nil? == false
       works = fileset.in_works
       work_id = works.empty? ? 'unknown' : works[0].id
-      work_identifier = works.empty? ? 'unknown' : works[0].identifier
 
       # audit the information
-      #audit_log( "File #{fileset.title[0]} for work id #{work_id} (#{work_identifier}) deleted by #{User.cid_from_email( @api_user.email)}" )
       WorkAudit.audit( work_id, User.cid_from_email( @api_user.email), "File #{fileset.title[0]} deleted" )
 
       file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, @api_user )
@@ -100,8 +104,21 @@ class APIV1FilesetsController < APIBaseController
 
   private
 
-  def render_fileset_response( status, filesets = nil )
+  #
+  # render a json response
+  #
+  def render_json_fileset_response( status, filesets = nil )
     render json: API::FilesetListResponse.new( status, filesets ), :status => status
+  end
+
+  #
+  # render a csv response
+  #
+  def render_csv_fileset_response( filesets )
+    @records = filesets
+    headers['Content-Disposition'] = 'attachment; filename="fileset-list.csv"'
+    headers['Content-Type'] ||= 'text/csv'
+    render 'csv/v1/filesets'
   end
 
   def fileset_transform( filesets )

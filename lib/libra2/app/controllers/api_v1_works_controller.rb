@@ -7,22 +7,30 @@ class APIV1WorksController < APIBaseController
                                       ]
 
   #
-  # get all works
+  # get all works, supports json (default) and csv responses
   #
   def all_works
     start = numeric( params[:start], DEFAULT_START )
     limit = numeric( params[:limit], DEFAULT_LIMIT )
 
     works = batched_get( {}, start, limit )
-    if works.empty?
-       render_works_response( :not_found )
-    else
-       render_works_response( :ok, work_transform( works ) )
+    respond_to do |format|
+      format.json do
+         if works.empty?
+            render_json_works_response(:not_found )
+         else
+            render_json_works_response(:ok, work_transform( works ) )
+         end
+      end
+      format.csv do
+        render_csv_works_response( work_transform( works ) )
+      end
     end
+
   end
 
   #
-  # search works
+  # search works, supports json (default) and csv responses
   #
   def search_works
 
@@ -30,13 +38,20 @@ class APIV1WorksController < APIBaseController
     if work_search.valid_for_search?
 
        works = do_works_search( work_search )
-       if works.empty?
-         render_works_response( :not_found )
-       else
-         render_works_response( :ok, work_transform( works ) )
+       respond_to do |format|
+         format.json do
+            if works.empty?
+               render_json_works_response(:not_found )
+            else
+               render_json_works_response(:ok, work_transform( works ) )
+            end
+         end
+         format.csv do
+           render_csv_works_response( work_transform( works ) )
+         end
        end
     else
-      render_works_response( :bad_request, nil, 'Missing or incorrect parameter' )
+      render_json_works_response(:bad_request, nil, 'Missing or incorrect parameter' )
     end
 
   end
@@ -47,9 +62,9 @@ class APIV1WorksController < APIBaseController
   def get_work
     works = batched_get( { id: params[:id] }, 0, 1 )
     if works.empty?
-      render_works_response( :not_found )
+      render_json_works_response(:not_found )
     else
-      render_works_response( :ok, work_transform( works ) )
+      render_json_works_response(:ok, work_transform(works ) )
     end
   end
 
@@ -170,8 +185,21 @@ class APIV1WorksController < APIBaseController
     return res
   end
 
-  def render_works_response( status, works = [], message = nil )
+  #
+  # render a json response
+  #
+  def render_json_works_response( status, works = [], message = nil )
     render json: API::WorkListResponse.new( status, works, message ), :status => status
+  end
+
+  #
+  # render a csv response
+  #
+  def render_csv_works_response( works )
+    @records = works
+    headers['Content-Disposition'] = 'attachment; filename="work-list.csv"'
+    headers['Content-Type'] ||= 'text/csv'
+    render 'csv/v1/works'
   end
 
   def find_fileset( work, fsid )

@@ -1,0 +1,13 @@
+<%- headers = ['Work Id',
+               'User Id',
+               'Message',
+               'Created At'
+              ] -%>
+<%= CSV.generate_line headers %>
+<%- @records.each do |rec| -%>
+   <%= CSV.generate_line( [ rec.work_id,
+                            rec.user_id,
+                            rec.what,
+                            rec.created_at
+                          ] ) -%>
+<%- end -%>

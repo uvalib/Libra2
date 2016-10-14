@@ -15,14 +15,14 @@ Rails.application.routes.draw do
   resources :version, only: [ :index ]
 
   # api work endpoints
-  get '/api/v1/works' => 'api_v1_works#all_works'
-  get '/api/v1/works/search' => 'api_v1_works#search_works'
+  get '/api/v1/works' => 'api_v1_works#all_works', :defaults => { :format => 'json' }
+  get '/api/v1/works/search' => 'api_v1_works#search_works', :defaults => { :format => 'json' }
   get '/api/v1/works/:id' => 'api_v1_works#get_work'
   delete '/api/v1/works/:id' => 'api_v1_works#delete_work'
   put '/api/v1/works/:id' => 'api_v1_works#update_work'
 
   # api fileset endpoints
-  get '/api/v1/filesets' => 'api_v1_filesets#all_filesets'
+  get '/api/v1/filesets' => 'api_v1_filesets#all_filesets', :defaults => { :format => 'json' }
   get '/api/v1/filesets/:id' => 'api_v1_filesets#get_fileset'
   delete '/api/v1/filesets/:id' => 'api_v1_filesets#remove_fileset'
   put '/api/v1/filesets' => 'api_v1_filesets#add_fileset'
@@ -43,9 +43,9 @@ Rails.application.routes.draw do
   get '/api/v1/options/rights' => 'api_v1_options#rights'
 
   # api audit endpoints
-  get '/api/v1/audit/work/:id' => 'api_v1_audit#by_work'
-  get '/api/v1/audit/user/:id' => 'api_v1_audit#by_user'
-  get '/api/v1/audit' => 'api_v1_audit#search'
+  get '/api/v1/audit/work/:id' => 'api_v1_audit#by_work', :defaults => { :format => 'json' }
+  get '/api/v1/audit/user/:id' => 'api_v1_audit#by_user', :defaults => { :format => 'json' }
+  get '/api/v1/audit' => 'api_v1_audit#search', :defaults => { :format => 'json' }
 
   Hydra::BatchEdit.add_routes(self)
   mount Qa::Engine => '/authorities'

@@ -1,0 +1,17 @@
+<%- headers = ['Id',
+               'Source Name',
+               'Label Name',
+               'Size',
+               'File Url',
+               'Thumbnail Url'
+              ] -%>
+<%= CSV.generate_line headers %>
+<%- @records.each do |rec| -%>
+   <%= CSV.generate_line( [ rec.id,
+                            rec.source_name,
+                            rec.file_name,
+                            rec.file_size,
+                            rec.file_url,
+                            rec.thumb_url
+                          ] ) -%>
+<%- end -%>
