@@ -7,9 +7,7 @@ class APIV1AuditController < APIBaseController
   DEFAULT_END_DATE = '2999-01-01'
 
   def search
-    start_date = normalize_start_date( params[ :start ] )
-    end_date = normalize_end_date( params[ :end ] )
-
+    start_date, end_date = extract_date_params( params[ :create_date ] )
     audits = WorkAudit.where( 'created_at >= ? AND created_at <= ?', start_date, end_date ).order( created_at: :desc )
 
     respond_to do |format|
@@ -51,6 +49,20 @@ class APIV1AuditController < APIBaseController
 
   private
 
+  #
+  # the query expects a date in the format start_date:end_date where dates are in the format
+  # YYYY-MM-DD. If the date is a single date without the delimiter, the query is expected to
+  # be for the date specified
+  #
+  def extract_date_params( date )
+    return normalize_start_date( date ), normalize_end_date( date ) if date.blank?
+    parts = date.split( ":" )
+    if parts.size == 2
+      return normalize_start_date( parts[ 0 ] ), normalize_end_date( parts[ 1 ] )
+    end
+    return normalize_start_date( date ), normalize_end_date( date )
+  end
+
   def normalize_start_date( date )
     return "#{normalize_date( date, DEFAULT_START_DATE )} 00:00:00"
   end
@@ -60,7 +72,7 @@ class APIV1AuditController < APIBaseController
   end
 
   def normalize_date( date, default_date )
-    return default_date if date.nil?
+    return default_date if date.blank?
     dt = convert_date( date )
     return default_date if dt.nil?
     return dt.strftime( DEFAULT_DATE_FORMAT )
