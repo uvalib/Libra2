@@ -395,3 +395,18 @@
 	height: 8px;
 	background: #f59a3a;
 }
+
+.orcid_wrapper {
+	.orcid_search_div, .orcid_success_div {
+		clear: both;
+	}
+	.search_orcid {
+		margin-left: 9px;
+	}
+    .orcid_lookup, .orcid_search {
+	   margin-left: 12px;
+	   margin-top: 7px;
+   }
+}
+
+
