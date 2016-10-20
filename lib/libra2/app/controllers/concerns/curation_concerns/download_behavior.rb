@@ -4,6 +4,8 @@ module CurationConcerns
     extend ActiveSupport::Concern
     include Hydra::Controller::DownloadBehavior
 
+    include StatisticsHelper
+
     module ClassMethods
       def default_content_path
         :original_file
@@ -15,14 +17,20 @@ module CurationConcerns
     def show
       if is_allowed_to_see_file(params['id'])
       case file
-      when ActiveFedora::File
+        when ActiveFedora::File
         # For original files that are stored in fedora
         super
+
+        # save file download statistics
+        file_download_event( params['id'], current_user )
+
       when String
         # For derivatives stored on the local file system
         response.headers['Accept-Ranges'] = 'bytes'
         response.headers['Content-Length'] = File.size(file).to_s
         send_file file, derivative_download_options
+
+        # we dont save file download statistics from here, they are thumbnails only
       else
         render_404
       end

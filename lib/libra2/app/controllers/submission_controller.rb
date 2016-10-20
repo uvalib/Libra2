@@ -5,6 +5,7 @@ class SubmissionController < ApplicationController
 	include AuthenticationHelper
   include UrlHelper
 	include ServiceHelper
+	include StatisticsHelper
 
 	skip_before_filter :require_auth, only: [ 'public_view' ]
 	before_action :authenticate_user!, only: [ 'submit']
@@ -22,6 +23,9 @@ class SubmissionController < ApplicationController
 			end
 			set_debugging_override()
 			@files = get_file_sets(@work)
+
+			# save work view statistics
+			work_view_event( @work.id, current_user ) if @is_preview == false
 		else
 			render404public()
 		end
