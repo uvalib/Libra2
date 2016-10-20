@@ -16,13 +16,9 @@ module PublicHelper
             return file_date(DateTime.strptime(date, "%m/%d/%Y"))
          rescue
             begin
-               return file_date(DateTime.strptime(date, "%Y/%m/%d"))
+               return file_date(DateTime.strptime(date, "%Y-%m-%d"))
             rescue
-               begin
-                  return file_date(DateTime.strptime(date, "%Y-%m-%d"))
-							 rescue
-                  return date
-               end
+               return date
             end
          end
       end

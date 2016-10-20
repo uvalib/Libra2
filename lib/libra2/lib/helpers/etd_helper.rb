@@ -34,7 +34,7 @@ module Helpers
         w.author_last_name = deposit_authorization.last_name
         w.author_institution = GenericWork::DEFAULT_INSTITUTION
 
-        w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
+        w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" )
 
         w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.embargo_state = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
@@ -92,7 +92,7 @@ module Helpers
         w.author_last_name = user_info.last_name || 'Last name'
         w.author_institution = GenericWork::DEFAULT_INSTITUTION
 
-        w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
+        w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" )
 
         w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC

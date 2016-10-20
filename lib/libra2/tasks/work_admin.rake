@@ -289,7 +289,7 @@ def create_generic_work( work_type, user, title, description )
     w.author_institution = GenericWork::DEFAULT_INSTITUTION
 
     w.date_uploaded = CurationConcerns::TimeService.time_in_utc
-    w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
+    w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" )
     w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     w.embargo_state = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC

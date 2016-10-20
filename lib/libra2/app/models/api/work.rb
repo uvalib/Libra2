@@ -155,9 +155,9 @@ class Work
     @title = solr_extract_first( solr, 'title' )
     @abstract = solr_extract_first( solr, 'description' )
 
-    @create_date = solr_extract_first( solr, 'date_created' ).gsub( '/', '-' )
+    @create_date = solr_extract_first( solr, 'date_created' )
     @modified_date = solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
-    @published_date = solr_extract_first( solr, 'date_published' ).gsub( '/', '-' )
+    @published_date = solr_extract_first( solr, 'date_published' )
 
     @creator_email = solr_extract_first( solr, 'creator' )
     @embargo_state = translate_embargo_name( solr_extract_first( solr, 'embargo_state' ) )

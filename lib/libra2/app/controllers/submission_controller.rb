@@ -40,7 +40,7 @@ class SubmissionController < ApplicationController
 			end
 
 			# set the publication date
-			work.date_published = CurationConcerns::TimeService.time_in_utc.strftime( "%Y/%m/%d" )
+			work.date_published = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" )
 
 			# save the changes
 			work.save!

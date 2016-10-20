@@ -355,7 +355,7 @@ end
 
       # if we have a modification date use it, otherwise use the create date
       if work.modified_date.nil? == false
-        pub_date = work.modified_date.strftime( "%Y/%m/%d" )
+        pub_date = work.modified_date.strftime( "%Y-%m-%d" )
         puts "Using modified_date as publication date for #{work.id} (#{pub_date})"
         work.date_published = pub_date
       else
@@ -369,7 +369,46 @@ end
     puts "#{count} works updated"
   end
 
-end   # namespace edit
+  desc "Fix date format for all works."
+  task fix_date_format: :environment do |t, args|
+
+    count = 0
+    works = GenericWork.all
+    works.each { |work|
+        changed_create, date_created = convert_date_format( work.date_created )
+        changed_published, date_published = convert_date_format( work.date_published )
+
+       if changed_create || changed_published
+         if changed_create
+            puts "Updating work #{work.id} date_created from #{work.date_created} -> #{date_created}"
+            work.date_created = date_created
+         end
+
+         if changed_published
+            puts "Updating work #{work.id} date_published from #{work.date_published} -> #{date_published}"
+            work.date_published = date_published
+         end
+
+         count += 1
+         work.save!
+       end
+    }
+
+    puts "#{count} works updated"
+  end
+
+  def convert_date_format( date_str )
+
+    return false, date_str if date_str.blank?
+    if date_str.match( /\d{2}\/\d{2}\/\d{2}/ )
+      dt = date_str.gsub( '/', '-' )
+      return true, dt
+    end
+
+    return false, date_str
+  end
+
+  end   # namespace edit
 
 end   # namespace libra2
 
