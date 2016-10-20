@@ -1,0 +1,10 @@
+#
+# To integrate your app with Piwik, uncomment the lines below and add your API key information.
+#
+#   piwik_url: PIWIK_URL
+#   piwik_site_id: PIWIK_SITE_ID
+#   auth_token: PIWIK_AUTH_TOKEN
+
+piwik_url:     http://analytics.lib.virginia.edu
+piwik_site_id: 24
+auth_token:    334dd429f23b72817562e96935d0d108

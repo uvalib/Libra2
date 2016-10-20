@@ -68,3 +68,6 @@ gem 'resque-pool'
 gem 'rest-client'
 gem 'net-scp'
 gem 'json', '1.8.3'
+
+# piwik analytics
+gem 'autometal-piwik', :require => 'piwik'
