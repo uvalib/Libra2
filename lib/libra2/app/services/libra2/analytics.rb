@@ -3,6 +3,46 @@ require 'piwik'
 #Piwik::PIWIK_URL = nil
 #Piwik::PIWIK_TOKEN = nil
 
+class StatRecord
+
+  def method( method_sym )
+    puts "==> calling #{method_sym}"
+    return views
+  end
+
+  def initialize( date, views, downloads )
+    @date = date
+    @views = views
+    @downloads = downloads
+  end
+
+  def []( val )
+     puts "==> #{val} #{val.class}"
+     case val
+       when :date
+         return @date
+       when :pageviews
+         return @views
+     end
+     puts "==> returning nil"
+     0
+  end
+
+  def views
+    puts "==> calling views"
+    @views
+  end
+  def downloads
+    puts "==> calling downloads"
+    @downloads
+  end
+  def work_views
+    puts "==> calling work_views"
+    @views
+  end
+
+end
+
 module Libra2
   module Analytics
     # Loads configuration options from config/piwik.yml. Expected structure:
@@ -35,7 +75,9 @@ module Libra2
                                        :date => options[ :start_date ] )
       puts "==> #{pa.inspect}"
 
-      return []
+      res =  StatRecord.new( options[ :start_date ], 1, 2 )
+
+      return [ res ]
     end
 
     def self.downloads( options )
