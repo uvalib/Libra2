@@ -78,7 +78,7 @@ module StatisticsHelper
 
   def create_new_view_event( id, user )
     event = WorkViewStat.new
-    event.date = formatted_yyyymmdd( time_now )
+    event.date = Time.zone.now.beginning_of_day
     event.work_views = 1
     event.work_id = id
     event.user_id = user.id unless user.nil?
@@ -87,7 +87,7 @@ module StatisticsHelper
 
   def create_new_download_event( id, user )
     event = FileDownloadStat.new
-    event.date = formatted_yyyymmdd( time_now )
+    event.date = Time.zone.now.beginning_of_day
     event.downloads = 1
     event.file_id = id
     event.user_id = user.id unless user.nil?
@@ -95,8 +95,8 @@ module StatisticsHelper
   end
 
   def time_now
-    CurationConcerns::TimeService.time_in_utc
-    #Time.now
+    #CurationConcerns::TimeService.time_in_utc
+    Time.zone.now
   end
 
   def formatted_yyyymmdd( date )
