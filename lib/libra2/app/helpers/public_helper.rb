@@ -122,7 +122,7 @@ module PublicHelper
 
    def display_publication_date( date )
       return '' if date.blank?
-      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Publication Date:", date.gsub( '-', '/' ) ).render )
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Issued Date:", date.gsub( '-', '/' ) ).render )
    end
 
    def display_array(value)
