@@ -95,12 +95,12 @@ module StatisticsHelper
   end
 
   def time_now
-    #CurationConcerns::TimeService.time_in_utc
-    Time.now
+    CurationConcerns::TimeService.time_in_utc
+    #Time.now
   end
 
   def formatted_yyyymmdd( date )
-     return date.strftime( "%Y-%m-%d 00:00:00" )
+     return date.strftime( "%Y-%m-%d" )
   end
 
   def save_safely( event )
