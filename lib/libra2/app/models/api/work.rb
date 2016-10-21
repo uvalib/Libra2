@@ -50,6 +50,10 @@ class Work
      'Metadata Only Embargo' => 'restricted'
   }
 
+  PENDING_STATUS = 'pending'.freeze
+  SUBMITTED_STATUS = 'submitted'.freeze
+  INPROGRESS_STATUS = 'in-progress'.freeze
+
   def initialize
 
     @id = ''
@@ -179,12 +183,12 @@ class Work
 
     if solr_extract_first( solr, 'draft') == 'true'
        if @modified_date.blank? == false
-         @status = 'in-progress'
+         @status = INPROGRESS_STATUS
        else
-         @status = 'pending'
+         @status = PENDING_STATUS
        end
     else
-      @status = 'submitted'
+      @status = SUBMITTED_STATUS
     end
 
     @filesets = solr_extract_all( solr, 'member_ids', 'member_ids_ssim' )
@@ -200,7 +204,7 @@ class Work
     # handle special cases...
     return false if field_set?( :embargo_state ) && valid_embargo_state?( @embargo_state ) == false
     return false if field_set?( :embargo_end_date ) && valid_embargo_date?( @embargo_end_date ) == false
-    return false if field_set?( :status ) && ['pending','submitted'].include?( @status ) == false
+    return false if field_set?( :status ) && [ PENDING_STATUS, SUBMITTED_STATUS ].include?( @status ) == false
 
     # if we specified anything else
     return @field_set.empty? == false
@@ -349,13 +353,13 @@ class Work
     if field_set?( :status )
 
       # if we are moving from a published work to a non-published one
-      if @status == 'pending' && work.is_draft? == false
+      if @status == PENDING_STATUS && work.is_draft? == false
         audit_change( work.id, 'Published', 'true', 'false', by_whom )
         work.draft = 'true'
       end
 
       # if we are moving from a non-published (draft) work to a published one
-      if @status == 'submitted' && work.is_draft? == true
+      if @status == SUBMITTED_STATUS && work.is_draft? == true
         audit_change( work.id, 'Published', 'false', 'true', by_whom )
         # dont actually do anything yet...
       end
@@ -364,6 +368,11 @@ class Work
 
     # update the last modified date too
     work.date_modified = DateTime.now
+  end
+
+  # is this a draft work
+  def is_draft?
+    return @status != SUBMITTED_STATUS
   end
 
   # was this field specifically set during construction

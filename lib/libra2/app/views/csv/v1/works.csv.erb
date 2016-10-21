@@ -24,10 +24,14 @@
                'Sponsoring Agency',
                'Degree',
                'Status',
-               'Source'
+               'Source',
+               'Views',
+               'Downloads'
               ] -%>
 <%= CSV.generate_line headers %>
 <%- @records.each do |rec| -%>
+    <% next if rec.is_draft? %>
+
    <%= raw( CSV.generate_line( [ rec.id,
                             rec.depositor_email,
                             rec.author_email,
@@ -54,6 +58,8 @@
                             rec.sponsoring_agency,
                             rec.degree,
                             rec.status,
-                            rec.source
+                            rec.source,
+                            get_work_view_count( rec ),
+                            get_work_download_count( rec )
                           ] ) ) -%>
 <%- end -%>

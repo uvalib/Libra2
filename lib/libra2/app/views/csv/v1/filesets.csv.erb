@@ -3,15 +3,18 @@
                'Label Name',
                'Size',
                'File Url',
-               'Thumbnail Url'
+               'Thumbnail Url',
+               'Downloads'
               ] -%>
 <%= CSV.generate_line headers %>
 <%- @records.each do |rec| -%>
-   <%= raw( CSV.generate_line( [ rec.id,
+   <%= raw( CSV.generate_line( [
+                            rec.id,
                             rec.source_name,
                             rec.file_name,
                             rec.file_size,
                             rec.file_url,
-                            rec.thumb_url
+                            rec.thumb_url,
+                            get_file_download_count( rec )
                           ] ) ) -%>
 <%- end -%>

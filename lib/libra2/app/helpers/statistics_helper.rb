@@ -1,5 +1,8 @@
 module StatisticsHelper
 
+  #
+  # record a work view event
+  #
   def work_view_event( id, user )
     puts "==> work view event: work id #{id}, user: #{user}"
     event = find_existing_view_event( id, user )
@@ -11,6 +14,9 @@ module StatisticsHelper
     save_safely( event )
   end
 
+  #
+  # record a file download event
+  #
   def file_download_event( id, user )
     puts "==> file download event: file id #{id}, user: #{user}"
     event = find_existing_download_event( id, user )
@@ -20,6 +26,32 @@ module StatisticsHelper
        event = create_new_download_event( id, user )
     end
     save_safely( event )
+  end
+
+  #
+  # get an aggregate count of work views
+  #
+  def get_work_view_count( work )
+    return WorkViewStat.where( 'work_id = ?', work.id ).sum( :work_views )
+  end
+
+  #
+  # get an aggregate count of work downloads
+  #
+  def get_work_download_count( work )
+    return 0 if work.filesets.blank?
+    sum = 0
+    work.filesets.each { |fs|
+      sum += get_file_download_count( fs )
+    }
+    return sum
+  end
+
+  #
+  # get an aggregate count of file downloads
+  #
+  def get_file_download_count( fileset )
+    return FileDownloadStat.where( 'file_id = ?', fileset.id ).sum( :downloads )
   end
 
   private
@@ -61,8 +93,6 @@ module StatisticsHelper
     event.user_id = user.id unless user.nil?
     return event
   end
-
-  private
 
   def time_now
     CurationConcerns::TimeService.time_in_utc
