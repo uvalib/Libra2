@@ -95,7 +95,8 @@ module StatisticsHelper
   end
 
   def time_now
-    CurationConcerns::TimeService.time_in_utc
+    #CurationConcerns::TimeService.time_in_utc
+    Time.now
   end
 
   def formatted_yyyymmdd( date )
