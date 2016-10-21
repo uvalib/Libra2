@@ -57,7 +57,7 @@ module StatisticsHelper
   private
 
   def find_existing_view_event( id, user )
-    today = formatted_yyyymmdd( time_now )
+    today = time_now.beginning_of_day
     if user.nil?
       res = WorkViewStat.where( 'date = ? AND work_id = ? AND user_id is NULL', today, id ).first
     else
@@ -67,7 +67,7 @@ module StatisticsHelper
   end
 
   def find_existing_download_event( id, user )
-    today = formatted_yyyymmdd( time_now )
+    today = time_now.beginning_of_day
     if user.nil?
       res = FileDownloadStat.where( 'date = ? AND file_id = ? AND user_id is NULL', today, id ).first
     else
