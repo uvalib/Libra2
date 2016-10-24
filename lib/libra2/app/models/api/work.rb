@@ -25,6 +25,8 @@ class Work
   attr_accessor :creator_email
   attr_accessor :embargo_state
   attr_accessor :embargo_end_date
+  attr_accessor :embargo_period
+
   attr_accessor :notes
   attr_accessor :admin_notes
 
@@ -44,8 +46,10 @@ class Work
 
   attr_accessor :source
 
+  NO_EMBARGO_STATE = 'No Embargo'.freeze
+
   EMBARGO_STATE_MAP = {
-     'No Embargo' => 'open',
+     NO_EMBARGO_STATE => 'open',
      'UVA Only Embargo' => 'authenticated',
      'Metadata Only Embargo' => 'restricted'
   }
@@ -75,6 +79,8 @@ class Work
     @creator_email = ''
     @embargo_state = ''
     @embargo_end_date = ''
+    @embargo_period = ''
+
     @notes = ''
     @admin_notes = []
 
@@ -165,7 +171,10 @@ class Work
 
     @creator_email = solr_extract_first( solr, 'creator' )
     @embargo_state = translate_embargo_name( solr_extract_first( solr, 'embargo_state' ) )
-    @embargo_end_date = solr_extract_first( solr, 'embargo_end_date', 'embargo_end_date_dtsim' )
+    if @embargo_state != NO_EMBARGO_STATE
+      @embargo_end_date = solr_extract_first( solr, 'embargo_end_date', 'embargo_end_date_dtsim' )
+      @embargo_period = solr_extract_first( solr, 'embargo_period' )
+    end
 
     @notes = solr_extract_first( solr, 'notes' )
     @admin_notes = solr_extract_all( solr, 'admin_notes' )
