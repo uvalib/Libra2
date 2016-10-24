@@ -153,7 +153,14 @@ module CurationConcerns::CurationConcernController
         redirect_to main_app.confirm_curation_concerns_permission_path(curation_concern)
       else
         respond_to do |wants|
-          wants.html { redirect_to [main_app, curation_concern] }
+          wants.html {
+            # redirect to the dashboard if they hit 'save and exit'
+            if request[:save_with_files_exit]
+               redirect_to '/'
+            else
+               redirect_to [main_app, curation_concern]
+            end
+          }
           wants.json { render :show, status: :ok, location: polymorphic_path([main_app, curation_concern]) }
         end
       end
