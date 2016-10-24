@@ -26,7 +26,9 @@
                'Status',
                'Source',
                'Views',
-               'Downloads'
+               'Downloads',
+               'File Count',
+               'Total Size'
               ] -%>
 <%= CSV.generate_line headers %>
 <%- @records.each do |rec| -%>
@@ -60,6 +62,8 @@
                             rec.status,
                             rec.source,
                             get_work_view_count( rec ),
-                            get_work_download_count( rec )
+                            get_work_download_count( rec ),
+                            rec.filesets.length,
+                            get_work_aggregate_size( rec )
                           ] ) ) -%>
 <%- end -%>
