@@ -215,9 +215,9 @@ task add_file_to_work: :environment do |t, args|
     next
   end
 
-  user = User.find_by_email( TaskHelpers.default_user )
+  user = User.find_by_email( TaskHelpers.default_user_email )
   if user.nil?
-    puts "ERROR: default user #{TaskHelpers.default_user} is not available, aborting"
+    puts "ERROR: default user #{TaskHelpers.default_user_email} is not available, aborting"
     next
   end
 
@@ -262,9 +262,9 @@ task del_file_from_work: :environment do |t, args|
     next
   end
 
-  user = User.find_by_email( TaskHelpers.default_user )
+  user = User.find_by_email( TaskHelpers.default_user_email )
   if user.nil?
-    puts "ERROR: default user #{TaskHelpers.default_user} is not available, aborting"
+    puts "ERROR: default user #{TaskHelpers.default_user_email} is not available, aborting"
     next
   end
 

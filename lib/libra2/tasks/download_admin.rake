@@ -30,7 +30,7 @@ namespace :libra2 do
 
     username = ARGV[ 3 ]
     if username.nil?
-      username = 'dpg3k'
+      username = TaskHelpers.default_user
     end
 
     task username.to_sym do ; end
@@ -43,7 +43,9 @@ namespace :libra2 do
 
     if work.file_sets
       work.file_sets.each do |file_set|
-        TaskHelpers.download_fileset( file_set, target_dir, username )
+        if TaskHelpers.copy_local_fileset( file_set, target_dir ) == false
+           TaskHelpers.download_fileset( file_set, target_dir, username )
+        end
       end
     end
 

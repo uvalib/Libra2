@@ -85,7 +85,7 @@ namespace :libra2 do
   task assign_doi_my_works: :environment do |t, args|
 
     who = ARGV[ 1 ]
-    who = TaskHelpers.default_user if who.nil?
+    who = TaskHelpers.default_user_email if who.nil?
     task who.to_sym do ; end
 
     count = 0
@@ -142,7 +142,7 @@ namespace :libra2 do
   task update_doi_metadata_my_works: :environment do |t, args|
 
     who = ARGV[ 1 ]
-    who = TaskHelpers.default_user if who.nil?
+    who = TaskHelpers.default_user_email if who.nil?
     task who.to_sym do ; end
 
     count = 0

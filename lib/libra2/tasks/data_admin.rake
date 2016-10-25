@@ -82,9 +82,9 @@ namespace :libra2 do
        end
 
        work.file_sets.each do |file_set|
-         #f = File.join( d, file_set.label )
-         #get_file( endpoint, f, file_set.label, file_set.id )
-         TaskHelpers.download_fileset( file_set, d, 'dpg3k' )
+         if TaskHelpers.copy_local_fileset( file_set, d ) == false
+            TaskHelpers.download_fileset( file_set, d, TaskHelpers.default_user )
+         end
        end
 
     end

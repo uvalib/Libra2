@@ -54,7 +54,7 @@ desc "List my works; optionally provide depositor email"
 task list_my_works: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = TaskHelpers.default_user if who.nil?
+  who = TaskHelpers.default_user_email if who.nil?
   task who.to_sym do ; end
 
   count = 0
@@ -104,7 +104,7 @@ desc "Delete my works; optionally provide depositor email"
 task del_my_works: :environment do |t, args|
 
    who = ARGV[ 1 ]
-   who = TaskHelpers.default_user if who.nil?
+   who = TaskHelpers.default_user_email if who.nil?
    task who.to_sym do ; end
 
    count = 0
@@ -145,7 +145,7 @@ desc "Create new generic work; optionally provide depositor email"
 task create_new_work: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = TaskHelpers.default_user if who.nil?
+  who = TaskHelpers.default_user_email if who.nil?
   task who.to_sym do ; end
 
   # lookup user and exit if error
@@ -172,7 +172,7 @@ desc "Create new thesis; optionally provide depositor email"
 task create_new_thesis: :environment do |t, args|
 
   who = ARGV[ 1 ]
-  who = TaskHelpers.default_user if who.nil?
+  who = TaskHelpers.default_user_email if who.nil?
   task who.to_sym do ; end
 
   # lookup user and exit if error

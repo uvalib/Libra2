@@ -11,8 +11,15 @@ module TaskHelpers
   #
   # the default user for various admin activities
   #
+  def default_user_email
+    return default_user + '@' + default_domain
+  end
+
+  #
+  # the default user for various admin activities
+  #
   def default_user
-    return 'dpg3k@' + default_domain
+    return 'dpg3k'
   end
 
   #
@@ -184,7 +191,7 @@ module TaskHelpers
     src_name = "#{dir_from_fileset_id fileset.id}/#{fileset.label}"
     dst_name = "#{target_dir}/#{fileset.label}"
 
-    puts "  downloading fileset #{fileset.id}..."
+    #puts "  downloading fileset #{fileset.id}..."
 
     # try production first
     if scp_file( prod_hostname, username, "#{prod_root}/#{src_name}", dst_name ) == false
@@ -196,6 +203,26 @@ module TaskHelpers
     end
 
     return true
+  end
+
+  #
+  # copy a local fileset
+  #
+  def copy_local_fileset( fileset, target_dir )
+
+    src_name = "#{CurationConcerns.config.working_path}/#{dir_from_fileset_id fileset.id}/#{fileset.label}"
+    dst_name = "#{target_dir}/#{fileset.label}"
+
+    puts "  copying fileset #{fileset.id}..."
+    begin
+      FileUtils.cp src_name, dst_name
+      puts "  cp #{src_name} => #{dst_name} OK"
+      return true
+    rescue => e
+      #puts "  cp #{src_name} => #{dst_name} ERROR"
+      return false
+    end
+
   end
 
   def scp_file( hostname, username, src, dst )
@@ -214,7 +241,6 @@ module TaskHelpers
   def dir_from_fileset_id( id )
     return "#{id[0]}#{id[1]}/#{id[2]}#{id[3]}/#{id[4]}#{id[5]}/#{id[6]}#{id[7]}"
   end
-
 
 end
 
