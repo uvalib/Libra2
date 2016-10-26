@@ -1,5 +1,5 @@
 #
-# Some helper tasks to manage data import and export
+# Tasks to manage legacy Libra export
 #
 
 require 'oga'
@@ -7,12 +7,6 @@ require 'oga'
 namespace :libra2 do
 
   namespace :extract do
-
-  # general attributes
-  DOCUMENT_ID_FILE = 'id.json'
-  DOCUMENT_FILES_LIST = 'files.txt'
-  DOCUMENT_JSON_FILE = 'data.json'
-  DOCUMENT_HTML_FILE = 'data.html'
 
   # SOLR extract attributes
   DEFAULT_MAX_SOLR_ROWS = "100"
@@ -102,7 +96,7 @@ namespace :libra2 do
     task results_dir.to_sym do ; end
 
     if libra_dir_clean?( results_dir ) == false
-      puts "ERROR: results directory already contains Libra items, aborting"
+      puts "ERROR: results directory is not empty, aborting"
       next
     end
 
@@ -162,7 +156,7 @@ namespace :libra2 do
 
     puts "processing #{dirname}..."
 
-    f = File.join( dirname, DOCUMENT_HTML_FILE )
+    f = File.join( dirname, TaskHelpers::DOCUMENT_HTML_FILE )
     handle = File.open( f )
     document = Oga.parse_html( handle )
     handle.close( )
@@ -172,11 +166,10 @@ namespace :libra2 do
       download_libra_asset( asset['href'], File.join( dirname, asset.text ) )
     end
 
-    DOCUMENT_FILES_LIST
-    f = File.join( dirname, DOCUMENT_FILES_LIST )
+    f = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
     File.open( f, 'w') do |file|
       assets.each do |asset|
-         file.write( "#{asset.text}\n" )
+         file.write( "#{asset.text}:#{asset.text}\n" )
       end
     end
   end
@@ -191,7 +184,7 @@ namespace :libra2 do
     d = File.join( export_dir, "solr.#{number}" )
     FileUtils::mkdir_p( d )
 
-    f = File.join( d, DOCUMENT_JSON_FILE )
+    f = File.join( d, TaskHelpers::DOCUMENT_JSON_FILE )
     File.open( f, 'w') do |file|
       file.write( doc.to_json )
     end
@@ -231,17 +224,17 @@ namespace :libra2 do
     d = File.join( export_dir, "libra.#{number}" )
     FileUtils::mkdir_p( d )
 
-    f = File.join( d, DOCUMENT_ID_FILE )
+    f = File.join( d, TaskHelpers::DOCUMENT_ID_FILE )
     File.open( f, 'w') do |file|
       file.write( "{\"id\":\"#{id}\"}" )
     end
 
-    f = File.join( d, DOCUMENT_HTML_FILE )
+    f = File.join( d, TaskHelpers::DOCUMENT_HTML_FILE )
     File.open( f, 'w') do |file|
       file.write( html )
     end
 
-    f = File.join( d, DOCUMENT_JSON_FILE )
+    f = File.join( d, TaskHelpers::DOCUMENT_JSON_FILE )
     File.open( f, 'w') do |file|
       file.write( json.to_json )
     end
@@ -255,7 +248,7 @@ namespace :libra2 do
 
     puts "processing SOLR document # #{File.basename( source_file )}..."
 
-    f = File.join( source_file, DOCUMENT_JSON_FILE )
+    f = File.join( source_file, TaskHelpers::DOCUMENT_JSON_FILE )
     File.open( f, 'r') do |file|
       json_str = file.read( )
       doc = JSON.parse json_str
@@ -298,31 +291,32 @@ namespace :libra2 do
   end
 
   #
+  # check to ensure if the work directory is empty
+  #
+  def work_dir_clean?( dirname )
+    items = get_work_list( dirname )
+    return items.empty?
+  end
+
+  #
   # get the list of SOLR extract items from the work directory
   #
   def get_solr_extract_list( dirname )
-    return get_directory_list( dirname, /^solr./ )
+    return TaskHelpers.get_directory_list( dirname, /^solr./ )
   end
 
   #
   # get the list of Libra extract items from the work directory
   #
   def get_libra_extract_list( dirname )
-    return get_directory_list( dirname, /^libra./ )
+    return TaskHelpers.get_directory_list( dirname, /^libra./ )
   end
 
-  def get_directory_list( dirname, pattern )
-     res = []
-     begin
-       Dir.foreach( dirname ) do |f|
-         if pattern.match( f )
-           res << f
-         end
-       end
-     rescue => e
-     end
-
-     return res.sort { |x, y| sort_order( x, y ) }
+  #
+  # get the list of items from the work directory
+  #
+  def get_work_list( dirname )
+    return TaskHelpers.get_directory_list( dirname, /^work./ )
   end
 
   #
@@ -334,17 +328,6 @@ namespace :libra2 do
       query_str = file.read( )
       return query_str
     end
-  end
-
-  #
-  # so we can process the assets in numerical order
-  #
-  def sort_order( f1, f2 )
-    n1 = File.extname( f1 ).gsub( '.', '' ).to_i
-    n2 = File.extname( f2 ).gsub( '.', '' ).to_i
-    return -1 if n1 < n2
-    return 1 if n1 > n2
-    return 0
   end
 
   end   # namespace extract

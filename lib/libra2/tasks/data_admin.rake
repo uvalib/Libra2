@@ -83,7 +83,7 @@ namespace :libra2 do
 
        work.file_sets.each do |file_set|
          if TaskHelpers.copy_local_fileset( file_set, d ) == false
-            TaskHelpers.download_fileset( file_set, d, TaskHelpers.default_user )
+            TaskHelpers.download_fileset( file_set, d, TaskHelpers::DEFAULT_USER )
          end
        end
 
@@ -152,19 +152,7 @@ namespace :libra2 do
   end
 
   def get_import_list( dirname )
-
-    res = []
-    begin
-      Dir.foreach( dirname ) do |f|
-        if /^work./.match( f )
-          res << f
-        end
-      end
-    rescue => e
-    end
-
-    return res
-
+    return TaskHelpers.get_directory_list( dirname, /^work./ )
   end
 
   def get_file_list( dirname )

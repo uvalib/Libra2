@@ -30,7 +30,7 @@ namespace :libra2 do
 
     username = ARGV[ 3 ]
     if username.nil?
-      username = TaskHelpers.default_user
+      username = TaskHelpers::DEFAULT_USER
     end
 
     task username.to_sym do ; end

@@ -8,25 +8,21 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 
 module TaskHelpers
 
+  # used for the extract/ingest processing
+  DOCUMENT_ID_FILE = 'id.json'
+  DOCUMENT_FILES_LIST = 'filelist.txt'
+  DOCUMENT_JSON_FILE = 'data.json'
+  DOCUMENT_HTML_FILE = 'data.html'
+
+  # general definitions
+  DEFAULT_USER = 'dpg3k'
+  DEFAULT_DOMAIN = 'virginia.edu'
+
   #
   # the default user for various admin activities
   #
   def default_user_email
-    return default_user + '@' + default_domain
-  end
-
-  #
-  # the default user for various admin activities
-  #
-  def default_user
-    return 'dpg3k'
-  end
-
-  #
-  # the default domain for various admin activities
-  #
-  def default_domain
-    return 'virginia.edu'
+    return "#{DEFAULT_USER}@#{DEFAULT_DOMAIN}"
   end
 
   #
@@ -240,6 +236,31 @@ module TaskHelpers
 
   def dir_from_fileset_id( id )
     return "#{id[0]}#{id[1]}/#{id[2]}#{id[3]}/#{id[4]}#{id[5]}/#{id[6]}#{id[7]}"
+  end
+
+  def get_directory_list( dirname, pattern )
+    res = []
+    begin
+      Dir.foreach( dirname ) do |f|
+        if pattern.match( f )
+          res << f
+        end
+      end
+    rescue => e
+    end
+
+    return res.sort { |x, y| directory_sort_order( x, y ) }
+  end
+
+  #
+  # so we can process the directories in numerical order
+  #
+  def directory_sort_order( f1, f2 )
+    n1 = File.extname( f1 ).gsub( '.', '' ).to_i
+    n2 = File.extname( f2 ).gsub( '.', '' ).to_i
+    return -1 if n1 < n2
+    return 1 if n1 > n2
+    return 0
   end
 
 end
