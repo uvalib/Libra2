@@ -47,6 +47,9 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  # used for processing Libracontent
+  gem 'oga'
 end
 
 gem 'sufia', '7.1.0'
