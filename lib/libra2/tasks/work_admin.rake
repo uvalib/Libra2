@@ -305,7 +305,7 @@ def create_generic_work( work_type, user, title, description )
     w.language = GenericWork::DEFAULT_LANGUAGE
 
     # assume I am the contributor
-    w.contributor << TaskHelpers.contributor_fields( 'dpg3k' )
+    w.contributor << TaskHelpers.contributor_fields_from_cid('dpg3k' )
 
     w.rights << 'Determine your rights assignments here'
     w.license = GenericWork::DEFAULT_LICENSE

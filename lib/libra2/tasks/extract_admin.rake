@@ -63,7 +63,7 @@ namespace :libra2 do
           dump_solr_doc( work_dir, doc, count + 1 )
           count += 1
         end
-        puts "#{count} item(s) extracted successfully"
+        puts "#{count} item(s) extracted successfully; results in #{work_dir}"
       else
         puts "ERROR: SOLR query returns unexpected response"
       end
@@ -112,7 +112,7 @@ namespace :libra2 do
       process_solr_doc( results_dir, f, count + 1 )
       count += 1
     end
-    puts "#{count} item(s) processed successfully"
+    puts "#{count} item(s) processed successfully; results in #{work_dir}"
 
   end
 
@@ -141,7 +141,7 @@ namespace :libra2 do
       extract_any_assets( File.join( work_dir, dirname ) )
       count += 1
     end
-    puts "#{count} item(s) processed successfully"
+    puts "#{count} item(s) processed successfully; results in #{work_dir}"
 
   end
 

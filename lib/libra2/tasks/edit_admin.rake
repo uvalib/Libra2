@@ -140,7 +140,7 @@ task set_contributor_by_id: :environment do |t, args|
     next
   end
 
-  contributor = TaskHelpers.contributor_fields( contributor_id )
+  contributor = TaskHelpers.contributor_fields_from_cid(contributor_id )
   if contributor.nil? == false
      work.contributor = [ contributor ]
      work.save!
@@ -174,7 +174,7 @@ task add_contributor_by_id: :environment do |t, args|
     next
   end
 
-  contributor = TaskHelpers.contributor_fields( contributor_id )
+  contributor = TaskHelpers.contributor_fields_from_cid(contributor_id )
   if contributor.nil? == false
     c = Array.new( work.contributor )
     c << contributor
