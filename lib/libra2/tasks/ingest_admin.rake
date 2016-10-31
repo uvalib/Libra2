@@ -13,17 +13,17 @@ namespace :libra2 do
   DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.txt'
 
   #
-  # extract items from SOLR according to the query file and maximum number of rows
+  # ingest items that have been extracted from SOLR
   #
-  desc "Ingest legacy Libra data; must provide the extract directory; optionally provide a defaults file"
+  desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file"
   task legacy_ingest: :environment do |t, args|
 
-    work_dir = ARGV[ 1 ]
-    if work_dir.nil?
-      puts "ERROR: no extract directory specified, aborting"
+    ingest_dir = ARGV[ 1 ]
+    if ingest_dir.nil?
+      puts "ERROR: no ingest directory specified, aborting"
       next
     end
-    task work_dir.to_sym do ; end
+    task ingest_dir.to_sym do ; end
 
     defaults_file = ARGV[ 2 ]
     if defaults_file.nil?
@@ -31,10 +31,10 @@ namespace :libra2 do
     end
     task defaults_file.to_sym do ; end
 
-    # get the list of items to be processed
-    dirname = get_libra_extract_list( work_dir )
-    if dirname.empty?
-      puts "ERROR: extract directory does not contain contains Libra items, aborting"
+    # get the list of items to be ingested
+    ingests = get_ingest_list( ingest_dir )
+    if ingests.empty?
+      puts "ERROR: ingest directory does not contain contains any items, aborting"
       next
     end
 
@@ -56,8 +56,8 @@ namespace :libra2 do
 
     success_count = 0
     error_count = 0
-    dirname.each do | dirname |
-      ok = ingest_new_item( defaults, user, File.join( work_dir, dirname ) )
+    ingests.each do | dirname |
+      ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
@@ -73,9 +73,9 @@ namespace :libra2 do
   #
   def ingest_new_item( defaults, depositor, dirname )
 
-     id = load_libra_id( dirname )
-     doc = load_libra_doc( dirname )
-     files = [] #load_libra_files( dirname )
+     doc = load_solr_doc( dirname )
+     id = doc['id']
+     files = get_document_assets( dirname )
 
      puts " ingesting #{File.basename( dirname )} (#{id}) and #{files.size} file(s)..."
 
@@ -84,7 +84,7 @@ namespace :libra2 do
 
      # merge in any default attributes
      payload = merge_defaults( defaults, payload )
-     dump_ingest_payload( payload )
+     #dump_ingest_payload( payload )
 
      # validate the payload
      ok, err = validate_ingest_payload( payload )
@@ -99,9 +99,9 @@ namespace :libra2 do
        return false
      end
 
-     #files.each do |f|
-     #  TaskHelpers.upload_file( depositor, work, File.join( dirname, f ) )
-     #end
+     files.each do |f|
+       TaskHelpers.upload_file( depositor, work, File.join( dirname, f ) )
+     end
 
      return true
   end
@@ -117,20 +117,19 @@ namespace :libra2 do
      #
 
      # document title
-     title = doc.at_path( 'titleInfo/title')
+     title = doc.at_path( 'mods_title_info_t[0]')
      payload[:title] = title if title.nil? == false
 
      # document abstract
-     abstract = doc.at_path( 'abstract')
+     abstract = doc.at_path( 'abstract_t[0]')
      payload[:abstract] = abstract if abstract.nil? == false
 
      # document author
-     if doc.at_path( 'name[0]/role/roleTerm[1]/content' ) == 'author'
-       dept = doc.at_path( 'name[0]/description' )
-       cid = doc.at_path( 'name[0]/namePart[last()]' )
-       nameInfo = doc.at_path( 'name[0]/namePart' )
-       fn = name_from_nameinfo( nameInfo, 'given' )
-       ln = name_from_nameinfo( nameInfo, 'family' )
+     if doc.at_path( 'mods_0_name_0_role_0_text_t[0]' ) == 'author'
+       dept = doc.at_path( 'mods_0_name_0_description_t[0]' )
+       cid = doc.at_path( 'mods_0_name_0_computing_id_t[0]' )
+       fn = doc.at_path( 'mods_0_name_0_first_name_t[0]' )
+       ln = doc.at_path( 'mods_0_name_0_last_name_t[0]' )
        payload[:author_computing_id] = cid if cid.nil? == false
        payload[:author_first_name] = fn if fn.nil? == false
        payload[:author_last_name] = ln if ln.nil? == false
@@ -138,12 +137,11 @@ namespace :libra2 do
      end
 
      # document advisor
-     if doc.at_path( 'name[1]/role/roleTerm[1]/content' ) == 'advisor'
-       dept = doc.at_path( 'name[1]/description' )
-       cid = doc.at_path( 'name[1]/namePart[last()]' )
-       nameInfo = doc.at_path( 'name[1]/namePart' )
-       fn = name_from_nameinfo( nameInfo, 'given' )
-       ln = name_from_nameinfo( nameInfo, 'family' )
+     if doc.at_path( 'mods_0_person_1_role_0_text_t[0]' ) == 'advisor'
+       dept = doc.at_path( 'mods_0_person_1_description_t[0]' )
+       cid = doc.at_path( 'mods_0_person_1_computing_id_t[0]' )
+       fn = doc.at_path( 'mods_0_person_1_first_name_t[0]' )
+       ln = doc.at_path( 'mods_0_person_1_last_name_t[0]' )
        payload[:advisor_computing_id] = cid if cid.nil? == false
        payload[:advisor_first_name] = fn if fn.nil? == false
        payload[:advisor_last_name] = ln if ln.nil? == false
@@ -155,25 +153,14 @@ namespace :libra2 do
      #
 
      # degree program
-     degree = doc.at_path( 'extension/degree/level' )
+     degree = doc.at_path( 'mods_extension_degree_level_t[0]' )
      payload[:degree] = degree if degree.nil? == false
 
      # keywords
-     keywords = doc.at_path( 'subject/topic' )
-     payload[:keywords] = keywords if keywords.nil? == false
+     #keywords = doc.at_path( 'subject/topic' )
+     #payload[:keywords] = keywords if keywords.nil? == false
 
      return payload
-  end
-
-  #
-  # extract the name from the name information hash provided given the name type
-  #
-  def name_from_nameinfo( nameinfo, name_type )
-    nameinfo.each { |ni|
-      next if ni.is_a? String
-      return ni.at_path( 'content' ) if ni.at_path( 'type' ) == name_type
-    }
-    return nil
   end
 
   #
@@ -188,7 +175,7 @@ namespace :libra2 do
 
     # document abstract
     if payload[:abstract].nil?
-      return false, 'missing document abstract'
+    #  return false, 'missing document abstract'
     end
 
     if payload[:author_first_name].nil?
@@ -290,9 +277,9 @@ namespace :libra2 do
     return []
   end
   #
-  # load the Libra json data from the specified directory
+  # list any assets that go with the document
   #
-  def load_libra_files( dirname )
+  def get_document_assets( dirname )
     files = []
     f = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
     File.open( f, 'r').each do |line|
@@ -305,23 +292,15 @@ namespace :libra2 do
   #
   # load the Libra json data from the specified directory
   #
-  def load_libra_doc( dirname )
+  def load_solr_doc( dirname )
     return TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
-  end
-
-  #
-  # load the Libra json data from the specified directory
-  #
-  def load_libra_id( dirname )
-    doc = TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_ID_FILE ) )
-    return doc[ 'id' ]
   end
 
   #
   # get the list of Libra extract items from the work directory
   #
-  def get_libra_extract_list( dirname )
-    return TaskHelpers.get_directory_list( dirname, /^libra./ )
+  def get_ingest_list( dirname )
+    return TaskHelpers.get_directory_list( dirname, /^solr./ )
   end
 
   #
