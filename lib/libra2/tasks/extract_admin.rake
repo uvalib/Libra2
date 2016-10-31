@@ -158,9 +158,9 @@ namespace :libra2 do
 
     json = TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
     id = json[ 'id' ]
+    fname = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
+    f = File.new( fname, 'w' )
     if asset_ref.key?( id )
-      fname = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
-      f = File.new( fname, 'w' )
       asset_ref[id].each { |asset|
         title = download_fedora_asset_title( asset )
         if title.blank? == false
@@ -170,9 +170,9 @@ namespace :libra2 do
           puts "ERROR: extracting asset title, ignoring it"
         end
       }
-      f.close( )
 
     end
+    f.close( )
 
   end
 
