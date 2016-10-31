@@ -1,0 +1,1 @@
+has_model_s:"info:fedora/afmodel:FileAsset"
