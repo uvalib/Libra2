@@ -70,5 +70,4 @@ gem 'net-scp'
 gem 'json', '1.8.3'
 
 # used for exporting/ingesting Libra content
-gem 'oga'
 gem 'hash_at_path'

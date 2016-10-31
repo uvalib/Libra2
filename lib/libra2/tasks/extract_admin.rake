@@ -2,8 +2,6 @@
 # Tasks to manage legacy Libra export
 #
 
-require 'oga'
-
 namespace :libra2 do
 
   namespace :extract do
