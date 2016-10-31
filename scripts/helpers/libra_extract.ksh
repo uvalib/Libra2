@@ -1,19 +1,40 @@
 # temp directory names
-SOLR_RECORDS=tmp/1
-LIBRA_RECORDS=tmp/2
-IMPORT_RECORDS=tmp/3
+ASSET_RECORDS=tmp/file_assets
+ITEM_RECORDS=tmp/1
 
 # other attributes
-SOLR_QUERY_FILE=data/default_solr_query.txt
-MAX_RECORDS=25
+MAX_RECORDS=9999
 
-# extract records from SOLR
-bundle exec rake libra2:extract:solr_extract $SOLR_RECORDS $SOLR_QUERY_FILE $MAX_RECORDS
+function bomb_if_error {
+   local res=$1
+   if [ $res -ne 0 ]; then
+      echo "ERROR $res, aborting"
+      exit $res
+   fi
+}
 
-# process SOLR records and extract Libra records
-bundle exec rake libra2:extract:solr_process $SOLR_RECORDS $LIBRA_RECORDS
+# extract file assets thesis from SOLR
+echo ""
+echo "Extracting all file asset records..."
+echo ""
+#bundle exec rake libra2:extract:solr_extract $ASSET_RECORDS data/solr_query/file_asset_solr_query.txt $MAX_RECORDS
+res=$?
+bomb_if_error $res
+
+# extract 4th year thesis from SOLR
+echo ""
+echo "Extracting all document records..."
+echo ""
+bundle exec rake libra2:extract:solr_extract $ITEM_RECORDS data/solr_query/4th_year_thesis_solr_query.txt $MAX_RECORDS
+res=$?
+bomb_if_error $res
 
 # process Libra records and extract any assets
-bundle exec rake libra2:extract:asset_extract $LIBRA_RECORDS
+echo ""
+echo "Downloading document assets..."
+echo ""
+bundle exec rake libra2:extract:asset_extract $ITEM_RECORDS $ASSET_RECORDS
+res=$?
+bomb_if_error $res
 
 exit 0

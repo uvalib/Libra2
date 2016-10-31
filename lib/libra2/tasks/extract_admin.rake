@@ -10,11 +10,9 @@ namespace :libra2 do
 
   # SOLR extract attributes
   DEFAULT_MAX_SOLR_ROWS = "100"
-  DEFAULT_SOLR_QUERY_FILE = "data/default_solr_query.txt"
-  PRODUCTION_SOLR = "http://libsvr40.lib.virginia.edu:8983/solr/libra/select?wt=json"
-
-  # Libra extract attributes
-  PRODUCTION_LIBRA = "http://libraprod.lib.virginia.edu"
+  DEFAULT_SOLR_QUERY_FILE = "data/solr_query/default_solr_query.txt"
+  PRODUCTION_SOLR = "http://localhost:9000/solr/development/select?wt=json"
+  PRODUCTION_FEDORA = "http://fedoraAdmin:fedoraAdmin@localhost:9000/fedora/objects"
 
   #
   # extract items from SOLR according to the query file and maximum number of rows
@@ -22,12 +20,12 @@ namespace :libra2 do
   desc "Extract SOLR Libra data; must provide the extract directory; optionally provide query file and max rows"
   task solr_extract: :environment do |t, args|
 
-    work_dir = ARGV[ 1 ]
-    if work_dir.nil?
+    extract_dir = ARGV[ 1 ]
+    if extract_dir.nil?
       puts "ERROR: no extract directory specified, aborting"
       next
     end
-    task work_dir.to_sym do ; end
+    task extract_dir.to_sym do ; end
 
     query_file = ARGV[ 2 ]
     if query_file.nil?
@@ -41,7 +39,7 @@ namespace :libra2 do
     end
     task max_rows.to_sym do ; end
 
-    if solr_dir_clean?( work_dir ) == false
+    if solr_dir_clean?( extract_dir ) == false
       puts "ERROR: extract directory already contains SOLR items, aborting"
       next
     end
@@ -58,12 +56,15 @@ namespace :libra2 do
     response = HTTParty.get( url )
     if response.code == 200
 
+      # turn into real JSON
+      response = JSON.parse( response )
+
       if response['response'] && response['response']['docs']
         response['response']['docs'].each do |doc|
-          dump_solr_doc( work_dir, doc, count + 1 )
+          dump_solr_doc( extract_dir, doc, count + 1 )
           count += 1
         end
-        puts "#{count} item(s) extracted successfully; results in #{work_dir}"
+        puts "#{count} item(s) extracted successfully; results in #{extract_dir}"
       else
         puts "ERROR: SOLR query returns unexpected response"
       end
@@ -74,74 +75,47 @@ namespace :libra2 do
   end
 
   #
-  # Process the extracted SOLR documents and generate the extracted Libra items
+  # process the Libra extracts and pull any specified file assets
   #
-  desc "Process SOLR Libra data; must provide the extract directory and results directory"
-  task solr_process: :environment do |t, args|
+  desc "Extract Fedora file assets; must provide the extract directory and file asset directory"
+  task asset_extract: :environment do |t, args|
 
-    work_dir = ARGV[ 1 ]
-    if work_dir.nil?
+    extract_dir = ARGV[ 1 ]
+    if extract_dir.nil?
       puts "ERROR: no extract directory specified, aborting"
       next
     end
 
-    task work_dir.to_sym do ; end
+    task extract_dir.to_sym do ; end
 
-    results_dir = ARGV[ 2 ]
-    if results_dir.nil?
-      puts "ERROR: no results directory specified, aborting"
+    asset_dir = ARGV[ 2 ]
+    if asset_dir.nil?
+      puts "ERROR: no asset directory specified, aborting"
       next
     end
 
-    task results_dir.to_sym do ; end
+    task asset_dir.to_sym do ; end
 
-    if libra_dir_clean?( results_dir ) == false
-      puts "ERROR: results directory is not empty, aborting"
-      next
-    end
-
-    items = get_solr_extract_list( work_dir )
-    if items.empty?
+    extracts = get_solr_extract_list( extract_dir )
+    if extracts.empty?
       puts "ERROR: extract directory does not contain contains SOLR items, aborting"
       next
     end
 
-    count = 0
-    items.each do | dirname |
-      f = File.join( work_dir, dirname )
-      process_solr_doc( results_dir, f, count + 1 )
-      count += 1
-    end
-    puts "#{count} item(s) processed successfully; results in #{work_dir}"
-
-  end
-
-  #
-  # process the Libra extracts and pull any specified file assets
-  #
-  desc "Extract Libra file assets; must provide the extract directory"
-  task asset_extract: :environment do |t, args|
-
-    work_dir = ARGV[ 1 ]
-    if work_dir.nil?
-      puts "ERROR: no extract directory specified, aborting"
-      next
-    end
-
-    task work_dir.to_sym do ; end
-
-    dirname = get_libra_extract_list( work_dir )
-    if dirname.empty?
-      puts "ERROR: extract directory does not contain contains Libra items, aborting"
+    assets = get_solr_extract_list( asset_dir )
+    if assets.empty?
+      puts "ERROR: asset directory does not contain contains SOLR items, aborting"
       next
     end
 
     count = 0
-    dirname.each do | dirname |
-      extract_any_assets( File.join( work_dir, dirname ) )
+    asset_ref = load_asset_references( asset_dir, assets )
+
+    extracts.each do | dirname |
+      extract_any_assets( asset_ref, File.join( extract_dir, dirname ) )
       count += 1
     end
-    puts "#{count} item(s) processed successfully; results in #{work_dir}"
+    puts "#{count} item(s) processed successfully; results in #{extract_dir}"
 
   end
 
@@ -150,28 +124,58 @@ namespace :libra2 do
   #
 
   #
+  # load the file asset reference list
+  #
+  def load_asset_references( asset_dir, assets )
+
+    count = 0
+    asset_ref = {}
+    puts "Loading file asset references..."
+    assets.each do | dirname |
+      doc = TaskHelpers.load_json_doc( File.join( asset_dir, dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
+
+      if doc[ 'id' ] && doc[ 'is_part_of_s' ]
+        doc[ 'is_part_of_s' ].each { |d|
+            id = doc[ 'id' ]
+            po = File.basename( d )
+            if asset_ref.key?( po ) == false
+              asset_ref[ po ] = []
+            end
+            asset_ref[ po ] << id
+        }
+      end
+      count += 1
+    end
+
+    puts "#{count} file assets loaded..."
+    return asset_ref
+  end
+
+  #
   # extract any file assets from Libra
   #
-  def extract_any_assets( dirname )
+  def extract_any_assets( asset_ref, dirname )
 
     puts "processing #{dirname}..."
 
-    f = File.join( dirname, TaskHelpers::DOCUMENT_HTML_FILE )
-    handle = File.open( f )
-    document = Oga.parse_html( handle )
-    handle.close( )
+    json = TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
+    id = json[ 'id' ]
+    if asset_ref.key?( id )
+      fname = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
+      f = File.new( fname, 'w' )
+      asset_ref[id].each { |asset|
+        title = download_fedora_asset_title( asset )
+        if title.blank? == false
+           download_fedora_asset( asset, File.join( dirname, title ) )
+           f.write( "#{title}:#{title}\n" )
+        else
+          puts "ERROR: extracting asset title, ignoring it"
+        end
+      }
+      f.close( )
 
-    assets = document.css( '.file_asset a' )
-    assets.each do |asset|
-      download_libra_asset( asset['href'], File.join( dirname, asset.text ) )
     end
 
-    f = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
-    File.open( f, 'w') do |file|
-      assets.each do |asset|
-         file.write( "#{asset.text}:#{asset.text}\n" )
-      end
-    end
   end
 
   #
@@ -187,56 +191,6 @@ namespace :libra2 do
     f = File.join( d, TaskHelpers::DOCUMENT_JSON_FILE )
     File.open( f, 'w') do |file|
       file.write( doc.to_json )
-    end
-
-  end
-
-  #
-  # extract the Libra document given its id
-  #
-  def extract_libra_doc( results_dir, number, id )
-
-    puts "extracting #{id} from Libra..."
-
-    url = "#{PRODUCTION_LIBRA}/catalog/#{id}"
-    html_response = HTTParty.get( url )
-    if html_response.code == 200
-      url = "#{url}.json"
-      json_response = HTTParty.get( url )
-      if json_response.code == 200
-         dump_libra_doc( results_dir, number, id, html_response, json_response )
-      else
-        puts "ERROR: Libra query returns #{json_response.code} for #{url}"
-      end
-    else
-      puts "ERROR: Libra query returns #{html_response.code} for #{url}"
-    end
-
-  end
-
-  #
-  # write the extracted Libra document
-  #
-  def dump_libra_doc( export_dir, number, id, html, json )
-
-    puts "writing Libra document # #{number}..."
-
-    d = File.join( export_dir, "libra.#{number}" )
-    FileUtils::mkdir_p( d )
-
-    f = File.join( d, TaskHelpers::DOCUMENT_ID_FILE )
-    File.open( f, 'w') do |file|
-      file.write( "{\"id\":\"#{id}\"}" )
-    end
-
-    f = File.join( d, TaskHelpers::DOCUMENT_HTML_FILE )
-    File.open( f, 'w') do |file|
-      file.write( html )
-    end
-
-    f = File.join( d, TaskHelpers::DOCUMENT_JSON_FILE )
-    File.open( f, 'w') do |file|
-      file.write( json.to_json )
     end
 
   end
@@ -259,12 +213,12 @@ namespace :libra2 do
   end
 
   #
-  # download the specified asset from Libra
+  # download the specified asset from Fedora
   #
-  def download_libra_asset( asset_href, filename )
+  def download_fedora_asset( asset_id, filename )
 
-    url = "#{PRODUCTION_LIBRA}#{asset_href}"
-    puts " downloading #{File.basename( filename )}..."
+    url = "#{PRODUCTION_FEDORA}/#{asset_id}/datastreams/DS1/content"
+    puts " downloading #{filename} ..."
 
     File.open( filename, "wb" ) do |f|
       f.binmode
@@ -272,6 +226,23 @@ namespace :libra2 do
       f.close
     end
 
+  end
+
+  #
+  # get the fedora asset title
+  #
+  def download_fedora_asset_title( asset_id )
+
+    url = "#{PRODUCTION_FEDORA}/#{asset_id}/objectXML"
+    #puts " downloading #{url} ..."
+
+    response = HTTParty.get( url ) #.parsed_response
+    if response.code == 200
+       md = /<dc:title>(.+)<\/dc:title>/.match( response.body )
+       return md[ 1 ]
+    end
+
+    return ''
   end
 
   #
@@ -283,40 +254,10 @@ namespace :libra2 do
   end
 
   #
-  # check to ensure if the Libra extract directory is empty
-  #
-  def libra_dir_clean?( dirname )
-    items = get_libra_extract_list( dirname )
-    return items.empty?
-  end
-
-  #
-  # check to ensure if the work directory is empty
-  #
-  def work_dir_clean?( dirname )
-    items = get_work_list( dirname )
-    return items.empty?
-  end
-
-  #
   # get the list of SOLR extract items from the work directory
   #
   def get_solr_extract_list( dirname )
     return TaskHelpers.get_directory_list( dirname, /^solr./ )
-  end
-
-  #
-  # get the list of Libra extract items from the work directory
-  #
-  def get_libra_extract_list( dirname )
-    return TaskHelpers.get_directory_list( dirname, /^libra./ )
-  end
-
-  #
-  # get the list of items from the work directory
-  #
-  def get_work_list( dirname )
-    return TaskHelpers.get_directory_list( dirname, /^work./ )
   end
 
   #
