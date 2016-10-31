@@ -275,6 +275,17 @@ module TaskHelpers
     return 0
   end
 
+  #
+  # load a file containing json data and return a hash
+  #
+  def load_json_doc( filename )
+    File.open( filename, 'r') do |file|
+      json_str = file.read( )
+      doc = JSON.parse json_str
+      return doc
+    end
+  end
+
 end
 
 #

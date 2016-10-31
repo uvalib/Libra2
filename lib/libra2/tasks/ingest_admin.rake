@@ -306,26 +306,15 @@ namespace :libra2 do
   # load the Libra json data from the specified directory
   #
   def load_libra_doc( dirname )
-    return load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
+    return TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
   end
 
   #
   # load the Libra json data from the specified directory
   #
   def load_libra_id( dirname )
-    doc = load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_ID_FILE ) )
+    doc = TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_ID_FILE ) )
     return doc[ 'id' ]
-  end
-
-  #
-  # load the file containing json data
-  #
-  def load_json_doc( filename )
-    File.open( filename, 'r') do |file|
-      json_str = file.read( )
-      doc = JSON.parse json_str
-      return doc
-    end
   end
 
   #
