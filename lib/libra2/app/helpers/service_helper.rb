@@ -14,7 +14,27 @@ module ServiceHelper
     status = ServiceClient::EntityIdClient.instance.metadatasync( work )
     if ServiceClient::EntityIdClient.instance.ok?( status ) == false
       # TODO-DPG handle error
+      puts "ERROR: DOI metadata update returns #{status} (#{work.identifier})"
+      return false
     end
+    return true
+  end
+
+  # remove the DOI
+  def remove_doi( work )
+
+    return if work.nil?
+
+    # if we have no DOI, do nothing...
+    return if work.identifier.nil? || work.identifier.empty?
+
+    status = ServiceClient::EntityIdClient.instance.remove( work.identifier )
+    if ServiceClient::EntityIdClient.instance.ok?( status ) == false
+      # TODO-DPG handle error
+      puts "ERROR: DOI delete returns #{status} (#{work.identifier})"
+      return false
+    end
+    return true
   end
 
   # update any foreign system that the student has submitted
@@ -28,8 +48,10 @@ module ServiceHelper
     status = ServiceClient::DepositAuthClient.instance.request_fulfilled( work )
     if ServiceClient::DepositAuthClient.instance.ok?( status ) == false
       # TODO-DPG handle error
+      puts "ERROR: Update submit state returns #{status}"
+      return false
     end
-
+    return true
   end
 
 end
