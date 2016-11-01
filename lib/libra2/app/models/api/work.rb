@@ -203,7 +203,7 @@ class Work
     @filesets = solr_extract_all( solr, 'member_ids', 'member_ids_ssim' )
 
     work_source = solr_extract_first( solr, 'work_source' )
-    @source = work_source.split( ':' )[ 0 ] unless work_source.blank?
+    @source = work_source unless work_source.blank?
 
     return self
   end
