@@ -5,6 +5,8 @@ ITEM_RECORDS=tmp/1
 # other attributes
 MAX_RECORDS=9999
 
+
+
 function bomb_if_error {
    local res=$1
    if [ $res -ne 0 ]; then
@@ -25,7 +27,10 @@ bomb_if_error $res
 echo ""
 echo "Extracting all document records..."
 echo ""
-bundle exec rake libra2:extract:solr_extract $ITEM_RECORDS data/solr_query/4th_year_thesis_solr_query.txt $MAX_RECORDS
+#bundle exec rake libra2:extract:solr_extract $ITEM_RECORDS data/solr_query/4th_year_thesis_solr_query.txt $MAX_RECORDS
+#bundle exec rake libra2:extract:solr_extract $ITEM_RECORDS data/solr_query/master_thesis_solr_query.txt $MAX_RECORDS
+#bundle exec rake libra2:extract:solr_extract $ITEM_RECORDS data/solr_query/doctoral_thesis_solr_query.txt $MAX_RECORDS
+#bundle exec rake libra2:extract:solr_extract $ITEM_RECORDS data/solr_query/jefferson_trust_solr_query.txt $MAX_RECORDS
 res=$?
 bomb_if_error $res
 
@@ -33,7 +38,7 @@ bomb_if_error $res
 echo ""
 echo "Downloading document assets..."
 echo ""
-bundle exec rake libra2:extract:asset_extract $ITEM_RECORDS $ASSET_RECORDS
+#bundle exec rake libra2:extract:asset_extract $ITEM_RECORDS $ASSET_RECORDS
 res=$?
 bomb_if_error $res
 
