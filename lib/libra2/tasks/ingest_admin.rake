@@ -8,6 +8,9 @@ namespace :libra2 do
 
   namespace :ingest do
 
+  # define for dry runs only
+  #DRY_RUN = :yes
+
   # general attributes
   DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
   DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.txt'
@@ -93,6 +96,8 @@ namespace :libra2 do
        return false
      end
 
+     return true unless DRY_RUN.nil?
+
      ok, work = create_new_item( depositor, payload )
      if ok == false
        puts "ERROR: creating new generic work, continuing"
@@ -118,11 +123,11 @@ namespace :libra2 do
 
      # document title
      title = doc.at_path( 'mods_title_info_t[0]')
-     payload[:title] = title if title.nil? == false
+     payload[ :title ] = title if title.nil? == false
 
      # document abstract
      abstract = doc.at_path( 'abstract_t[0]')
-     payload[:abstract] = abstract if abstract.nil? == false
+     payload[ :abstract ] = abstract if abstract.nil? == false
 
      # document author
      if doc.at_path( 'mods_0_name_0_role_0_text_t[0]' ) == 'author'
@@ -130,10 +135,10 @@ namespace :libra2 do
        cid = doc.at_path( 'mods_0_name_0_computing_id_t[0]' )
        fn = doc.at_path( 'mods_0_name_0_first_name_t[0]' )
        ln = doc.at_path( 'mods_0_name_0_last_name_t[0]' )
-       payload[:author_computing_id] = cid if cid.nil? == false
-       payload[:author_first_name] = fn if fn.nil? == false
-       payload[:author_last_name] = ln if ln.nil? == false
-       payload[:department] = dept if dept.nil? == false
+       payload[ :author_computing_id ] = cid if cid.nil? == false
+       payload[ :author_first_name ] = fn if fn.nil? == false
+       payload[ :author_last_name ] = ln if ln.nil? == false
+       payload[ :department ] = dept if dept.nil? == false
      end
 
      # document advisor
@@ -142,11 +147,28 @@ namespace :libra2 do
        cid = doc.at_path( 'mods_0_person_1_computing_id_t[0]' )
        fn = doc.at_path( 'mods_0_person_1_first_name_t[0]' )
        ln = doc.at_path( 'mods_0_person_1_last_name_t[0]' )
-       payload[:advisor_computing_id] = cid if cid.nil? == false
-       payload[:advisor_first_name] = fn if fn.nil? == false
-       payload[:advisor_last_name] = ln if ln.nil? == false
-       payload[:advisor_department] = dept if dept.nil? == false
+       payload[ :advisor_computing_id ] = cid if cid.nil? == false
+       payload[ :advisor_first_name ] = fn if fn.nil? == false
+       payload[ :advisor_last_name ] = ln if ln.nil? == false
+       payload[ :advisor_department ] = dept if dept.nil? == false
      end
+
+     # issue date
+     issued = doc.at_path( 'origin_info_date_issued_t' )
+     payload[ :issued ] = issued if issued.nil? == false
+
+     # embargo attributes
+     release_date = doc.at_path( 'embargo_embargo_release_date_t' )
+     payload[ :embargo_release_date ] = release_date if release_date.nil? == false
+
+     # document source
+     payload[ :source ] = doc.at_path( 'id' )
+
+     # date and time attributes
+     date = doc.at_path( 'system_create_dt' )
+     payload[ :create_date ] = extract_date( date ) if date.nil? == false
+     date = doc.at_path( 'system_modified_dt' )
+     payload[ :modified_date ] = extract_date( date ) if date.nil? == false
 
      #
      # handle optional fields
@@ -154,11 +176,11 @@ namespace :libra2 do
 
      # degree program
      degree = doc.at_path( 'mods_extension_degree_level_t[0]' )
-     payload[:degree] = degree if degree.nil? == false
+     payload[ :degree] = degree if degree.nil? == false
 
      # keywords
      #keywords = doc.at_path( 'subject/topic' )
-     #payload[:keywords] = keywords if keywords.nil? == false
+     #payload[ :keywords] = keywords if keywords.nil? == false
 
      return payload
   end
@@ -168,45 +190,33 @@ namespace :libra2 do
   #
   def validate_ingest_payload( payload )
 
+    #
+    # ensure required fields first...
+    #
+
     # document title
-    if payload[:title].nil?
-      return false, 'missing document title'
-    end
+    return false, 'missing document title' if payload[ :title ].nil?
 
-    # document abstract
-    if payload[:abstract].nil?
-    #  return false, 'missing document abstract'
-    end
+    # author attributes
+    return false, 'missing document author first name' if payload[ :author_first_name ].nil?
+    return false, 'missing document author last name' if payload[ :author_last_name ].nil?
 
-    if payload[:author_first_name].nil?
-      return false, 'missing document author first name'
-    end
+    # other required attributes
+    return false, 'missing document rights' if payload[ :rights ].nil?
+    return false, 'missing document language' if payload[ :language ].nil?
+    return false, 'missing document publisher' if payload[ :publisher ].nil?
+    return false, 'missing document institution' if payload[ :institution ].nil?
+    return false, 'missing document source' if payload[ :source ].nil?
+    return false, 'missing document issued date' if payload[ :issued ].nil?
 
-    if payload[:author_last_name].nil?
-      return false, 'missing document author last name'
-    end
+    #
+    # then warn about optional fields
+    #
 
-    if payload[:rights].nil?
-      return false, 'missing document rights'
-    end
-
-    if payload[:language].nil?
-      return false, 'missing document language'
-    end
-
-    if payload[:publisher].nil?
-      return false, 'missing document publisher'
-    end
-
-    if payload[:institution].nil?
-      return false, 'missing document institution'
-    end
-
-    #if payload[:xxx].nil?
-    #  return false, 'missing document xxx'
-    #end
-
-    #  payload[:degree]
+    puts "WARNING: missing abstract, continuing" if payload[ :abstract ].nil?
+    puts "WARNING: missing degree, continuing" if payload[ :degree ].nil?
+    puts "WARNING: missing create date, continuing" if payload[ :create_date ].nil?
+    puts "WARNING: missing modified date, continuing" if payload[ :modified_date ].nil?
 
     return true
   end
@@ -226,21 +236,27 @@ namespace :libra2 do
       w.author_first_name = payload[ :author_first_name ] if payload[ :author_first_name ]
       w.author_last_name = payload[ :author_last_name ] if payload[ :author_last_name ]
       w.author_institution = payload[ :institution ] if payload[ :institution ]
-
       w.contributor = construct_contributor( payload )
       w.description = payload[ :abstract ]
       w.keyword = payload[ :keywords ] if payload[ :keywords ]
-      w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" )
 
+      # date attributes
+      w.date_created = DateTime.parse( payload[ :create_date ] ) if payload[ :create_date ]
       #w.date_uploaded = DateTime.parse( h['date_uploaded'] ) if h['date_uploaded']
-      #w.date_modified = DateTime.parse( h['date_modified'] ) if h['date_modified']
-      #w.date_published = h['date_published'] if h['date_published']
+      w.date_modified = DateTime.parse( payload[ :modified_date ] ) if payload[ :modified_date ]
+      w.date_published = payload[ :issued ] if payload[ :issued ]
 
+      # assume a default visibility
       w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+
+      # embargo
       w.embargo_state = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
       w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+
+      # assume standard and published work type
       w.work_type = GenericWork::WORK_TYPE_THESIS
       w.draft = 'false'
+
       w.publisher = payload[ :publisher ] if payload[ :publisher ]
       w.department = payload[ :department ] if payload[ :department ]
       w.degree = payload[ :degree ] if payload[ :degree ]
@@ -250,6 +266,9 @@ namespace :libra2 do
       w.license = GenericWork::DEFAULT_LICENSE
 
       #w.admin_notes =
+      w.work_source = payload[ :source ]
+
+      # mint and assign the DOI
       status, id = ServiceClient::EntityIdClient.instance.newid( w )
       if ServiceClient::EntityIdClient.instance.ok?( status )
         w.identifier = id
@@ -268,11 +287,11 @@ namespace :libra2 do
   # If we have any contributor attributes, construct the necessary aggergate field
   #
   def construct_contributor( payload )
-    if payload[:advisor_computing_id] || payload[:advisor_first_name] || payload[:advisor_last_name] || payload[:advisor_department]
-       return [ TaskHelpers.contributor_fields( payload[:advisor_computing_id],
-                                              payload[:advisor_first_name],
-                                              payload[:advisor_last_name],
-                                              payload[:advisor_department] ) ]
+    if payload[ :advisor_computing_id] || payload[ :advisor_first_name] || payload[ :advisor_last_name] || payload[ :advisor_department]
+       return [ TaskHelpers.contributor_fields( payload[ :advisor_computing_id],
+                                              payload[ :advisor_first_name],
+                                              payload[ :advisor_last_name],
+                                              payload[ :advisor_department] ) ]
     end
     return []
   end
@@ -335,6 +354,15 @@ namespace :libra2 do
         :institution => GenericWork::DEFAULT_INSTITUTION
                }
     return defaults
+  end
+
+  #
+  # extract a date from a fully specified date/time
+  #
+  def extract_date( date )
+    matches = /^(\d{4}-\d{2}-\d{2})/.match( date )
+    return matches[ 1 ] if matches
+    return date
   end
 
   end   # namespace ingest
