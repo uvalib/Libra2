@@ -75,7 +75,7 @@ namespace :libra2 do
   #
   # process the Libra extracts and pull any specified file assets
   #
-  desc "Extract Fedora file assets; must provide the extract directory and file asset directory"
+  desc "Extract Fedora file assets; must provide the extract directory and file asset directory; optionally provide starting index"
   task asset_extract: :environment do |t, args|
 
     extract_dir = ARGV[ 1 ]
@@ -94,6 +94,13 @@ namespace :libra2 do
 
     task asset_dir.to_sym do ; end
 
+    start = ARGV[ 3 ]
+    start_ix = 0
+    if start.nil? == false
+      start_ix = start.to_i
+      task start.to_sym do ; end
+    end
+
     extracts = get_solr_extract_list( extract_dir )
     if extracts.empty?
       puts "ERROR: extract directory does not contain contains SOLR items, aborting"
@@ -106,14 +113,16 @@ namespace :libra2 do
       next
     end
 
-    count = 0
     asset_ref = load_asset_references( asset_dir, assets )
 
-    extracts.each do | dirname |
-      extract_any_assets( asset_ref, File.join( extract_dir, dirname ) )
-      count += 1
+    success_count = 0
+    error_count = 0
+    extracts.each_with_index do | dirname, ix |
+      next if ix < start_ix
+      ok = extract_any_assets( asset_ref, File.join( extract_dir, dirname ) )
+      ok == true ? success_count += 1 : error_count += 1
     end
-    puts "#{count} item(s) processed successfully; results in #{extract_dir}"
+    puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered; results in #{extract_dir}"
 
   end
 
@@ -154,18 +163,19 @@ namespace :libra2 do
   #
   def extract_any_assets( asset_ref, dirname )
 
+    ok = true
     puts "processing #{dirname}..."
 
     json = TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
     id = json[ 'id' ]
     fname = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
-    f = File.new( fname, 'w' )
+    f = File.new( fname, 'w:ASCII-8BIT' )
     if asset_ref.key?( id )
       asset_ref[id].each { |asset|
-        title = download_fedora_asset_title( asset )
-        if title.blank? == false
-           download_fedora_asset( asset, File.join( dirname, title ) )
-           f.write( "#{title}:#{title}\n" )
+        ok, title = download_fedora_asset_title( asset )
+        if ok
+          ok = download_fedora_asset( asset, File.join( dirname, title ) )
+          f.write( "#{title}:#{title}\n" ) if ok
         else
           puts "ERROR: extracting asset title, ignoring it"
         end
@@ -173,7 +183,7 @@ namespace :libra2 do
 
     end
     f.close( )
-
+    return ok
   end
 
   #
@@ -218,12 +228,13 @@ namespace :libra2 do
     url = "#{PRODUCTION_FEDORA}/#{asset_id}/datastreams/DS1/content"
     puts " downloading #{filename} ..."
 
-    File.open( filename, "wb" ) do |f|
+    File.open( filename, 'wb' ) do |f|
       f.binmode
       f.write HTTParty.get( url ).parsed_response
       f.close
     end
 
+    return true
   end
 
   #
@@ -232,15 +243,13 @@ namespace :libra2 do
   def download_fedora_asset_title( asset_id )
 
     url = "#{PRODUCTION_FEDORA}/#{asset_id}/objectXML"
-    #puts " downloading #{url} ..."
-
     response = HTTParty.get( url ) #.parsed_response
     if response.code == 200
        md = /<dc:title>(.+)<\/dc:title>/.match( response.body )
-       return md[ 1 ]
+       return true, md[ 1 ]
     end
 
-    return ''
+    return false, ''
   end
 
   #
