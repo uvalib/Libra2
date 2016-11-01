@@ -1,0 +1,1 @@
+note_t:"*Jefferson Trust*" AND read_access_group_t:[* TO *]
