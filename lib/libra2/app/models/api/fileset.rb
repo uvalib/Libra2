@@ -22,17 +22,6 @@ class Fileset
     @thumb_url = ''
   end
 
-  #def from_json( json )
-
-  #  @id = json[:id] unless json[:id].blank?
-  #  @source_name = json[:source_name] unless json[:source_name].blank?
-  #  @file_name = json[:file_name] unless json[:file_name].blank?
-  #  @file_url = json[:file_url] unless json[:file_url].blank?
-  #  @thumb_url = json[:thumb_url] unless json[:thumb_url].blank?
-
-  #  return self
-  #end
-
   def from_solr( solr, base_url )
 
     #puts "==> SOLR #{solr.inspect}"
@@ -42,21 +31,9 @@ class Fileset
     @file_size = solr_extract_only( solr, 'file_size', 'file_size_is' )
     # handle case where attribute was not found
     @file_size = 0 if @file_size == ''
+    @file_size = get_file_size if @file_size == 0
 
     @file_url, @thumb_url = content_urls( base_url, @id )
-
-    return self
-  end
-
-  def from_fileset( file_set, base_url )
-
-    #puts "==> FILESET #{file_set.inspect}"
-    @id = file_set.id
-    @source_name = file_set.label
-    @file_name = file_set.title[0]
-    # nowhere to get this from
-    #@file_size =
-    @file_url, @thumb_url = content_urls( base_url, file_set.id )
 
     return self
   end
@@ -70,6 +47,24 @@ class Fileset
   def download_url( base, id )
      return "#{base}/downloads/#{id}"
   end
+
+  def get_file_size
+    filename = File.join( CurationConcerns.config.working_path, dirname_from_id( @id ), @source_name )
+    begin
+       st = File.stat( filename )
+       return st.size
+    rescue Exception => e
+      # do nothing
+    end
+    return 0
+  end
+
+  def dirname_from_id( id )
+    return '' if id.blank?
+    return '' if id.size < 8
+    return "#{id[0]}#{id[1]}/#{id[2]}#{id[3]}/#{id[4]}#{id[5]}/#{id[6]}#{id[7]}"
+  end
+
 end
 
 end
