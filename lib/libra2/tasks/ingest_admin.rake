@@ -161,11 +161,11 @@ namespace :libra2 do
      end
 
      # issue date
-     issued = doc.at_path( 'origin_info_date_issued_t' )
+     issued = doc.at_path( 'origin_info_date_issued_t[0]' )
      payload[ :issued ] = issued if issued.nil? == false
 
      # embargo attributes
-     release_date = doc.at_path( 'embargo_embargo_release_date_t' )
+     release_date = doc.at_path( 'embargo_embargo_release_date_t[0]' )
      payload[ :embargo_release_date ] = release_date if release_date.nil? == false
 
      # document source
@@ -289,6 +289,11 @@ namespace :libra2 do
         ok = false
       end
 
+    end
+
+    # update the DOI metadata if necessary
+    if ok && work.is_draft? == false
+      update_doi_metadata( work )
     end
 
     return ok, work
