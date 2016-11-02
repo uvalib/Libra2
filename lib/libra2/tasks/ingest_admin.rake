@@ -59,6 +59,7 @@ namespace :libra2 do
     ingests.each do | dirname |
       ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
+      #break
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
 
@@ -165,6 +166,8 @@ namespace :libra2 do
      payload[ :issued ] = issued if issued.nil? == false
 
      # embargo attributes
+     embargo_type = doc.at_path( 'release_to_t[0]' )
+     payload[ :embargo_type ] = embargo_type if embargo_type.nil? == false
      release_date = doc.at_path( 'embargo_embargo_release_date_t[0]' )
      payload[ :embargo_release_date ] = release_date if release_date.nil? == false
 
@@ -175,7 +178,7 @@ namespace :libra2 do
      date = doc.at_path( 'system_create_dt' )
      payload[ :create_date ] = extract_date( date ) if date.nil? == false
      date = doc.at_path( 'system_modified_dt' )
-     payload[ :modified_date ] = extract_date( date ) if date.nil? == false
+     payload[ :modified_date ] = date if date.nil? == false
 
      #
      # handle optional fields
@@ -183,11 +186,11 @@ namespace :libra2 do
 
      # degree program
      degree = doc.at_path( 'mods_extension_degree_level_t[0]' )
-     payload[ :degree] = degree if degree.nil? == false
+     payload[ :degree ] = degree if degree.nil? == false
 
      # keywords
-     #keywords = doc.at_path( 'subject/topic' )
-     #payload[ :keywords] = keywords if keywords.nil? == false
+     keywords = doc.at_path( 'subject_topic_t' )
+     payload[ :keywords ] = keywords if keywords.nil? == false
 
      return payload
   end
@@ -219,15 +222,25 @@ namespace :libra2 do
     errors << 'missing source' if payload[ :source ].nil?
     errors << 'missing issued date' if payload[ :issued ].nil?
 
+    errors << 'missing license' if payload[ :license ].nil?
+
     #
     # then warn about optional fields
     #
+
+    warnings << 'missing author computing id' if payload[ :author_computing_id ].nil?
+    warnings << 'missing advisor computing id' if payload[ :advisor_computing_id ].nil?
+    warnings << 'missing advisor first name' if payload[ :advisor_first_name ].nil?
+    warnings << 'missing advisor last name' if payload[ :advisor_last_name ].nil?
+    warnings << 'missing advisor department' if payload[ :advisor_department ].nil?
+
 
     warnings << 'missing abstract' if payload[ :abstract ].nil?
     warnings << 'missing keywords' if payload[ :keywords ].nil?
     warnings << 'missing degree' if payload[ :degree ].nil?
     warnings << 'missing create date' if payload[ :create_date ].nil?
     warnings << 'missing modified date' if payload[ :modified_date ].nil?
+    warnings << 'missing admin notes' if payload[ :admin_notes ].nil?
 
     return errors, warnings
   end
@@ -243,7 +256,7 @@ namespace :libra2 do
       # generic work attributes
       w.apply_depositor_metadata( depositor )
       w.creator = depositor.email
-      w.author_email = TaskHelpers.default_email( payload[ :advisor_computing_id ] ) if payload[ :advisor_computing_id ]
+      w.author_email = TaskHelpers.default_email( payload[ :author_computing_id ] ) if payload[ :author_computing_id ]
       w.author_first_name = payload[ :author_first_name ] if payload[ :author_first_name ]
       w.author_last_name = payload[ :author_last_name ] if payload[ :author_last_name ]
       w.author_institution = payload[ :institution ] if payload[ :institution ]
@@ -252,17 +265,17 @@ namespace :libra2 do
       w.keyword = payload[ :keywords ] if payload[ :keywords ]
 
       # date attributes
-      w.date_created = DateTime.parse( payload[ :create_date ] ) if payload[ :create_date ]
+      w.date_created = payload[ :create_date ] if payload[ :create_date ]
       #w.date_uploaded = DateTime.parse( h['date_uploaded'] ) if h['date_uploaded']
       w.date_modified = DateTime.parse( payload[ :modified_date ] ) if payload[ :modified_date ]
       w.date_published = payload[ :issued ] if payload[ :issued ]
 
-      # assume a default visibility
-      w.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-
-      # embargo
-      w.embargo_state = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-      w.visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      # embargo attributes
+      w.visibility = set_embargo_for_type( payload[:embargo_type ] )
+      w.embargo_state = set_embargo_for_type( payload[:embargo_type ] )
+      w.visibility_during_embargo = set_embargo_for_type( payload[:embargo_type ] )
+      w.embargo_end_date = payload[ :embargo_release_date ] if payload[ :embargo_release_date ]
+      w.embargo_period = GenericWork::EMBARGO_VALUE_6_MONTH if payload[ :embargo_release_date ]
 
       # assume standard and published work type
       w.work_type = GenericWork::WORK_TYPE_THESIS
@@ -276,7 +289,7 @@ namespace :libra2 do
       w.rights = [ payload[ :rights ] ] if payload[ :rights ]
       w.license = GenericWork::DEFAULT_LICENSE
 
-      #w.admin_notes =
+      w.admin_notes = payload[ :admin_notes ]
       w.work_source = payload[ :source ]
 
       # mint and assign the DOI
@@ -311,16 +324,23 @@ namespace :libra2 do
     end
     return []
   end
+
   #
   # list any assets that go with the document
   #
   def get_document_assets( dirname )
+
     files = []
     f = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
+    begin
     File.open( f, 'r').each do |line|
       tokens = line.strip.split( ":" )
       files << tokens[ 1 ]
     end
+    rescue Errno::ENOENT
+      # do nothing, no files...
+    end
+
     return files
   end
 
@@ -363,11 +383,14 @@ namespace :libra2 do
   # load the hash of default attributes
   #
   def load_defaults( filename )
+
     defaults = {
         :rights => 'None (users must comply with ordinary copyright law)',
         :language => GenericWork::DEFAULT_LANGUAGE,
         :publisher => GenericWork::DEFAULT_PUBLISHER,
-        :institution => GenericWork::DEFAULT_INSTITUTION
+        :institution => GenericWork::DEFAULT_INSTITUTION,
+        :license => GenericWork::DEFAULT_LICENSE,
+        :admin_notes => [ "Ingested on #{CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d %H:%M:%S" )}" ]
                }
     return defaults
   end
@@ -379,6 +402,17 @@ namespace :libra2 do
     matches = /^(\d{4}-\d{2}-\d{2})/.match( date )
     return matches[ 1 ] if matches
     return date
+  end
+
+  #
+  # Determine the embargo type from the metadata
+  #
+  def set_embargo_for_type(embargo )
+    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC if embargo.blank?
+    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED if embargo == 'uva'
+
+    # none of the above
+    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
   end
 
   end   # namespace ingest
