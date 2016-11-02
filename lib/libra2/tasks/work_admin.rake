@@ -6,6 +6,9 @@
 require_dependency 'libra2/tasks/task_helpers'
 include TaskHelpers
 
+require_dependency 'libra2/app/helpers/service_helper'
+include ServiceHelper
+
 require_dependency 'libra2/lib/serviceclient/entity_id_client'
 
 namespace :libra2 do
@@ -93,6 +96,7 @@ task del_all_works: :environment do |t, args|
   GenericWork.all.each do |generic_work|
      count += 1
      print "."
+     remove_doi( generic_work )
      generic_work.destroy
   end
   puts "done" unless count == 0
@@ -112,6 +116,7 @@ task del_my_works: :environment do |t, args|
    GenericWork.where({ depositor: who }).each do |generic_work|
      count += 1
      print "."
+     remove_doi( generic_work )
      generic_work.destroy
    end
 
@@ -137,6 +142,7 @@ task del_by_id: :environment do |t, args|
     next
   end
 
+  remove_doi( work )
   work.destroy
   puts "Work deleted"
 end
