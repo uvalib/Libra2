@@ -8,9 +8,6 @@ namespace :libra2 do
 
   namespace :ingest do
 
-  # define for dry runs only
-  #DRY_RUN = :yes
-
   # general attributes
   DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
   DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.txt'
@@ -80,7 +77,7 @@ namespace :libra2 do
      id = doc['id']
      files = get_document_assets( dirname )
 
-     puts " ingesting #{File.basename( dirname )} (#{id}) and #{files.size} file(s)..."
+     puts "Ingesting #{File.basename( dirname )} (#{id}) and #{files.size} file(s)..."
 
      # create a payload from the document
      payload = create_ingest_payload( doc )
@@ -90,20 +87,30 @@ namespace :libra2 do
      #dump_ingest_payload( payload )
 
      # validate the payload
-     ok, err = validate_ingest_payload( payload )
-     if ok == false
-       puts "ERROR: #{err} for #{File.basename( dirname )} (#{id}), continuing"
+     errors, warnings = validate_ingest_payload( payload )
+
+     if errors.empty? == false
+       puts " ERROR(S) identified for #{File.basename( dirname )} (#{id})"
+       puts " ==> #{errors.join( "\n ==> " )}"
        return false
      end
 
-     return true unless DRY_RUN.nil?
+     if warnings.empty? == false
+       puts " WARNING(S) identified for #{File.basename( dirname )} (#{id}), continuing anyway"
+       puts " ==> #{warnings.join( "\n ==> " )}"
+     end
 
+     # handle dry running
+     return true if ENV[ 'DRY_RUN' ]
+
+     # creazte the work
      ok, work = create_new_item( depositor, payload )
      if ok == false
-       puts "ERROR: creating new generic work, continuing"
+       puts " ERROR: creating new generic work for #{File.basename( dirname )} (#{id})"
        return false
      end
 
+     # and upload each file
      files.each do |f|
        TaskHelpers.upload_file( depositor, work, File.join( dirname, f ) )
      end
@@ -190,35 +197,39 @@ namespace :libra2 do
   #
   def validate_ingest_payload( payload )
 
+    errors = []
+    warnings = []
+
     #
     # ensure required fields first...
     #
 
     # document title
-    return false, 'missing document title' if payload[ :title ].nil?
+    errors << 'missing title' if payload[ :title ].nil?
 
     # author attributes
-    return false, 'missing document author first name' if payload[ :author_first_name ].nil?
-    return false, 'missing document author last name' if payload[ :author_last_name ].nil?
+    errors << 'missing author first name' if payload[ :author_first_name ].nil?
+    errors << 'missing author last name' if payload[ :author_last_name ].nil?
 
     # other required attributes
-    return false, 'missing document rights' if payload[ :rights ].nil?
-    return false, 'missing document language' if payload[ :language ].nil?
-    return false, 'missing document publisher' if payload[ :publisher ].nil?
-    return false, 'missing document institution' if payload[ :institution ].nil?
-    return false, 'missing document source' if payload[ :source ].nil?
-    return false, 'missing document issued date' if payload[ :issued ].nil?
+    errors << 'missing rights' if payload[ :rights ].nil?
+    errors << 'missing language' if payload[ :language ].nil?
+    errors << 'missing publisher' if payload[ :publisher ].nil?
+    errors << 'missing institution' if payload[ :institution ].nil?
+    errors << 'missing source' if payload[ :source ].nil?
+    errors << 'missing issued date' if payload[ :issued ].nil?
 
     #
     # then warn about optional fields
     #
 
-    puts "WARNING: missing abstract, continuing" if payload[ :abstract ].nil?
-    puts "WARNING: missing degree, continuing" if payload[ :degree ].nil?
-    puts "WARNING: missing create date, continuing" if payload[ :create_date ].nil?
-    puts "WARNING: missing modified date, continuing" if payload[ :modified_date ].nil?
+    warnings << 'missing abstract' if payload[ :abstract ].nil?
+    warnings << 'missing keywords' if payload[ :keywords ].nil?
+    warnings << 'missing degree' if payload[ :degree ].nil?
+    warnings << 'missing create date' if payload[ :create_date ].nil?
+    warnings << 'missing modified date' if payload[ :modified_date ].nil?
 
-    return true
+    return errors, warnings
   end
 
   #
