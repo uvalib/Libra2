@@ -191,31 +191,14 @@ namespace :libra2 do
   #
   def dump_solr_doc( export_dir, doc, number )
 
-    puts "writing SOLR document # #{number}..."
+    puts " writing SOLR document # #{number}..."
 
     d = File.join( export_dir, "solr.#{number}" )
     FileUtils::mkdir_p( d )
 
     f = File.join( d, TaskHelpers::DOCUMENT_JSON_FILE )
     File.open( f, 'w') do |file|
-      file.write( doc.to_json )
-    end
-
-  end
-
-  #
-  # process the SOLR document
-  #
-  def process_solr_doc( results_dir, source_file, number )
-
-    puts "processing SOLR document # #{File.basename( source_file )}..."
-
-    f = File.join( source_file, TaskHelpers::DOCUMENT_JSON_FILE )
-    File.open( f, 'r') do |file|
-      json_str = file.read( )
-      doc = JSON.parse json_str
-      libra_id = doc['id']
-      extract_libra_doc( results_dir, number, libra_id )
+      file.write( JSON.pretty_generate( doc ) )
     end
 
   end
