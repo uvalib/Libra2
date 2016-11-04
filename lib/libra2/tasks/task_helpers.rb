@@ -234,6 +234,9 @@ module TaskHelpers
 
   end
 
+  #
+  #
+  #
   def scp_file( hostname, username, src, dst )
 
     begin
@@ -247,10 +250,16 @@ module TaskHelpers
 
   end
 
+  #
+  # create the local work directory based on the fileset id
+  #
   def dir_from_fileset_id( id )
     return "#{id[0]}#{id[1]}/#{id[2]}#{id[3]}/#{id[4]}#{id[5]}/#{id[6]}#{id[7]}"
   end
 
+  #
+  # get a list of assets in the specified directory that match the supplied pattern
+  #
   def get_directory_list( dirname, pattern )
     res = []
     begin

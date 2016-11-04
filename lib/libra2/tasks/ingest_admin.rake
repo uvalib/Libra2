@@ -99,9 +99,9 @@ namespace :libra2 do
 
      doc = load_solr_doc( dirname )
      id = doc['id']
-     files = get_document_assets( dirname )
+     assets = get_document_assets( dirname )
 
-     puts "Ingesting #{File.basename( dirname )} (#{id}) and #{files.size} file(s)..."
+     puts "Ingesting #{File.basename( dirname )} (#{id}) and #{assets.size} asset(s)..."
 
      # create a payload from the document
      payload = create_ingest_payload( doc )
@@ -135,10 +135,10 @@ namespace :libra2 do
      end
 
      # and upload each file
-     files.each do |f|
-       fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, f ) )
-       #fileset.date_uploaded = DateTime.yesterday
-       #fileset.save!
+     assets.each do |asset|
+       fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, asset[ :title ] ) )
+       fileset.date_uploaded = DateTime.parse( asset[ :timestamp ] )
+       fileset.save!
      end
 
      return true
@@ -371,8 +371,8 @@ namespace :libra2 do
     f = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
     begin
     File.open( f, 'r').each do |line|
-      tokens = line.strip.split( ":" )
-      files << tokens[ 1 ]
+      tokens = line.strip.split( "|" )
+      files << { :id => tokens[ 0 ], :timestamp => tokens[ 1 ], :title => tokens[ 2 ] }
     end
     rescue Errno::ENOENT
       # do nothing, no files...

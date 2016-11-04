@@ -113,13 +113,13 @@ namespace :libra2 do
       next
     end
 
-    asset_ref = load_asset_references( asset_dir, assets )
+    asset_refs = load_asset_references( asset_dir, assets )
 
     success_count = 0
     error_count = 0
     extracts.each_with_index do | dirname, ix |
       next if ix < start_ix
-      ok = extract_any_assets( asset_ref, File.join( extract_dir, dirname ) )
+      ok = extract_any_assets( asset_refs, File.join( extract_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered; results in #{extract_dir}"
@@ -136,32 +136,34 @@ namespace :libra2 do
   def load_asset_references( asset_dir, assets )
 
     count = 0
-    asset_ref = {}
+    asset_refs = {}
     puts "Loading file asset references..."
     assets.each do | dirname |
       doc = TaskHelpers.load_json_doc( File.join( asset_dir, dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
 
-      if doc[ 'id' ] && doc[ 'is_part_of_s' ]
+      if doc[ 'id' ] && doc[ 'is_part_of_s' ] && doc[ 'timestamp' ] && doc[ 'title_t' ]
         doc[ 'is_part_of_s' ].each { |d|
             id = doc[ 'id' ]
+            ts = doc[ 'timestamp' ]
+            title = doc[ 'title_t' ][ 0 ]
             po = File.basename( d )
-            if asset_ref.key?( po ) == false
-              asset_ref[ po ] = []
+            if asset_refs.key?( po ) == false
+              asset_refs[ po ] = []
             end
-            asset_ref[ po ] << id
+            asset_refs[ po ] << { :id => id, :timestamp => ts, :title => title }
         }
       end
       count += 1
     end
 
     puts "#{count} file assets loaded..."
-    return asset_ref
+    return asset_refs
   end
 
   #
   # extract any file assets from Libra
   #
-  def extract_any_assets( asset_ref, dirname )
+  def extract_any_assets( asset_refs, dirname )
 
     ok = true
     puts "processing #{dirname}..."
@@ -170,15 +172,10 @@ namespace :libra2 do
     id = json[ 'id' ]
     fname = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
     f = File.new( fname, 'w:ASCII-8BIT' )
-    if asset_ref.key?( id )
-      asset_ref[id].each { |asset|
-        ok, title = download_fedora_asset_title( asset )
-        if ok
-          ok = download_fedora_asset( asset, File.join( dirname, title ) )
-          f.write( "#{title}:#{title}\n" ) if ok
-        else
-          puts "ERROR: extracting asset title, ignoring it"
-        end
+    if asset_refs.key?( id )
+      asset_refs[id].each { |asset|
+        ok = download_fedora_asset( asset[ :id ], File.join( dirname, asset[ :title ] ) )
+        f.write( "#{asset[ :id ]}|#{asset[ :timestamp ]}|#{asset[ :title ]}\n" ) if ok
       }
 
     end
@@ -218,21 +215,6 @@ namespace :libra2 do
     end
 
     return true
-  end
-
-  #
-  # get the fedora asset title
-  #
-  def download_fedora_asset_title( asset_id )
-
-    url = "#{PRODUCTION_FEDORA}/#{asset_id}/objectXML"
-    response = HTTParty.get( url ) #.parsed_response
-    if response.code == 200
-       md = /<dc:title>(.+)<\/dc:title>/.match( response.body )
-       return true, md[ 1 ]
-    end
-
-    return false, ''
   end
 
   #
