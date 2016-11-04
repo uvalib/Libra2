@@ -12,6 +12,8 @@ class Fileset
   attr_accessor :file_size
   attr_accessor :file_url
   attr_accessor :thumb_url
+  attr_accessor :date_uploaded
+  attr_accessor :date_modified
 
   def initialize
     @id = ''
@@ -35,6 +37,8 @@ class Fileset
 
     @file_url, @thumb_url = content_urls( base_url, @id )
 
+    @date_uploaded = solr_extract_only( solr, 'date_uploaded', 'date_uploaded_dtsi' )
+    @date_modified = solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
     return self
   end
 
