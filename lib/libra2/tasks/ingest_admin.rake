@@ -59,7 +59,7 @@ namespace :libra2 do
     ingests.each do | dirname |
       ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
-      #break
+      break
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
 
@@ -107,8 +107,8 @@ namespace :libra2 do
      payload = create_ingest_payload( doc )
 
      # merge in any default attributes
-     payload = merge_defaults( defaults, payload )
-     #dump_ingest_payload( payload )
+     payload = apply_defaults( defaults, payload )
+     dump_ingest_payload( payload ) if payload[ :dump_payload ]
 
      # validate the payload
      errors, warnings = validate_ingest_payload( payload )
@@ -136,7 +136,9 @@ namespace :libra2 do
 
      # and upload each file
      files.each do |f|
-       TaskHelpers.upload_file( depositor, work, File.join( dirname, f ) )
+       fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, f ) )
+       #fileset.date_uploaded = DateTime.yesterday
+       #fileset.save!
      end
 
      return true
@@ -152,13 +154,19 @@ namespace :libra2 do
      # add all the required fields
      #
 
+     # date and time attributes
+     create_date = doc.at_path( 'system_create_dt' )
+     payload[ :create_date ] = extract_date( create_date ) if create_date.present?
+     modified_date = doc.at_path( 'system_modified_dt' )
+     payload[ :modified_date ] = modified_date if modified_date.present?
+
      # document title
      title = doc.at_path( 'mods_title_info_t[0]')
-     payload[ :title ] = title if title.nil? == false
+     payload[ :title ] = title if title.present?
 
      # document abstract
      abstract = doc.at_path( 'abstract_t[0]')
-     payload[ :abstract ] = abstract if abstract.nil? == false
+     payload[ :abstract ] = abstract if abstract.present?
 
      # document author
      if doc.at_path( 'mods_0_name_0_role_0_text_t[0]' ) == 'author'
@@ -166,10 +174,10 @@ namespace :libra2 do
        cid = doc.at_path( 'mods_0_name_0_computing_id_t[0]' )
        fn = doc.at_path( 'mods_0_name_0_first_name_t[0]' )
        ln = doc.at_path( 'mods_0_name_0_last_name_t[0]' )
-       payload[ :author_computing_id ] = cid if cid.nil? == false
-       payload[ :author_first_name ] = fn if fn.nil? == false
-       payload[ :author_last_name ] = ln if ln.nil? == false
-       payload[ :department ] = dept if dept.nil? == false
+       payload[ :author_computing_id ] = cid if cid.present?
+       payload[ :author_first_name ] = fn if fn.present?
+       payload[ :author_last_name ] = ln if ln.present?
+       payload[ :department ] = dept if dept.present?
      end
 
      # document advisor
@@ -178,30 +186,26 @@ namespace :libra2 do
        cid = doc.at_path( 'mods_0_person_1_computing_id_t[0]' )
        fn = doc.at_path( 'mods_0_person_1_first_name_t[0]' )
        ln = doc.at_path( 'mods_0_person_1_last_name_t[0]' )
-       payload[ :advisor_computing_id ] = cid if cid.nil? == false
-       payload[ :advisor_first_name ] = fn if fn.nil? == false
-       payload[ :advisor_last_name ] = ln if ln.nil? == false
-       payload[ :advisor_department ] = dept if dept.nil? == false
+       payload[ :advisor_computing_id ] = cid if cid.present?
+       payload[ :advisor_first_name ] = fn if fn.present?
+       payload[ :advisor_last_name ] = ln if ln.present?
+       payload[ :advisor_department ] = dept if dept.present?
      end
 
      # issue date
-     issued = doc.at_path( 'origin_info_date_issued_t[0]' )
-     payload[ :issued ] = issued if issued.nil? == false
+     issued_date = doc.at_path( 'origin_info_date_issued_t[0]' )
+     payload[ :issued ] = issued_date if issued_date.present?
 
      # embargo attributes
      embargo_type = doc.at_path( 'release_to_t[0]' )
-     payload[ :embargo_type ] = embargo_type if embargo_type.nil? == false
+     payload[ :embargo_type ] = embargo_type if embargo_type.present?
      release_date = doc.at_path( 'embargo_embargo_release_date_t[0]' )
-     payload[ :embargo_release_date ] = release_date if release_date.nil? == false
+     payload[ :embargo_release_date ] = release_date if release_date.present?
+     #payload[ :embargo_period ] =
+     #    calculate_embargo_period( issued_date, release_date ) if issued_date.present? && release_date.present?
 
      # document source
      payload[ :source ] = doc.at_path( 'id' )
-
-     # date and time attributes
-     date = doc.at_path( 'system_create_dt' )
-     payload[ :create_date ] = extract_date( date ) if date.nil? == false
-     date = doc.at_path( 'system_modified_dt' )
-     payload[ :modified_date ] = date if date.nil? == false
 
      #
      # handle optional fields
@@ -209,11 +213,19 @@ namespace :libra2 do
 
      # degree program
      degree = doc.at_path( 'mods_extension_degree_level_t[0]' )
-     payload[ :degree ] = degree if degree.nil? == false
+     payload[ :degree ] = degree if degree.present?
 
      # keywords
      keywords = doc.at_path( 'subject_topic_t' )
-     payload[ :keywords ] = keywords if keywords.nil? == false
+     payload[ :keywords ] = keywords if keywords.present?
+
+     # language
+     language = doc.at_path( 'language_lang_code_t[0]' )
+     payload[ :language ] = language_code_lookup( language ) if language.present?
+
+     # notes
+     notes = doc.at_path( 'note_t[0]' )
+     payload[ :notes ] = notes if notes.present?
 
      return payload
   end
@@ -239,7 +251,6 @@ namespace :libra2 do
 
     # other required attributes
     errors << 'missing rights' if payload[ :rights ].nil?
-    errors << 'missing language' if payload[ :language ].nil?
     errors << 'missing publisher' if payload[ :publisher ].nil?
     errors << 'missing institution' if payload[ :institution ].nil?
     errors << 'missing source' if payload[ :source ].nil?
@@ -263,6 +274,8 @@ namespace :libra2 do
     warnings << 'missing degree' if payload[ :degree ].nil?
     warnings << 'missing create date' if payload[ :create_date ].nil?
     warnings << 'missing modified date' if payload[ :modified_date ].nil?
+    warnings << 'missing language' if payload[ :language ].nil?
+    warnings << 'missing notes' if payload[ :notes ].nil?
     warnings << 'missing admin notes' if payload[ :admin_notes ].nil?
 
     return errors, warnings
@@ -298,7 +311,7 @@ namespace :libra2 do
       w.embargo_state = set_embargo_for_type( payload[:embargo_type ] )
       w.visibility_during_embargo = set_embargo_for_type( payload[:embargo_type ] )
       w.embargo_end_date = payload[ :embargo_release_date ] if payload[ :embargo_release_date ]
-      w.embargo_period = GenericWork::EMBARGO_VALUE_6_MONTH if payload[ :embargo_release_date ]
+      w.embargo_period = payload[ :embargo_period ] if payload[ :embargo_period ]
 
       # assume standard and published work type
       w.work_type = GenericWork::WORK_TYPE_THESIS
@@ -309,6 +322,7 @@ namespace :libra2 do
       w.degree = payload[ :degree ] if payload[ :degree ]
       w.language = payload[ :language ] if payload[ :language ]
 
+      w.notes = payload[ :notes ] if payload[ :notes ]
       w.rights = [ payload[ :rights ] ] if payload[ :rights ]
       w.license = GenericWork::DEFAULT_LICENSE
 
@@ -385,20 +399,36 @@ namespace :libra2 do
   # simple payload dump for debugging
   #
   def dump_ingest_payload( payload )
+    puts '*' * 80
     payload.each { |k, v|
        puts " ==> #{k} -> #{v}"
     }
+    puts '*' * 80
   end
 
   #
-  # merge in any default value to the standard payload
+  # apply any default values and behavior to the standard payload
   #
-  def merge_defaults( defaults, payload )
+  def apply_defaults( defaults, payload )
+
+    # merge in defaults
     defaults.each { |k, v|
-       if payload.key?( k ) == false
-         payload[ k ] = v
+
+      case k
+
+        when :force_embargo
+          if payload[ :issued ]
+            payload[ :embargo_release_date ] = add_years_to_date( payload[ :issued ], defaults[ :force_embargo ] )
+          else
+            payload[ :embargo_release_date ] = add_years_to_date( CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" ), defaults[ :force_embargo ] )
+          end
+
+       else if payload.key?( k ) == false
+               payload[ k ] = v
+            end
        end
     }
+
     return payload
   end
 
@@ -407,15 +437,20 @@ namespace :libra2 do
   #
   def load_defaults( filename )
 
-    defaults = {
-        :rights => 'None (users must comply with ordinary copyright law)',
-        :language => GenericWork::DEFAULT_LANGUAGE,
-        :publisher => GenericWork::DEFAULT_PUBLISHER,
-        :institution => GenericWork::DEFAULT_INSTITUTION,
-        :license => GenericWork::DEFAULT_LICENSE,
-        :admin_notes => [ "Ingested on #{CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d %H:%M:%S" )}" ]
-               }
-    return defaults
+    begin
+      config_erb = ERB.new( IO.read( filename ) ).result( binding )
+    rescue StandardError => ex
+      raise( "#{filename} could not be parsed with ERB. \n#{ex.inspect}" )
+    end
+
+    begin
+      yml = YAML.load( config_erb )
+    rescue Psych::SyntaxError => ex
+      raise "#{filename} could not be parsed as YAML. \nError #{ex.message}"
+    end
+
+    config = yml.symbolize_keys
+    return config.symbolize_keys || {}
   end
 
   #
@@ -425,6 +460,33 @@ namespace :libra2 do
     matches = /^(\d{4}-\d{2}-\d{2})/.match( date )
     return matches[ 1 ] if matches
     return date
+  end
+
+  #
+  # add the specified number of years to the specified date
+  #
+  def add_years_to_date( date, years_to_add )
+    new_date = Date.parse( date ) + years_to_add.years
+    return new_date
+  end
+
+  #
+  # calculate the approx original embargo period given the issued and release dates
+  #
+  def calculate_embargo_period( issued, embargo_release )
+     period = Date.parse( embargo_release ) - Date.parse( issued )
+     case period.to_i
+       when 0
+         return ''
+       when 1..186
+         return GenericWork::EMBARGO_VALUE_6_MONTH
+       when 187..366
+         return GenericWork::EMBARGO_VALUE_1_YEAR
+       when 367..732
+         return GenericWork::EMBARGO_VALUE_2_YEAR
+       else
+         return GenericWork::EMBARGO_VALUE_5_YEAR
+     end
   end
 
   #
@@ -439,7 +501,7 @@ namespace :libra2 do
   end
 
   #
-  #
+  # extract the first value from a SOLR field
   #
   def solr_extract_first( json, fn )
 
@@ -447,6 +509,25 @@ namespace :libra2 do
     return json[ field ][ 0 ] if json.key? field
     return ''
 
+  end
+
+  #
+  # looks up the language name from the language code
+  # Locate elsewhere later
+  #
+  def language_code_lookup( language_code )
+
+     case language_code
+       when 'eng'
+         return 'English'
+       when 'fre'
+         return 'French'
+       when 'ger'
+         return 'German'
+       when 'spa'
+         return 'Spainish'
+     end
+     return language_code
   end
 
   end   # namespace ingest

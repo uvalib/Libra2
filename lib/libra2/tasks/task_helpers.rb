@@ -120,6 +120,7 @@ module TaskHelpers
     file_actor.create_content( File.open( filename ) )
 
     puts "done"
+    return fileset
 
   end
 
