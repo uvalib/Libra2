@@ -2,7 +2,7 @@ rights: 'None (users must comply with ordinary copyright law)'
 publisher: <%= GenericWork::DEFAULT_PUBLISHER %>
 institution: <%= GenericWork::DEFAULT_INSTITUTION %>
 license: <%= GenericWork::DEFAULT_LICENSE %>
-admin_notes: <%= [ "Ingested on #{CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d %H:%M:%S" )}" ] %>
+admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
 
 # add the specified years to the embargo period
 force_embargo: 150

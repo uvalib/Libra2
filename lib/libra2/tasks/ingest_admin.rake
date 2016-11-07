@@ -10,7 +10,7 @@ namespace :libra2 do
 
   # general attributes
   DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
-  DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.txt'
+  DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.yml'
 
   #
   # ingest items that have been extracted from SOLR
@@ -59,7 +59,7 @@ namespace :libra2 do
     ingests.each do | dirname |
       ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
-      break
+      #break
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
 
@@ -127,7 +127,7 @@ namespace :libra2 do
      # handle dry running
      return true if ENV[ 'DRY_RUN' ]
 
-     # creazte the work
+     # create the work
      ok, work = create_new_item( depositor, payload )
      if ok == false
        puts " ERROR: creating new generic work for #{File.basename( dirname )} (#{id})"
@@ -415,6 +415,16 @@ namespace :libra2 do
     defaults.each { |k, v|
 
       case k
+
+        when :admin_notes
+          next if v.blank?
+
+          # create the admin notes for this item
+          admin_notes = []
+          original_create_date = payload[ :create_date ]
+          time_now = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d %H:%M:%S" )
+          admin_notes << v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )
+          payload[ :admin_notes ] = admin_notes
 
         when :force_embargo
           if payload[ :issued ]
