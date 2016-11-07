@@ -75,7 +75,7 @@ namespace :libra2 do
         begin
            gw = GenericWork.find( gw_solr['id'] )
            if gw.is_legacy_thesis?
-             puts "#{gw.work_source} -> #{gw.permanent_url || 'None'}"
+             puts "#{gw.work_source} #{gw.identifier || 'None'}"
              count += 1
            end
         rescue => e
