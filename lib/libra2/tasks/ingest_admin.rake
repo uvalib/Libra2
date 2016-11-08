@@ -59,7 +59,7 @@ namespace :libra2 do
     ingests.each do | dirname |
       ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
-      break
+      break if defaults[ :max_ingest_count ] && defaults[ :max_ingest_count ].to_i == ( success_count + error_count )
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
 
@@ -276,7 +276,7 @@ namespace :libra2 do
     warnings << 'missing modified date' if payload[ :modified_date ].nil?
     warnings << 'missing language' if payload[ :language ].nil?
     warnings << 'missing notes' if payload[ :notes ].nil?
-    warnings << 'missing admin notes' if payload[ :admin_notes ].nil?
+    #warnings << 'missing admin notes' if payload[ :admin_notes ].nil?
 
     return errors, warnings
   end
@@ -326,8 +326,8 @@ namespace :libra2 do
       w.rights = [ payload[ :rights ] ] if payload[ :rights ]
       w.license = GenericWork::DEFAULT_LICENSE
 
-      w.admin_notes = payload[ :admin_notes ]
-      w.work_source = payload[ :source ]
+      w.admin_notes = payload[ :admin_notes ] if payload[ :admin_notes ]
+      w.work_source = payload[ :source ] if payload[ :source ]
 
       # mint and assign the DOI
       status, id = ServiceClient::EntityIdClient.instance.newid( w )
@@ -416,15 +416,17 @@ namespace :libra2 do
 
       case k
 
-        when :admin_notes
+        when :notes
           next if v.blank?
 
           # create the admin notes for this item
-          admin_notes = []
+          new_notes = payload[ :notes ] || ''
+          new_notes += "\n" if new_notes.blank? == false
+
           original_create_date = payload[ :create_date ]
           time_now = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d %H:%M:%S" )
-          admin_notes << v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )
-          payload[ :admin_notes ] = admin_notes
+          new_notes += "#{v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )}"
+          payload[ :notes ] = new_notes
 
         when :force_embargo_period
           payload[ :embargo_period ] = v

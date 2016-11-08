@@ -1,12 +1,28 @@
+#
+# values to use if these are not specified in the ingest
+#
 rights: 'None (users must comply with ordinary copyright law)'
 publisher: <%= GenericWork::DEFAULT_PUBLISHER %>
 institution: <%= GenericWork::DEFAULT_INSTITUTION %>
 license: <%= GenericWork::DEFAULT_LICENSE %>
-admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
 
+#
+# append to the notes record for informational purposes
+#
+notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
+
+#
 # apply the specified embargo period; should be one of:
 # 6_months, 1_year, 2_year, 5_year, forever (150 years)
+#
 force_embargo_period: forever
 
-# debug
+#
+# debug information showing the ingested record
+#
 #dump_payload: true
+
+#
+# the maximum number of records to ingest
+#
+#max_ingest_count: 2
