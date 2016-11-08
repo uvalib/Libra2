@@ -1,48 +1,59 @@
 <% if flash[:notice].present? %>
-	<div class="flash-notice" role="alert">
-		<button id="close-button" type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-		<%= flash[:notice] %>
-	</div>
+   <div class="flash-notice" role="alert">
+      <button id="close-button" type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+      <%= flash[:notice] %>
+   </div>
 <% end %>
 <% if @is_preview %>
 <div class="preview-controls">
-	<h1>Submission Proof</h1>
-	<p class="preview-warning">
-		Before proceeding, we encourage you to review the information on this page. If you
-		experience problems with your submission, please <a href="mailto:<%= MAIL_SENDER %>">contact us</a>.
-	</p>
-	<%= form_tag("/submit/#{@id}", method: "post", class: 'preview-buttons') do %>
-		<a href="/concern/generic_works/<%= @id %>/edit" class="btn btn-default"><i class="fa fa-arrow-left"></i> Edit</a>
-		<button name="button" type="submit" class="btn btn-primary" data-confirm="This is your final step and you cannot change the document afterwards. Are you sure?"><i class="fa fa-check"></i> Submit Thesis</button>
-	<% end %>
+   <h1>Submission Proof</h1>
+   <p class="preview-warning">
+      Before proceeding, we encourage you to review the information on this page. If you
+      experience problems with your submission, please <a href="mailto:<%= MAIL_SENDER %>">contact us</a>.
+   </p>
+   <%= form_tag("/submit/#{@id}", method: "post", class: 'preview-buttons') do %>
+      <a href="/concern/generic_works/<%= @id %>/edit" class="btn btn-default"><i class="fa fa-arrow-left"></i> Edit</a>
+      <button name="button" type="submit" class="btn btn-primary" data-confirm="This is your final step and you cannot change the document afterwards. Are you sure?"><i class="fa fa-check"></i> Submit Thesis</button>
+   <% end %>
 </div>
 <% else %>
-	<% if ENV['ALLOW_FAKE_NETBADGE'] == 'true' && @can_view %>
-		<div class="debug-controls">
-			<h1>Debugging</h1>
-			<%= form_tag({}, {:method => :get}) do %>
-				<%= create_radio("grounds", "off", "Off Grounds") %><br>
-				<%= create_radio("grounds", "on", "On Grounds", true) %><br>
-				<hr>
-				<b>Current date: <%= file_date(@today) %></b><br>
-				<%= create_radio("time", "0", "Now", true) %><br>
-				<%= create_radio("time", "5", "5 Months") %><br>
-				<%= create_radio("time", "6", "6 Months") %><br>
-				<%= create_radio("time", "7", "7 Months") %><br>
-				<%= create_radio("time", "13", "13 Months") %><br>
+   <% if ENV['ALLOW_FAKE_NETBADGE'] == 'true' && @can_view %>
+      <div class="debug-controls">
+         <h1>Debugging</h1>
+         <%= form_tag({}, {:method => :get}) do %>
+            <%= create_radio("grounds", "off", "Off Grounds") %><br>
+            <%= create_radio("grounds", "on", "On Grounds", true) %><br>
+            <hr>
+            <b>Current date: <%= file_date(@today) %></b><br>
+            <%= create_radio("time", "0", "Now", true) %><br>
+            <%= create_radio("time", "5", "5 Months") %><br>
+            <%= create_radio("time", "6", "6 Months") %><br>
+            <%= create_radio("time", "7", "7 Months") %><br>
+            <%= create_radio("time", "11", "11 Months") %><br>
+            <%= create_radio("time", "12", "12 Months (1 year)") %><br>
+            <%= create_radio("time", "13", "13 Months") %><br>
+            <%= create_radio("time", "23", "23 Months") %><br>
+            <%= create_radio("time", "24", "24 Months (2 years)") %><br>
+            <%= create_radio("time", "25", "25 Months") %><br>
+            <%= create_radio("time", "59", "59 Months") %><br>
+            <%= create_radio("time", "60", "60 Months (5 years)") %><br>
+            <%= create_radio("time", "61", "61 Months") %><br>
+            <%= create_radio("time", "1799", "1799 Months") %><br>
+            <%= create_radio("time", "1800", "1800 Months (150 years)") %><br>
+            <%= create_radio("time", "1801", "1801 Months") %><br>
 
-				<button name="button" type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Override</button>
-			<% end %>
-		</div>
-	<% end %>
+            <button name="button" type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Override</button>
+         <% end %>
+      </div>
+   <% end %>
 <% end %>
 <%= render "document" %>
 <script language="JavaScript">
-	var closeButton = document.getElementById('close-button');
-	if (closeButton) {
-		closeButton.onclick = function() {
-			var parent = this.parentNode;
-			parent.parentNode.removeChild(parent);
-		}
-	}
+   var closeButton = document.getElementById('close-button');
+   if (closeButton) {
+      closeButton.onclick = function() {
+         var parent = this.parentNode;
+         parent.parentNode.removeChild(parent);
+      }
+   }
 </script>

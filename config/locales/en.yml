@@ -48,6 +48,8 @@ en:
         text: '2 Years'
       5_year:
         text: '5 Years'
+      forever:
+        text: 'Forever'
   sufia:
     product_name: 'Libra'
     deposit_agreement:  "Libra Deposit License"

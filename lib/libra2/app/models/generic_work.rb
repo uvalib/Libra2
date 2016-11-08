@@ -50,6 +50,7 @@ class GenericWork < ActiveFedora::Base
   EMBARGO_VALUE_1_YEAR = '1_year'.freeze
   EMBARGO_VALUE_2_YEAR = '2_year'.freeze
   EMBARGO_VALUE_5_YEAR = '5_year'.freeze
+  EMBARGO_VALUE_FOREVER = 'forever'.freeze
 
   # Custom Metadata
 
@@ -228,31 +229,37 @@ class GenericWork < ActiveFedora::Base
     return "https://doi.org/#{doi.gsub('doi:', '')}"
   end
 
-  def self.friendly_embargo_period(embargo_period)
-    if embargo_period == GenericWork::EMBARGO_VALUE_6_MONTH
+  def self.displayable_embargo_period( embargo_period )
+    case embargo_period
+    when GenericWork::EMBARGO_VALUE_6_MONTH
       return "6 months"
-    elsif embargo_period == GenericWork::EMBARGO_VALUE_1_YEAR
+    when GenericWork::EMBARGO_VALUE_1_YEAR
       return "1 year"
-    elsif embargo_period == GenericWork::EMBARGO_VALUE_2_YEAR
+    when GenericWork::EMBARGO_VALUE_2_YEAR
       return "2 years"
-    elsif embargo_period == GenericWork::EMBARGO_VALUE_5_YEAR
+    when GenericWork::EMBARGO_VALUE_5_YEAR
       return "5 years"
+    when GenericWork::EMBARGO_VALUE_FOREVER
+      return "forever"
     end
-    raise "Unknown embargo date."
+    raise "Unknown embargo period."
   end
 
-  def resolve_embargo_date()
-      if embargo_period == GenericWork::EMBARGO_VALUE_6_MONTH
-        return Time.now() + 6.months
-      elsif embargo_period == GenericWork::EMBARGO_VALUE_1_YEAR
-        return Time.now() + 1.year
-      elsif embargo_period == GenericWork::EMBARGO_VALUE_2_YEAR
-        return Time.now() + 2.years
-      elsif embargo_period == GenericWork::EMBARGO_VALUE_5_YEAR
-        return Time.now() + 5.years
-      end
-        raise "Unknown embargo date."
-     end
+  def self.calculate_embargo_release_date( embargo_period )
+    case embargo_period
+      when GenericWork::EMBARGO_VALUE_6_MONTH
+        return Time.now( ) + 6.months
+      when GenericWork::EMBARGO_VALUE_1_YEAR
+        return Time.now( ) + 1.year
+      when GenericWork::EMBARGO_VALUE_2_YEAR
+        return Time.now( ) + 2.years
+      when GenericWork::EMBARGO_VALUE_5_YEAR
+        return Time.now( ) + 5.years
+      when GenericWork::EMBARGO_VALUE_FOREVER
+        return Time.now( ) + 150.years
+    end
+    raise "Unknown embargo period."
+  end
 end
 
 #

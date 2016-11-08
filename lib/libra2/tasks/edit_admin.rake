@@ -259,11 +259,11 @@ task set_embargo_by_id: :environment do |t, args|
   work.embargo_state = embargo_type
   work.embargo_period = embargo_period
 
-  end_date = work.resolve_embargo_date()
+  end_date = GenericWork.calculate_embargo_release_date( embargo_period )
   work.embargo_end_date = DateTime.new(end_date.year, end_date.month, end_date.day)
   work.save!
 
-  puts "Work #{work_id} embargo period updated to #{GenericWork.friendly_embargo_period embargo_period}"
+  puts "Work #{work_id} embargo period updated to #{GenericWork.displayable_embargo_period( embargo_period )}"
 end
 
   desc "Apply publication_date to all published works."
