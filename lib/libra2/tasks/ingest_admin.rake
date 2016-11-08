@@ -59,7 +59,7 @@ namespace :libra2 do
     ingests.each do | dirname |
       ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
-      #break
+      break
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
 
@@ -201,8 +201,8 @@ namespace :libra2 do
      payload[ :embargo_type ] = embargo_type if embargo_type.present?
      release_date = doc.at_path( 'embargo_embargo_release_date_t[0]' )
      payload[ :embargo_release_date ] = release_date if release_date.present?
-     #payload[ :embargo_period ] =
-     #    calculate_embargo_period( issued_date, release_date ) if issued_date.present? && release_date.present?
+     payload[ :embargo_period ] =
+         estimate_embargo_period( issued_date, release_date ) if issued_date.present? && release_date.present?
 
      # document source
      payload[ :source ] = doc.at_path( 'id' )
@@ -426,11 +426,12 @@ namespace :libra2 do
           admin_notes << v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )
           payload[ :admin_notes ] = admin_notes
 
-        when :force_embargo
+        when :force_embargo_period
+          payload[ :embargo_period ] = v
           if payload[ :issued ]
-            payload[ :embargo_release_date ] = add_years_to_date( payload[ :issued ], defaults[ :force_embargo ] )
+             payload[ :embargo_release_date ] = calculate_embargo_release_date( payload[ :issued ], v )
           else
-            payload[ :embargo_release_date ] = add_years_to_date( CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" ), defaults[ :force_embargo ] )
+             payload[ :embargo_release_date ] = GenericWork.calculate_embargo_release_date( v )
           end
 
        else if payload.key?( k ) == false
@@ -475,15 +476,27 @@ namespace :libra2 do
   #
   # add the specified number of years to the specified date
   #
-  def add_years_to_date( date, years_to_add )
-    new_date = Date.parse( date ) + years_to_add.years
-    return new_date
+  def calculate_embargo_release_date( date, embargo_period )
+    dt = Date.parse( date )
+    case embargo_period
+      when GenericWork::EMBARGO_VALUE_6_MONTH
+        return dt + 6.months
+      when GenericWork::EMBARGO_VALUE_1_YEAR
+        return dt + 1.year
+      when GenericWork::EMBARGO_VALUE_2_YEAR
+        return dt + 2.years
+      when GenericWork::EMBARGO_VALUE_5_YEAR
+        return dt + 5.years
+      when GenericWork::EMBARGO_VALUE_FOREVER
+        return dt + 150.years
+    end
+    return dt
   end
 
   #
   # calculate the approx original embargo period given the issued and release dates
   #
-  def calculate_embargo_period( issued, embargo_release )
+  def estimate_embargo_period( issued, embargo_release )
      period = Date.parse( embargo_release ) - Date.parse( issued )
      case period.to_i
        when 0
@@ -492,10 +505,12 @@ namespace :libra2 do
          return GenericWork::EMBARGO_VALUE_6_MONTH
        when 187..366
          return GenericWork::EMBARGO_VALUE_1_YEAR
-       when 367..732
+       when 367..731
          return GenericWork::EMBARGO_VALUE_2_YEAR
-       else
+       when 732..1825
          return GenericWork::EMBARGO_VALUE_5_YEAR
+       else
+         return GenericWork::EMBARGO_VALUE_FOREVER
      end
   end
 

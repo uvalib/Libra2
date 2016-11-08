@@ -4,8 +4,9 @@ institution: <%= GenericWork::DEFAULT_INSTITUTION %>
 license: <%= GenericWork::DEFAULT_LICENSE %>
 admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
 
-# add the specified years to the embargo period
-force_embargo: 150
+# apply the specified embargo period; should be one of:
+# 6_months, 1_year, 2_year, 5_year, forever (150 years)
+force_embargo_period: forever
 
 # debug
 #dump_payload: true
