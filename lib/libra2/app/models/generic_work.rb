@@ -256,7 +256,7 @@ class GenericWork < ActiveFedora::Base
       when GenericWork::EMBARGO_VALUE_5_YEAR
         return Time.now( ) + 5.years
       when GenericWork::EMBARGO_VALUE_FOREVER
-        return Time.now( ) + 150.years
+        return Time.now( ) + 130.years
     end
     raise "Unknown embargo period."
   end

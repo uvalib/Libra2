@@ -490,7 +490,7 @@ namespace :libra2 do
       when GenericWork::EMBARGO_VALUE_5_YEAR
         return dt + 5.years
       when GenericWork::EMBARGO_VALUE_FOREVER
-        return dt + 150.years
+        return dt + 130.years
     end
     return dt
   end
