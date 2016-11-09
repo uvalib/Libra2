@@ -81,6 +81,16 @@ module ServiceClient
      end
 
      #
+     # revoke a DOI entry
+     #
+     def revoke( doi )
+       #puts "=====> revoke #{doi}"
+       url = "#{self.url}/revoke/#{doi}?auth=#{self.authtoken}"
+       status, _ = rest_send( url, :put, nil )
+       return status
+     end
+
+     #
      # construct the request payload
      #
      def construct_payload( work )

@@ -12,6 +12,29 @@ namespace :libra2 do
 
   namespace :doi do
 
+  #
+  # list DOIs for all works from the specified user
+  #
+  desc "List DOI's for all my works; optionally provide depositor email"
+  task list_doi_my_works: :environment do |t, args|
+
+     who = ARGV[ 1 ]
+     who = TaskHelpers.default_user_email if who.nil?
+     task who.to_sym do ; end
+
+     count = 0
+     GenericWork.where({ depositor: who }).each do |work|
+        puts "#{work.id} => #{work.identifier || 'None'} (#{work.is_draft? ? 'draft' : 'published'})"
+        count += 1
+     end
+
+     puts "#{count} work(s) listed successfully"
+
+  end
+
+  #
+  # get the EZID service metadata for the specified work
+  #
   desc "Get EZID metadata for the specified work; must provide the work id"
   task get_ezid_metadata_by_work: :environment do |t, args|
 
@@ -38,6 +61,9 @@ namespace :libra2 do
 
   end
 
+  #
+  # get the EZID service metadata for the specified DOI
+  #
   desc "Get EZID metadata for the specified DOI; must provide the DOI"
   task get_ezid_metadata_by_doi: :environment do |t, args|
 
@@ -58,6 +84,9 @@ namespace :libra2 do
 
   end
 
+  #
+  # assign a new DOI for the specified work
+  #
   desc "Assign a new DOI for the specified work; must provide the work id"
   task assign_doi_to_work: :environment do |t, args|
 
@@ -81,6 +110,9 @@ namespace :libra2 do
 
   end
 
+  #
+  # assign a new DOI for all the specified works
+  #
   desc "Assign new DOI's for all my works; optionally provide depositor email"
   task assign_doi_my_works: :environment do |t, args|
 
@@ -89,19 +121,20 @@ namespace :libra2 do
     task who.to_sym do ; end
 
     count = 0
-    GenericWork.all.each do |work|
-      if work.is_mine?( who )
-        if update_work_doi( work )
+    GenericWork.where({ depositor: who }).each do |work|
+       if update_work_doi( work )
           puts "New DOI assigned to work #{work.id} (#{work.identifier})"
-        end
-        count += 1
-      end
+       end
+       count += 1
     end
 
     puts "New DOI's assigned to #{count} works successfully"
 
   end
 
+  #
+  # assign a new DOI for all works
+  #
   desc "Bulk assign new DOI's for all works"
   task assign_doi_all_works: :environment do |t, args|
 
@@ -115,6 +148,9 @@ namespace :libra2 do
     puts "New DOI's assigned to #{count} works successfully"
   end
 
+  #
+  # resubmit the EZID metadata for the specified work
+  #
   desc "Update DOI metadata for the specified work; must provide the work id"
   task update_doi_metadata_by_work: :environment do |t, args|
 
@@ -138,6 +174,9 @@ namespace :libra2 do
 
   end
 
+  #
+  # resubmit the EZID metadata for all published works from the specified depositor
+  #
   desc "Update DOI metadata for all my submitted works; optionally provide depositor email"
   task update_doi_metadata_my_works: :environment do |t, args|
 
@@ -146,19 +185,20 @@ namespace :libra2 do
     task who.to_sym do ; end
 
     count = 0
-    GenericWork.all.each do |work|
-      if work.is_mine?( who )
-        if update_work_metadata( work )
+    GenericWork.where({ depositor: who }).each do |work|
+       if update_work_metadata( work )
           puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
           count += 1
-        end
-      end
+       end
     end
 
     puts "#{count} work(s) successfully updated"
 
   end
 
+  #
+  # resubmit the EZID metadata for all published works
+  #
   desc "Update DOI metadata for all submitted works"
   task update_doi_metadata_all_works: :environment do |t, args|
 
@@ -172,6 +212,9 @@ namespace :libra2 do
     puts "#{count} work(s) successfully updated"
   end
 
+  #
+  # delete the specified DOI
+  #
   desc "Delete the specified DOI; must provide the DOI"
   task delete_by_doi: :environment do |t, args|
 
@@ -192,14 +235,47 @@ namespace :libra2 do
 
   end
 
+  #
+  # revoke the specified DOI
+  #
+  desc "Revoke the specified DOI; must provide the DOI"
+  task revoke_by_doi: :environment do |t, args|
+
+    doi = ARGV[ 1 ]
+    if doi.nil?
+      puts "ERROR: no DOI specified, aborting"
+      next
+    end
+
+    task doi.to_sym do ; end
+
+    status = ServiceClient::EntityIdClient.instance.revoke( doi )
+    if ServiceClient::EntityIdClient.instance.ok?( status ) == false
+      puts "ERROR: EZID service returns #{status}, aborting"
+    else
+      puts "DOI successfully revoked"
+    end
+
+  end
+
+  #
+  # helper methods
+  #
+
   # update the DOI for the supplied work
   def update_work_doi( work )
 
-      if work.identifier.nil? == false && work.identifier.empty? == false
-        puts "WARNING: work #{work.id} already has a DOI (#{work.identifier}), removing it"
-        status = ServiceClient::EntityIdClient.instance.remove( work.identifier )
+      if work.identifier.blank? == false
+        if work.is_draft? == true
+           puts "WARNING: draft work #{work.id} already has a DOI (#{work.identifier}), removing it"
+           status = ServiceClient::EntityIdClient.instance.remove( work.identifier )
+        else
+           puts "WARNING: published work #{work.id} already has a DOI (#{work.identifier}), revoking it"
+           status = ServiceClient::EntityIdClient.instance.revoke( work.identifier )
+        end
+
         if ServiceClient::EntityIdClient.instance.ok?( status ) == false
-          puts "ERROR: remove DOI request returns #{status}, continuing anyway"
+          puts "ERROR: remove/revoke DOI request returns #{status}, continuing anyway"
         end
       end
 
