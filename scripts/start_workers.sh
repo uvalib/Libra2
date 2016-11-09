@@ -1,22 +1,52 @@
 #
-# Start the resque-pool
+# Start the resque-pool and restart it whenever it terminates
 #
 
 # source the helper...
 DIR=$(dirname $0)
 . $DIR/common.sh
 
-# define the appropriate loggers
-export STDOUT_LOGGER=$(logger_name "resque-pool.stdout.log")
-export STDERR_LOGGER=$(logger_name "resque-pool.stderr.log")
+# set the appropriate logger
+NAME=$(basename $0 .sh)
+LOGGER=$(logger_name "$NAME.log")
 
-echo $STDOUT_LOGGER
-echo $STDERR_LOGGER
+# define the appropriate resque-pool loggers
+STDOUT_LOGGER=$(logger_name "resque-pool.stdout.log")
+STDERR_LOGGER=$(logger_name "resque-pool.stderr.log")
+LOG_OPT="--stdout $STDOUT_LOGGER --stderr $STDERR_LOGGER"
 
-# start up the resque pool
-RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool --daemon --stdout $STDOUT_LOGGER --stderr $STDERR_LOGGER --environment $RAILS_ENV start
+# set the environment as necessary
+if [ -n "$RAILS_ENV" ]; then
+   ENV_OPT="--environment $RAILS_ENV"
+else
+   ENV_OPT=""
+fi
 
-# all good
+# define the time to sleep before attempting a restart
+SLEEP_TIME=15
+
+# helpful message...
+logit "Starting up..."
+
+# forever...
+while true; do
+
+   # ending message
+   logit "Starting resque pool..."
+
+   # start up the resque pool
+   RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool $LOG_OPT $ENV_OPT start
+   res=$?
+
+   # ending message
+   logit "Resque pool terminates unexpectedly with status: $res; sleeping for $SLEEP_TIME seconds..."
+
+   # sleep for another minute
+   sleep $SLEEP_TIME
+
+done
+
+# never get here...
 exit 0
 
 #
