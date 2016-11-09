@@ -124,8 +124,9 @@ task list_all_users: :environment do |t, args|
   User.order( :email ).each do |user|
     puts "User: #{user.display_name}"
     puts "  email:      #{user.email}"
-    puts "  title:      #{user.title}"
-    puts "  department: #{user.department}"
+    puts "  title:      #{user.title || 'None'}"
+    puts "  department: #{user.department || 'None'}"
+    puts "  ORCID:      #{user.orcid || 'None'}"
     puts "  created:    #{user.created_at}"
     count += 1
   end
