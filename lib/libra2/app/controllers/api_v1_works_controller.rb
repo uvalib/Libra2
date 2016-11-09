@@ -80,9 +80,11 @@ class APIV1WorksController < APIBaseController
       #audit_log( "Work id #{work.id} (#{work.identifier}) deleted by by #{User.cid_from_email( @api_user.email)}" )
       WorkAudit.audit( work.id, User.cid_from_email( @api_user.email), 'Deleted' )
 
-      # if the work is draft, we can remove the DOI
+      # if the work is draft, we can remove the DOI, otherwise, we must revoke it
       if work.is_draft? == true
         remove_doi( work )
+      else
+        revoke_doi( work )
       end
 
       # actually do the delete

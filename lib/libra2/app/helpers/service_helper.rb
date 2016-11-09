@@ -31,7 +31,24 @@ module ServiceHelper
     status = ServiceClient::EntityIdClient.instance.remove( work.identifier )
     if ServiceClient::EntityIdClient.instance.ok?( status ) == false
       # TODO-DPG handle error
-      puts "ERROR: DOI delete returns #{status} (#{work.identifier})"
+      puts "ERROR: DOI remove returns #{status} (#{work.identifier})"
+      return false
+    end
+    return true
+  end
+
+  # revoke the DOI
+  def revoke_doi( work )
+
+    return if work.nil?
+
+    # if we have no DOI, do nothing...
+    return if work.identifier.nil? || work.identifier.empty?
+
+    status = ServiceClient::EntityIdClient.instance.revoke( work.identifier )
+    if ServiceClient::EntityIdClient.instance.ok?( status ) == false
+      # TODO-DPG handle error
+      puts "ERROR: DOI revoke returns #{status} (#{work.identifier})"
       return false
     end
     return true

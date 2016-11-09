@@ -5,6 +5,7 @@ module API
 class Work
 
   include Libra2::SolrExtract
+  include ServiceHelper
 
   attr_accessor :id
   attr_accessor :depositor_email
@@ -365,6 +366,7 @@ class Work
       if @status == PENDING_STATUS && work.is_draft? == false
         audit_change( work.id, 'Published', 'true', 'false', by_whom )
         work.draft = 'true'
+        revoke_doi( work )
       end
 
       # if we are moving from a non-published (draft) work to a published one
