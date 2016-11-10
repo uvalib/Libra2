@@ -96,7 +96,12 @@ task del_all_works: :environment do |t, args|
   GenericWork.all.each do |generic_work|
      count += 1
      print "."
-     remove_doi( generic_work )
+     # if the work is draft, we can remove the DOI, otherwise, we must revoke it
+     if generic_work.is_draft? == true
+       remove_doi( generic_work )
+     else
+       revoke_doi( generic_work )
+     end
      generic_work.destroy
   end
   puts "done" unless count == 0
@@ -116,7 +121,12 @@ task del_my_works: :environment do |t, args|
    GenericWork.where({ depositor: who }).each do |generic_work|
      count += 1
      print "."
-     remove_doi( generic_work )
+     # if the work is draft, we can remove the DOI, otherwise, we must revoke it
+     if generic_work.is_draft? == true
+       remove_doi( generic_work )
+     else
+       revoke_doi( generic_work )
+     end
      generic_work.destroy
    end
 
@@ -142,7 +152,13 @@ task del_by_id: :environment do |t, args|
     next
   end
 
-  remove_doi( work )
+  # if the work is draft, we can remove the DOI, otherwise, we must revoke it
+  if work.is_draft? == true
+    remove_doi( work )
+  else
+    revoke_doi( work )
+  end
+  
   work.destroy
   puts "Work deleted"
 end
