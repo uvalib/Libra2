@@ -2,6 +2,7 @@
 #
 #
 
+require 'oga'
 require 'net/scp'
 
 require_dependency 'libra2/lib/helpers/etd_helper'
@@ -294,6 +295,15 @@ module TaskHelpers
       json_str = file.read( )
       doc = JSON.parse json_str
       return doc
+    end
+  end
+
+  #
+  # load a file containing xml data and return an oga document
+  #
+  def load_xml_doc( filename )
+    File.open( filename, 'r') do |file|
+      return Oga.parse_xml( file )
     end
   end
 

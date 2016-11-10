@@ -71,3 +71,4 @@ gem 'json', '1.8.3'
 
 # used for exporting/ingesting Libra content
 gem 'hash_at_path'
+gem 'oga'

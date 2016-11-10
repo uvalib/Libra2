@@ -97,14 +97,14 @@ namespace :libra2 do
   #
   def ingest_new_item( defaults, depositor, dirname )
 
-     doc = load_solr_doc( dirname )
-     id = doc['id']
+     solr_doc, fedora_doc = load_ingest_content( dirname )
+     id = solr_doc['id']
      assets = get_document_assets( dirname )
 
      puts "Ingesting #{File.basename( dirname )} (#{id}) and #{assets.size} asset(s)..."
 
      # create a payload from the document
-     payload = create_ingest_payload( doc )
+     payload = create_ingest_payload( solr_doc )
 
      # merge in any default attributes
      payload = apply_defaults( defaults, payload )
@@ -385,17 +385,19 @@ namespace :libra2 do
   end
 
   #
-  # load the Libra json data from the specified directory
+  # load the Libra data from the specified directory
   #
-  def load_solr_doc( dirname )
-    return TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
+  def load_ingest_content(dirname )
+    json_doc = TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
+    xml_doc = TaskHelpers.load_xml_doc( File.join( dirname, TaskHelpers::DOCUMENT_XML_FILE ) )
+    return json_doc, xml_doc
   end
 
   #
   # get the list of Libra extract items from the work directory
   #
   def get_ingest_list( dirname )
-    return TaskHelpers.get_directory_list( dirname, /^solr./ )
+    return TaskHelpers.get_directory_list( dirname, /^extract./ )
   end
 
   #
