@@ -134,6 +134,9 @@ namespace :libra2 do
        return false
      end
 
+     # handle no file upload
+     return true if ENV[ 'NO_FILES' ]
+
      # and upload each file
      assets.each do |asset|
        fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, asset[ :title ] ) )
@@ -421,7 +424,7 @@ namespace :libra2 do
 
           # create the admin notes for this item
           new_notes = payload[ :notes ] || ''
-          new_notes += "\n" if new_notes.blank? == false
+          new_notes += "\n\n" if new_notes.blank? == false
 
           original_create_date = payload[ :create_date ]
           time_now = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d %H:%M:%S" )
