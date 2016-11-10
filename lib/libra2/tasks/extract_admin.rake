@@ -37,8 +37,8 @@ namespace :libra2 do
     end
     task max_rows.to_sym do ; end
 
-    if solr_dir_clean?( extract_dir ) == false
-      puts "ERROR: extract directory already contains SOLR items, aborting"
+    if extract_dir_clean?(extract_dir ) == false
+      puts "ERROR: extract directory already contains items, aborting"
       next
     end
 
@@ -49,7 +49,9 @@ namespace :libra2 do
     end
 
     url = "#{PRODUCTION_SOLR}&rows=#{max_rows}&q=#{query}"
-    count = 0
+    success_count = 0
+    error_count = 0
+
     puts "Extracting up to #{max_rows} records from SOLR... please wait..."
     response = HTTParty.get( url )
     if response.code == 200
@@ -58,16 +60,16 @@ namespace :libra2 do
       response = JSON.parse( response )
 
       if response['response'] && response['response']['docs']
-        response['response']['docs'].each do |doc|
-          dump_solr_doc( extract_dir, doc, count + 1 )
-          count += 1
+        response['response']['docs'].each_with_index do |doc, ix|
+          ok = process_solr_doc(extract_dir, doc, ix + 1 )
+          ok == true ? success_count += 1 : error_count += 1
         end
-        puts "#{count} item(s) extracted successfully; results in #{extract_dir}"
+        puts "#{success_count} item(s) extracted successfully, #{error_count} error(s) encountered; results in #{extract_dir}"
       else
-        puts "ERROR: SOLR query returns unexpected response"
+        puts "ERROR: SOLR query returns unexpected response, aborting"
       end
     else
-      puts "ERROR: SOLR query returns #{response.code} for #{url}"
+      puts "ERROR: SOLR query returns #{response.code} for #{url}, aborting"
     end
 
   end
@@ -101,15 +103,15 @@ namespace :libra2 do
       task start.to_sym do ; end
     end
 
-    extracts = get_solr_extract_list( extract_dir )
+    extracts = get_extract_list( extract_dir )
     if extracts.empty?
-      puts "ERROR: extract directory does not contain contains SOLR items, aborting"
+      puts "ERROR: extract directory does not contain contains any items, aborting"
       next
     end
 
-    assets = get_solr_extract_list( asset_dir )
+    assets = get_extract_list( asset_dir )
     if assets.empty?
-      puts "ERROR: asset directory does not contain contains SOLR items, aborting"
+      puts "ERROR: asset directory does not contain contains any items, aborting"
       next
     end
 
@@ -174,7 +176,7 @@ namespace :libra2 do
     f = File.new( fname, 'w:ASCII-8BIT' )
     if asset_refs.key?( id )
       asset_refs[id].each { |asset|
-        ok = download_fedora_asset( asset[ :id ], File.join( dirname, asset[ :title ] ) )
+        ok = download_fedora_file( asset[ :id ], File.join( dirname, asset[ :title ] ) )
         f.write( "#{asset[ :id ]}|#{asset[ :timestamp ]}|#{asset[ :title ]}\n" ) if ok
       }
 
@@ -184,13 +186,13 @@ namespace :libra2 do
   end
 
   #
-  # write the extracted SOLR document
+  # process the extracted SOLR document
   #
-  def dump_solr_doc( export_dir, doc, number )
+  def process_solr_doc( export_dir, doc, number )
 
-    puts " writing SOLR document # #{number}..."
+    puts " writing SOLR document # #{number} (#{doc['id']})..."
 
-    d = File.join( export_dir, "solr.#{number}" )
+    d = File.join( export_dir, "extract.#{number}" )
     FileUtils::mkdir_p( d )
 
     f = File.join( d, TaskHelpers::DOCUMENT_JSON_FILE )
@@ -198,15 +200,31 @@ namespace :libra2 do
       file.write( JSON.pretty_generate( doc ) )
     end
 
+    # download the fedora representation too
+    f = File.join( d, TaskHelpers::DOCUMENT_XML_FILE )
+    return( download_fedora_data( doc['id'], f ) )
   end
 
   #
-  # download the specified asset from Fedora
+  # download the specified file from Fedora and write it to a file
   #
-  def download_fedora_asset( asset_id, filename )
+  def download_fedora_file( asset_id, filename )
+    return( download_fedora_asset( "#{PRODUCTION_FEDORA}/#{asset_id}/datastreams/DS1/content", filename ) )
+  end
 
-    url = "#{PRODUCTION_FEDORA}/#{asset_id}/datastreams/DS1/content"
-    puts " downloading #{filename} ..."
+  #
+  # download the specified data from Fedora and write it to a file
+  #
+  def download_fedora_data( asset_id, filename )
+    return( download_fedora_asset( "#{PRODUCTION_FEDORA}/#{asset_id}/objectXML", filename ) )
+  end
+
+  #
+  # download the specified asset from Fedora and write it to a file
+  #
+  def download_fedora_asset( url, filename )
+
+    puts " downloading Fedora asset -> #{filename} ..."
 
     File.open( filename, 'wb' ) do |f|
       f.binmode
@@ -220,16 +238,16 @@ namespace :libra2 do
   #
   # check to ensure if the SOLR extract directory is empty
   #
-  def solr_dir_clean?( dirname )
-    items = get_solr_extract_list( dirname )
+  def extract_dir_clean?(dirname )
+    items = get_extract_list(dirname )
     return items.empty?
   end
 
   #
   # get the list of SOLR extract items from the work directory
   #
-  def get_solr_extract_list( dirname )
-    return TaskHelpers.get_directory_list( dirname, /^solr./ )
+  def get_extract_list(dirname )
+    return TaskHelpers.get_directory_list( dirname, /^extract./ )
   end
 
   #

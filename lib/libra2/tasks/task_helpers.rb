@@ -12,6 +12,7 @@ module TaskHelpers
   DOCUMENT_ID_FILE = 'id.json'
   DOCUMENT_FILES_LIST = 'filelist.txt'
   DOCUMENT_JSON_FILE = 'data.json'
+  DOCUMENT_XML_FILE = 'data.xml'
   DOCUMENT_HTML_FILE = 'data.html'
 
   # general definitions
