@@ -225,14 +225,23 @@ namespace :libra2 do
   def download_fedora_asset( url, filename )
 
     puts " downloading Fedora asset -> #{filename} ..."
+    #puts "    URL -> #{url}"
 
+    ok = true
     File.open( filename, 'wb' ) do |f|
       f.binmode
-      f.write HTTParty.get( url ).parsed_response
+      response = HTTParty.get( url )
+      if response.code == 200
+         f.write( response.body )
+      else
+        ok = false
+      end
+
+      #HTTParty.get( url, :debug_output => f ) #.parsed_response
       f.close
     end
 
-    return true
+    return ok
   end
 
   #
