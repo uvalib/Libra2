@@ -21,8 +21,3 @@ force_embargo_period: forever
 # debug information showing the ingested record
 #
 #dump_payload: true
-
-#
-# the maximum number of records to ingest
-#
-#max_ingest_count: 2

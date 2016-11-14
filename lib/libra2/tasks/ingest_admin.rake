@@ -59,7 +59,7 @@ namespace :libra2 do
     ingests.each do | dirname |
       ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
-      break if defaults[ :max_ingest_count ] && defaults[ :max_ingest_count ].to_i == ( success_count + error_count )
+      break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
 
