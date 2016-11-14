@@ -22,13 +22,13 @@ namespace :libra2 do
      who = TaskHelpers.default_user_email if who.nil?
      task who.to_sym do ; end
 
-     count = 0
+     success_count = 0
      GenericWork.where({ depositor: who }).each do |work|
         puts "#{work.id} => #{work.identifier || 'None'} (#{work.is_draft? ? 'draft' : 'published'})"
-        count += 1
+        success_count += 1
      end
 
-     puts "#{count} work(s) listed successfully"
+     puts "#{success_count} work(s) listed successfully"
 
   end
 
@@ -111,7 +111,7 @@ namespace :libra2 do
   end
 
   #
-  # assign a new DOI for all the specified works
+  # assign a new DOI for all my works
   #
   desc "Assign new DOI's for all my works; optionally provide depositor email"
   task assign_doi_my_works: :environment do |t, args|
@@ -120,15 +120,47 @@ namespace :libra2 do
     who = TaskHelpers.default_user_email if who.nil?
     task who.to_sym do ; end
 
-    count = 0
+    success_count = 0
+    error_count = 0
+
     GenericWork.where({ depositor: who }).each do |work|
        if update_work_doi( work )
           puts "New DOI assigned to work #{work.id} (#{work.identifier})"
+          success_count += 1
+       else
+         error_count += 1
        end
-       count += 1
     end
 
-    puts "New DOI's assigned to #{count} works successfully"
+    puts "New DOI's assigned to #{success_count} work(s) successfully; #{error_count} error(s) encountered"
+
+  end
+
+  #
+  # assign a new DOI for all my works that do not have them
+  #
+  desc "Assign new DOI's for all my works that do not have them; optionally provide depositor email"
+  task assign_doi_my_unassigned_works: :environment do |t, args|
+
+    who = ARGV[ 1 ]
+    who = TaskHelpers.default_user_email if who.nil?
+    task who.to_sym do ; end
+
+    success_count = 0
+    error_count = 0
+
+    GenericWork.where({ depositor: who }).each do |work|
+      if work.identifier.blank?
+        if update_work_doi( work )
+          puts "New DOI assigned to work #{work.id} (#{work.identifier})"
+          success_count += 1
+        else
+          error_count += 1
+        end
+      end
+    end
+
+    puts "New DOI's assigned to #{success_count} work(s) successfully; #{error_count} error(s) encountered"
 
   end
 
@@ -138,14 +170,40 @@ namespace :libra2 do
   desc "Bulk assign new DOI's for all works"
   task assign_doi_all_works: :environment do |t, args|
 
-    count = 0
+    success_count = 0
+    error_count = 0
+
     GenericWork.all.each do |work|
       if update_work_doi( work )
         puts "New DOI assigned to work #{work.id} (#{work.identifier})"
+        success_count += 1
+      else
+        error_count += 1
       end
-      count += 1
     end
-    puts "New DOI's assigned to #{count} works successfully"
+    puts "New DOI's assigned to #{success_count} work(s) successfully; #{error_count} error(s) encountered"
+  end
+
+  #
+  # assign a new DOI for all works that do not have them
+  #
+  desc "Bulk assign new DOI's for all works"
+  task assign_doi_all_unassigned_works: :environment do |t, args|
+
+    success_count = 0
+    error_count = 0
+
+    GenericWork.all.each do |work|
+      if work.identifier.blank?
+        if update_work_doi( work )
+          puts "New DOI assigned to work #{work.id} (#{work.identifier})"
+          success_count += 1
+        else
+          error_count += 1
+        end
+      end
+    end
+    puts "New DOI's assigned to #{success_count} work(s) successfully; #{error_count} error(s) encountered"
   end
 
   #
@@ -184,15 +242,19 @@ namespace :libra2 do
     who = TaskHelpers.default_user_email if who.nil?
     task who.to_sym do ; end
 
-    count = 0
+    success_count = 0
+    error_count = 0
+
     GenericWork.where({ depositor: who }).each do |work|
        if update_work_metadata( work )
           puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
-          count += 1
+          success_count += 1
+       else
+         error_count += 1
        end
     end
 
-    puts "#{count} work(s) successfully updated"
+    puts "#{success_count} work(s) successfully updated; #{error_count} error(s) encountered"
 
   end
 
@@ -202,14 +264,18 @@ namespace :libra2 do
   desc "Update DOI metadata for all submitted works"
   task update_doi_metadata_all_works: :environment do |t, args|
 
-    count = 0
+    success_count = 0
+    error_count = 0
+
     GenericWork.all.each do |work|
       if update_work_metadata( work )
         puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
-        count += 1
+        success_count += 1
+      else
+        error_count += 1
       end
     end
-    puts "#{count} work(s) successfully updated"
+    puts "#{success_count} work(s) successfully updated; #{error_count} error(s) encountered"
   end
 
   #
