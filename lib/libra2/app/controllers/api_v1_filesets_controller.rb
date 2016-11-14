@@ -66,6 +66,8 @@ class APIV1FilesetsController < APIBaseController
             file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, @api_user )
             file_actor.create_metadata( work )
             file_actor.create_content( File.open( filename ) )
+            fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+            fileset.save!
 
             # audit the information
             #audit_log( "File #{label} for work id #{work_id} (#{work.identifier}) added by #{User.cid_from_email( @api_user.email)}" )

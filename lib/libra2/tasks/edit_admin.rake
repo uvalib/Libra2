@@ -146,7 +146,7 @@ task add_file_to_work: :environment do |t, args|
     next
   end
 
-  TaskHelpers.upload_file( user, work, file_name )
+  TaskHelpers.upload_file( user, work, file_name, File.basename( file_name ) )
   puts "File #{file_name} added to work id #{work_id}"
 
 end

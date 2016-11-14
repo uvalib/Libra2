@@ -111,7 +111,7 @@ module TaskHelpers
   #
   # upload the specified file to the specified work on behalf of the specified user
   #
-  def upload_file( user, work, filename, title = nil )
+  def upload_file( user, work, filename, title, visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC )
 
     print "uploading #{filename}... "
 
@@ -120,6 +120,8 @@ module TaskHelpers
     file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, user )
     file_actor.create_metadata( work )
     file_actor.create_content( File.open( filename ) )
+    fileset.visibility = visibility
+    fileset.save!
 
     puts "done"
     return fileset

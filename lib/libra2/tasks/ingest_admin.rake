@@ -129,7 +129,9 @@ namespace :libra2 do
 
      # create the work
      ok, work = create_new_item( depositor, payload )
-     if ok == false
+     if ok == true
+       puts "New work created; id #{work.id} (#{work.identifier})"
+     else
        puts " ERROR: creating new generic work for #{File.basename( dirname )} (#{id})"
        return false
      end
@@ -139,7 +141,7 @@ namespace :libra2 do
 
      # and upload each file
      assets.each do |asset|
-       fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, asset[ :title ] ) )
+       fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, asset[ :title ] ), asset[ :title ] )
        fileset.date_uploaded = DateTime.parse( asset[ :timestamp ] )
        fileset.save!
      end
@@ -350,7 +352,7 @@ namespace :libra2 do
 
     # update the DOI metadata if necessary
     if ok && work.is_draft? == false
-      update_doi_metadata( work )
+      ok = update_doi_metadata( work )
     end
 
     return ok, work

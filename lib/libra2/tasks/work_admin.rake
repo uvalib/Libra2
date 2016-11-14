@@ -184,7 +184,7 @@ task create_new_work: :environment do |t, args|
   work = create_work( user, title, description )
 
   filename = TaskHelpers.get_random_image( )
-  TaskHelpers.upload_file( user, work, filename )
+  TaskHelpers.upload_file( user, work, filename, File.basename( filename ) )
 
   TaskHelpers.list_full_work work
 
@@ -231,7 +231,7 @@ task works_for_all: :environment do |t, args|
     work = create_work( user, title, description )
 
     filename = TaskHelpers.get_random_image( )
-    TaskHelpers.upload_file( user, work, filename )
+    TaskHelpers.upload_file( user, work, filename, File.basename( filename ) )
 
     count += 1
   end
@@ -253,7 +253,7 @@ task thesis_for_all: :environment do |t, args|
     work = create_thesis( user, title, description )
 
     filename = TaskHelpers.get_random_image( )
-    TaskHelpers.upload_file( user, work, filename )
+    TaskHelpers.upload_file( user, work, filename, File.basename( filename ) )
 
     count += 1
 
