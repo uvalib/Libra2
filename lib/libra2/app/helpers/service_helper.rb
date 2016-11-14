@@ -6,11 +6,12 @@ module ServiceHelper
   # update the DOI service metadata
   def update_doi_metadata( work )
 
-    return if work.nil?
+    return false if work.nil?
 
     # if we have no DOI, do nothing...
-    return if work.identifier.nil? || work.identifier.empty?
+    return true if work.identifier.blank?
 
+    #puts "==> Updating DOI"
     status = ServiceClient::EntityIdClient.instance.metadatasync( work )
     if ServiceClient::EntityIdClient.instance.ok?( status ) == false
       # TODO-DPG handle error
@@ -23,11 +24,12 @@ module ServiceHelper
   # remove the DOI
   def remove_doi( work )
 
-    return if work.nil?
+    return false if work.nil?
 
     # if we have no DOI, do nothing...
-    return if work.identifier.nil? || work.identifier.empty?
+    return true if work.identifier.blank?
 
+    #puts "==> Removing DOI"
     status = ServiceClient::EntityIdClient.instance.remove( work.identifier )
     if ServiceClient::EntityIdClient.instance.ok?( status ) == false
       # TODO-DPG handle error
@@ -40,11 +42,12 @@ module ServiceHelper
   # revoke the DOI
   def revoke_doi( work )
 
-    return if work.nil?
+    return false if work.nil?
 
     # if we have no DOI, do nothing...
-    return if work.identifier.nil? || work.identifier.empty?
+    return true if work.identifier.blank?
 
+    #puts "==> Revoking DOI"
     status = ServiceClient::EntityIdClient.instance.revoke( work.identifier )
     if ServiceClient::EntityIdClient.instance.ok?( status ) == false
       # TODO-DPG handle error
@@ -57,10 +60,10 @@ module ServiceHelper
   # update any foreign system that the student has submitted
   def update_submitted_state( work )
 
-    return if work.nil?
+    return false if work.nil?
 
     # do nothing for non-SIS work
-    return if work.is_sis_thesis? == false
+    return true if work.is_sis_thesis? == false
 
     status = ServiceClient::DepositAuthClient.instance.request_fulfilled( work )
     if ServiceClient::DepositAuthClient.instance.ok?( status ) == false
