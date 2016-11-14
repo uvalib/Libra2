@@ -104,7 +104,7 @@ namespace :libra2 do
      puts "Ingesting #{File.basename( dirname )} (#{id}) and #{assets.size} asset(s)..."
 
      # create a payload from the document
-     payload = create_ingest_payload( solr_doc )
+     payload = create_ingest_payload( solr_doc, fedora_doc )
 
      # merge in any default attributes
      payload = apply_defaults( defaults, payload )
@@ -150,7 +150,9 @@ namespace :libra2 do
   #
   # create a ingest payload from the Libra document
   #
-  def create_ingest_payload( doc )
+  def create_ingest_payload( solr_doc, fedora_doc )
+
+
      payload = {}
 
      #
@@ -158,76 +160,78 @@ namespace :libra2 do
      #
 
      # date and time attributes
-     create_date = doc.at_path( 'system_create_dt' )
+     create_date = solr_doc.at_path( 'system_create_dt' )
      payload[ :create_date ] = extract_date( create_date ) if create_date.present?
-     modified_date = doc.at_path( 'system_modified_dt' )
+     modified_date = solr_doc.at_path( 'system_modified_dt' )
      payload[ :modified_date ] = modified_date if modified_date.present?
 
      # document title
-     title = doc.at_path( 'mods_title_info_t[0]')
+     title = solr_doc.at_path( 'mods_title_info_t[0]')
      payload[ :title ] = title if title.present?
 
-     # document abstract
-     abstract = doc.at_path( 'abstract_t[0]')
+     # document abstract (use the XML variant as it reflects the formatting better)
+     #abstract = solr_doc.at_path( 'abstract_t[0]')
+     ab_node = fedora_doc.css( 'mods abstract' ).last
+     abstract = ab_node.text if ab_node
      payload[ :abstract ] = abstract if abstract.present?
 
      # document author
-     if doc.at_path( 'mods_0_name_0_role_0_text_t[0]' ) == 'author'
-       dept = doc.at_path( 'mods_0_name_0_description_t[0]' )
-       cid = doc.at_path( 'mods_0_name_0_computing_id_t[0]' )
-       fn = doc.at_path( 'mods_0_name_0_first_name_t[0]' )
-       ln = doc.at_path( 'mods_0_name_0_last_name_t[0]' )
-       payload[ :author_computing_id ] = cid if cid.present?
-       payload[ :author_first_name ] = fn if fn.present?
-       payload[ :author_last_name ] = ln if ln.present?
-       payload[ :department ] = dept if dept.present?
+     if solr_doc.at_path( 'mods_0_name_0_role_0_text_t[0]' ) == 'author'
+       dept = solr_doc.at_path( 'mods_0_name_0_description_t[0]' )
+       cid = solr_doc.at_path( 'mods_0_name_0_computing_id_t[0]' )
+       fn = solr_doc.at_path( 'mods_0_name_0_first_name_t[0]' )
+       ln = solr_doc.at_path( 'mods_0_name_0_last_name_t[0]' )
+       payload[ :author_computing_id ] = cid if field_supplied( cid )
+       payload[ :author_first_name ] = fn if field_supplied( fn )
+       payload[ :author_last_name ] = ln if field_supplied( ln )
+       payload[ :department ] = dept if field_supplied( dept )
      end
 
      # document advisor
-     if doc.at_path( 'mods_0_person_1_role_0_text_t[0]' ) == 'advisor'
-       dept = doc.at_path( 'mods_0_person_1_description_t[0]' )
-       cid = doc.at_path( 'mods_0_person_1_computing_id_t[0]' )
-       fn = doc.at_path( 'mods_0_person_1_first_name_t[0]' )
-       ln = doc.at_path( 'mods_0_person_1_last_name_t[0]' )
-       payload[ :advisor_computing_id ] = cid if cid.present?
-       payload[ :advisor_first_name ] = fn if fn.present?
-       payload[ :advisor_last_name ] = ln if ln.present?
-       payload[ :advisor_department ] = dept if dept.present?
+     if solr_doc.at_path( 'mods_0_person_1_role_0_text_t[0]' ) == 'advisor'
+       dept = solr_doc.at_path( 'mods_0_person_1_description_t[0]' )
+       cid = solr_doc.at_path( 'mods_0_person_1_computing_id_t[0]' )
+       fn = solr_doc.at_path( 'mods_0_person_1_first_name_t[0]' )
+       ln = solr_doc.at_path( 'mods_0_person_1_last_name_t[0]' )
+       payload[ :advisor_computing_id ] = cid if field_supplied( cid )
+       payload[ :advisor_first_name ] = fn if field_supplied( fn )
+       payload[ :advisor_last_name ] = ln if field_supplied( ln )
+       payload[ :advisor_department ] = dept if field_supplied( dept )
      end
 
      # issue date
-     issued_date = doc.at_path( 'origin_info_date_issued_t[0]' )
+     issued_date = solr_doc.at_path( 'origin_info_date_issued_t[0]' )
      payload[ :issued ] = issued_date if issued_date.present?
 
      # embargo attributes
-     embargo_type = doc.at_path( 'release_to_t[0]' )
+     embargo_type = solr_doc.at_path( 'release_to_t[0]' )
      payload[ :embargo_type ] = embargo_type if embargo_type.present?
-     release_date = doc.at_path( 'embargo_embargo_release_date_t[0]' )
+     release_date = solr_doc.at_path( 'embargo_embargo_release_date_t[0]' )
      payload[ :embargo_release_date ] = release_date if release_date.present?
      payload[ :embargo_period ] =
          estimate_embargo_period( issued_date, release_date ) if issued_date.present? && release_date.present?
 
      # document source
-     payload[ :source ] = doc.at_path( 'id' )
+     payload[ :source ] = solr_doc.at_path( 'id' )
 
      #
      # handle optional fields
      #
 
      # degree program
-     degree = doc.at_path( 'mods_extension_degree_level_t[0]' )
+     degree = solr_doc.at_path( 'mods_extension_degree_level_t[0]' )
      payload[ :degree ] = degree if degree.present?
 
      # keywords
-     keywords = doc.at_path( 'subject_topic_t' )
+     keywords = solr_doc.at_path( 'subject_topic_t' )
      payload[ :keywords ] = keywords if keywords.present?
 
      # language
-     language = doc.at_path( 'language_lang_code_t[0]' )
+     language = solr_doc.at_path( 'language_lang_code_t[0]' )
      payload[ :language ] = language_code_lookup( language ) if language.present?
 
      # notes
-     notes = doc.at_path( 'note_t[0]' )
+     notes = solr_doc.at_path( 'note_t[0]' )
      payload[ :notes ] = notes if notes.present?
 
      return payload
@@ -562,6 +566,14 @@ namespace :libra2 do
      return language_code
   end
 
+  #
+  # determine if a field is provided; look for the special valuye 'None Provided'
+  #
+  def field_supplied( field )
+    return false if field.blank?
+    return false if field == 'None Provided'
+    return true
+  end
   end   # namespace ingest
 
 end   # namespace libra2
