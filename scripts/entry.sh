@@ -5,9 +5,6 @@ rm -f $APP_HOME/tmp/pids/server.pid > /dev/null 2>&1
 # start the resque pool daemon
 nohup scripts/start_workers.sh &
 
-# start the resque monitor application
-#scripts/start_resque_web.sh
-
 # run the deposit importer process
 nohup scripts/deposit_import.sh &
 
