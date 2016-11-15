@@ -51,7 +51,6 @@ USER webservice
 
 # Define port and startup script
 EXPOSE 3000
-EXPOSE 8001
 CMD /bin/bash -l -c "scripts/entry.sh"
 
 # move in the profile

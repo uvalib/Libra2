@@ -65,6 +65,7 @@ group :development, :test do
 end
 
 gem 'resque-pool'
+gem 'resque-web', require: 'resque_web'
 gem 'rest-client'
 gem 'net-scp'
 gem 'json', '1.8.3'
