@@ -1,4 +1,5 @@
 <div id="sidebar" class="col-xs-12 col-sm-3 col-sm-pull-9">
+	<% if @files.blank? == false %>
 	<h2>Files</h2>
 	<p class="file-notice"><%= embargo_notice(@work) %></p>
 	<% if allow_file_access(@work) %>
@@ -18,5 +19,6 @@
 			<% } %>
 
 	</div>
+	<% end %>
 	<% end %>
 </div>
