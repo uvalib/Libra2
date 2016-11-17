@@ -23,7 +23,7 @@ else
 fi
 
 # define the time to sleep before attempting a restart
-SLEEP_TIME=15
+SLEEP_TIME=60
 
 # helpful message...
 logit "Starting up..."
@@ -31,15 +31,22 @@ logit "Starting up..."
 # forever...
 while true; do
 
-   # ending message
-   logit "Starting resque pool..."
+   # determine if we are the active host... run workers on the non-sis host only
+   if active_sis_host; then
 
-   # start up the resque pool
-   RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool $LOG_OPT $ENV_OPT start
-   res=$?
+      # ending message
+      logit "Starting resque pool..."
 
-   # ending message
-   logit "Resque pool terminates unexpectedly with status: $res; sleeping for $SLEEP_TIME seconds..."
+      # start up the resque pool
+      RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool $LOG_OPT $ENV_OPT start
+      res=$?
+
+      # ending message
+      logit "Resque pool terminates unexpectedly with status: $res; sleeping for $SLEEP_TIME seconds..."
+
+   else
+      logit "Not an active SIS host; doing nothing"
+   fi
 
    # sleep for another minute
    sleep $SLEEP_TIME
