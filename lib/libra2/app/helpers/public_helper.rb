@@ -42,7 +42,9 @@ module PublicHelper
 
    def display_advisers(work)
       return '' if work.nil?
-      return '' if work.contributor.blank?
+      #return '' if work.contributor.blank?
+      # special case, we want to show the advisor field as blank
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Advisors:", '').render ) if work.contributor.blank?
 
       contributors = work.contributor
       advisors = []
