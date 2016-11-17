@@ -132,12 +132,13 @@ namespace :libra2 do
      if ok == true
        puts "New work created; id #{work.id} (#{work.identifier})"
      else
-       puts " ERROR: creating new generic work for #{File.basename( dirname )} (#{id})"
-       return false
+       #puts " ERROR: creating new generic work for #{File.basename( dirname )} (#{id})"
+       #return false
+       puts " WARNING: while creating generic work for #{File.basename( dirname )} (#{id})"
      end
 
      # handle no file upload
-     return true if ENV[ 'NO_FILES' ]
+     return ok if ENV[ 'NO_FILES' ]
 
      # and upload each file
      assets.each do |asset|
@@ -146,7 +147,7 @@ namespace :libra2 do
        fileset.save!
      end
 
-     return true
+     return ok
   end
 
   #
