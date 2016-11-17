@@ -54,12 +54,15 @@ function sleep_until {
 }
 
 #
-# determine if we are an active sis host
+# determine if we are the active host
 #
-# an active SIS host is docker1.lib.virginia.edu (for development testing) and
-# whichever docker host the CNAME librasis.lib.virginia.edu resolves too.
+# Because we run multiple nodes, we have to have one node as the 'master' in the event that processes
+# cannot be run concurrently on multiple hosts.
 #
-function active_sis_host {
+# For development, the active host is docker1.lib.virginia.edu.
+# For production, the active host is whichever docker host the CNAME librasis.lib.virginia.edu resolves too.
+#
+function is_active_host {
 
    # if the docker host variable is not defined
    if [ -z "$DOCKER_HOST" ]; then

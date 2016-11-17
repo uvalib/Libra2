@@ -24,7 +24,7 @@ while true; do
    sleep_until $ACTION_TIME
 
    # determine if we are the active host... only run on one host even though we may be deployed on many
-   if active_sis_host; then
+   if is_active_host; then
 
       # starting message
       logit "Beginning SIS import sequence"
@@ -37,7 +37,7 @@ while true; do
       logit "SIS import sequence completes with status: $res"
 
    else
-      logit "Not an active SIS host; doing nothing"
+      logit "Not the active host; doing nothing"
    fi
 
    # sleep for another minute

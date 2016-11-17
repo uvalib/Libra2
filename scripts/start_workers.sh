@@ -32,7 +32,7 @@ logit "Starting up..."
 while true; do
 
    # determine if we are the active host... run workers on the non-sis host only
-   if active_sis_host; then
+   if is_active_host; then
 
       # ending message
       logit "Starting resque pool..."
@@ -45,7 +45,7 @@ while true; do
       logit "Resque pool terminates unexpectedly with status: $res; sleeping for $SLEEP_TIME seconds..."
 
    else
-      logit "Not an active SIS host; doing nothing"
+      logit "Not the active host; doing nothing"
    fi
 
    # sleep for another minute
