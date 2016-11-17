@@ -23,25 +23,32 @@ while true; do
    logit "Sleeping for $SLEEPTIME seconds..."
    sleep $SLEEPTIME
 
-   # starting message
-   logit "Beginning optional deposit import sequence"
+   # determine if we are the active host... only run on one host even though we may be deployed on many
+   if is_active_host; then
 
-   # do the optional import
-   bundle exec rake libra2:etd:ingest_optional_etd_deposits >> $LOGGER 2>&1
-   res=$?
+      # starting message
+      logit "Beginning optional deposit import sequence"
 
-   # ending message
-   logit "Optional deposit import sequence completes with status: $res"
+      # do the optional import
+      bundle exec rake libra2:etd:ingest_optional_etd_deposits >> $LOGGER 2>&1
+      res=$?
 
-   # starting message
-   logit "Beginning SIS deposit import sequence"
+      # ending message
+      logit "Optional deposit import sequence completes with status: $res"
 
-   # do the SIS import
-   bundle exec rake libra2:etd:ingest_sis_etd_deposits >> $LOGGER 2>&1
-   res=$?
+      # starting message
+      logit "Beginning SIS deposit import sequence"
 
-   # ending message
-   logit "SIS deposit import sequence completes with status: $res"
+      # do the SIS import
+      bundle exec rake libra2:etd:ingest_sis_etd_deposits >> $LOGGER 2>&1
+      res=$?
+
+      # ending message
+      logit "SIS deposit import sequence completes with status: $res"
+
+   else
+      logit "Not the active host; doing nothing"
+   fi
 
 done
 
