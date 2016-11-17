@@ -43,6 +43,9 @@ access_service "depositreg service" $(endpoint_url $endpoint 8220)
 # entity id service
 access_service "entityid service" $(endpoint_url $endpoint 8210)
 
+# ORCID access service
+access_service "ORCID access service" $(endpoint_url $endpoint 8250)
+
 # token authorizer service
 access_service "tokenauth service" $(endpoint_url $endpoint 8200)
 
