@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   get '/api/v1/audit' => 'api_v1_audit#search', :defaults => { :format => 'json' }
 
   # add the resque-web engine
-  mount ResqueWeb::Engine => '/resque_web'
+  mount ResqueWeb::Engine => '/resque'
 
   Hydra::BatchEdit.add_routes(self)
   mount Qa::Engine => '/authorities'
