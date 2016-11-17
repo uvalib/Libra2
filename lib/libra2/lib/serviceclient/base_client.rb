@@ -39,7 +39,7 @@ module ServiceClient
          return 404, {}
        rescue RestClient::RequestTimeout => ex
          log_error( method, url, nil, payload )
-         puts "ERROR: request timeout: #{url}"
+         puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
          return 408, {}
        rescue RestClient::Exception, SocketError, Exception => ex
          log_error( method, url, ex, payload )
@@ -65,7 +65,7 @@ module ServiceClient
          log_error( :get, url )
          return 404, {}
        rescue RestClient::RequestTimeout => ex
-         puts "ERROR: request timeout: #{url}"
+         puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
          log_error( :get, url )
          return 408, {}
        rescue RestClient::Exception, SocketError, Exception => ex
@@ -88,7 +88,7 @@ module ServiceClient
          log_error( :delete, url )
          return 404
        rescue RestClient::RequestTimeout => ex
-         puts "ERROR: request timeout: #{url}"
+         puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
          log_error( :delete, url )
          return 408
        rescue RestClient::Exception, SocketError, Exception => ex
