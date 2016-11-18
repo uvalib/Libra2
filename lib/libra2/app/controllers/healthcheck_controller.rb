@@ -1,6 +1,7 @@
 require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
 require_dependency 'libra2/lib/serviceclient/deposit_reg_client'
 require_dependency 'libra2/lib/serviceclient/entity_id_client'
+require_dependency 'libra2/lib/serviceclient/orcid_access_client'
 require_dependency 'libra2/lib/serviceclient/user_info_client'
 
 class HealthcheckController < ApplicationController
@@ -25,11 +26,12 @@ class HealthcheckController < ApplicationController
     attr_accessor :depositauth
     attr_accessor :depositreg
     attr_accessor :entityid
+    attr_accessor :orcidaccess
     attr_accessor :userinfo
     attr_accessor :mysql
 
     def is_healthy?
-      depositauth.healthy && depositreg.healthy && entityid.healthy && userinfo.healthy && mysql.healthy
+      depositauth.healthy && depositreg.healthy && entityid.healthy && orcidaccess.healthy && userinfo.healthy && mysql.healthy
     end
   end
 
@@ -61,6 +63,11 @@ class HealthcheckController < ApplicationController
     ok = ServiceClient::EntityIdClient.instance.ok?( rc )
     status[ :entityid ] = Health.new( ok, ok ? '' : "Endpoint returns #{rc}" )
 
+    # check the entity id endpoint
+    rc = ServiceClient::OrcidAccessClient.instance.healthcheck
+    ok = ServiceClient::OrcidAccessClient.instance.ok?( rc )
+    status[ :orcidaccess ] = Health.new( ok, ok ? '' : "Endpoint returns #{rc}" )
+
     # check the user info endpoint
     rc = ServiceClient::UserInfoClient.instance.healthcheck
     ok = ServiceClient::UserInfoClient.instance.ok?( rc )
@@ -78,6 +85,7 @@ class HealthcheckController < ApplicationController
     r.depositauth = health_status[ :depositauth ]
     r.depositreg = health_status[ :depositreg ]
     r.entityid = health_status[ :entityid ]
+    r.orcidaccess = health_status[ :orcidaccess ]
     r.userinfo = health_status[ :userinfo ]
     r.mysql = health_status[ :mysql ]
 

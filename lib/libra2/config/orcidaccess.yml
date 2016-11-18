@@ -1,0 +1,12 @@
+development:
+  authtoken: <%= ENV['API_TOKEN'] %>
+  url: <%= ENV['ORCIDACCESS_URL'] %>
+  timeout: 30
+test:
+  authtoken: <%= ENV['API_TOKEN'] %>
+  url: <%= ENV['ORCIDACCESS_URL'] %>
+  timeout: 30
+production:
+  authtoken: <%= ENV['API_TOKEN'] %>
+  url: <%= ENV['ORCIDACCESS_URL'] %>
+  timeout: 30
