@@ -134,6 +134,20 @@ task list_all_users: :environment do |t, args|
 
 end
 
+desc "List user ORCID's"
+task list_user_orcid: :environment do |t, args|
+
+  count = 0
+  User.order( :email ).each do |user|
+    if user.orcid
+      puts "#{User.cid_from_email( user.email )} -> #{File.basename( user.orcid )}"
+      count += 1
+    end
+  end
+  puts "#{count} orcid(s) listed"
+
+end
+
 desc "Sync all user data "
 task sync_all_users: :environment do |t, args|
 
