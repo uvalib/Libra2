@@ -143,16 +143,16 @@ namespace :libra2 do
     assets.each do | dirname |
       doc = TaskHelpers.load_json_doc( File.join( asset_dir, dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
 
-      if doc[ 'id' ] && doc[ 'is_part_of_s' ] && doc[ 'timestamp' ] && doc[ 'title_t' ]
+      if doc[ 'id' ] && doc[ 'is_part_of_s' ] && doc[ 'system_create_dt' ] && doc[ 'title_t' ]
         doc[ 'is_part_of_s' ].each { |d|
             id = doc[ 'id' ]
-            ts = doc[ 'timestamp' ]
+            ts = doc[ 'system_create_dt' ]
             title = doc[ 'title_t' ][ 0 ]
             po = File.basename( d )
             if asset_refs.key?( po ) == false
               asset_refs[ po ] = []
             end
-            asset_refs[ po ] << { :id => id, :timestamp => ts, :title => title }
+            asset_refs[ po ] << { :id => id, :create_date => ts, :title => title }
         }
       end
       count += 1
@@ -177,7 +177,7 @@ namespace :libra2 do
     if asset_refs.key?( id )
       asset_refs[id].each { |asset|
         ok = download_fedora_file( asset[ :id ], File.join( dirname, asset[ :title ] ) )
-        f.write( "#{asset[ :id ]}|#{asset[ :timestamp ]}|#{asset[ :title ]}\n" ) if ok
+        f.write( "#{asset[ :id ]}|#{asset[ :create_date ]}|#{asset[ :title ]}\n" ) if ok
       }
 
     end
