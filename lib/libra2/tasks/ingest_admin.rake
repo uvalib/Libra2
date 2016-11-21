@@ -108,7 +108,7 @@ namespace :libra2 do
 
      # merge in any default attributes
      payload = apply_defaults( defaults, payload )
-     dump_ingest_payload( payload ) if payload[ :dump_payload ]
+     dump_ingest_payload( payload ) if ENV[ 'DUMP_PAYLOAD' ]
 
      # validate the payload
      errors, warnings = validate_ingest_payload( payload )
@@ -187,7 +187,7 @@ namespace :libra2 do
        payload[ :author_computing_id ] = cid if field_supplied( cid )
        payload[ :author_first_name ] = fn if field_supplied( fn )
        payload[ :author_last_name ] = ln if field_supplied( ln )
-       payload[ :department ] = dept if field_supplied( dept )
+       payload[ :department ] = department_lookup( dept ) if field_supplied( dept )
      end
 
      # document advisor
@@ -199,7 +199,7 @@ namespace :libra2 do
        payload[ :advisor_computing_id ] = cid if field_supplied( cid )
        payload[ :advisor_first_name ] = fn if field_supplied( fn )
        payload[ :advisor_last_name ] = ln if field_supplied( ln )
-       payload[ :advisor_department ] = dept if field_supplied( dept )
+       payload[ :advisor_department ] = department_lookup( dept ) if field_supplied( dept )
      end
 
      # issue date
@@ -567,6 +567,19 @@ namespace :libra2 do
          return 'Spainish'
      end
      return language_code
+  end
+
+  #
+  # lmaps department name from L1 to L2
+  # Locate elsewhere later
+  #
+  def department_lookup( department )
+
+    case department
+      when 'Civil & Env Engr'
+        return 'Department of Civil Engineering'
+    end
+    return department
   end
 
   #
