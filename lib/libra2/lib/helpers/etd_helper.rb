@@ -55,7 +55,7 @@ module Helpers
           w.identifier = id
           w.permanent_url = GenericWork.doi_url( id )
         else
-          puts "Cannot mint DOI (#{status})"
+          puts "ERROR: cannot mint DOI (#{status})"
           ok = false
         end
 
@@ -116,7 +116,7 @@ module Helpers
            w.identifier = id
            w.permanent_url = GenericWork.doi_url( id )
         else
-          puts "Cannot mint DOI (#{status})"
+          puts "ERROR: cannot mint DOI (#{status})"
           ok = false
         end
 

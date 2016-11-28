@@ -32,14 +32,14 @@ module ServiceClient
          end
          return response.code, {}
        rescue RestClient::BadRequest => ex
-         log_error( method, url, nil, payload )
+         log_error( method, url, ex, payload )
          return 400, {}
        rescue RestClient::ResourceNotFound => ex
-         log_error( method, url, nil, payload )
+         log_error( method, url, ex, payload )
          return 404, {}
        rescue RestClient::RequestTimeout => ex
-         log_error( method, url, nil, payload )
          puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
+         log_error( method, url, ex, payload )
          return 408, {}
        rescue RestClient::Exception, SocketError, Exception => ex
          log_error( method, url, ex, payload )
@@ -59,14 +59,14 @@ module ServiceClient
          end
          return response.code, {}
        rescue RestClient::BadRequest => ex
-         log_error( :get, url )
+         log_error( :get, url, ex )
          return 400, {}
        rescue RestClient::ResourceNotFound => ex
-         log_error( :get, url )
+         log_error( :get, url, ex )
          return 404, {}
        rescue RestClient::RequestTimeout => ex
          puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
-         log_error( :get, url )
+         log_error( :get, url, ex )
          return 408, {}
        rescue RestClient::Exception, SocketError, Exception => ex
          log_error( :get, url, ex )
@@ -82,14 +82,14 @@ module ServiceClient
 
          return response.code
        rescue RestClient::BadRequest => ex
-         log_error( :delete, url )
+         log_error( :delete, url, ex )
          return 400
        rescue RestClient::ResourceNotFound => ex
-         log_error( :delete, url )
+         log_error( :delete, url, ex )
          return 404
        rescue RestClient::RequestTimeout => ex
          puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
-         log_error( :delete, url )
+         log_error( :delete, url, ex )
          return 408
        rescue RestClient::Exception, SocketError, Exception => ex
          log_error( :delete, url, ex )
@@ -136,9 +136,9 @@ module ServiceClient
        verb = 'PUT' if method == :put
        verb = 'DELETE' if method == :delete
 
-       puts "#{verb} url: #{url}"
-       puts "#{verb} payload: #{payload}" if payload.nil? == false
-       puts "#{ex.class}: #{ex}" if ex.nil? == false
+       puts "ERROR: #{verb} url; #{url}"
+       puts "ERROR: #{verb} payload; #{payload}" if payload.nil? == false
+       puts "ERROR: #{ex.class}; #{ex}" if ex.nil? == false
 
      end
    end
