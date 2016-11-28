@@ -12,22 +12,6 @@ RUN /bin/bash -l -c "rvm install 2.3.0"
 RUN /bin/bash -l -c "rvm use 2.3.0 --default"
 RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
 
-# attempt to preinstall dependent gems with native extensions
-RUN /bin/bash -l -c "gem install \
-bcrypt:3.1.11 \
-debug_inspector:0.0.2 \
-byebug:9.0.6 \
-unf_ext:0.0.7.2 \
-mysql2:0.4.5 \
-posix-spawn:0.3.12 \
-nokogiri:1.6.8.1 \
-binding_of_caller:0.7.2 \
-hiredis:0.6.1 \
-puma:3.6.0 \
-ruby-ll:2.1.2 \
-oga:2.7 \
---no-ri --no-rdoc"
-
 # set the timezone appropriatly
 ENV TZ=EST5EDT
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -35,14 +19,19 @@ RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Create the run user and group
 RUN groupadd -r webservice && useradd -r -g webservice webservice && mkdir /home/webservice
 
+# Copy the Gemfile and Gemfile.lock into the image and temporarily set the working directory to where they are.
+WORKDIR /tmp
+ADD Gemfile Gemfile
+ADD Gemfile.lock Gemfile.lock
+ADD vendor/gems vendor/gems
+RUN /bin/bash -l -c "bundle install"
+
 # create work directory
 ENV APP_HOME /libra2
 WORKDIR $APP_HOME
 
 ADD . $APP_HOME
 
-RUN /bin/bash -l -c "bundle install"
-RUN /bin/bash -l -c "rake db:migrate"
 RUN /bin/bash -l -c "rake assets:precompile"
 
 # Update permissions
