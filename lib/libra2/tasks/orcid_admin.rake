@@ -13,7 +13,7 @@ namespace :libra2 do
 
      count = 0
      User.order( :email ).each do |user|
-       if user.orcid
+       if user.orcid.blank? == false
          orcid = user.orcid.gsub( 'http://orcid.org/', '' )
          cid = User.cid_from_email( user.email )
          puts "Setting #{cid} ORCID to: #{orcid}"
