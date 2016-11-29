@@ -30,7 +30,7 @@ namespace :libra2 do
      puts "#{count} ORCID(s) harvested"
   end
 
-  desc "Search ORCID; provide a search pattern"
+  desc "Search ORCID; must provide a search pattern, optionally provide a start index and max count"
   task search_orcid: :environment do |t, args|
 
     search = ARGV[ 1 ]
@@ -41,8 +41,22 @@ namespace :libra2 do
 
     task search.to_sym do ; end
 
+    start = ARGV[ 2 ]
+    if start.nil?
+      start = "0"
+    end
+
+    task start.to_sym do ; end
+
+    max = ARGV[ 3 ]
+    if max.nil?
+      max = "100"
+    end
+
+    task max.to_sym do ; end
+
     count = 0
-    status, r = ServiceClient::OrcidAccessClient.instance.search( search, "0", "100" )
+    status, r = ServiceClient::OrcidAccessClient.instance.search( search, start, max )
     if ServiceClient::EntityIdClient.instance.ok?( status )
       r.each do |details|
         puts "#{details['last_name']}, #{details['first_name']} (#{details['display_name']}) -> #{details['id']}"
