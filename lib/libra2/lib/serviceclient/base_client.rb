@@ -4,6 +4,8 @@ module ServiceClient
 
    class BaseClient
 
+     DEFAULT_RETRIES = 3
+
      def configuration
        @configuration
      end
@@ -16,16 +18,94 @@ module ServiceClient
      end
 
      #
+     # configuration helper
+     #
+     def timeout
+       configuration[ :timeout ]
+     end
+
+     #
+     # REST get with default retry behavior
+     #
+     def rest_get( url, tries = DEFAULT_RETRIES )
+       attempts = 0
+       while attempts < tries
+          puts "WARNING: request timeout: #{url} after #{self.timeout} second(s), retrying..." if attempts != 0
+          status, response = rest_get_internal( url )
+          return status, response if status != 408
+          attempts += 1
+       end
+
+       # done trying...
+       puts "ERROR: request timeout: #{url}; gave up after #{tries} try(s)"
+       return 408, {}
+     end
+
+     #
+     # REST put with default retry behavior
+     #
+     def rest_put( url, payload, tries = DEFAULT_RETRIES )
+       attempts = 0
+       while attempts < tries
+          puts "WARNING: request timeout: #{url} after #{self.timeout} second(s), retrying..." if attempts != 0
+          status, response = rest_send_internal( url, :put, payload )
+          return status, response if status != 408
+          attempts += 1
+       end
+
+       # done trying...
+       puts "ERROR: request timeout: #{url}; gave up after #{tries} try(s)"
+       return 408, {}
+     end
+
+     #
+     # REST post with default retry behavior
+     #
+     def rest_post( url, payload, tries = DEFAULT_RETRIES )
+       attempts = 0
+       while attempts < tries
+          puts "WARNING: request timeout: #{url} after #{self.timeout} second(s), retrying..." if attempts != 0
+          status, response = rest_send_internal( url, :post, payload )
+          return status, response if status != 408
+          attempts += 1
+       end
+
+       # done trying...
+       puts "ERROR: request timeout: #{url}; gave up after #{tries} try(s)"
+       return 408, {}
+     end
+
+     #
+     # REST delete with default retry behavior
+     #
+     def rest_delete( url, tries = DEFAULT_RETRIES )
+       attempts = 0
+       while attempts < tries
+          puts "WARNING: request timeout: #{url} after #{self.timeout} second(s), retrying..." if attempts != 0
+          status =  rest_delete_internal( url )
+          return status if status != 408
+          attempts += 1
+       end
+
+       # done trying...
+       puts "ERROR: request timeout: #{url}; gave up after #{tries} try(s)"
+       return 408
+     end
+
+     private
+
+     #
      # send the supplied payload to the supplied endpoint using the supplied HTTP method (:put, :post)
      #
-     def rest_send( url, method, payload )
+     def rest_send_internal( url, method, payload )
        begin
          response = RestClient::Request.execute( method: method,
                                                  url: URI.escape( url ),
                                                  payload: payload,
                                                  content_type: :json,
                                                  accept: :json,
-                                                 timeout: self.timeout )
+                                                 open_timeout: self.timeout,
+                                                 read_timeout: self.timeout / 2 )
 
          if ok?( response.code ) && response.empty? == false && response != ' '
            return response.code, JSON.parse( response )
@@ -38,8 +118,7 @@ module ServiceClient
          log_error( method, url, ex, payload )
          return 404, {}
        rescue RestClient::RequestTimeout => ex
-         puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
-         log_error( method, url, ex, payload )
+         #log_error( method, url, ex, payload )
          return 408, {}
        rescue RestClient::Exception, SocketError, Exception => ex
          log_error( method, url, ex, payload )
@@ -47,12 +126,13 @@ module ServiceClient
        end
      end
 
-     def rest_get( url )
+     def rest_get_internal( url )
        begin
          response = RestClient::Request.execute( method: :get,
                                                  url: URI.escape( url ),
                                                  accept: :json,
-                                                 timeout: self.timeout )
+                                                 open_timeout: self.timeout,
+                                                 read_timeout: self.timeout / 2 )
 
          if ok?( response.code ) && response.empty? == false && response != ' '
            return response.code, JSON.parse( response )
@@ -65,8 +145,7 @@ module ServiceClient
          log_error( :get, url, ex )
          return 404, {}
        rescue RestClient::RequestTimeout => ex
-         puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
-         log_error( :get, url, ex )
+         #log_error( :get, url, ex )
          return 408, {}
        rescue RestClient::Exception, SocketError, Exception => ex
          log_error( :get, url, ex )
@@ -74,11 +153,12 @@ module ServiceClient
        end
      end
 
-     def rest_delete( url )
+     def rest_delete_internal( url )
        begin
          response = RestClient::Request.execute( method: :delete,
                                                  url: URI.escape( url ),
-                                                 timeout: self.timeout )
+                                                 open_timeout: self.timeout,
+                                                 read_timeout: self.timeout / 2 )
 
          return response.code
        rescue RestClient::BadRequest => ex
@@ -88,8 +168,7 @@ module ServiceClient
          log_error( :delete, url, ex )
          return 404
        rescue RestClient::RequestTimeout => ex
-         puts "ERROR: request timeout: #{url} (#{self.timeout} seconds)"
-         log_error( :delete, url, ex )
+         #log_error( :delete, url, ex )
          return 408
        rescue RestClient::Exception, SocketError, Exception => ex
          log_error( :delete, url, ex )
@@ -117,13 +196,6 @@ module ServiceClient
 
        config = yml.symbolize_keys
        @configuration = config[ Rails.env.to_sym ].symbolize_keys || {}
-     end
-
-     #
-     # configuration helper
-     #
-     def timeout
-       configuration[ :timeout ]
      end
 
      #

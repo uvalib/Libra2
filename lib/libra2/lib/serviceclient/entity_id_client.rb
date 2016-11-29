@@ -42,7 +42,7 @@ module ServiceClient
      def newid( work )
        url = "#{self.url}/#{self.shoulder}?auth=#{self.authtoken}"
        payload =  self.construct_payload( work )
-       status, response = rest_send( url, :post, payload )
+       status, response = rest_post( url, payload )
 
        return status, response['details']['id'] if ok?( status ) && response['details'] && response['details']['id']
        return status, ''
@@ -55,7 +55,7 @@ module ServiceClient
        #puts "=====> metadatasync #{work.identifier}"
        url = "#{self.url}/#{work.identifier}?auth=#{self.authtoken}"
        payload =  self.construct_payload( work )
-       status, _ = rest_send( url, :put, payload )
+       status, _ = rest_put( url, payload )
        return status
      end
 
@@ -86,7 +86,7 @@ module ServiceClient
      def revoke( doi )
        #puts "=====> revoke #{doi}"
        url = "#{self.url}/revoke/#{doi}?auth=#{self.authtoken}"
-       status, _ = rest_send( url, :put, nil )
+       status, _ = rest_put( url, nil )
        return status
      end
 

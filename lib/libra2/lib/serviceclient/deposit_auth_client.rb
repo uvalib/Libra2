@@ -57,7 +57,7 @@ module ServiceClient
      #
      def request_fulfilled( work )
        url = "#{self.url}/#{work.sis_authorization_id}?auth=#{self.authtoken}&deposit=#{work.identifier}"
-       status, _ = rest_send( url, :put, nil )
+       status, _ = rest_put( url, nil )
        return status
      end
 
@@ -66,7 +66,7 @@ module ServiceClient
      #
      def import
        url = "#{self.url}/import?auth=#{self.authtoken}"
-       status, response = rest_send( url, :post, nil )
+       status, response = rest_post( url, nil )
        return status, response['count'] if ok?( status ) && response['count']
        return status, 0
      end
@@ -76,7 +76,7 @@ module ServiceClient
      #
      def export
        url = "#{self.url}/export?auth=#{self.authtoken}"
-       status, response = rest_send( url, :post, nil )
+       status, response = rest_post( url, nil )
        return status, response['count'] if ok?( status ) && response['count']
        return status, 0
      end

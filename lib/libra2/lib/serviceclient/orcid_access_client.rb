@@ -47,7 +47,7 @@ module ServiceClient
      #
      def set_by_cid( id, orcid )
        url = "#{self.url}/cid/#{id}/#{orcid}?auth=#{self.authtoken}"
-       status, _ = rest_send( url, :put, nil )
+       status, _ = rest_put( url, nil )
        return status
      end
 
