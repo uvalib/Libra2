@@ -57,7 +57,7 @@ module ServiceClient
      def search( search, start, max )
        url = "#{self.url}/orcid?q=#{search}&start=#{start}&max=#{max}&auth=#{self.authtoken}"
        status, response = rest_get( url )
-       return status, response['orcids'] if ok?( status ) && response['orcids']
+       return status, response['results'] if ok?( status ) && response['results']
        return status, ''
      end
 
