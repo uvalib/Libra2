@@ -15,7 +15,7 @@ namespace :libra2 do
   #
   # ingest items that have been extracted from SOLR
   #
-  desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file"
+  desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file and start index"
   task legacy_ingest: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
@@ -30,6 +30,15 @@ namespace :libra2 do
       defaults_file = DEFAULT_DEFAULT_FILE
     end
     task defaults_file.to_sym do ; end
+
+    start = ARGV[ 3 ]
+    if start.nil?
+      start = "0"
+    end
+    task start.to_sym do ; end
+
+    start_ix = start.to_i
+    start_ix = 0 if start_ix.to_s != start
 
     # get the list of items to be ingested
     ingests = get_ingest_list( ingest_dir )
@@ -56,7 +65,8 @@ namespace :libra2 do
 
     success_count = 0
     error_count = 0
-    ingests.each do | dirname |
+    ingests.each_with_index do | dirname, ix |
+      next if ix < start_ix
       ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
       break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
@@ -126,6 +136,9 @@ namespace :libra2 do
 
      # handle dry running
      return true if ENV[ 'DRY_RUN' ]
+
+     # some fields with embedded quotes need to be escaped; handle this here
+     payload = escape_fields( payload )
 
      # create the work
      ok, work = create_new_item( depositor, payload )
@@ -590,6 +603,25 @@ namespace :libra2 do
     return false if field == 'None Provided'
     return true
   end
+
+  #
+  # escape any fields in the payload that require it
+  #
+  def escape_fields( payload )
+
+    payload[:title] = escape_field( payload[:title] ) if field_supplied( payload[:title] )
+    payload[:abstract] = escape_field( payload[:abstract] ) if field_supplied( payload[:abstract] )
+    return payload
+
+  end
+
+  #
+  # escape special characters as necessary
+  #
+  def escape_field( field )
+     return field.gsub( "\"", "\\\"" )
+  end
+
   end   # namespace ingest
 
 end   # namespace libra2
