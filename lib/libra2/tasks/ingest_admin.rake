@@ -3,6 +3,7 @@
 #
 
 require 'hash_at_path'
+include ERB::Util
 
 namespace :libra2 do
 
@@ -128,6 +129,11 @@ namespace :libra2 do
 
      # merge in any default attributes
      payload = apply_defaults( defaults, payload )
+
+     # some fields with embedded quotes need to be escaped; handle this here
+     payload = escape_fields( payload )
+
+     # dump the fields as necessary...
      dump_ingest_payload( payload ) if ENV[ 'DUMP_PAYLOAD' ]
 
      # validate the payload
@@ -146,9 +152,6 @@ namespace :libra2 do
 
      # handle dry running
      return true if ENV[ 'DRY_RUN' ]
-
-     # some fields with embedded quotes need to be escaped; handle this here
-     #payload = escape_fields( payload )
 
      # create the work
      ok, work = create_new_item( depositor, payload )
@@ -636,7 +639,7 @@ namespace :libra2 do
   # escape special characters as necessary
   #
   def escape_field( field )
-     return field.gsub( "\"", "\\\"" )
+     return html_escape( field ).gsub( "\\", "\\\\\\" )
   end
 
   end   # namespace ingest
