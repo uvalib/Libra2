@@ -20,37 +20,13 @@ sample_pdf_file = "data/sample.pdf"
 desc "List all works"
 task list_all_works: :environment do |t, args|
 
-   count = 0
-   GenericWork.all.each do |generic_work|
-     TaskHelpers.list_full_work( generic_work )
-     count += 1
-   end
+  count = 0
+  GenericWork.search_in_batches( {} ) do |group|
+    TaskHelpers.batched_process_solr_works( group, &method( :show_generic_work_callback ) )
+    count += group.size
+  end
 
-   puts "Listed #{count} work(s)"
-end
-
-desc "List all works (abbreviated)"
-task list_all_works_abbrev: :environment do |t, args|
-
-    abbrev_output(GenericWork.all)
-end
-
-desc "List all works (submitted)"
-task list_all_works_submitted: :environment do |t, args|
-
-    abbrev_output(GenericWork.where({draft: "false"}))
-end
-
-desc "List all works (draft)"
-task list_all_works_draft: :environment do |t, args|
-
-    abbrev_output(GenericWork.where({draft: "true"}))
-end
-
-desc "List all works (unmodified)"
-task list_all_works_unmodified: :environment do |t, args|
-
-    abbrev_output(GenericWork.where({draft: "true"}), true)
+  puts "Listed #{count} work(s)"
 end
 
 desc "List my works; optionally provide depositor email"
@@ -61,9 +37,9 @@ task list_my_works: :environment do |t, args|
   task who.to_sym do ; end
 
   count = 0
-  GenericWork.where({ depositor: who }).each do |generic_work|
-     TaskHelpers.list_full_work( generic_work )
-     count += 1
+  GenericWork.search_in_batches( { depositor: who } ) do |group|
+    TaskHelpers.batched_process_solr_works( group, &method( :show_generic_work_callback ) )
+    count += group.size
   end
 
   puts "Listed #{count} work(s)"
@@ -86,24 +62,18 @@ task list_by_id: :environment do |t, args|
     next
   end
 
-  TaskHelpers.list_full_work( work )
+  TaskHelpers.show_generic_work(work )
 end
 
 desc "Delete all works"
 task del_all_works: :environment do |t, args|
 
   count = 0
-  GenericWork.all.each do |generic_work|
-     count += 1
-     print "."
-     # if the work is draft, we can remove the DOI, otherwise, we must revoke it
-     if generic_work.is_draft? == true
-       remove_doi( generic_work )
-     else
-       revoke_doi( generic_work )
-     end
-     generic_work.destroy
+  GenericWork.search_in_batches( {} ) do |group|
+    TaskHelpers.batched_process_solr_works( group, &method( :delete_generic_work_callback ) )
+    count += group.size
   end
+
   puts "done" unless count == 0
   puts "Deleted #{count} work(s)"
 
@@ -117,17 +87,9 @@ task del_my_works: :environment do |t, args|
    task who.to_sym do ; end
 
    count = 0
-
-   GenericWork.where({ depositor: who }).each do |generic_work|
-     count += 1
-     print "."
-     # if the work is draft, we can remove the DOI, otherwise, we must revoke it
-     if generic_work.is_draft? == true
-       remove_doi( generic_work )
-     else
-       revoke_doi( generic_work )
-     end
-     generic_work.destroy
+   GenericWork.search_in_batches( { depositor: who } ) do |group|
+     TaskHelpers.batched_process_solr_works( group, &method( :delete_generic_work_callback ) )
+     count += group.size
    end
 
    puts "done" unless count == 0
@@ -152,14 +114,7 @@ task del_by_id: :environment do |t, args|
     next
   end
 
-  # if the work is draft, we can remove the DOI, otherwise, we must revoke it
-  if work.is_draft? == true
-    remove_doi( work )
-  else
-    revoke_doi( work )
-  end
-  
-  work.destroy
+  delete_generic_work_callback( work )
   puts "Work deleted"
 end
 
@@ -186,7 +141,7 @@ task create_new_work: :environment do |t, args|
   filename = TaskHelpers.get_random_image( )
   TaskHelpers.upload_file( user, work, filename, File.basename( filename ) )
 
-  TaskHelpers.list_full_work work
+  TaskHelpers.show_generic_work work
 
 end
 
@@ -214,7 +169,7 @@ task create_new_thesis: :environment do |t, args|
   #filename = copy_sourcefile( sample_pdf_file )
   #TaskHelpers.upload_file( user, work, filename )
 
-  TaskHelpers.list_full_work work
+  TaskHelpers.show_generic_work work
 
 end
 
@@ -263,23 +218,23 @@ task thesis_for_all: :environment do |t, args|
 
 end
 
-def abbrev_output(recs,unmodified_only = false)
-    count = 0
-    output = []
-    recs.each do |generic_work|
-        if !unmodified_only || !generic_work.date_modified.present?
-        output.push({ id: generic_work.id, email: generic_work.author_email, identifier: generic_work.identifier,  title: generic_work.title.join(' '), created_at: generic_work.date_created, updated_at: generic_work.date_modified })
-        count += 1
-        end
-    end
-    output = output.sort { |a,b|
-        a[:email] <=> b[:email]
-    }
-    output.each { |line|
-        puts "#{line[:id]}\t#{line[:email]}\t#{line[:identifier]}\t#{line[:title]}\t#{line[:created_at]}\t#{line[:updated_at]}"
-    }
+#
+# helpers
+#
 
-    puts "Listed #{count} work(s)"
+def show_generic_work_callback( work )
+  TaskHelpers.show_generic_work( work )
+end
+
+def delete_generic_work_callback( work )
+  print "."
+  # if the work is draft, we can remove the DOI, otherwise, we must revoke it
+  if work.is_draft? == true
+    remove_doi( work )
+  else
+    revoke_doi( work )
+  end
+  work.destroy
 end
 
 def create_work( user, title, description )

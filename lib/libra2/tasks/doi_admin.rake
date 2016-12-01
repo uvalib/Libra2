@@ -22,14 +22,13 @@ namespace :libra2 do
      who = TaskHelpers.default_user_email if who.nil?
      task who.to_sym do ; end
 
-     success_count = 0
-     GenericWork.where({ depositor: who }).each do |work|
-        puts "#{work.id} => #{work.identifier || 'None'} (#{work.is_draft? ? 'draft' : 'published'})"
-        success_count += 1
+     count = 0
+     GenericWork.search_in_batches( {depositor: who} ) do |group|
+       TaskHelpers.batched_process_solr_works( group, &method( :show_work_doi ) )
+       count += group.size
      end
 
-     puts "#{success_count} work(s) listed successfully"
-
+     puts "Listed #{count} work(s)"
   end
 
   #
@@ -120,20 +119,13 @@ namespace :libra2 do
     who = TaskHelpers.default_user_email if who.nil?
     task who.to_sym do ; end
 
-    success_count = 0
-    error_count = 0
-
-    GenericWork.where({ depositor: who }).each do |work|
-       if update_work_doi( work )
-          puts "New DOI assigned to work #{work.id} (#{work.identifier})"
-          success_count += 1
-       else
-         error_count += 1
-       end
+    count = 0
+    GenericWork.search_in_batches( {} ) do |group|
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_doi ) )
+      count += group.size
     end
 
-    puts "New DOI's assigned to #{success_count} work(s) successfully; #{error_count} error(s) encountered"
-
+    puts "Processed #{count} work(s)"
   end
 
   #
@@ -146,22 +138,13 @@ namespace :libra2 do
     who = TaskHelpers.default_user_email if who.nil?
     task who.to_sym do ; end
 
-    success_count = 0
-    error_count = 0
-
-    GenericWork.where({ depositor: who }).each do |work|
-      if work.identifier.blank?
-        if update_work_doi( work )
-          puts "New DOI assigned to work #{work.id} (#{work.identifier})"
-          success_count += 1
-        else
-          error_count += 1
-        end
-      end
+    count = 0
+    GenericWork.search_in_batches( {depositor: who} ) do |group|
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_unassigned_doi ) )
+      count += group.size
     end
 
-    puts "New DOI's assigned to #{success_count} work(s) successfully; #{error_count} error(s) encountered"
-
+    puts "Processed #{count} work(s)"
   end
 
   #
@@ -170,40 +153,28 @@ namespace :libra2 do
   desc "Bulk assign new DOI's for all works"
   task assign_doi_all_works: :environment do |t, args|
 
-    success_count = 0
-    error_count = 0
-
-    GenericWork.all.each do |work|
-      if update_work_doi( work )
-        puts "New DOI assigned to work #{work.id} (#{work.identifier})"
-        success_count += 1
-      else
-        error_count += 1
-      end
+    count = 0
+    GenericWork.search_in_batches( {} ) do |group|
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_doi ) )
+      count += group.size
     end
-    puts "New DOI's assigned to #{success_count} work(s) successfully; #{error_count} error(s) encountered"
+
+    puts "Processed #{count} work(s)"
   end
 
   #
   # assign a new DOI for all works that do not have them
   #
-  desc "Bulk assign new DOI's for all works"
+  desc "Bulk assign new DOI's for all works without assigned DOI's"
   task assign_doi_all_unassigned_works: :environment do |t, args|
 
-    success_count = 0
-    error_count = 0
-
-    GenericWork.all.each do |work|
-      if work.identifier.blank?
-        if update_work_doi( work )
-          puts "New DOI assigned to work #{work.id} (#{work.identifier})"
-          success_count += 1
-        else
-          error_count += 1
-        end
-      end
+    count = 0
+    GenericWork.search_in_batches( {} ) do |group|
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_unassigned_doi ) )
+      count += group.size
     end
-    puts "New DOI's assigned to #{success_count} work(s) successfully; #{error_count} error(s) encountered"
+
+    puts "Processed #{count} work(s)"
   end
 
   #
@@ -242,20 +213,13 @@ namespace :libra2 do
     who = TaskHelpers.default_user_email if who.nil?
     task who.to_sym do ; end
 
-    success_count = 0
-    error_count = 0
-
-    GenericWork.where({ depositor: who }).each do |work|
-       if update_work_metadata( work )
-          puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
-          success_count += 1
-       else
-         error_count += 1
-       end
+    count = 0
+    GenericWork.search_in_batches( {depositor: who} ) do |group|
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_metadata ) )
+      count += group.size
     end
 
-    puts "#{success_count} work(s) successfully updated; #{error_count} error(s) encountered"
-
+    puts "Processed #{count} work(s)"
   end
 
   #
@@ -264,18 +228,13 @@ namespace :libra2 do
   desc "Update DOI metadata for all submitted works"
   task update_doi_metadata_all_works: :environment do |t, args|
 
-    success_count = 0
-    error_count = 0
-
-    GenericWork.all.each do |work|
-      if update_work_metadata( work )
-        puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
-        success_count += 1
-      else
-        error_count += 1
-      end
+    count = 0
+    GenericWork.search_in_batches( {} ) do |group|
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_metadata ) )
+      count += group.size
     end
-    puts "#{success_count} work(s) successfully updated; #{error_count} error(s) encountered"
+
+    puts "Processed #{count} work(s)"
   end
 
   #
@@ -328,6 +287,17 @@ namespace :libra2 do
   # helper methods
   #
 
+  def show_work_doi( work )
+    puts "#{work.id} => #{work.identifier || 'None'} (#{work.is_draft? ? 'draft' : 'published'})"
+  end
+
+  # update the DOI for the supplied work
+  def update_work_unassigned_doi( work )
+    if work.identifier.blank? == true
+      update_work_doi( work )
+    end
+  end
+
   # update the DOI for the supplied work
   def update_work_doi( work )
 
@@ -353,6 +323,7 @@ namespace :libra2 do
       end
 
       # update the identifier
+      puts "Assigned new DOI (#{id})"
       work.identifier = id
       work.permanent_url = GenericWork.doi_url( id )
       work.save!

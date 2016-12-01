@@ -143,9 +143,24 @@ module TaskHelpers
   end
 
   #
-  # list full details of a work
+  # batch process a group of SOLR works
   #
-  def list_full_work( work )
+  def batched_process_solr_works( solr_works, &f )
+
+    solr_works.each do |gw_solr|
+      begin
+        gw = GenericWork.find( gw_solr['id'] )
+        f.call( gw )
+      rescue => e
+      end
+    end
+
+  end
+
+  #
+  # show full details of a generic work
+  #
+  def show_generic_work( work )
 
     return if work.nil?
     j = JSON.parse( work.to_json )
