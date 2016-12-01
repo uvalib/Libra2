@@ -13,6 +13,16 @@ namespace :libra2 do
   DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.yml'
 
   #
+  # possible environment settings that affect the ingest behavior
+  #
+  # MAX_COUNT    - Maximum number of items to process
+  # DUMP_PAYLOAD - Output the entire document metadata before saving
+  # DRY_RUN      - Dont actually create the items
+  # NO_FILES     - Dont import the associated files
+  # NO_DOI       - Dont assign a DOI to the created items
+  #
+
+  #
   # ingest items that have been extracted from SOLR
   #
   desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file and start index"
@@ -138,7 +148,7 @@ namespace :libra2 do
      return true if ENV[ 'DRY_RUN' ]
 
      # some fields with embedded quotes need to be escaped; handle this here
-     payload = escape_fields( payload )
+     #payload = escape_fields( payload )
 
      # create the work
      ok, work = create_new_item( depositor, payload )
@@ -186,8 +196,10 @@ namespace :libra2 do
      payload[ :title ] = title if title.present?
 
      # document abstract (use the XML variant as it reflects the formatting better)
-     #abstract = solr_doc.at_path( 'abstract_t[0]')
-     ab_node = fedora_doc.css( 'mods abstract' ).last
+     # this was used for the 4th year theses
+     #ab_node = fedora_doc.css( 'mods abstract' ).last
+     # this was used for the subsequent items
+     ab_node = fedora_doc.css( 'mods abstract' ).first
      abstract = ab_node.text if ab_node
      payload[ :abstract ] = abstract if abstract.present?
 
@@ -353,20 +365,25 @@ namespace :libra2 do
       w.work_source = payload[ :source ] if payload[ :source ]
 
       # mint and assign the DOI
-      status, id = ServiceClient::EntityIdClient.instance.newid( w )
-      if ServiceClient::EntityIdClient.instance.ok?( status )
-        w.identifier = id
-        w.permanent_url = GenericWork.doi_url( id )
-      else
-        puts "ERROR: cannot mint DOI (#{status})"
-        ok = false
+      if ENV[ 'NO_DOI' ].blank?
+         status, id = ServiceClient::EntityIdClient.instance.newid( w )
+         if ServiceClient::EntityIdClient.instance.ok?( status )
+            w.identifier = id
+            w.permanent_url = GenericWork.doi_url( id )
+         else
+            puts "ERROR: cannot mint DOI (#{status})"
+            ok = false
+         end
       end
-
     end
 
     # update the DOI metadata if necessary
-    if ok && work.is_draft? == false
-      ok = update_doi_metadata( work )
+    if ENV[ 'NO_DOI' ].blank?
+      if ok && work.is_draft? == false
+        ok = update_doi_metadata( work )
+      end
+    else
+      puts "INFO: no DOI assigned..."
     end
 
     return ok, work
