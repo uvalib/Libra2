@@ -202,7 +202,7 @@ namespace :libra2 do
 
     # download the fedora representation too
     f = File.join( d, TaskHelpers::DOCUMENT_XML_FILE )
-    return( download_fedora_data( doc['id'], f ) )
+    return( download_fedora_metadata( doc['id'], f ) )
   end
 
   #
@@ -213,11 +213,18 @@ namespace :libra2 do
   end
 
   #
-  # download the specified data from Fedora and write it to a file
+  # download the specified metadata from Fedora and write it to a file
   #
-  def download_fedora_data( asset_id, filename )
-    return( download_fedora_asset( "#{PRODUCTION_FEDORA}/#{asset_id}/objectXML", filename ) )
+  def download_fedora_metadata( asset_id, filename )
+    return( download_fedora_asset( "#{PRODUCTION_FEDORA}/#{asset_id}/datastreams/descMetadata/content", filename ) )
   end
+
+  #
+  # download the specified object from Fedora and write it to a file
+  #
+  #def download_fedora_object( asset_id, filename )
+  #  return( download_fedora_asset( "#{PRODUCTION_FEDORA}/#{asset_id}/objectXML", filename ) )
+  #end
 
   #
   # download the specified asset from Fedora and write it to a file
