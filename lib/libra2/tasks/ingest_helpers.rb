@@ -14,19 +14,6 @@ module IngestHelpers
   end
 
   #
-  # If we have any contributor attributes, construct the necessary aggergate field
-  #
-  def construct_contributor( payload )
-    if payload[ :advisor_computing_id] || payload[ :advisor_first_name] || payload[ :advisor_last_name] || payload[ :advisor_department]
-      return [ TaskHelpers.contributor_fields( payload[ :advisor_computing_id],
-                                               payload[ :advisor_first_name],
-                                               payload[ :advisor_last_name],
-                                               payload[ :advisor_department] ) ]
-    end
-    return []
-  end
-
-  #
   # load the Libra data from the specified directory
   #
   def load_ingest_content(dirname )

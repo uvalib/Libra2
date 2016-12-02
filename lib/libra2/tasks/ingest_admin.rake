@@ -222,15 +222,12 @@ namespace :libra2 do
      end
 
      # document advisor
-     if solr_doc.at_path( 'mods_0_person_1_role_0_text_t[0]' ) == 'advisor'
-       dept = solr_doc.at_path( 'mods_0_person_1_description_t[0]' )
-       cid = solr_doc.at_path( 'mods_0_person_1_computing_id_t[0]' )
-       fn = solr_doc.at_path( 'mods_0_person_1_first_name_t[0]' )
-       ln = solr_doc.at_path( 'mods_0_person_1_last_name_t[0]' )
-       payload[ :advisor_computing_id ] = cid if IngestHelpers.field_supplied( cid )
-       payload[ :advisor_first_name ] = fn if IngestHelpers.field_supplied( fn )
-       payload[ :advisor_last_name ] = ln if IngestHelpers.field_supplied( ln )
-       payload[ :advisor_department ] = IngestHelpers.department_lookup( dept ) if IngestHelpers.field_supplied( dept )
+     payload[ :advisors ] = []
+     advisor_ix = 1
+     while true
+        added, payload[ :advisors ] = add_advisor( solr_doc, advisor_ix, payload[ :advisors ] )
+        break unless added
+        advisor_ix += 1
      end
 
      # issue date
@@ -304,11 +301,7 @@ namespace :libra2 do
     #
 
     warnings << 'missing author computing id' if payload[ :author_computing_id ].nil?
-    warnings << 'missing advisor computing id' if payload[ :advisor_computing_id ].nil?
-    warnings << 'missing advisor first name' if payload[ :advisor_first_name ].nil?
-    warnings << 'missing advisor last name' if payload[ :advisor_last_name ].nil?
-    warnings << 'missing advisor department' if payload[ :advisor_department ].nil?
-
+    warnings << 'missing advisor(s)' if payload[ :advisors ].blank?
 
     warnings << 'missing abstract' if payload[ :abstract ].nil?
     warnings << 'missing keywords' if payload[ :keywords ].nil?
@@ -337,7 +330,8 @@ namespace :libra2 do
       w.author_first_name = payload[ :author_first_name ] if payload[ :author_first_name ]
       w.author_last_name = payload[ :author_last_name ] if payload[ :author_last_name ]
       w.author_institution = payload[ :institution ] if payload[ :institution ]
-      w.contributor = IngestHelpers.construct_contributor( payload )
+      #w.contributor = IngestHelpers.construct_contributor( payload )
+      w.contributor = payload[ :advisors ]
       w.description = payload[ :abstract ]
       w.keyword = payload[ :keywords ] if payload[ :keywords ]
 
@@ -395,6 +389,43 @@ namespace :libra2 do
     return ok, work
   end
 
+  #
+  # adds another advisor if we can locate one
+  #
+  def add_advisor( solr_doc, advisor_ix, advisors )
+
+    if solr_doc.at_path( "mods_0_person_#{advisor_ix}_role_0_text_t[0]" ) == 'advisor'
+      cid = solr_doc.at_path( "mods_0_person_#{advisor_ix}_computing_id_t[0]" )
+      fn = solr_doc.at_path( "mods_0_person_#{advisor_ix}_first_name_t[0]" )
+      ln = solr_doc.at_path( "mods_0_person_#{advisor_ix}_last_name_t[0]" )
+      dept = solr_doc.at_path( "mods_0_person_#{advisor_ix}_description_t[0]" )
+      ins = solr_doc.at_path( "mods_0_person_#{advisor_ix}_institution_t[0]" )
+
+      advisor_computing_id = IngestHelpers.field_supplied( cid ) ? cid : ''
+      advisor_first_name = IngestHelpers.field_supplied( fn ) ? fn : ''
+      advisor_last_name = IngestHelpers.field_supplied( ln ) ? ln : ''
+      advisor_department = IngestHelpers.field_supplied( dept ) ? IngestHelpers.department_lookup( dept ) : ''
+      advisor_institution = IngestHelpers.field_supplied( ins ) ? ins : ''
+
+      if advisor_computing_id.blank? == false ||
+         advisor_first_name.blank? == false ||
+         advisor_last_name.blank? == false ||
+         advisor_department.blank? == false ||
+         advisor_institution.blank? == false
+         adv = TaskHelpers.contributor_fields( advisor_computing_id,
+                                            advisor_first_name,
+                                            advisor_last_name,
+                                            advisor_department,
+                                            advisor_institution )
+
+         #puts "==> ADVISOR [#{adv}]"
+         return true, advisors << adv
+      end
+    end
+
+    # could not find the next advisor, we are done
+    return false, advisors
+  end
   #
   # apply any default values and behavior to the standard payload
   #

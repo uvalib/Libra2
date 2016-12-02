@@ -37,17 +37,17 @@ module TaskHelpers
   #
   # turn a computing ID into the format needed for the contributor field
   #
-  def contributor_fields_from_cid(computing_id )
+  def contributor_fields_from_cid( computing_id )
     user = user_info_by_cid( computing_id )
     return nil if user.nil?
-    contributor_fields( computing_id, user.first_name, user.last_name, user.department )
+    return contributor_fields( computing_id, user.first_name, user.last_name, user.department, GenericWork::DEFAULT_INSTITUTION )
   end
 
   #
   # concat the fields together to for the aggregate contributor field
   #
-  def contributor_fields( computing_id, first_name, last_name, department )
-    return "#{computing_id}\n#{first_name}\n#{last_name}\n#{department}\n#{GenericWork::DEFAULT_INSTITUTION}"
+  def contributor_fields( computing_id, first_name, last_name, department, institution )
+    return "#{computing_id}\n#{first_name}\n#{last_name}\n#{department}\n#{institution}"
   end
 
   #
