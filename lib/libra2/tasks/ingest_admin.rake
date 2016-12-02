@@ -3,7 +3,10 @@
 #
 
 require 'hash_at_path'
-include ERB::Util
+
+# pull in the helpers
+require_dependency 'libra2/tasks/ingest_helpers'
+include IngestHelpers
 
 namespace :libra2 do
 
@@ -52,7 +55,7 @@ namespace :libra2 do
     start_ix = 0 if start_ix.to_s != start
 
     # get the list of items to be ingested
-    ingests = get_ingest_list( ingest_dir )
+    ingests = IngestHelpers.get_ingest_list( ingest_dir )
     if ingests.empty?
       puts "ERROR: ingest directory does not contain contains any items, aborting"
       next
@@ -118,9 +121,9 @@ namespace :libra2 do
   #
   def ingest_new_item( defaults, depositor, dirname )
 
-     solr_doc, fedora_doc = load_ingest_content( dirname )
+     solr_doc, fedora_doc = IngestHelpers.load_ingest_content( dirname )
      id = solr_doc['id']
-     assets = get_document_assets( dirname )
+     assets = IngestHelpers.get_document_assets( dirname )
 
      puts "Ingesting #{File.basename( dirname )} (#{id}) and #{assets.size} asset(s)..."
 
@@ -131,10 +134,10 @@ namespace :libra2 do
      payload = apply_defaults( defaults, payload )
 
      # some fields with embedded quotes need to be escaped; handle this here
-     payload = escape_fields( payload )
+     payload = IngestHelpers.escape_fields( payload )
 
      # dump the fields as necessary...
-     dump_ingest_payload( payload ) if ENV[ 'DUMP_PAYLOAD' ]
+     IngestHelpers.dump_ingest_payload( payload ) if ENV[ 'DUMP_PAYLOAD' ]
 
      # validate the payload
      errors, warnings = validate_ingest_payload( payload )
@@ -190,7 +193,7 @@ namespace :libra2 do
 
      # date and time attributes
      create_date = solr_doc.at_path( 'system_create_dt' )
-     payload[ :create_date ] = extract_date( create_date ) if create_date.present?
+     payload[ :create_date ] = IngestHelpers.extract_date( create_date ) if create_date.present?
      modified_date = solr_doc.at_path( 'system_modified_dt' )
      payload[ :modified_date ] = modified_date if modified_date.present?
 
@@ -212,10 +215,10 @@ namespace :libra2 do
        cid = solr_doc.at_path( 'mods_0_name_0_computing_id_t[0]' )
        fn = solr_doc.at_path( 'mods_0_name_0_first_name_t[0]' )
        ln = solr_doc.at_path( 'mods_0_name_0_last_name_t[0]' )
-       payload[ :author_computing_id ] = cid if field_supplied( cid )
-       payload[ :author_first_name ] = fn if field_supplied( fn )
-       payload[ :author_last_name ] = ln if field_supplied( ln )
-       payload[ :department ] = department_lookup( dept ) if field_supplied( dept )
+       payload[ :author_computing_id ] = cid if IngestHelpers.field_supplied( cid )
+       payload[ :author_first_name ] = fn if IngestHelpers.field_supplied( fn )
+       payload[ :author_last_name ] = ln if IngestHelpers.field_supplied( ln )
+       payload[ :department ] = IngestHelpers.department_lookup( dept ) if IngestHelpers.field_supplied( dept )
      end
 
      # document advisor
@@ -224,10 +227,10 @@ namespace :libra2 do
        cid = solr_doc.at_path( 'mods_0_person_1_computing_id_t[0]' )
        fn = solr_doc.at_path( 'mods_0_person_1_first_name_t[0]' )
        ln = solr_doc.at_path( 'mods_0_person_1_last_name_t[0]' )
-       payload[ :advisor_computing_id ] = cid if field_supplied( cid )
-       payload[ :advisor_first_name ] = fn if field_supplied( fn )
-       payload[ :advisor_last_name ] = ln if field_supplied( ln )
-       payload[ :advisor_department ] = department_lookup( dept ) if field_supplied( dept )
+       payload[ :advisor_computing_id ] = cid if IngestHelpers.field_supplied( cid )
+       payload[ :advisor_first_name ] = fn if IngestHelpers.field_supplied( fn )
+       payload[ :advisor_last_name ] = ln if IngestHelpers.field_supplied( ln )
+       payload[ :advisor_department ] = IngestHelpers.department_lookup( dept ) if IngestHelpers.field_supplied( dept )
      end
 
      # issue date
@@ -240,7 +243,7 @@ namespace :libra2 do
      release_date = solr_doc.at_path( 'embargo_embargo_release_date_t[0]' )
      payload[ :embargo_release_date ] = release_date if release_date.present?
      payload[ :embargo_period ] =
-         estimate_embargo_period( issued_date, release_date ) if issued_date.present? && release_date.present?
+         IngestHelpers.estimate_embargo_period( issued_date, release_date ) if issued_date.present? && release_date.present?
 
      # document source
      payload[ :source ] = solr_doc.at_path( 'id' )
@@ -259,7 +262,7 @@ namespace :libra2 do
 
      # language
      language = solr_doc.at_path( 'language_lang_code_t[0]' )
-     payload[ :language ] = language_code_lookup( language ) if language.present?
+     payload[ :language ] = IngestHelpers.language_code_lookup( language ) if language.present?
 
      # notes
      notes = solr_doc.at_path( 'note_t[0]' )
@@ -334,7 +337,7 @@ namespace :libra2 do
       w.author_first_name = payload[ :author_first_name ] if payload[ :author_first_name ]
       w.author_last_name = payload[ :author_last_name ] if payload[ :author_last_name ]
       w.author_institution = payload[ :institution ] if payload[ :institution ]
-      w.contributor = construct_contributor( payload )
+      w.contributor = IngestHelpers.construct_contributor( payload )
       w.description = payload[ :abstract ]
       w.keyword = payload[ :keywords ] if payload[ :keywords ]
 
@@ -345,9 +348,9 @@ namespace :libra2 do
       w.date_published = payload[ :issued ] if payload[ :issued ]
 
       # embargo attributes
-      w.visibility = set_embargo_for_type( payload[:embargo_type ] )
-      w.embargo_state = set_embargo_for_type( payload[:embargo_type ] )
-      w.visibility_during_embargo = set_embargo_for_type( payload[:embargo_type ] )
+      w.visibility = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
+      w.embargo_state = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
+      w.visibility_during_embargo = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
       w.embargo_end_date = payload[ :embargo_release_date ] if payload[ :embargo_release_date ]
       w.embargo_period = payload[ :embargo_period ] if payload[ :embargo_period ]
 
@@ -393,65 +396,6 @@ namespace :libra2 do
   end
 
   #
-  # If we have any contributor attributes, construct the necessary aggergate field
-  #
-  def construct_contributor( payload )
-    if payload[ :advisor_computing_id] || payload[ :advisor_first_name] || payload[ :advisor_last_name] || payload[ :advisor_department]
-       return [ TaskHelpers.contributor_fields( payload[ :advisor_computing_id],
-                                              payload[ :advisor_first_name],
-                                              payload[ :advisor_last_name],
-                                              payload[ :advisor_department] ) ]
-    end
-    return []
-  end
-
-  #
-  # list any assets that go with the document
-  #
-  def get_document_assets( dirname )
-
-    files = []
-    f = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
-    begin
-    File.open( f, 'r').each do |line|
-      tokens = line.strip.split( "|" )
-      files << { :id => tokens[ 0 ], :timestamp => tokens[ 1 ], :title => tokens[ 2 ] }
-    end
-    rescue Errno::ENOENT
-      # do nothing, no files...
-    end
-
-    return files
-  end
-
-  #
-  # load the Libra data from the specified directory
-  #
-  def load_ingest_content(dirname )
-    json_doc = TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
-    xml_doc = TaskHelpers.load_xml_doc( File.join( dirname, TaskHelpers::DOCUMENT_XML_FILE ) )
-    return json_doc, xml_doc
-  end
-
-  #
-  # get the list of Libra extract items from the work directory
-  #
-  def get_ingest_list( dirname )
-    return TaskHelpers.get_directory_list( dirname, /^extract./ )
-  end
-
-  #
-  # simple payload dump for debugging
-  #
-  def dump_ingest_payload( payload )
-    puts '*' * 80
-    payload.each { |k, v|
-       puts " ==> #{k} -> #{v}"
-    }
-    puts '*' * 80
-  end
-
-  #
   # apply any default values and behavior to the standard payload
   #
   def apply_defaults( defaults, payload )
@@ -476,7 +420,7 @@ namespace :libra2 do
         when :force_embargo_period
           payload[ :embargo_period ] = v
           if payload[ :issued ]
-             payload[ :embargo_release_date ] = calculate_embargo_release_date( payload[ :issued ], v )
+             payload[ :embargo_release_date ] = IngestHelpers.calculate_embargo_release_date( payload[ :issued ], v )
           else
              payload[ :embargo_release_date ] = GenericWork.calculate_embargo_release_date( v )
           end
@@ -509,137 +453,6 @@ namespace :libra2 do
 
     config = yml.symbolize_keys
     return config.symbolize_keys || {}
-  end
-
-  #
-  # extract a date from a fully specified date/time
-  #
-  def extract_date( date )
-    matches = /^(\d{4}-\d{2}-\d{2})/.match( date )
-    return matches[ 1 ] if matches
-    return date
-  end
-
-  #
-  # add the specified number of years to the specified date
-  #
-  def calculate_embargo_release_date( date, embargo_period )
-    dt = Date.parse( date )
-    case embargo_period
-      when GenericWork::EMBARGO_VALUE_6_MONTH
-        return dt + 6.months
-      when GenericWork::EMBARGO_VALUE_1_YEAR
-        return dt + 1.year
-      when GenericWork::EMBARGO_VALUE_2_YEAR
-        return dt + 2.years
-      when GenericWork::EMBARGO_VALUE_5_YEAR
-        return dt + 5.years
-      when GenericWork::EMBARGO_VALUE_FOREVER
-        return dt + 130.years
-    end
-    return dt
-  end
-
-  #
-  # calculate the approx original embargo period given the issued and release dates
-  #
-  def estimate_embargo_period( issued, embargo_release )
-     period = Date.parse( embargo_release ) - Date.parse( issued )
-     case period.to_i
-       when 0
-         return ''
-       when 1..186
-         return GenericWork::EMBARGO_VALUE_6_MONTH
-       when 187..366
-         return GenericWork::EMBARGO_VALUE_1_YEAR
-       when 367..731
-         return GenericWork::EMBARGO_VALUE_2_YEAR
-       when 732..1825
-         return GenericWork::EMBARGO_VALUE_5_YEAR
-       else
-         return GenericWork::EMBARGO_VALUE_FOREVER
-     end
-  end
-
-  #
-  # Determine the embargo type from the metadata
-  #
-  def set_embargo_for_type(embargo )
-    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC if embargo.blank?
-    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED if embargo == 'uva'
-
-    # none of the above
-    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-  end
-
-  #
-  # extract the first value from a SOLR field
-  #
-  def solr_extract_first( json, fn )
-
-    field = Solrizer.solr_name( fn )
-    return json[ field ][ 0 ] if json.key? field
-    return ''
-
-  end
-
-  #
-  # looks up the language name from the language code
-  # Locate elsewhere later
-  #
-  def language_code_lookup( language_code )
-
-     case language_code
-       when 'eng'
-         return 'English'
-       when 'fre'
-         return 'French'
-       when 'ger'
-         return 'German'
-       when 'spa'
-         return 'Spainish'
-     end
-     return language_code
-  end
-
-  #
-  # lmaps department name from L1 to L2
-  # Locate elsewhere later
-  #
-  def department_lookup( department )
-
-    case department
-      when 'Civil & Env Engr'
-        return 'Department of Civil Engineering'
-    end
-    return department
-  end
-
-  #
-  # determine if a field is provided; look for the special valuye 'None Provided'
-  #
-  def field_supplied( field )
-    return false if field.blank?
-    return false if field == 'None Provided'
-    return true
-  end
-
-  #
-  # escape any fields in the payload that require it
-  #
-  def escape_fields( payload )
-
-    payload[:title] = escape_field( payload[:title] ) if field_supplied( payload[:title] )
-    payload[:abstract] = escape_field( payload[:abstract] ) if field_supplied( payload[:abstract] )
-    return payload
-
-  end
-
-  #
-  # escape special characters as necessary
-  #
-  def escape_field( field )
-     return html_escape( field ).gsub( "\\", "\\\\\\" )
   end
 
   end   # namespace ingest
