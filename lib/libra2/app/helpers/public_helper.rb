@@ -53,7 +53,7 @@ module PublicHelper
          arr.push('') if arr.length == 4 # if the last item is empty, the split command will miss it.
          # arr should be an array of [ computing_id, first_name, last_name, department, institution ]
          if arr.length == 5
-            advisors.push("#{arr[2].strip}, #{arr[1].strip}, #{arr[3].strip}, #{arr[4].strip}")
+            advisors.push( construct_advisor_line( arr ) )
          else
             advisors.push(contributor) # this shouldn't happen, but perhaps it will if old data gets in there.
          end
@@ -134,4 +134,21 @@ module PublicHelper
       return value
    end
 
+  def construct_advisor_line( arr )
+     res = ""
+     res = field_append( res, arr[2].strip )
+     res = field_append( res, arr[1].strip )
+     res = field_append( res, arr[3].strip )
+     res = field_append( res, arr[4].strip )
+     return( res )
+  end
+
+  def field_append( current, field )
+     res = current
+     if field.blank? == false
+        res += ", " if res.blank? == false
+        res += field
+     end
+     return res
+  end
 end
