@@ -6,6 +6,130 @@ include ERB::Util
 
 module IngestHelpers
 
+  # mapping of department names/mnemonics to actual textual values
+  DEPARTMENT_MAP = {
+      'ADMIN-EDD' => 'Curry School of Education',
+      'ADMIN-MED' => 'Curry School of Education',
+      'ANTHRO-PHD' => 'Department of Anthropology',
+      'ARCH-MAR' => 'Department of Architectural History',
+      'ARH-MARH' => 'Department of Architectural History',
+      'ARTARC-MA' => 'Department of Art',
+      'ARTARC-PHD' => 'Department of Art',
+      'ASTRON-PHD' => 'Department of Astronomy',
+      'BIOL-MA' => 'Department of Biology',
+      'BIOL-MS' => 'Department of Biology',
+      'BIOL-PHD' => 'Department of Biology',
+      'BIOMEN-ME' => 'Department of Biomedical Engineering',
+      'BIOMEN-MS' => 'Department of Biomedical Engineering',
+      'BIOMEN-PHD' => 'Department of Biomedical Engineering',
+      'BIOMOL-PHD' => 'Department of Biochemistry and Molecular Genetics',
+      'BIOP-PHD' => 'Department of Biophysics',
+      'CELL-PHD' => 'Department of Molecular, Cell and Developmental Biology',
+      'CHEM-MS' => 'Department of Chemistry',
+      'CHEM-PHD' => 'Department of Chemistry',
+      'CHEMEN-CGE' => 'Department of Chemical Engineering',
+      'CHEMEN-ME' => 'Department of Chemical Engineering',
+      'CHEMEN-MS' => 'Department of Chemical Engineering',
+      'CHEMEN-PHD' => 'Department of Chemical Engineering',
+      'CIVIL-CGE' => 'Department of Civil Engineering',
+      'CIVIL-ME' => 'Department of Civil Engineering',
+      'CIVIL-MS' => 'Department of Civil Engineering',
+      'CIVIL-PHD' => 'Department of Civil Engineering',
+      'CLAS-PHD' => 'Department of Classics',
+      'CLNPSY-PHD' => 'Curry School of Education',
+      'COMPEN-ME' => 'Department of Computer Engineering',
+      'COMPEN-MS' => 'Department of Computer Engineering',
+      'COMPEN-PHD' => 'Department of Computer Engineering',
+      'COMPSC-MCS' => 'Department of Computer Science',
+      'COMPSC-MS' => 'Department of Computer Science',
+      'COMPSC-PHD' => 'Department of Computer Science',
+      'COUNS-EDD' => 'Curry School of Education',
+      'COUNS-MED' => 'Curry School of Education',
+      'CURRIN-EDD' => 'Curry School of Education',
+      'CURRIN-MED' => 'Curry School of Education',
+      'Civil & Env Engr' => 'Department of Civil Engineering',
+      'DRAMA-MFA' => 'Department of Drama',
+      'EASIAN-MA' => 'Department of East Asian Studies',
+      'ECON-PHD' => 'Department of Economics',
+      'EDPSYC-EDD' => 'Curry School of Education',
+      'EDPSYC-MED' => 'Curry School of Education',
+      'EDUC-PHD' => 'Curry School of Education',
+      'ELECT-CGE' => 'Department of Electrical Engineering',
+      'ELECT-ME' => 'Department of Electrical Engineering',
+      'ELECT-MS' => 'Department of Electrical Engineering',
+      'ELECT-PHD' => 'Department of Electrical Engineering',
+      'ENGL-MA' => 'Department of English',
+      'ENGL-PHD' => 'Department of English',
+      'ENGPHY-CGE' => 'Department of Engineering Physics',
+      'ENGPHY-MEP' => 'Department of Engineering Physics',
+      'ENGPHY-MS' => 'Department of Engineering Physics',
+      'ENGPHY-PHD' => 'Department of Engineering Physics',
+      'EVSC-MA' => 'Department of Environmental Sciences',
+      'EVSC-MS' => 'Department of Environmental Sciences',
+      'EVSC-PHD' => 'Department of Environmental Sciences',
+      'EXPATH-PHD' => 'Department of Pathology',
+      'FORAFF-MA' => 'Department of Foreign Affairs',
+      'FORAFF-PHD' => 'Department of Politics',
+      'FRENCH-PHD' => 'Department of French',
+      'GERMAN-MS' => 'Department of Germanic Languages and Literatures',
+      'GERMAN-PHD' => 'Department of Germanic Languages and Literatures',
+      'GOVT-MA' => 'Department of Politics',
+      'GOVT-PHD' => 'Department of Politics',
+      'HIGHED-EDD' => 'Curry School of Education',
+      'HIGHED-MED' => 'Curry School of Education',
+      'HIST-MA' => 'Department of History',
+      'HIST-PHD' => 'Department of History',
+      'ITAL-MA' => 'Department of Spanish, Italian, and Portuguese',
+      'KINES-MED' => 'Curry School of Education',
+      'MAE-CGE' => 'Department of Mechanical and Aerospace Engineering',
+      'MAE-ME' => 'Department of Mechanical and Aerospace Engineering',
+      'MAE-MS' => 'Department of Mechanical and Aerospace Engineering',
+      'MAE-PHD' => 'Department of Mechanical and Aerospace Engineering',
+      'MATH-PHD' => 'Department of Mathematics',
+      'MATSC-CGE' => 'Department of Materials Science and Engineering',
+      'MATSC-MMSE' => 'Department of Materials Science and Engineering',
+      'MATSCI-MS' => 'Department of Materials Science and Engineering',
+      'MATSCI-PHD' => 'Department of Materials Science and Engineering',
+      'MICRO-PHD' => 'Department of Microbiology, Immunology, and Cancer Biology',
+      'MUSIC-PHD' => 'Department of Music',
+      'NEURO-PHD' => 'Department of Neuroscience',
+      'NURS-DNP' => 'School of Nursing',
+      'NURS-PHD' => 'School of Nursing',
+      'PHARM-PHD' => 'Department of Pharmacology',
+      'PHIL-PHD' => 'Department of Philosophy',
+      'PHY-PHD' => 'Department of Molecular Physiology and Biological Physics',
+      'PHYS-MS' => 'Department of Physics',
+      'PHYS-PHD' => 'Department of Physics',
+      'PLAN-MUEP' => 'Department of Urban and Environmental Planning',
+      'PSYCH-MA' => 'Department of Psychology',
+      'PSYCH-PHD' => 'Department of Psychology',
+      'RELIG-MA' => 'Department of Religious Studies',
+      'RELIG-PHD' => 'Department of Religious Studies',
+      'SLAVIC-MA' => 'Department of Slavic Languages and Literatures',
+      'SLAVIC-PHD' => 'Department of Slavic Languages and Literatures',
+      'SOCIOL-MA' => 'Department of Sociology',
+      'SOCIOL-PHD' => 'Department of Sociology',
+      'SPAN-PHD' => 'Department of Spanish, Italian, and Portuguese',
+      'SPATH-MED' => 'Curry School of Education',
+      'SPCED-MED' => 'Curry School of Education',
+      'STATS-PHD' => 'Department of Statistics',
+      'SYSTEM-AM' => 'Department of Systems Engineering',
+      'SYSTEM-CGE' => 'Department of Systems Engineering',
+      'SYSTEM-ME' => 'Department of Systems Engineering',
+      'SYSTEM-MS' => 'Department of Systems Engineering',
+      'SYSTEM-PHD' => 'Department of Systems Engineering',
+      'University of Virginia Libraries' => 'University of Virginia Library',
+      'WRITE-MFA' => 'Department of English'
+  }
+
+  # various placeholders that have been used to indicate that a field was not provided
+  BLANK_PLACEHOLDERS = [
+      'None Provided',
+      'None',
+      'none',
+      'not available',
+      'No Abstract Found'
+  ]
   #
   # get the list of Libra extract items from the work directory
   #
@@ -134,23 +258,17 @@ module IngestHelpers
 
   #
   # maps department name from L1 to L2
-  # Locate elsewhere later
   #
   def department_lookup( department )
-
-    case department
-      when 'Civil & Env Engr'
-        return 'Department of Civil Engineering'
-    end
+    return DEPARTMENT_MAP[ department ] if DEPARTMENT_MAP.key? ( department )
     return department
   end
 
   #
-  # determine if a field is provided; look for the special valuye 'None Provided'
+  # determine if a field is provided; look for special values... this sux
   #
   def field_supplied( field )
-    return false if field.blank?
-    return false if field == 'None Provided'
+    return false if BLANK_PLACEHOLDERS.include?( field )
     return true
   end
 
