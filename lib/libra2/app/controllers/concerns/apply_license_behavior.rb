@@ -16,6 +16,8 @@ module ApplyLicenseBehavior
       if params[ :agreement ].blank? == false && params.fetch( :agreement ) == '1'
       #  curation_concern.license = deposit_agreement_type
         params[:generic_work][:license] = deposit_agreement_type( )
+      else
+        params[:generic_work][:license] = GenericWork::DEFAULT_LICENSE
       end
     end
 
