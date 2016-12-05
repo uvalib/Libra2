@@ -129,7 +129,8 @@ module IngestHelpers
       'None',
       'none',
       'not available',
-      'No Abstract Found'
+      'No Abstract Found',
+      'No abstract available'
   ]
   #
   # get the list of Libra extract items from the work directory
@@ -269,6 +270,7 @@ module IngestHelpers
   # determine if a field is provided; look for special values... this sux
   #
   def field_supplied( field )
+    return false if field.blank?
     return false if BLANK_PLACEHOLDERS.include?( field )
     return true
   end
