@@ -125,6 +125,7 @@ module IngestHelpers
   # various placeholders that have been used to indicate that a field was not provided
   BLANK_PLACEHOLDERS = [
       'None Provided',
+      'None Found',
       'None',
       'none',
       'not available',
