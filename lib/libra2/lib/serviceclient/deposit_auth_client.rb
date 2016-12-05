@@ -53,6 +53,16 @@ module ServiceClient
      end
 
      #
+     # get a specific request by id
+     #
+     def get_request( id )
+       url = "#{self.url}/#{id}?auth=#{self.authtoken}"
+       status, response = rest_get( url )
+       return status, response['details'] if ok?( status ) && response['details']
+       return status, ''
+     end
+
+     #
      # notify of a deposit
      #
      def request_fulfilled( work )

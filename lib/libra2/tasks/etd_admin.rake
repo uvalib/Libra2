@@ -180,6 +180,50 @@ namespace :libra2 do
     t.release
   end
 
+  desc "Ingest specific SIS ETD deposit request; must supply the SIS deposit request id"
+  task ingest_one_sis_etd_deposit: :environment do |t, args|
+
+    id = ARGV[ 1 ]
+    if id.nil?
+      puts "ERROR: no SIS request id specified, aborting"
+      next
+    end
+    task id.to_sym do ; end
+
+    status, resp = ServiceClient::DepositAuthClient.instance.get_request( id )
+    if ServiceClient::DepositAuthClient.instance.ok?( status )
+
+      resp.each do |r|
+        req = Helpers::DepositAuthorization.create( r )
+        if Helpers::EtdHelper::new_etd_from_sis_request( req ) == true
+          user = Helpers::EtdHelper::lookup_user( req.who )
+          ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name ).deliver_now
+          puts "Created placeholder (SIS) ETD for #{req.who} (request #{req.id})"
+        else
+          puts "ERROR ingesting sis authorization #{req.id} for #{req.who}; ignoring"
+        end
+      end
+    else
+      puts "No SIS deposit request located" if status == 404
+      puts "ERROR: request returned #{status}" unless status == 404
+    end
+
+  end
+
+  desc "Ingest specific optional ETD deposit request; must supply the optional deposit request id"
+  task ingest_one_optional_etd_deposit: :environment do |t, args|
+
+    id = ARGV[ 1 ]
+    if id.nil?
+      puts "ERROR: no optional request id specified, aborting"
+      next
+    end
+    task id.to_sym do ; end
+
+    puts "NOT IMPLEMENTED YET"
+
+  end
+
   desc "List optional deposit options"
   task list_deposit_options: :environment do |t, args|
 
