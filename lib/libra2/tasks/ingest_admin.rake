@@ -418,8 +418,9 @@ namespace :libra2 do
                                             advisor_department,
                                             advisor_institution )
 
-         #puts "==> ADVISOR [#{adv}]"
-         return true, advisors << adv
+         a = Array.new( advisors )
+         a << adv
+         return true, a
       end
     end
 
