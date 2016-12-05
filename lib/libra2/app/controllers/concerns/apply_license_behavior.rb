@@ -13,7 +13,7 @@ module ApplyLicenseBehavior
     def apply_license
 
       # has the user just accepted the license for the first time?
-      if params.fetch( :agreement ) == '1'
+      if params[ :agreement ].blank? == false && params.fetch( :agreement ) == '1'
       #  curation_concern.license = deposit_agreement_type
         params[:generic_work][:license] = deposit_agreement_type( )
       end
