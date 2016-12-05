@@ -207,7 +207,7 @@ namespace :libra2 do
      # this was used for the subsequent items
      ab_node = fedora_doc.css( 'mods abstract' ).first
      abstract = ab_node.text if ab_node
-     payload[ :abstract ] = abstract if abstract.present?
+     payload[ :abstract ] = abstract if IngestHelpers.field_supplied( abstract )
 
      # document author
      if solr_doc.at_path( 'mods_0_name_0_role_0_text_t[0]' ) == 'author'
