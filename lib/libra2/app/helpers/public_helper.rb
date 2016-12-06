@@ -32,12 +32,24 @@ module PublicHelper
    def display_author( work )
       author = construct_author( work )
       return '' if author.blank?
-      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Author:", author ).render )
+      #orcid_data = construct_author_orcid( work )
+      #orcid_data = content_tag(:span, raw( " #{orcid_data}" ), { style: 'font-weight:normal' }) unless orcid_data.blank?
+      orcid_data = ''
+      header = raw( "Author:" + orcid_data )
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new( header, author ).render )
    end
 
    def construct_author( work )
       return '' if work.nil?
       return "#{work.author_last_name}, #{work.author_first_name}, #{work.department}, #{work.author_institution}"
+   end
+
+   def construct_author_orcid( work )
+      return '' if work.nil?
+      return '' if work.author_email.blank?
+
+      orcid = 'http://orcid.org/0000-0002-0566-4186'
+      return "#{image_tag 'orcid.png', alt: t('sufia.user_profile.orcid.alt')} #{link_to orcid, orcid, { target: '_blank' }}".html_safe
    end
 
    def display_advisers(work)
@@ -50,6 +62,7 @@ module PublicHelper
       advisors = []
       contributors.each { |contributor|
          arr = contributor.split("\n")
+         arr.push('') if arr.length == 3 # if the last item is empty, the split command will miss it.
          arr.push('') if arr.length == 4 # if the last item is empty, the split command will miss it.
          # arr should be an array of [ computing_id, first_name, last_name, department, institution ]
          if arr.length == 5
