@@ -36,18 +36,20 @@ module TaskHelpers
 
   #
   # turn a computing ID into the format needed for the contributor field
+  # we provide a number to allow us to determine order intent. Underlying storage prevents us
+  # from assuming order based on position in the array
   #
-  def contributor_fields_from_cid( computing_id )
+  def contributor_fields_from_cid( index, computing_id )
     user = user_info_by_cid( computing_id )
     return nil if user.nil?
-    return contributor_fields( computing_id, user.first_name, user.last_name, user.department, GenericWork::DEFAULT_INSTITUTION )
+    return contributor_fields( index, computing_id, user.first_name, user.last_name, user.department, GenericWork::DEFAULT_INSTITUTION )
   end
 
   #
-  # concat the fields together to for the aggregate contributor field
+  # concat the contributor fields together to for the aggregate contributor field
   #
-  def contributor_fields( computing_id, first_name, last_name, department, institution )
-    return "#{computing_id}\n#{first_name}\n#{last_name}\n#{department}\n#{institution}"
+  def contributor_fields( index, computing_id, first_name, last_name, department, institution )
+    return "#{index}\n#{computing_id}\n#{first_name}\n#{last_name}\n#{department}\n#{institution}"
   end
 
   #
@@ -152,6 +154,7 @@ module TaskHelpers
         gw = GenericWork.find( gw_solr['id'] )
         f.call( gw )
       rescue => e
+        puts e
       end
     end
 

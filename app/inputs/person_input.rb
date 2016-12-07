@@ -8,8 +8,14 @@ class PersonInput < MultiValueInput
 		input_html_classes.unshift('string')
 		input_html_options[:name] ||= "#{object_name}[#{attribute_name}][]"
 
+		# remove blanks and sort; this ensures that advisers are presented in the correct order
+		# because we prepend adviser data with an index.
+		c = collection.reject( &:blank? ).sort
+		# add the blank so we can add a new advisor
+		c << ''
+
 		ret = outer_wrapper do
-			buffer_each(collection) do |value, index|
+			buffer_each(c) do |value, index|
 				inner_wrapper do
 					build_field(value, index)
 				end
@@ -40,11 +46,11 @@ class PersonInput < MultiValueInput
 
 		value = "" if value.nil?
 		arr = value.split("\n")
-		computing_id = arr[0]
-		first_name = arr.length > 1 ? arr[1] : ""
-		last_name = arr.length > 2 ? arr[2] : ""
-		department = arr.length > 3 ? arr[3] : ""
-		institution = arr.length > 4 ? arr[4] : ""
+		computing_id = arr.length > 1 ? arr[1] : ""
+		first_name = arr.length > 2 ? arr[2] : ""
+		last_name = arr.length > 3 ? arr[3] : ""
+		department = arr.length > 4 ? arr[4] : ""
+		institution = arr.length > 5 ? arr[5] : ""
 
 		input = create_input("Computing ID", "contributor_computing_id", computing_id, index, "Enter a UVA Computing ID to automatically fill the remaining fields for this person.")
 		contributor = content_tag(:input, "", { type: 'hidden', name: "generic_work[contributor][]", value: value, "data-index" => index, class: "contributor" })

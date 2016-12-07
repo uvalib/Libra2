@@ -65,7 +65,7 @@ task set_contributor_by_id: :environment do |t, args|
     next
   end
 
-  contributor = TaskHelpers.contributor_fields_from_cid(contributor_id )
+  contributor = TaskHelpers.contributor_fields_from_cid( 0, contributor_id )
   if contributor.nil? == false
      work.contributor = [ contributor ]
      work.save!
@@ -99,11 +99,10 @@ task add_contributor_by_id: :environment do |t, args|
     next
   end
 
-  contributor = TaskHelpers.contributor_fields_from_cid(contributor_id )
+  new_ix = work.contributor.blank? ? 0 : work.contributor.length
+  contributor = TaskHelpers.contributor_fields_from_cid( new_ix, contributor_id )
   if contributor.nil? == false
-    c = Array.new( work.contributor )
-    c << contributor
-    work.contributor = c
+    work.contributor << contributor
     work.save!
     puts "Work #{work_id} contributor added \"#{contributor_id}\""
   end
@@ -322,6 +321,18 @@ end
     puts "#{count} works updated"
   end
 
+  desc "Fix advisor format for all works."
+  task fix_advisor_format: :environment do |t, args|
+
+    count = 0
+    GenericWork.search_in_batches( { } ) do |group|
+      TaskHelpers.batched_process_solr_works( group, &method( :advisor_fix_generic_work_callback ) )
+      count += group.size
+    end
+
+    puts "Processed #{count} work(s)"
+  end
+
   def convert_date_format( date_str )
 
     return false, date_str if date_str.blank?
@@ -331,6 +342,49 @@ end
     end
 
     return false, date_str
+  end
+
+  def advisor_fix_generic_work_callback( work )
+
+    return if work.contributor.blank?
+
+    updated = []
+    puts "==> Work: #{work.id}"
+    work.contributor.each_with_index do |c, ix|
+      tokens = c.split( "\n" )
+      if tokens.length == 6
+        puts "Correctly formatted adviser fields, ignoring"
+        return
+      end
+
+      tokens.push('') if tokens.length == 3 # if the last item is empty, the split command will miss it.
+      tokens.push('') if tokens.length == 4 # if the last item is empty, the split command will miss it.
+
+      next if all_blank?( tokens )
+      adv = TaskHelpers.contributor_fields( ix,
+                                            tokens[ 0 ],
+                                            tokens[ 1 ],
+                                            tokens[ 2 ],
+                                            tokens[ 3 ],
+                                            tokens[ 4 ] )
+
+      updated << adv
+
+    end
+    puts "Updating advisor fields:"
+    puts "BEFORE: #{work.contributor}"
+    puts "AFTER:  #{updated}"
+    #work.contributor = updated
+    #work.save!
+
+  end
+
+  def all_blank?( tokens )
+    return tokens[ 0 ].blank? &&
+           tokens[ 1 ].blank? &&
+           tokens[ 2 ].blank? &&
+           tokens[ 3 ].blank? &&
+           tokens[ 4 ].blank?
   end
 
   end   # namespace edit

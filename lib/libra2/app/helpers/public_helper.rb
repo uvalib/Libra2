@@ -62,10 +62,10 @@ module PublicHelper
       advisors = []
       contributors.each { |contributor|
          arr = contributor.split("\n")
-         arr.push('') if arr.length == 3 # if the last item is empty, the split command will miss it.
          arr.push('') if arr.length == 4 # if the last item is empty, the split command will miss it.
-         # arr should be an array of [ computing_id, first_name, last_name, department, institution ]
-         if arr.length == 5
+         arr.push('') if arr.length == 5 # if the last item is empty, the split command will miss it.
+         # arr should be an array of [ index, computing_id, first_name, last_name, department, institution ]
+         if arr.length == 6
             advisors.push( construct_advisor_line( arr ) )
          else
             advisors.push(contributor) # this shouldn't happen, but perhaps it will if old data gets in there.
@@ -148,11 +148,12 @@ module PublicHelper
    end
 
   def construct_advisor_line( arr )
+     puts "==> ARR #{arr}"
      res = ""
-     res = field_append( res, arr[2].strip )
-     res = field_append( res, arr[1].strip )
      res = field_append( res, arr[3].strip )
+     res = field_append( res, arr[2].strip )
      res = field_append( res, arr[4].strip )
+     res = field_append( res, arr[5].strip )
      return( res )
   end
 

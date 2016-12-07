@@ -281,8 +281,14 @@ def create_generic_work( work_type, user, title, description )
     w.admin_notes << 'Placeholder admin notes'
     w.language = GenericWork::DEFAULT_LANGUAGE
 
-    # assume I am the contributor
-    w.contributor << TaskHelpers.contributor_fields_from_cid('dpg3k' )
+    # assign some contributors
+    # there's something about the way suffia handles contributors that messes up the ordering
+    # so be explicit
+    contributor = []
+    contributor << TaskHelpers.contributor_fields_from_cid( 0, 'sah' )
+    contributor << TaskHelpers.contributor_fields_from_cid( 1, 'ecr2c' )
+    contributor << TaskHelpers.contributor_fields_from_cid( 2, 'naw4t' )
+    w.contributor = contributor
 
     w.rights << 'Determine your rights assignments here'
     w.license = GenericWork::DEFAULT_LICENSE

@@ -124,12 +124,12 @@ class SolrDocument
     return advisors if contributors.nil?
 
     contributors.each_with_index { |person, index|
-      arr = person.split("\n", 5) # Need the 5 so that ruby doesn't swallow blank items.
-      if arr.length == 5
-        advisors.push("First Name: #{arr[1]}")
-        advisors.push("Last Name: #{arr[2]}")
-        advisors.push("Department: #{arr[3]}")
-        advisors.push("Institution: #{arr[4]}")
+      arr = person.split("\n")
+      if arr.length == 6
+        advisors.push("First Name: #{arr[2]}")
+        advisors.push("Last Name: #{arr[3]}")
+        advisors.push("Department: #{arr[4]}")
+        advisors.push("Institution: #{arr[5]}")
       else
         advisors.push(person) # this shouldn't happen, but perhaps it will if old data gets in there.
       end

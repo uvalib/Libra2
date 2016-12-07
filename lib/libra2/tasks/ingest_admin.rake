@@ -223,11 +223,11 @@ namespace :libra2 do
 
      # document advisor
      payload[ :advisors ] = []
-     advisor_ix = 1
+     advisor_number = 1
      while true
-        added, payload[ :advisors ] = add_advisor( solr_doc, advisor_ix, payload[ :advisors ] )
+        added, payload[ :advisors ] = add_advisor( solr_doc, advisor_number, payload[ :advisors ] )
         break unless added
-        advisor_ix += 1
+        advisor_number += 1
      end
 
      # issue date
@@ -330,14 +330,12 @@ namespace :libra2 do
       w.author_first_name = payload[ :author_first_name ] if payload[ :author_first_name ]
       w.author_last_name = payload[ :author_last_name ] if payload[ :author_last_name ]
       w.author_institution = payload[ :institution ] if payload[ :institution ]
-      #w.contributor = IngestHelpers.construct_contributor( payload )
       w.contributor = payload[ :advisors ]
       w.description = payload[ :abstract ]
       w.keyword = payload[ :keywords ] if payload[ :keywords ]
 
       # date attributes
       w.date_created = payload[ :create_date ] if payload[ :create_date ]
-      #w.date_uploaded = DateTime.parse( h['date_uploaded'] ) if h['date_uploaded']
       w.date_modified = DateTime.parse( payload[ :modified_date ] ) if payload[ :modified_date ]
       w.date_published = payload[ :issued ] if payload[ :issued ]
 
@@ -392,14 +390,14 @@ namespace :libra2 do
   #
   # adds another advisor if we can locate one
   #
-  def add_advisor( solr_doc, advisor_ix, advisors )
+  def add_advisor( solr_doc, advisor_number, advisors )
 
-    if solr_doc.at_path( "mods_0_person_#{advisor_ix}_role_0_text_t[0]" ) == 'advisor'
-      cid = solr_doc.at_path( "mods_0_person_#{advisor_ix}_computing_id_t[0]" )
-      fn = solr_doc.at_path( "mods_0_person_#{advisor_ix}_first_name_t[0]" )
-      ln = solr_doc.at_path( "mods_0_person_#{advisor_ix}_last_name_t[0]" )
-      dept = solr_doc.at_path( "mods_0_person_#{advisor_ix}_description_t[0]" )
-      ins = solr_doc.at_path( "mods_0_person_#{advisor_ix}_institution_t[0]" )
+    if solr_doc.at_path( "mods_0_person_#{advisor_number}_role_0_text_t[0]" ) == 'advisor'
+      cid = solr_doc.at_path( "mods_0_person_#{advisor_number}_computing_id_t[0]" )
+      fn = solr_doc.at_path( "mods_0_person_#{advisor_number}_first_name_t[0]" )
+      ln = solr_doc.at_path( "mods_0_person_#{advisor_number}_last_name_t[0]" )
+      dept = solr_doc.at_path( "mods_0_person_#{advisor_number}_description_t[0]" )
+      ins = solr_doc.at_path( "mods_0_person_#{advisor_number}_institution_t[0]" )
 
       advisor_computing_id = IngestHelpers.field_supplied( cid ) ? cid : ''
       advisor_first_name = IngestHelpers.field_supplied( fn ) ? fn : ''
@@ -412,15 +410,14 @@ namespace :libra2 do
          advisor_last_name.blank? == false ||
          advisor_department.blank? == false ||
          advisor_institution.blank? == false
-         adv = TaskHelpers.contributor_fields( advisor_computing_id,
-                                            advisor_first_name,
-                                            advisor_last_name,
-                                            advisor_department,
-                                            advisor_institution )
+         adv = TaskHelpers.contributor_fields( advisor_number - 1,
+                                               advisor_computing_id,
+                                               advisor_first_name,
+                                               advisor_last_name,
+                                               advisor_department,
+                                               advisor_institution )
 
-         a = Array.new( advisors )
-         a << adv
-         return true, a
+         return true, advisors << adv
       end
     end
 
