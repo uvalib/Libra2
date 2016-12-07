@@ -372,10 +372,10 @@ end
 
     end
     puts "Updating advisor fields:"
-    puts "BEFORE: #{work.contributor}"
-    puts "AFTER:  #{updated}"
-    #work.contributor = updated
-    #work.save!
+    puts " BEFORE: #{work.contributor}"
+    puts " AFTER:  #{updated}"
+    work.contributor = updated
+    work.save!
 
   end
 
