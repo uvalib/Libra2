@@ -58,8 +58,10 @@ module PublicHelper
       # special case, we want to show the advisor field as blank
       return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Advisors:", '').render ) if work.contributor.blank?
 
-      contributors = work.contributor
+      # advisers are tagged with a numeric index so sorting them ensures they are presented in the correct order
+      contributors = work.contributor.sort
       advisors = []
+
       contributors.each { |contributor|
          arr = contributor.split("\n")
          arr.push('') if arr.length == 4 # if the last item is empty, the split command will miss it.
@@ -148,7 +150,6 @@ module PublicHelper
    end
 
   def construct_advisor_line( arr )
-     puts "==> ARR #{arr}"
      res = ""
      res = field_append( res, arr[3].strip )
      res = field_append( res, arr[2].strip )

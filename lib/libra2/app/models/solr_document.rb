@@ -119,12 +119,20 @@ class SolrDocument
   end
 
   def contributor
-    advisors = []
     contributors = self[Solrizer.solr_name('contributor')]
-    return advisors if contributors.nil?
+    return [] if contributors.nil?
+
+    advisors = []
+
+    # advisers are tagged with a numeric index so sorting them ensures they are presented in the correct order
+    contributors = contributors.sort
 
     contributors.each_with_index { |person, index|
       arr = person.split("\n")
+
+      arr.push('') if arr.length == 4 # if the last item is empty, the split command will miss it.
+      arr.push('') if arr.length == 5 # if the last item is empty, the split command will miss it.
+
       if arr.length == 6
         advisors.push("First Name: #{arr[2]}")
         advisors.push("Last Name: #{arr[3]}")
