@@ -18,7 +18,7 @@ namespace :libra2 do
          cid = User.cid_from_email( user.email )
          puts "Setting #{cid} ORCID to: #{orcid}"
          status = ServiceClient::OrcidAccessClient.instance.set_by_cid( cid, orcid )
-         if ServiceClient::EntityIdClient.instance.ok?( status )
+         if ServiceClient::OrcidAccessClient.instance.ok?( status )
            count += 1
          else
            puts "ERROR: ORCID service returns #{status}, aborting"
@@ -57,7 +57,7 @@ namespace :libra2 do
 
     count = 0
     status, r = ServiceClient::OrcidAccessClient.instance.search( search, start, max )
-    if ServiceClient::EntityIdClient.instance.ok?( status )
+    if ServiceClient::OrcidAccessClient.instance.ok?( status )
       r.each do |details|
         puts "#{details['last_name']}, #{details['first_name']} (#{details['display_name']}) -> #{details['id']}"
         count += 1
