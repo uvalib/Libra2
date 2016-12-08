@@ -413,6 +413,7 @@ class Work
   private
 
   def extract_date_from_datetime( dt )
+     return '' if dt.blank?
      return dt.strftime( '%Y-%m-%d' )
   end
 
@@ -428,8 +429,9 @@ class Work
     return true
   end
 
-
+  # check the end date to ensure it is valid
   def valid_embargo_date?( date )
+    return true if date.blank?
     return convert_string_to_datetime( date ) != nil
   end
 
