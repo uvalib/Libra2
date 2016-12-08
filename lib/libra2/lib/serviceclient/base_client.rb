@@ -115,7 +115,7 @@ module ServiceClient
          log_error( method, url, ex, payload )
          return 400, {}
        rescue RestClient::ResourceNotFound => ex
-         log_error( method, url, ex, payload )
+         #log_error( method, url, ex, payload )
          return 404, {}
        rescue RestClient::RequestTimeout => ex
          #log_error( method, url, ex, payload )
@@ -142,7 +142,7 @@ module ServiceClient
          log_error( :get, url, ex )
          return 400, {}
        rescue RestClient::ResourceNotFound => ex
-         log_error( :get, url, ex )
+         #log_error( :get, url, ex )
          return 404, {}
        rescue RestClient::RequestTimeout => ex
          #log_error( :get, url, ex )
@@ -165,7 +165,7 @@ module ServiceClient
          log_error( :delete, url, ex )
          return 400
        rescue RestClient::ResourceNotFound => ex
-         log_error( :delete, url, ex )
+         #log_error( :delete, url, ex )
          return 404
        rescue RestClient::RequestTimeout => ex
          #log_error( :delete, url, ex )
