@@ -1,5 +1,6 @@
 require_dependency 'libra2/lib/serviceclient/entity_id_client'
 require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
+require_dependency 'libra2/lib/serviceclient/orcid_access_client'
 
 module ServiceHelper
 
@@ -74,4 +75,22 @@ module ServiceHelper
     return true
   end
 
+  # get the authors ORCID when given a work
+  def get_author_orcid( work )
+    return '' if work.author_email.blank?
+    cid = User.cid_from_email( work.author_email )
+    return '' if cid.blank?
+
+    status, orcid = ServiceClient::OrcidAccessClient.instance.get_by_cid( cid )
+    if ServiceClient::OrcidAccessClient.instance.ok?( status )
+      return orcid
+    else
+      puts "INFO: No ORCID located for #{cid}" if status == 404
+      puts "ERROR: ORCID lookup returns #{status}" unless status == 404
+    end
+
+    # no ORCID found
+    return ''
+
+  end
 end

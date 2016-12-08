@@ -38,7 +38,7 @@ module ServiceClient
      def get_by_cid( id )
        url = "#{self.url}/cid/#{id}?auth=#{self.authtoken}"
        status, response = rest_get( url )
-       return status, response['orcids'][ 0 ] if ok?( status ) && response['orcids']
+       return status, response['orcids'][0]['uri'] if ok?( status ) && response['orcids'] && response['orcids'][0] && response['orcids'][0]['uri']
        return status, ''
      end
 

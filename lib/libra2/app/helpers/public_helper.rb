@@ -32,9 +32,8 @@ module PublicHelper
    def display_author( work )
       author = construct_author( work )
       return '' if author.blank?
-      #orcid_data = construct_author_orcid( work )
-      #orcid_data = content_tag(:span, raw( " #{orcid_data}" ), { style: 'font-weight:normal' }) unless orcid_data.blank?
-      orcid_data = ''
+      orcid_data = construct_author_orcid( work )
+      orcid_data = content_tag(:span, raw( " #{orcid_data}" ), { style: 'font-weight:normal' }) unless orcid_data.blank?
       header = raw( "Author:" + orcid_data )
       return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new( header, author ).render )
    end
@@ -48,7 +47,9 @@ module PublicHelper
       return '' if work.nil?
       return '' if work.author_email.blank?
 
-      orcid = 'http://orcid.org/0000-0002-0566-4186'
+      orcid = get_author_orcid( work )
+      return '' if orcid.blank?
+
       return "#{image_tag 'orcid.png', alt: t('sufia.user_profile.orcid.alt')} #{link_to orcid, orcid, { target: '_blank' }}".html_safe
    end
 
