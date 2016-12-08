@@ -77,11 +77,11 @@ class DashboardController < ApplicationController
     respond_to do |wants|
       wants.json {
         status, resp = ServiceClient::UserInfoClient.instance.get_by_id( params[:id] )
-        if status == 404
-          resp = { }
+        if ServiceClient::UserInfoClient.instance.ok?( status )
+           resp[:institution] = GenericWork::DEFAULT_INSTITUTION
+           resp[:index] = params[:index]
         else
-            resp[:institution] = GenericWork::DEFAULT_INSTITUTION
-            resp[:index] = params[:index]
+           resp = { }
         end
         render json: resp, status: :ok
       }
