@@ -7,6 +7,7 @@ class WorkSearch
   attr_accessor :depositor_email
   attr_accessor :modified_date
   attr_accessor :status
+  attr_accessor :work_source
 
   def initialize
 
@@ -15,6 +16,7 @@ class WorkSearch
     @depositor_email = ''
     @modified_date = ''
     @status = ''
+    @work_source = ''
 
     # the set of fields specified during construction
     @field_set = []
@@ -27,6 +29,7 @@ class WorkSearch
     @depositor_email = set_field( :depositor_email, json, '' )
     @modified_date = set_field( :modified_date, json, '' )
     @status = set_field( :status, json, '' )
+    @work_source = set_field( :work_source, json, '' )
 
     return self
   end
@@ -39,6 +42,7 @@ class WorkSearch
     return true if field_set?( :depositor_email ) && @depositor_email.blank? == false
     return true if field_set?( :modified_date ) && valid_search_date?( @modified_date )
     return true if field_set?( :status ) && ['pending','submitted'].include?( @status )
+    return true if field_set?( :work_source ) && ['sis','optional', 'libra'].include?( @work_source )
     return false
   end
 

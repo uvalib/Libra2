@@ -131,33 +131,38 @@ class APIV1WorksController < APIBaseController
     limit = numeric( params[:limit], DEFAULT_LIMIT )
 
     field = search.author_email
-    if field.present?
+    if search.field_set?( :author_email )
       return batched_get( { author_email: field }, start, limit )
     end
 
     field = search.create_date
-    if field.present?
+    if search.field_set?( :create_date )
       return batched_get( "system_create_dtsi: #{search.make_solr_date_search( field )}", start, limit )
     end
 
     field = search.depositor_email
-    if field.present?
+    if search.field_set?( :depositor_email )
       return batched_get( { depositor: field }, start, limit )
     end
 
     field = search.modified_date
-    if field.present?
+    if search.field_set?( :modified_date )
       return batched_get( "system_modified_dtsi: #{search.make_solr_date_search( field )}", start, limit )
     end
 
     field = search.status
-    if field.present?
+    if search.field_set?( :status )
       if field == 'pending'
          draft = 'true'
       else
          draft = 'false'
       end
       return batched_get( { draft: draft }, start, limit )
+    end
+
+    field = search.work_source
+    if search.field_set?( :work_source )
+      return batched_get( "work_source_tesim: #{field}*", start, limit )
     end
 
     return []
