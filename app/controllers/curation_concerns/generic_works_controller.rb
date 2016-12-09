@@ -95,7 +95,7 @@ module CurationConcerns
     include Libra2::ApplyLicenseBehavior
 
     # Adds ORCID handling behavior to the controller.
-    include Libra2::UpdateOrcidBehavior
+    include UpdateOrcidBehavior
 
     self.curation_concern_type = GenericWork
 
