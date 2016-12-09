@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   post '/submit/:id' => 'submission#submit'
   get '/public_view/:id/unpublish' => 'submission#unpublish'
   get '/computing_id' => 'dashboard#computing_id'
+  get '/orcid_search' => 'dashboard#orcid_search'
 
   # health check and version endpoints
   resources :healthcheck, only: [ :index ]

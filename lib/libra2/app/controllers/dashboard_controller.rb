@@ -87,4 +87,21 @@ class DashboardController < ApplicationController
       }
     end
   end
+
+  # GET /orcid_search
+  def orcid_search
+    respond_to do |wants|
+      wants.json {
+        params[:start] = '0' unless params[:start]
+        params[:max] = '25' unless params[:max]
+        status, resp = ServiceClient::OrcidAccessClient.instance.search( params[:q], params[:start], params[:max] )
+        if ServiceClient::OrcidAccessClient.instance.ok?( status )
+        else
+          resp = { }
+        end
+        render json: resp, status: :ok
+      }
+    end
+  end
+
 end
