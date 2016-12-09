@@ -296,6 +296,12 @@ class Work
           @field_set << :embargo_end_date
         end
       end
+
+      # another special case, setting the embargo to open should clear the embargo end date
+      if embargo_state_name == 'open'
+        @embargo_end_date = ''
+        @field_set << :embargo_end_date
+      end
     end
 
     # special case where date formats are converted
