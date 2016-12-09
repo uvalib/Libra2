@@ -7,7 +7,6 @@ module CurationConcerns
     before_action :set_requirements, only: [ :show ]
     before_action :is_me
     before_action :add_pending_file_test
-    before_action :save_orcid_if_provided, only: [ :update ]
 
     def is_me
       work = GenericWork.where({ id: params[:id] })
@@ -60,19 +59,6 @@ module CurationConcerns
       end
     end
 
-    #
-    # save an updated value if appropriate and remove it as it is a special/fake field
-    #
-    def save_orcid_if_provided
-      if params[:generic_work][:my_orcid].nil? == false
-         if current_user.orcid != "http://orcid.org/#{params[:generic_work][:my_orcid]}"
-            current_user.orcid = params[:generic_work][:my_orcid]
-            current_user.save!
-         end
-         params[:generic_work].delete( :my_orcid )
-      end
-    end
-
     def set_requirements
       has_files = false
       if presenter.file_set_presenters.present?
@@ -107,6 +93,9 @@ module CurationConcerns
 
     # Adds license application behavior to the controller.
     include Libra2::ApplyLicenseBehavior
+
+    # Adds ORCID handling behavior to the controller.
+    include Libra2::UpdateOrcidBehavior
 
     self.curation_concern_type = GenericWork
 
