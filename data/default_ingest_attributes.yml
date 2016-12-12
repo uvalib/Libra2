@@ -15,4 +15,4 @@ notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Lib
 # apply the specified embargo period; should be one of:
 # 6_months, 1_year, 2_year, 5_year, forever (130 years)
 #
-force_embargo_period: forever
+#force_embargo_period: forever
