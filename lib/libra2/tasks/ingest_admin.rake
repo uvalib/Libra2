@@ -15,6 +15,7 @@ namespace :libra2 do
   # general attributes
   DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
   DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.yml'
+  MAX_ABSTRACT_LENGTH = 32766
 
   #
   # possible environment settings that affect the ingest behavior
@@ -159,7 +160,7 @@ namespace :libra2 do
      # create the work
      ok, work = create_new_item( depositor, payload )
      if ok == true
-       puts "New work created; id #{work.id} (#{work.identifier})"
+       puts "New work created; id #{work.id} (#{work.identifier || 'none'})"
      else
        #puts " ERROR: creating new generic work for #{File.basename( dirname )} (#{id})"
        #return false
@@ -293,8 +294,17 @@ namespace :libra2 do
     errors << 'missing institution' if payload[ :institution ].nil?
     errors << 'missing source' if payload[ :source ].nil?
     errors << 'missing issued date' if payload[ :issued ].nil?
-
     errors << 'missing license' if payload[ :license ].nil?
+
+    # check for an abstract that exceeds the maximum size
+    if payload[ :abstract ].blank? == false && payload[ :abstract ].length > MAX_ABSTRACT_LENGTH
+      errors << "abstract too large (< #{MAX_ABSTRACT_LENGTH} bytes)"
+    end
+
+    # ensure an embargo release date is defined if specified
+    if payload[:embargo_type].blank? == false && payload[:embargo_type] == 'uva' && payload[:embargo_release_date].blank?
+      errors << 'unspecified embargo release date for embargo item'
+    end
 
     #
     # then warn about optional fields
