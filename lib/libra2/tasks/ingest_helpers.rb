@@ -158,6 +158,10 @@ module IngestHelpers
     f = File.join( dirname, TaskHelpers::DOCUMENT_FILES_LIST )
     begin
       File.open( f, 'r').each do |line|
+
+        # handle blank and commented lines
+        next if line.blank?
+        next if line[ 0 ] == '#'
         tokens = line.strip.split( "|" )
         files << { :id => tokens[ 0 ], :timestamp => tokens[ 1 ], :title => tokens[ 2 ] }
       end
