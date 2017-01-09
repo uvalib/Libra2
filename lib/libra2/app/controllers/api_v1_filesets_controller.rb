@@ -38,10 +38,10 @@ class APIV1FilesetsController < APIBaseController
   def get_fileset
 
     filesets = batched_get( { id: params[:id] }, 0, 1 )
-    if fileset.nil? == false
-      render_json_fileset_response(:ok, fileset_transform( filesets ) )
-    else
+    if filesets.empty?
       render_json_fileset_response(:not_found )
+    else
+      render_json_fileset_response(:ok, fileset_transform( filesets ) )
     end
   end
 
