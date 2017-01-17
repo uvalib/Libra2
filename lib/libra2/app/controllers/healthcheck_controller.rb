@@ -1,9 +1,3 @@
-require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
-require_dependency 'libra2/lib/serviceclient/deposit_reg_client'
-require_dependency 'libra2/lib/serviceclient/entity_id_client'
-require_dependency 'libra2/lib/serviceclient/orcid_access_client'
-require_dependency 'libra2/lib/serviceclient/user_info_client'
-
 class HealthcheckController < ApplicationController
 
   skip_before_filter :require_auth
@@ -23,15 +17,11 @@ class HealthcheckController < ApplicationController
   # the response
   class HealthCheckResponse
 
-    attr_accessor :depositauth
-    attr_accessor :depositreg
-    attr_accessor :entityid
-    attr_accessor :orcidaccess
-    attr_accessor :userinfo
+    attr_accessor :repository
     attr_accessor :mysql
 
     def is_healthy?
-      depositauth.healthy && depositreg.healthy && entityid.healthy && orcidaccess.healthy && userinfo.healthy && mysql.healthy
+      repository.healthy && mysql.healthy
     end
   end
 
@@ -48,30 +38,22 @@ class HealthcheckController < ApplicationController
   def get_health_status
     status = {}
 
-    # check the deposit auth endpoint
-    rc = ServiceClient::DepositAuthClient.instance.healthcheck
-    ok = ServiceClient::DepositAuthClient.instance.ok?( rc )
-    status[ :depositauth ] = Health.new( ok, ok ? '' : "Endpoint returns #{rc}" )
-
-    # check the deposit reg endpoint
-    rc = ServiceClient::DepositRegClient.instance.healthcheck
-    ok = ServiceClient::DepositRegClient.instance.ok?( rc )
-    status[ :depositreg ] = Health.new( ok, ok ? '' : "Endpoint returns #{rc}" )
-
-    # check the entity id endpoint
-    rc = ServiceClient::EntityIdClient.instance.healthcheck
-    ok = ServiceClient::EntityIdClient.instance.ok?( rc )
-    status[ :entityid ] = Health.new( ok, ok ? '' : "Endpoint returns #{rc}" )
-
-    # check the entity id endpoint
-    rc = ServiceClient::OrcidAccessClient.instance.healthcheck
-    ok = ServiceClient::OrcidAccessClient.instance.ok?( rc )
-    status[ :orcidaccess ] = Health.new( ok, ok ? '' : "Endpoint returns #{rc}" )
-
-    # check the user info endpoint
-    rc = ServiceClient::UserInfoClient.instance.healthcheck
-    ok = ServiceClient::UserInfoClient.instance.ok?( rc )
-    status[ :userinfo ] = Health.new( ok, ok ? '' : "Endpoint returns #{rc}" )
+    # check the repository
+    ok = true
+    msg = ''
+    begin
+      _ = GenericWork.first
+    rescue RSolr::Error::Http => ex
+      ok = false
+      msg = 'SOLR connection error'
+    rescue Ldp::HttpError => ex
+      ok = false
+      msg = 'Fedora connection error'
+    rescue => ex
+      ok = false
+      msg = "Error: #{ex.class}"
+    end
+    status[ :repository ] = Health.new( ok, msg )
 
     # check mysql
     connected = ActiveRecord::Base.connection_pool.with_connection { |con| con.active? }  rescue false
@@ -82,11 +64,7 @@ class HealthcheckController < ApplicationController
 
   def make_response( health_status )
     r = HealthCheckResponse.new
-    r.depositauth = health_status[ :depositauth ]
-    r.depositreg = health_status[ :depositreg ]
-    r.entityid = health_status[ :entityid ]
-    r.orcidaccess = health_status[ :orcidaccess ]
-    r.userinfo = health_status[ :userinfo ]
+    r.repository = health_status[ :repository ]
     r.mysql = health_status[ :mysql ]
 
     return( r )
