@@ -50,7 +50,12 @@ module PublicHelper
       orcid = get_author_orcid( work )
       return '' if orcid.blank?
 
-      return "#{image_tag 'orcid.png', alt: t('sufia.user_profile.orcid.alt')} #{link_to orcid, orcid, { target: '_blank' }}".html_safe
+      return "#{image_tag 'orcid.png', alt: t('sufia.user_profile.orcid.alt')} #{link_to extract_orcid_for_display( orcid ), orcid, { target: '_blank' }}".html_safe
+   end
+
+   def extract_orcid_for_display( orcid )
+      return '' if orcid.blank?
+      return orcid.gsub( 'http://orcid.org/', '' )
    end
 
    def display_advisers(work)
