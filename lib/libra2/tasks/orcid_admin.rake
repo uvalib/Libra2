@@ -59,7 +59,7 @@ namespace :libra2 do
     status, r = ServiceClient::OrcidAccessClient.instance.search( search, start, max )
     if ServiceClient::OrcidAccessClient.instance.ok?( status )
       r.each do |details|
-        puts "#{details['last_name']}, #{details['first_name']} (#{details['display_name']}) -> #{details['id']}"
+        puts "#{details['last_name']}, #{details['first_name']} (#{details['display_name']}) -> #{details['orcid']}"
         count += 1
       end
       puts "#{count} ORCIDS(s) listed"
