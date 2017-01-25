@@ -1,8 +1,6 @@
 #
-# Tasks to manage ingest of legacy Libra data
+# Tasks to manage ingest of legacy Libra metadata
 #
-
-require 'hash_at_path'
 
 # pull in the helpers
 require_dependency 'libra2/tasks/ingest_helpers'
@@ -23,15 +21,14 @@ namespace :libra2 do
   # MAX_COUNT    - Maximum number of items to process
   # DUMP_PAYLOAD - Output the entire document metadata before saving
   # DRY_RUN      - Dont actually create the items
-  # NO_FILES     - Dont import the associated files
   # NO_DOI       - Dont assign a DOI to the created items
   #
 
   #
-  # ingest items that have been extracted from SOLR
+  # ingest metadata
   #
   desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file and start index"
-  task legacy_ingest: :environment do |t, args|
+  task legacy_ingest_metadata: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
     if ingest_dir.nil?
@@ -82,7 +79,7 @@ namespace :libra2 do
     error_count = 0
     ingests.each_with_index do | dirname, ix |
       next if ix < start_ix
-      ok = ingest_new_item( defaults, user, File.join( ingest_dir, dirname ) )
+      ok = ingest_metadata( defaults, user, File.join( ingest_dir, dirname ) )
       ok == true ? success_count += 1 : error_count += 1
       break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
     end
@@ -118,15 +115,14 @@ namespace :libra2 do
   #
 
   #
-  # convert a set of Libra extract assets into a new Libra record
+  # convert a set of Libra extract assets into a new Libra metadata record
   #
-  def ingest_new_item( defaults, depositor, dirname )
+  def ingest_metadata( defaults, depositor, dirname )
 
      solr_doc, fedora_doc = IngestHelpers.load_ingest_content( dirname )
      id = solr_doc['id']
-     assets = IngestHelpers.get_document_assets( dirname )
 
-     puts "Ingesting #{File.basename( dirname )} (#{id}) and #{assets.size} asset(s)..."
+     puts "Ingesting #{File.basename( dirname )} (#{id})..."
 
      # create a payload from the document
      payload = create_ingest_payload( solr_doc, fedora_doc )
@@ -167,14 +163,9 @@ namespace :libra2 do
        puts " WARNING: while creating generic work for #{File.basename( dirname )} (#{id})"
      end
 
-     # handle no file upload
-     return ok if ENV[ 'NO_FILES' ]
-
-     # and upload each file
-     assets.each do |asset|
-       fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, asset[ :title ] ), asset[ :title ] )
-       fileset.date_uploaded = DateTime.parse( asset[ :timestamp ] )
-       fileset.save!
+     # create a record of the actual work id
+     if work != nil
+        ok = IngestHelpers.set_ingest_id( dirname, work.id )
      end
 
      return ok
@@ -373,26 +364,26 @@ namespace :libra2 do
       w.work_source = payload[ :source ] if payload[ :source ]
 
       # mint and assign the DOI
-      if ENV[ 'NO_DOI' ].blank?
-         status, id = ServiceClient::EntityIdClient.instance.newid( w )
-         if ServiceClient::EntityIdClient.instance.ok?( status )
-            w.identifier = id
-            w.permanent_url = GenericWork.doi_url( id )
-         else
-            puts "ERROR: cannot mint DOI (#{status})"
-            ok = false
-         end
-      end
+      #if ENV[ 'NO_DOI' ].blank?
+      #   status, id = ServiceClient::EntityIdClient.instance.newid( w )
+      #   if ServiceClient::EntityIdClient.instance.ok?( status )
+      #      w.identifier = id
+      #      w.permanent_url = GenericWork.doi_url( id )
+      #   else
+      #      puts "ERROR: cannot mint DOI (#{status})"
+      #      ok = false
+      #   end
+      #end
     end
 
     # update the DOI metadata if necessary
-    if ENV[ 'NO_DOI' ].blank?
-      if ok && work.is_draft? == false
-        ok = update_doi_metadata( work )
-      end
-    else
-      puts "INFO: no DOI assigned..."
-    end
+    #if ENV[ 'NO_DOI' ].blank?
+    #  if ok && work.is_draft? == false
+    #    ok = update_doi_metadata( work )
+    #  end
+    #else
+    #  puts "INFO: no DOI assigned..."
+    #end
 
     return ok, work
   end

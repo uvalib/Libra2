@@ -2,9 +2,28 @@
 # Scrip to extract data from legacy Libra
 #
 
+# define ingest types
+INGEST_1=4th_year_thesis
+INGEST_2=jefferson_trust
+INGEST_3=master_thesis
+INGEST_4=doctoral_thesis
+
+# prompt the user to select an option
+options=($INGEST_1 $INGEST_2 $INGEST_3 $INGEST_4)
+PS3='Select extract type: '
+select opt in "${options[@]}"
+do
+    case $opt in
+        $INGEST_1|$INGEST_2|$INGEST_3|$INGEST_4)
+            break
+            ;;
+        *) echo invalid option;;
+    esac
+done
+
+# other attributes
 EXTRACT_DIR=tmp/extract
-ITEM_TYPES="file_asset 4th_year_thesis master_thesis doctoral_thesis jefferson_trust"
-ITEM_TYPES="file_asset 4th_year_thesis"
+ITEM_TYPES="file_asset $opt"
 
 # other attributes
 MAX_RECORDS=9999
@@ -35,7 +54,7 @@ function solr_extract {
 
       QUERY=data/solr_query/${item}_solr_query.txt
       RESULTS=$EXTRACT_DIR/${item}
-      bundle exec rake libra2:extract:solr_extract $RESULTS $QUERY $MAX_RECORDS
+      rake libra2:extract:solr_extract $RESULTS $QUERY $MAX_RECORDS
       res=$?
       bomb_if_error $res
    done
@@ -60,17 +79,17 @@ function asset_extract {
       ASSET_RECORDS=$EXTRACT_DIR/file_asset
       ITEM_RECORDS=$EXTRACT_DIR/${item}
 
-      bundle exec rake libra2:extract:asset_extract $ITEM_RECORDS $ASSET_RECORDS
+      rake libra2:extract:asset_extract $ITEM_RECORDS $ASSET_RECORDS
       res=$?
       bomb_if_error $res
    done
 }
 
 # pull necessary items from SOLR
-#solr_extract
+solr_extract
 
 # mix in the file assets
 asset_extract
 
 # all over
-exit 0
+exit $?

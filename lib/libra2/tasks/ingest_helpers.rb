@@ -173,6 +173,41 @@ module IngestHelpers
   end
 
   #
+  # get the ingest id from the file
+  #
+  def get_ingest_id( dirname )
+
+    f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
+    File.open( f, 'r') do |file|
+      id = file.read( )
+      return id
+    end
+  end
+
+  #
+  # write the ingest id to the file
+  #
+  def set_ingest_id( dirname, id )
+
+    f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
+    File.open( f, 'w') do |file|
+      file.write( id )
+    end
+  end
+
+  #
+  # remove the ingest id file
+  #
+  def unset_ingest_id( dirname )
+
+    begin
+      f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
+      File.delete( f )
+    rescue => e
+    end
+  end
+
+  #
   # extract a date from a fully specified date/time
   #
   def extract_date( date )

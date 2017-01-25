@@ -10,11 +10,10 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 module TaskHelpers
 
   # used for the extract/ingest processing
-  DOCUMENT_ID_FILE = 'id.json'
+  INGEST_ID_FILE = 'ingest.id'
   DOCUMENT_FILES_LIST = 'filelist.txt'
   DOCUMENT_JSON_FILE = 'data.json'
   DOCUMENT_XML_FILE = 'data.xml'
-  DOCUMENT_HTML_FILE = 'data.html'
 
   # general definitions
   DEFAULT_USER = 'dpg3k'
