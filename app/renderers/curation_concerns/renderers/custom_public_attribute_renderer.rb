@@ -21,7 +21,7 @@ module CurationConcerns
       private
 
       def attribute_value_to_html(value)
-          "<span document-value}>#{li_value(value)}</span>"
+          "<span class='document-value'>#{li_value(value)}</span>"
       end
 
       def li_value(value)
