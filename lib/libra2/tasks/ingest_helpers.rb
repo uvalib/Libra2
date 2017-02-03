@@ -131,22 +131,60 @@ module IngestHelpers
       'none',
       'not available',
       'No Abstract Found',
-      'No abstract available'
+      'No abstract available',
+      'No abstract found'
   ]
+
+  #
+  # get the list of new items from the work directory
+  #
+  def get_ingest_list( dirname )
+    return TaskHelpers.get_directory_list( dirname, /^.*\.xml$/ )
+  end
+
+  #
+  # load the XML document from the specified file
+  #
+  def load_ingest_content( filename )
+    xml_doc = TaskHelpers.load_xml_doc( filename )
+    return xml_doc
+  end
+
   #
   # get the list of Libra extract items from the work directory
   #
-  def get_ingest_list( dirname )
+  def get_legacy_ingest_list(dirname )
     return TaskHelpers.get_directory_list( dirname, /^extract./ )
   end
 
   #
   # load the Libra data from the specified directory
   #
-  def load_ingest_content(dirname )
+  def load_legacy_ingest_content(dirname )
     json_doc = TaskHelpers.load_json_doc( File.join( dirname, TaskHelpers::DOCUMENT_JSON_FILE ) )
     xml_doc = TaskHelpers.load_xml_doc( File.join( dirname, TaskHelpers::DOCUMENT_XML_FILE ) )
     return json_doc, xml_doc
+  end
+
+  #
+  # load the hash of default attributes
+  #
+  def load_config_file( filename )
+
+    begin
+      config_erb = ERB.new( IO.read( filename ) ).result( binding )
+    rescue StandardError => ex
+      raise( "#{filename} could not be parsed with ERB. \n#{ex.inspect}" )
+    end
+
+    begin
+      yml = YAML.load( config_erb )
+    rescue Psych::SyntaxError => ex
+      raise "#{filename} could not be parsed as YAML. \nError #{ex.message}"
+    end
+
+    config = yml.symbolize_keys
+    return config.symbolize_keys || {}
   end
 
   #

@@ -46,7 +46,7 @@ namespace :libra2 do
     end
 
     # get the list of items to be ingested
-    ingests = IngestHelpers.get_ingest_list( ingest_dir )
+    ingests = IngestHelpers.get_legacy_ingest_list(ingest_dir )
     if ingests.empty?
       puts "ERROR: ingest directory does not contain contains any items, aborting"
       next
@@ -74,7 +74,7 @@ namespace :libra2 do
     task ingest_dir.to_sym do ; end
 
     # get the list of items to be ingested
-    ingests = IngestHelpers.get_ingest_list( ingest_dir )
+    ingests = IngestHelpers.get_legacy_ingest_list(ingest_dir )
     if ingests.empty?
       puts "ERROR: ingest directory does not contain contains any items, aborting"
       next
