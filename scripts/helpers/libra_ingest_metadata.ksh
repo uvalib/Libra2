@@ -24,6 +24,6 @@ INGEST_DIR=tmp/extract
 echo "Starting ingest of $opt metadata..."
 
 # ingest Libra metadata
-rake libra2:ingest:legacy_ingest_metadata $INGEST_DIR/$opt $DEFAULTS_FILE
+rake libra2:ingest:legacy_metadata $INGEST_DIR/$opt $DEFAULTS_FILE
 
 exit $?

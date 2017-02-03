@@ -28,7 +28,7 @@ namespace :libra2 do
   # ingest metadata
   #
   desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file and start index"
-  task legacy_ingest_metadata: :environment do |t, args|
+  task legacy_metadata: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
     if ingest_dir.nil?

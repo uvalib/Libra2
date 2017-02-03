@@ -23,6 +23,6 @@ INGEST_DIR=tmp/extract
 echo "Starting ingest of $opt content..."
 
 # ingest Libra content
-rake libra2:ingest:legacy_ingest_content $INGEST_DIR/$opt
+rake libra2:ingest:legacy_content $INGEST_DIR/$opt
 
 exit $?

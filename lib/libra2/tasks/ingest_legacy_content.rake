@@ -14,7 +14,7 @@ namespace :libra2 do
   # ingest content
   #
   desc "Ingest legacy Libra content; must provide the ingest directory; optionally provide the start index"
-  task legacy_ingest_content: :environment do |t, args|
+  task legacy_content: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
     if ingest_dir.nil?
