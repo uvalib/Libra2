@@ -38,6 +38,7 @@ class GenericWork < ActiveFedora::Base
   THESIS_SOURCE_SIS = 'sis'.freeze
   THESIS_SOURCE_OPTIONAL = 'optional'.freeze
   THESIS_SOURCE_LEGACY = 'libra-oa'.freeze
+  THESIS_SOURCE_INGEST = 'ingest'.freeze
 
   # defaults
   DEFAULT_INSTITUTION = 'University of Virginia'.freeze
@@ -211,6 +212,11 @@ class GenericWork < ActiveFedora::Base
   def is_legacy_thesis?
     return false if work_source.nil?
     return work_source.start_with? GenericWork::THESIS_SOURCE_LEGACY
+  end
+
+  def is_ingested_thesis?
+    return false if work_source.nil?
+    return work_source.start_with? GenericWork::THESIS_SOURCE_INGEST
   end
 
   def sis_authorization_id
