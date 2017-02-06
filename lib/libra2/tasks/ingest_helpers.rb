@@ -251,10 +251,14 @@ module IngestHelpers
   #
   def get_ingest_id( filename )
 
-    File.open( "#{filename}.id", 'r') do |file|
-      id = file.read( )
-      return id
-    end
+     begin
+        File.open( "#{filename}.id", 'r') do |file|
+           id = file.read( )
+           return id
+        end
+     rescue => e
+     end
+     return ''
   end
 
   #
@@ -262,9 +266,14 @@ module IngestHelpers
   #
   def set_ingest_id( filename, id )
 
-    File.open( "#{filename}.id", 'w') do |file|
-      file.write( id )
+    begin
+       File.open( "#{filename}.id", 'w') do |file|
+          file.write( id )
+       end
+       return true
+    rescue => e
     end
+    return false
   end
 
   #
@@ -274,8 +283,10 @@ module IngestHelpers
 
     begin
       File.delete( "#{filename}.id" )
+      return true
     rescue => e
     end
+    return false
   end
 
   #

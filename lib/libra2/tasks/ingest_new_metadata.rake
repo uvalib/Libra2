@@ -165,7 +165,7 @@ namespace :libra2 do
 
      # create a record of the actual work id
      if work != nil
-        IngestHelpers.set_ingest_id( filename, work.id )
+        ok = IngestHelpers.set_ingest_id( filename, work.id )
      end
 
      return ok

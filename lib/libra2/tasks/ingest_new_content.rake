@@ -13,8 +13,8 @@ namespace :libra2 do
   #
   # ingest content
   #
-  desc "Ingest legacy Libra content; must provide the ingest directory; optionally provide the start index"
-  task legacy_content: :environment do |t, args|
+  desc "Ingest new Libra content; must provide the ingest directory; optionally provide the start index"
+  task new_content: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
     if ingest_dir.nil?
@@ -46,7 +46,7 @@ namespace :libra2 do
     end
 
     # get the list of items to be ingested
-    ingests = IngestHelpers.get_legacy_ingest_list(ingest_dir )
+    ingests = IngestHelpers.get_ingest_list( ingest_dir )
     if ingests.empty?
       puts "ERROR: ingest directory does not contain contains any items, aborting"
       next
@@ -54,17 +54,17 @@ namespace :libra2 do
 
     success_count = 0
     error_count = 0
-    ingests.each_with_index do | dirname, ix |
+    ingests.each_with_index do | filename, ix |
       next if ix < start_ix
-      ok = ingest_legacy_content( user, File.join( ingest_dir, dirname ) )
+      ok = ingest_new_content( user, File.join( ingest_dir, filename ) )
       ok == true ? success_count += 1 : error_count += 1
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
 
   end
 
-  desc "Purge legacy ingest ids; must provide the ingest directory"
-  task purge_legacy_ingest_id: :environment do |t, args|
+  desc "Purge new ingest ids; must provide the ingest directory"
+  task purge_new_ingest_id: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
     if ingest_dir.nil?
@@ -74,14 +74,14 @@ namespace :libra2 do
     task ingest_dir.to_sym do ; end
 
     # get the list of items to be ingested
-    ingests = IngestHelpers.get_legacy_ingest_list(ingest_dir )
+    ingests = IngestHelpers.get_ingest_list(ingest_dir )
     if ingests.empty?
       puts "ERROR: ingest directory does not contain contains any items, aborting"
       next
     end
 
     ingests.each_with_index do | dirname, ix |
-      IngestHelpers.clear_legacy_ingest_id(File.join(ingest_dir, dirname ) )
+      IngestHelpers.clear_ingest_id(File.join(ingest_dir, dirname ) )
     end
 
     puts "done"
@@ -92,14 +92,18 @@ namespace :libra2 do
   #
 
   #
-  # add legacy content to an existing metadata record
+  # add new content to an existing metadata record
   #
-  def ingest_legacy_content( depositor, dirname )
+  def ingest_new_content( depositor, filename )
 
-     assets = IngestHelpers.get_document_assets( dirname )
-     puts "Ingesting #{File.basename( dirname )} (#{assets.length} assets)..."
+     ingest_file = filename.gsub( '.xml', '' )
+     puts "Ingesting #{ingest_file} ..."
 
-     work_id = IngestHelpers.get_legacy_ingest_id(dirname )
+     work_id = IngestHelpers.get_ingest_id( filename )
+     if work_id.blank?
+       puts "ERROR: #{filename} has no ingest id, continuing anyway"
+       return false
+     end
 
      work = TaskHelpers.get_work_by_id( work_id )
      if work.nil?
@@ -107,12 +111,10 @@ namespace :libra2 do
        return false
      end
 
-     # and upload each file
-     assets.each do |asset|
-       fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, asset[ :title ] ), asset[ :title ] )
-       fileset.date_uploaded = DateTime.parse( asset[ :timestamp ] )
-       fileset.save!
-     end
+     # and upload the file
+     fileset = TaskHelpers.upload_file( depositor, work, ingest_file, ingest_file )
+     fileset.date_uploaded = DateTime.now
+     fileset.save!
 
      return true
   end
