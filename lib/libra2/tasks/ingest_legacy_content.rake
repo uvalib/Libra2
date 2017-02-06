@@ -63,8 +63,8 @@ namespace :libra2 do
 
   end
 
-  desc "Purge ingest ids; must provide the ingest directory"
-  task purge_ingest_id: :environment do |t, args|
+  desc "Purge legacy ingest ids; must provide the ingest directory"
+  task purge_legacy_ingest_id: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
     if ingest_dir.nil?
@@ -81,7 +81,7 @@ namespace :libra2 do
     end
 
     ingests.each_with_index do | dirname, ix |
-      IngestHelpers.unset_ingest_id( File.join( ingest_dir, dirname ) )
+      IngestHelpers.clear_legacy_ingest_id(File.join(ingest_dir, dirname ) )
     end
 
     puts "done"
@@ -99,7 +99,7 @@ namespace :libra2 do
      assets = IngestHelpers.get_document_assets( dirname )
      puts "Ingesting #{File.basename( dirname )} (#{assets.length} assets)..."
 
-     work_id = IngestHelpers.get_ingest_id( dirname )
+     work_id = IngestHelpers.get_legacy_ingest_id(dirname )
 
      work = TaskHelpers.get_work_by_id( work_id )
      if work.nil?

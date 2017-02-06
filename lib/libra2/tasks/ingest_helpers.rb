@@ -213,7 +213,7 @@ module IngestHelpers
   #
   # get the ingest id from the file
   #
-  def get_ingest_id( dirname )
+  def get_legacy_ingest_id( dirname )
 
     f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
     File.open( f, 'r') do |file|
@@ -225,7 +225,7 @@ module IngestHelpers
   #
   # write the ingest id to the file
   #
-  def set_ingest_id( dirname, id )
+  def set_legacy_ingest_id( dirname, id )
 
     f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
     File.open( f, 'w') do |file|
@@ -236,11 +236,44 @@ module IngestHelpers
   #
   # remove the ingest id file
   #
-  def unset_ingest_id( dirname )
+  def clear_legacy_ingest_id( dirname )
 
     begin
       f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
       File.delete( f )
+    rescue => e
+    end
+  end
+
+
+  #
+  # get the ingest id from the file
+  #
+  def get_ingest_id( filename )
+
+    File.open( "#{filename}.id", 'r') do |file|
+      id = file.read( )
+      return id
+    end
+  end
+
+  #
+  # write the ingest id to the file
+  #
+  def set_ingest_id( filename, id )
+
+    File.open( "#{filename}.id", 'w') do |file|
+      file.write( id )
+    end
+  end
+
+  #
+  # remove the ingest id file
+  #
+  def clear_ingest_id( filename )
+
+    begin
+      File.delete( "#{filename}.id" )
     rescue => e
     end
   end

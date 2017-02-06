@@ -87,6 +87,29 @@ namespace :libra2 do
 
   end
 
+  desc "Enumerate newly ingested items"
+  task new_list: :environment do |t, args|
+
+    count = 0
+    GenericWork.search_in_batches( {} ) do |group|
+      group.each do |gw_solr|
+
+        begin
+          gw = GenericWork.find( gw_solr['id'] )
+          if gw.is_ingested_thesis?
+            puts "#{gw.work_source} #{gw.identifier || 'None'}"
+            count += 1
+          end
+        rescue => e
+        end
+
+      end
+
+      puts "Listed #{count} ingested work(s)"
+    end
+  end
+
+
   #
   # helpers
   #
@@ -142,7 +165,7 @@ namespace :libra2 do
 
      # create a record of the actual work id
      if work != nil
-        IngestHelpers.set_ingest_id( dirname, work.id )
+        IngestHelpers.set_ingest_id( filename, work.id )
      end
 
      return ok
@@ -160,11 +183,8 @@ namespace :libra2 do
      # add all the required fields
      #
 
-     # date and time attributes
-     #create_date = solr_doc.at_path( 'system_create_dt' )
-     #payload[ :create_date ] = IngestHelpers.extract_date( create_date ) if create_date.present?
-     #modified_date = solr_doc.at_path( 'system_modified_dt' )
-     #payload[ :modified_date ] = modified_date if modified_date.present?
+     # creation date
+     payload[ :create_date ] = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" )
 
      # document title
      node = xml_doc.css( 'mods titleInfo title' ).first
@@ -212,16 +232,16 @@ namespace :libra2 do
      end
 
      # document advisors
-     advisor_number = 1
-     name_nodes = xml_doc.css( 'mods name' )
-     name_nodes.each do |nn|
-       nodes = nn.css( 'roleTerm' )
-       nodes.each do |rt|
-         if rt.get( 'type' ) == 'text' && rt.text == 'advisor'
-            puts "Found ADVISOR"
-         end
-       end
-     end
+     #advisor_number = 1
+     #name_nodes = xml_doc.css( 'mods name' )
+     #name_nodes.each do |nn|
+     #  nodes = nn.css( 'roleTerm' )
+     #  nodes.each do |rt|
+     #    if rt.get( 'type' ) == 'text' && rt.text == 'advisor'
+     #       puts "Found ADVISOR"
+     #    end
+     #  end
+     #end
 
      #if solr_doc.at_path( 'mods_0_name_0_role_0_text_t[0]' ) == 'author'
      #  dept = solr_doc.at_path( 'mods_0_name_0_description_t[0]' )
@@ -259,15 +279,16 @@ namespace :libra2 do
      # document source
      node = xml_doc.css( 'mods identifier' ).first
      source = node.text if node
-     payload[ :source ] = "new:#{source}" if source.present?
+     payload[ :source ] = "#{GenericWork::THESIS_SOURCE_INGEST}:#{source}" if source.present?
 
      #
      # handle optional fields
      #
 
      # degree program
-     #degree = solr_doc.at_path( 'mods_extension_degree_level_t[0]' )
-     #payload[ :degree ] = degree if degree.present?
+     node = xml_doc.css( 'mods degree level' ).first
+     degree = node.text if node
+     payload[ :degree ] = degree if degree.present?
 
      # keywords
      #keywords = solr_doc.at_path( 'subject_topic_t' )

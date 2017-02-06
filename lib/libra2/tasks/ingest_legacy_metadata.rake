@@ -165,7 +165,7 @@ namespace :libra2 do
 
      # create a record of the actual work id
      if work != nil
-        IngestHelpers.set_ingest_id( dirname, work.id )
+        IngestHelpers.set_legacy_ingest_id(dirname, work.id )
      end
 
      return ok
