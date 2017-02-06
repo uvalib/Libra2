@@ -21,8 +21,8 @@ module UpdateOrcidBehavior
 
           update_orcid_service( User.cid_from_email( current_user.email ), params[:generic_work][:my_orcid] )
         end
-        params[:generic_work].delete( :my_orcid )
       end
+      params[:generic_work].delete( :my_orcid ) if params[:generic_work][:my_orcid]
     end
 
     #
