@@ -42,7 +42,7 @@ class WorkSearch
     return true if field_set?( :depositor_email ) && @depositor_email.blank? == false
     return true if field_set?( :modified_date ) && valid_search_date?( @modified_date )
     return true if field_set?( :status ) && ['pending','submitted'].include?( @status )
-    return true if field_set?( :work_source ) && ['sis','optional', 'libra'].include?( @work_source )
+    return true if field_set?( :work_source ) && ['sis','optional', 'ingest', 'libra'].include?( @work_source )
     return false
   end
 

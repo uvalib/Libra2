@@ -137,7 +137,7 @@ class APIV1WorksController < APIBaseController
 
     field = search.create_date
     if search.field_set?( :create_date )
-      return batched_get( "system_create_dtsi: #{search.make_solr_date_search( field )}", start, limit )
+      return batched_get( "system_create_dtsi:#{search.make_solr_date_search( field )}", start, limit )
     end
 
     field = search.depositor_email
@@ -147,7 +147,7 @@ class APIV1WorksController < APIBaseController
 
     field = search.modified_date
     if search.field_set?( :modified_date )
-      return batched_get( "system_modified_dtsi: #{search.make_solr_date_search( field )}", start, limit )
+      return batched_get( "system_modified_dtsi:#{search.make_solr_date_search( field )}", start, limit )
     end
 
     field = search.status
@@ -162,7 +162,7 @@ class APIV1WorksController < APIBaseController
 
     field = search.work_source
     if search.field_set?( :work_source )
-      return batched_get( "work_source_tesim: #{field}*", start, limit )
+      return batched_get( "work_source_tesim:\"#{field}*\"", start, limit )
     end
 
     return []
@@ -223,6 +223,7 @@ class APIV1WorksController < APIBaseController
 
   def batched_get( constraints, start_ix, end_ix )
 
+    puts "===> query: #{constraints}"
     res = []
     count = end_ix - start_ix
     tstart = Time.now
@@ -233,6 +234,7 @@ class APIV1WorksController < APIBaseController
       res.push( *group )
       tstart = Time.now
     end
+    puts "===> returning #{res.length} work(s)"
     return res
   end
 
