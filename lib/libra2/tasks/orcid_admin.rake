@@ -8,6 +8,23 @@ namespace :libra2 do
 
   namespace :orcid do
 
+  desc "List known ORCID's"
+  task list_orcids: :environment do |t, args|
+
+    count = 0
+    status, r = ServiceClient::OrcidAccessClient.instance.get_all( )
+    if ServiceClient::OrcidAccessClient.instance.ok?( status )
+      r.each do |details|
+        puts "#{details['cid']} -> #{details['orcid']}"
+        count += 1
+      end
+      puts "#{count} ORCIDS(s) listed"
+
+    else
+      puts "ERROR: ORCID service returns #{status}, aborting"
+    end
+  end
+
   desc "Harvest ORCID's"
   task harvest_orcids: :environment do |t, args|
 

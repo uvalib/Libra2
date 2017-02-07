@@ -62,6 +62,16 @@ module ServiceClient
      end
 
      #
+     # get all known ORCID's
+     #
+     def get_all( )
+       url = "#{self.url}/cid?auth=#{self.authtoken}"
+       status, response = rest_get( url )
+       return status, response['orcids'] if ok?( status ) && response['orcids']
+       return status, ''
+     end
+
+     #
      # helpers
      #
 
