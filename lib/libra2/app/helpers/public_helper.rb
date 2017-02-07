@@ -26,9 +26,8 @@ module PublicHelper
 
    def display_title(work)
       return 'Not Found' if work.nil?
-      return work[:title][0]
-      #title = CGI.unescapeHTML( String.new work[:title][0].to_s )
-      #return raw( title )
+      title = CGI.unescapeHTML( String.new work[:title][0].to_s )
+      return raw( title )
    end
 
    def display_author( work )
@@ -86,11 +85,9 @@ module PublicHelper
 
    def display_description( description )
       return '' if description.blank?
-      description = raw( description.gsub("\n", "<br>"))
-      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Abstract:", description ).render )
-      #description = simple_format( description )
-      #description = CGI.unescapeHTML( String.new description.to_s )
-      #return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Abstract:", raw( description ) ).render )
+      description = simple_format( description )
+      description = CGI.unescapeHTML( String.new description.to_s )
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Abstract:", raw( description ) ).render )
    end
 
    def display_degree( degree )
@@ -133,8 +130,7 @@ module PublicHelper
 
    def display_notes(notes)
     return '' if notes.blank?
-      notes = raw( notes.gsub("\n", "<br>"))
-      #notes = simple_format( notes )
+      notes = simple_format( notes )
       return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Notes:", notes ).render )
    end
 
