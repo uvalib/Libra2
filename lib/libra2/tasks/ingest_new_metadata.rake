@@ -158,14 +158,14 @@ namespace :libra2 do
      if ok == true
        puts "New work created; id #{work.id} (#{work.identifier || 'none'})"
      else
-       #puts " ERROR: creating new generic work for #{File.basename( dirname )} (#{id})"
-       #return false
-       puts " WARNING: while creating generic work for #{File.basename( dirname )} (#{id})"
+       puts " ERROR: creating new generic work for #{filename}"
+       return false
      end
 
      # create a record of the actual work id
      if work != nil
         ok = IngestHelpers.set_ingest_id( filename, work.id )
+        puts " ERROR: creating ingest id file" unless ok
      end
 
      return ok
@@ -494,18 +494,24 @@ namespace :libra2 do
         #  new_notes += "#{v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )}"
         #  payload[ :notes ] = new_notes
 
-        #when :force_embargo_period
-        #  payload[ :embargo_period ] = v
-        #  if payload[ :issued ]
-        #     payload[ :embargo_release_date ] = IngestHelpers.calculate_embargo_release_date( payload[ :issued ], v )
-        #  else
-        #     payload[ :embargo_release_date ] = GenericWork.calculate_embargo_release_date( v )
-        #  end
+        when :default_embargo_type
+          if payload[ :embargo_type ].blank?
+            payload[ :embargo_type ] = v
+          end
 
-       else if payload.key?( k ) == false
-               payload[ k ] = v
-            end
-       end
+        when :force_embargo_period
+           payload[ :embargo_period ] = v
+           if payload[ :issued ]
+              payload[ :embargo_release_date ] = IngestHelpers.calculate_embargo_release_date( payload[ :issued ], v )
+           else
+              payload[ :embargo_release_date ] = GenericWork.calculate_embargo_release_date( v )
+           end
+
+        else
+           if payload.key?( k ) == false
+              payload[ k ] = v
+           end
+        end
     }
 
     return payload
