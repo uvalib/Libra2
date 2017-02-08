@@ -162,7 +162,7 @@ class APIV1WorksController < APIBaseController
 
     field = search.work_source
     if search.field_set?( :work_source )
-      return batched_get( "work_source_tesim:\"#{field}*\"", start, limit )
+      return batched_get( "work_source_tesim:#{field}", start, limit )
     end
 
     return []
