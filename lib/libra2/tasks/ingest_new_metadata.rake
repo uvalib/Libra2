@@ -79,7 +79,7 @@ namespace :libra2 do
     error_count = 0
     ingests.each_with_index do | filename, ix |
       next if ix < start_ix
-      ok = ingest_metadata( defaults, user, File.join( ingest_dir, filename ) )
+      ok = ingest_new_metadata( defaults, user, File.join( ingest_dir, filename ) )
       ok == true ? success_count += 1 : error_count += 1
       break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
     end
@@ -117,7 +117,7 @@ namespace :libra2 do
   #
   # convert an XML file into a new metadata record
   #
-  def ingest_metadata( defaults, depositor, filename )
+  def ingest_new_metadata( defaults, depositor, filename )
 
      xml_doc = IngestHelpers.load_ingest_content( filename )
      #id = solr_doc['id']
@@ -125,10 +125,10 @@ namespace :libra2 do
      puts "Ingesting #{filename}..."
 
      # create a payload from the document
-     payload = create_ingest_payload( xml_doc )
+     payload = create_new_ingest_payload( xml_doc )
 
      # merge in any default attributes
-     payload = apply_defaults( defaults, payload )
+     payload = apply_defaults_for_new_item( defaults, payload )
 
      # some fields with embedded quotes need to be escaped; handle this here
      payload = IngestHelpers.escape_fields( payload )
@@ -137,7 +137,7 @@ namespace :libra2 do
      IngestHelpers.dump_ingest_payload( payload ) if ENV[ 'DUMP_PAYLOAD' ]
 
      # validate the payload
-     errors, warnings = validate_ingest_payload( payload )
+     errors, warnings = IngestHelpers.validate_ingest_payload( payload )
 
      if errors.empty? == false
        puts " ERROR(S) identified for #{filename}"
@@ -154,7 +154,7 @@ namespace :libra2 do
      return true if ENV[ 'DRY_RUN' ]
 
      # create the work
-     ok, work = create_new_item( depositor, payload )
+     ok, work = IngestHelpers.create_new_item( depositor, payload )
      if ok == true
        puts "New work created; id #{work.id} (#{work.identifier || 'none'})"
      else
@@ -174,7 +174,7 @@ namespace :libra2 do
   #
   # create a ingest payload from the Libra document
   #
-  def create_ingest_payload( xml_doc )
+  def create_new_ingest_payload( xml_doc )
 
 
      payload = {}
@@ -279,7 +279,8 @@ namespace :libra2 do
      # document source
      node = xml_doc.css( 'mods identifier' ).first
      source = node.text if node
-     payload[ :source ] = "#{GenericWork::THESIS_SOURCE_INGEST}:#{source}" if source.present?
+     # the space is there for a reason... SOLR stuff, dont ask!!
+     payload[ :source ] = "#{GenericWork::THESIS_SOURCE_INGEST} :#{source}" if source.present?
 
      #
      # handle optional fields
@@ -307,175 +308,12 @@ namespace :libra2 do
      return payload
   end
 
-  #
-  # validate the payload before we attempt to create a new document
-  #
-  def validate_ingest_payload( payload )
+  private
 
-    errors = []
-    warnings = []
-
-    #
-    # ensure required fields first...
-    #
-
-    # document title
-    errors << 'missing title' if payload[ :title ].nil?
-
-    # author attributes
-    errors << 'missing author first name' if payload[ :author_first_name ].nil?
-    errors << 'missing author last name' if payload[ :author_last_name ].nil?
-
-    # other required attributes
-    errors << 'missing rights' if payload[ :rights ].nil?
-    errors << 'missing publisher' if payload[ :publisher ].nil?
-    errors << 'missing institution' if payload[ :institution ].nil?
-    errors << 'missing source' if payload[ :source ].nil?
-    errors << 'missing issued date' if payload[ :issued ].nil?
-    errors << 'missing license' if payload[ :license ].nil?
-
-    # check for an abstract that exceeds the maximum size
-    if payload[ :abstract ].blank? == false && payload[ :abstract ].length > MAX_ABSTRACT_LENGTH
-      errors << "abstract too large (< #{MAX_ABSTRACT_LENGTH} bytes)"
-    end
-
-    # ensure an embargo release date is defined if specified
-    if payload[:embargo_type].blank? == false && payload[:embargo_type] == 'uva' && payload[:embargo_release_date].blank?
-      errors << 'unspecified embargo release date for embargo item'
-    end
-
-    #
-    # then warn about optional fields
-    #
-
-    warnings << 'missing author computing id' if payload[ :author_computing_id ].nil?
-    warnings << 'missing advisor(s)' if payload[ :advisors ].blank?
-
-    warnings << 'missing abstract' if payload[ :abstract ].nil?
-    warnings << 'missing keywords' if payload[ :keywords ].nil?
-    warnings << 'missing degree' if payload[ :degree ].nil?
-    warnings << 'missing create date' if payload[ :create_date ].nil?
-    warnings << 'missing modified date' if payload[ :modified_date ].nil?
-    warnings << 'missing language' if payload[ :language ].nil?
-    warnings << 'missing notes' if payload[ :notes ].nil?
-    #warnings << 'missing admin notes' if payload[ :admin_notes ].nil?
-
-    return errors, warnings
-  end
-
-  #
-  # create a new generic work item
-  #
-  def create_new_item( depositor, payload )
-
-    ok = true
-    work = GenericWork.create!( title: [ payload[ :title ] ] ) do |w|
-
-      # generic work attributes
-      w.apply_depositor_metadata( depositor )
-      w.creator = depositor.email
-      w.author_email = TaskHelpers.default_email( payload[ :author_computing_id ] ) if payload[ :author_computing_id ]
-      w.author_first_name = payload[ :author_first_name ] if payload[ :author_first_name ]
-      w.author_last_name = payload[ :author_last_name ] if payload[ :author_last_name ]
-      w.author_institution = payload[ :institution ] if payload[ :institution ]
-      w.contributor = payload[ :advisors ]
-      w.description = payload[ :abstract ]
-      w.keyword = payload[ :keywords ] if payload[ :keywords ]
-
-      # date attributes
-      w.date_created = payload[ :create_date ] if payload[ :create_date ]
-      w.date_modified = DateTime.parse( payload[ :modified_date ] ) if payload[ :modified_date ]
-      w.date_published = payload[ :issued ] if payload[ :issued ]
-
-      # embargo attributes
-      w.visibility = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
-      w.embargo_state = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
-      w.visibility_during_embargo = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
-      w.embargo_end_date = payload[ :embargo_release_date ] if payload[ :embargo_release_date ]
-      w.embargo_period = payload[ :embargo_period ] if payload[ :embargo_period ]
-
-      # assume standard and published work type
-      w.work_type = GenericWork::WORK_TYPE_THESIS
-      w.draft = 'false'
-
-      w.publisher = payload[ :publisher ] if payload[ :publisher ]
-      w.department = payload[ :department ] if payload[ :department ]
-      w.degree = payload[ :degree ] if payload[ :degree ]
-      w.language = payload[ :language ] if payload[ :language ]
-
-      w.notes = payload[ :notes ] if payload[ :notes ]
-      w.rights = [ payload[ :rights ] ] if payload[ :rights ]
-      w.license = GenericWork::DEFAULT_LICENSE
-
-      w.admin_notes = payload[ :admin_notes ] if payload[ :admin_notes ]
-      w.work_source = payload[ :source ] if payload[ :source ]
-
-      # mint and assign the DOI
-      #if ENV[ 'NO_DOI' ].blank?
-      #   status, id = ServiceClient::EntityIdClient.instance.newid( w )
-      #   if ServiceClient::EntityIdClient.instance.ok?( status )
-      #      w.identifier = id
-      #      w.permanent_url = GenericWork.doi_url( id )
-      #   else
-      #      puts "ERROR: cannot mint DOI (#{status})"
-      #      ok = false
-      #   end
-      #end
-    end
-
-    # update the DOI metadata if necessary
-    #if ENV[ 'NO_DOI' ].blank?
-    #  if ok && work.is_draft? == false
-    #    ok = update_doi_metadata( work )
-    #  end
-    #else
-    #  puts "INFO: no DOI assigned..."
-    #end
-
-    return ok, work
-  end
-
-  #
-  # adds another advisor if we can locate one
-  #
-  def add_advisor( solr_doc, advisor_number, advisors )
-
-    if solr_doc.at_path( "mods_0_person_#{advisor_number}_role_0_text_t[0]" ) == 'advisor'
-      cid = solr_doc.at_path( "mods_0_person_#{advisor_number}_computing_id_t[0]" )
-      fn = solr_doc.at_path( "mods_0_person_#{advisor_number}_first_name_t[0]" )
-      ln = solr_doc.at_path( "mods_0_person_#{advisor_number}_last_name_t[0]" )
-      dept = solr_doc.at_path( "mods_0_person_#{advisor_number}_description_t[0]" )
-      ins = solr_doc.at_path( "mods_0_person_#{advisor_number}_institution_t[0]" )
-
-      advisor_computing_id = IngestHelpers.field_supplied( cid ) ? cid : ''
-      advisor_first_name = IngestHelpers.field_supplied( fn ) ? fn : ''
-      advisor_last_name = IngestHelpers.field_supplied( ln ) ? ln : ''
-      advisor_department = IngestHelpers.field_supplied( dept ) ? IngestHelpers.department_lookup( dept ) : ''
-      advisor_institution = IngestHelpers.field_supplied( ins ) ? ins : ''
-
-      if advisor_computing_id.blank? == false ||
-         advisor_first_name.blank? == false ||
-         advisor_last_name.blank? == false ||
-         advisor_department.blank? == false ||
-         advisor_institution.blank? == false
-         adv = TaskHelpers.contributor_fields( advisor_number - 1,
-                                               advisor_computing_id,
-                                               advisor_first_name,
-                                               advisor_last_name,
-                                               advisor_department,
-                                               advisor_institution )
-
-         return true, advisors << adv
-      end
-    end
-
-    # could not find the next advisor, we are done
-    return false, advisors
-  end
   #
   # apply any default values and behavior to the standard payload
   #
-  def apply_defaults( defaults, payload )
+  def apply_defaults_for_new_item( defaults, payload )
 
     # merge in defaults
     defaults.each { |k, v|
