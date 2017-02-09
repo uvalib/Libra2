@@ -159,7 +159,6 @@ module IngestHelpers
     errors << 'missing publisher' if payload[ :publisher ].nil?
     errors << 'missing institution' if payload[ :institution ].nil?
     errors << 'missing source' if payload[ :source ].nil?
-    errors << 'missing issued date' if payload[ :issued ].nil?
     errors << 'missing license' if payload[ :license ].nil?
 
     # check for an abstract that exceeds the maximum size
@@ -183,6 +182,7 @@ module IngestHelpers
 
     warnings << 'missing advisor(s)' if payload[ :advisors ].blank?
 
+    warnings << 'missing issued date' if payload[ :issued ].nil?
     warnings << 'missing abstract' if payload[ :abstract ].nil?
     warnings << 'missing keywords' if payload[ :keywords ].nil?
     warnings << 'missing degree' if payload[ :degree ].nil?
