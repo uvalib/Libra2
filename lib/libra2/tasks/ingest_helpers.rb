@@ -151,8 +151,8 @@ module IngestHelpers
     errors << 'missing title' if payload[ :title ].nil?
 
     # author attributes
-    errors << 'missing author first name' if payload[ :author_first_name ].nil?
-    errors << 'missing author last name' if payload[ :author_last_name ].nil?
+    #errors << 'missing author first name' if payload[ :author_first_name ].nil?
+    #errors << 'missing author last name' if payload[ :author_last_name ].nil?
 
     # other required attributes
     errors << 'missing rights' if payload[ :rights ].nil?
@@ -176,7 +176,11 @@ module IngestHelpers
     # then warn about optional fields
     #
 
+    # author attributes
+    warnings << 'missing author first name' if payload[ :author_first_name ].nil?
+    warnings << 'missing author last name' if payload[ :author_last_name ].nil?
     warnings << 'missing author computing id' if payload[ :author_computing_id ].nil?
+
     warnings << 'missing advisor(s)' if payload[ :advisors ].blank?
 
     warnings << 'missing abstract' if payload[ :abstract ].nil?
