@@ -17,6 +17,11 @@ notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Lib
 default_embargo_type: uva
 
 #
+# the default issue date if we cannot determine one
+#
+default_issued: none
+
+#
 # apply the specified embargo period; should be one of:
 # 6_months, 1_year, 2_year, 5_year, forever (130 years)
 #

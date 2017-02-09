@@ -320,8 +320,8 @@ namespace :libra2 do
 
       case k
 
-        when :notes
-          next if v.blank?
+        #when :notes
+        #  next if v.blank?
 
           # create the admin notes for this item
         #  new_notes = payload[ :notes ] || ''
@@ -335,6 +335,11 @@ namespace :libra2 do
         when :default_embargo_type
           if payload[ :embargo_type ].blank?
             payload[ :embargo_type ] = v
+          end
+
+        when :default_issued
+          if payload[ :issued ].blank?
+            payload[ :issued ] = v
           end
 
         when :force_embargo_period
