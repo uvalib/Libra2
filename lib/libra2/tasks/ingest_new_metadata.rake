@@ -210,7 +210,7 @@ namespace :libra2 do
          nodes.each do |np|
            case np.get( 'type' )
              when 'given'
-               fn = np.text
+               fn = np.text.chomp( ',' )  # remove a trailing comma
              when 'family'
                ln = np.text
            end
