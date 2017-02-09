@@ -6,6 +6,10 @@ include ERB::Util
 
 module IngestHelpers
 
+  DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
+  DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.yml'
+  MAX_ABSTRACT_LENGTH = 32766
+
   # mapping of department names/mnemonics to actual textual values
   DEPARTMENT_MAP = {
       'ADMIN-EDD' => 'Curry School of Education',

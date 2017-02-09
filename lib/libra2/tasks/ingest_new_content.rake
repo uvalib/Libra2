@@ -33,9 +33,9 @@ namespace :libra2 do
     start_ix = 0 if start_ix.to_s != start
 
     # load depositor information
-    depositor = Helpers::EtdHelper::lookup_user( DEFAULT_DEPOSITOR )
+    depositor = Helpers::EtdHelper::lookup_user( IngestHelpers::DEFAULT_DEPOSITOR )
     if depositor.nil?
-      puts "ERROR: Cannot locate depositor info (#{DEFAULT_DEPOSITOR})"
+      puts "ERROR: Cannot locate depositor info (#{IngestHelpers::DEFAULT_DEPOSITOR})"
       next
     end
 

@@ -10,11 +10,6 @@ namespace :libra2 do
 
   namespace :ingest do
 
-  # general attributes
-  DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
-  DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.yml'
-  MAX_ABSTRACT_LENGTH = 32766
-
   #
   # possible environment settings that affect the ingest behavior
   #
@@ -39,7 +34,7 @@ namespace :libra2 do
 
     defaults_file = ARGV[ 2 ]
     if defaults_file.nil?
-      defaults_file = DEFAULT_DEFAULT_FILE
+      defaults_file = IngestHelpers::DEFAULT_DEFAULT_FILE
     end
     task defaults_file.to_sym do ; end
 
@@ -63,9 +58,9 @@ namespace :libra2 do
     defaults = IngestHelpers.load_config_file( defaults_file )
 
     # load depositor information
-    depositor = Helpers::EtdHelper::lookup_user( DEFAULT_DEPOSITOR )
+    depositor = Helpers::EtdHelper::lookup_user( IngestHelpers::DEFAULT_DEPOSITOR )
     if depositor.nil?
-      puts "ERROR: Cannot locate depositor info (#{DEFAULT_DEPOSITOR})"
+      puts "ERROR: Cannot locate depositor info (#{IngestHelpers::DEFAULT_DEPOSITOR})"
       next
     end
 

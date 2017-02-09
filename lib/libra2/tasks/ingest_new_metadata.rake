@@ -10,11 +10,6 @@ namespace :libra2 do
 
   namespace :ingest do
 
-  # general attributes
-  #DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
-  #DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.yml'
-  #MAX_ABSTRACT_LENGTH = 32766
-
   #
   # possible environment settings that affect the ingest behavior
   #
@@ -39,7 +34,7 @@ namespace :libra2 do
 
     defaults_file = ARGV[ 2 ]
     if defaults_file.nil?
-      defaults_file = DEFAULT_DEFAULT_FILE
+      defaults_file = IngestHelpers::DEFAULT_DEFAULT_FILE
     end
     task defaults_file.to_sym do ; end
 
@@ -63,9 +58,9 @@ namespace :libra2 do
     defaults = IngestHelpers.load_config_file( defaults_file )
 
     # load depositor information
-    depositor = Helpers::EtdHelper::lookup_user( DEFAULT_DEPOSITOR )
+    depositor = Helpers::EtdHelper::lookup_user( IngestHelpers::DEFAULT_DEPOSITOR )
     if depositor.nil?
-      puts "ERROR: Cannot locate depositor info (#{DEFAULT_DEPOSITOR})"
+      puts "ERROR: Cannot locate depositor info (#{IngestHelpers::DEFAULT_DEPOSITOR})"
       next
     end
 
@@ -231,38 +226,6 @@ namespace :libra2 do
        end
      end
 
-     # document advisors
-     #advisor_number = 1
-     #name_nodes = xml_doc.css( 'mods name' )
-     #name_nodes.each do |nn|
-     #  nodes = nn.css( 'roleTerm' )
-     #  nodes.each do |rt|
-     #    if rt.get( 'type' ) == 'text' && rt.text == 'advisor'
-     #       puts "Found ADVISOR"
-     #    end
-     #  end
-     #end
-
-     #if solr_doc.at_path( 'mods_0_name_0_role_0_text_t[0]' ) == 'author'
-     #  dept = solr_doc.at_path( 'mods_0_name_0_description_t[0]' )
-     #  cid = solr_doc.at_path( 'mods_0_name_0_computing_id_t[0]' )
-     #  fn = solr_doc.at_path( 'mods_0_name_0_first_name_t[0]' )
-     #
-     # payload[ :author_computing_id ] = cid if IngestHelpers.field_supplied( cid )
-     #  payload[ :author_first_name ] = fn if IngestHelpers.field_supplied( fn )
-     #  payload[ :author_last_name ] = ln if IngestHelpers.field_supplied( ln )
-     #  payload[ :department ] = IngestHelpers.department_lookup( dept ) if IngestHelpers.field_supplied( dept )
-     #end
-
-     # document advisor
-     #payload[ :advisors ] = []
-     #advisor_number = 1
-     #while true
-     #   added, payload[ :advisors ] = add_advisor( solr_doc, advisor_number, payload[ :advisors ] )
-     #   break unless added
-     #   advisor_number += 1
-     #end
-
      # issue date
      node = xml_doc.css( 'mods dateIssued' ).first
      issued_date = node.text if node
@@ -292,8 +255,17 @@ namespace :libra2 do
      payload[ :degree ] = degree if degree.present?
 
      # keywords
-     #keywords = solr_doc.at_path( 'subject_topic_t' )
-     #payload[ :keywords ] = keywords if keywords.present?
+     keywords = []
+     topic_nodes = xml_doc.css( 'mods topic' )
+     topic_nodes.each do |tn|
+        kwtext = tn.text
+        next if kwtext == 'JTIngest'
+        kwords = kwtext.split( ' -- ' )
+        kwords.each do |kw|
+           keywords << kw unless keywords.include?( kw )
+        end
+     end
+     payload[ :keywords ] = keywords unless keywords.empty?
 
      # language
      node = xml_doc.css( 'mods language' ).first
