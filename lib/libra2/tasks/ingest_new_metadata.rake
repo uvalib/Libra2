@@ -337,11 +337,6 @@ namespace :libra2 do
             payload[ :embargo_type ] = v
           end
 
-        when :default_issued
-          if payload[ :issued ].blank?
-            payload[ :issued ] = v
-          end
-
         when :force_embargo_period
            payload[ :embargo_period ] = v
            if payload[ :issued ]
