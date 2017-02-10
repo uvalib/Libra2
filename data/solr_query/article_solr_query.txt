@@ -1,0 +1,1 @@
+released_facet:true AND has_model_s:"info:fedora/afmodel:HydrangeaArticle" AND read_access_group_t:[* TO *]
