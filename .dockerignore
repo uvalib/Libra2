@@ -19,3 +19,5 @@ scripts/docker
 public/assets
 public/system
 public/uploads
+tools/ffmpeg-3.1.1-64bit-static
+tools/fits-1.0.0
