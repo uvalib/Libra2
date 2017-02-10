@@ -1,1 +1,1 @@
-bundle exec rake libra2:edit:del_file_from_work $1 $2
+bundle exec rake libra2:attach:remove $1 $2
