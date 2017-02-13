@@ -184,7 +184,7 @@ namespace :libra2 do
      # document title
      node = xml_doc.css( 'mods titleInfo title' ).first
      title = node.text if node
-     payload[ :title ] = title.titleize if title.present?
+     payload[ :title ] = title if title.present?
 
      # document abstract
      node = xml_doc.css( 'mods abstract' ).first
