@@ -449,7 +449,9 @@ module IngestHelpers
   # add the specified number of years to the specified date
   #
   def calculate_embargo_release_date( date, embargo_period )
-    dt = Date.parse( date )
+
+    normalized_date = normalize_date( date )
+    dt = Date.parse( normalized_date )
     case embargo_period
       when GenericWork::EMBARGO_VALUE_6_MONTH
         return dt + 6.months
@@ -484,6 +486,28 @@ module IngestHelpers
       else
         return GenericWork::EMBARGO_VALUE_FOREVER
     end
+  end
+
+  #
+  # attempt to return a date in YYYY-MM-DD, filling in the missing pieces if we do not have them
+  #
+  def normalize_date( date )
+
+    # look for the expected pattern (YYYY-MM-DD)
+    matches = /^(\d{4}-\d{2}-\d{2})/.match( date )
+    return matches[ 1 ] if matches
+
+    # look for YYYY-MM and append '-01' if we find it
+    matches = /^(\d{4}-\d{2})/.match( date )
+    return "#{matches[ 1 ]}-01" if matches
+
+    # look for YYYY and append '-01-01' if we find it
+    matches = /^(\d{4})/.match( date )
+    return "#{matches[ 1 ]}-01-01" if matches
+
+    # give up and return what we were provided
+    return date
+
   end
 
   #
