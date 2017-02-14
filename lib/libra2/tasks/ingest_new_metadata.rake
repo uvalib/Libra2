@@ -262,7 +262,8 @@ namespace :libra2 do
         next if kwtext == 'JTIngest'
         kwords = kwtext.split( ' -- ' )
         kwords.each do |kw|
-           keywords << kw unless keywords.include?( kw )
+           w = kw.chomp( ',' )   # remove a trailing comma if present
+           keywords << w unless keywords.include?( w )
         end
      end
      payload[ :keywords ] = keywords unless keywords.empty?
