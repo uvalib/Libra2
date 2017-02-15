@@ -1,7 +1,7 @@
 #
 # values to use if these are not specified in the ingest
 #
-rights: 'None (users must comply with ordinary copyright law)'
+rights: 'All rights reserved (no additional license for public reuse)'
 publisher: <%= GenericWork::DEFAULT_PUBLISHER %>
 institution: <%= GenericWork::DEFAULT_INSTITUTION %>
 license: <%= GenericWork::DEFAULT_LICENSE %>

@@ -4,7 +4,7 @@ terms:
       active: true
     - id: CC0 (permitting unconditional free use, with or without attribution)
       term: CC0 (permitting unconditional free use, with or without attribution)
-      active: true
-    - id: None (users must comply with ordinary copyright law)
-      term: None (users must comply with ordinary copyright law)
+      active: false
+    - id: All rights reserved (no additional license for public reuse)
+      term: All rights reserved (no additional license for public reuse)
       active: true
