@@ -52,6 +52,15 @@ module ServiceClient
      end
 
      #
+     # delete specified user's ORCID
+     #
+     def del_by_cid( id )
+       url = "#{self.url}/cid/#{id}?auth=#{self.authtoken}"
+       status, _ = rest_delete( url )
+       return status
+     end
+
+     #
      # set specified user's ORCID
      #
      def search( search, start, max )
