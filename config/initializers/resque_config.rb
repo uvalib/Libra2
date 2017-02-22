@@ -6,4 +6,4 @@ Resque.redis = Redis.new( config.merge(thread_safe: true ) )
 
 Resque.inline = false
 Resque.redis.namespace = "libra2:#{rails_env}"
-Resque.logger.level = Logger::INFO
+Resque.logger.level = Logger::DEBUG
