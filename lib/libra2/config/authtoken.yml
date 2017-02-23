@@ -1,9 +1,9 @@
+default: &default
+  url: <%= ENV['TOKENAUTH_URL'] %>
+  timeout: <%= ENV['WEBSERVICE_TIMEOUT'] || 10 %>
 development:
-  url: <%= ENV['TOKENAUTH_URL'] %>
-  timeout: 10
+  <<: *default
 test:
-  url: <%= ENV['TOKENAUTH_URL'] %>
-  timeout: 10
+  <<: *default
 production:
-  url: <%= ENV['TOKENAUTH_URL'] %>
-  timeout: 10
+  <<: *default

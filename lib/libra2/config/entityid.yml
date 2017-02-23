@@ -1,15 +1,11 @@
+default: &default
+  shoulder: <%= ENV['EZID_SHOULDER'] %>
+  authtoken: <%= ENV['API_TOKEN'] %>
+  url: <%= ENV['ENTITYID_URL'] %>
+  timeout: <%= ENV['WEBSERVICE_TIMEOUT'] || 10 %>
 development:
-  shoulder: <%= ENV['EZID_SHOULDER'] %>
-  authtoken: <%= ENV['API_TOKEN'] %>
-  url: <%= ENV['ENTITYID_URL'] %>
-  timeout: 10
+  <<: *default
 test:
-  shoulder: <%= ENV['EZID_SHOULDER'] %>
-  authtoken: <%= ENV['API_TOKEN'] %>
-  url: <%= ENV['ENTITYID_URL'] %>
-  timeout: 10
+  <<: *default
 production:
-  shoulder: <%= ENV['EZID_SHOULDER'] %>
-  authtoken: <%= ENV['API_TOKEN'] %>
-  url: <%= ENV['ENTITYID_URL'] %>
-  timeout: 10
+  <<: *default

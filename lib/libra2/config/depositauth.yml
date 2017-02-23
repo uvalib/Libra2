@@ -1,12 +1,10 @@
+default: &default
+  authtoken: <%= ENV['API_TOKEN'] %>
+  url: <%= ENV['DEPOSITAUTH_URL'] %>
+  timeout: <%= ENV['WEBSERVICE_TIMEOUT'] || 10 %>
 development:
-  authtoken: <%= ENV['API_TOKEN'] %>
-  url: <%= ENV['DEPOSITAUTH_URL'] %>
-  timeout: 10
+  <<: *default
 test:
-  authtoken: <%= ENV['API_TOKEN'] %>
-  url: <%= ENV['DEPOSITAUTH_URL'] %>
-  timeout: 10
+  <<: *default
 production:
-  authtoken: <%= ENV['API_TOKEN'] %>
-  url: <%= ENV['DEPOSITAUTH_URL'] %>
-  timeout: 10
+  <<: *default
