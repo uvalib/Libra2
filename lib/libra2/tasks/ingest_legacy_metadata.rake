@@ -72,9 +72,10 @@ namespace :libra2 do
 
     success_count = 0
     error_count = 0
+    total = ingests.size
     ingests.each_with_index do | dirname, ix |
       next if ix < start_ix
-      ok = ingest_legacy_metadata( defaults, user, File.join( ingest_dir, dirname ) )
+      ok = ingest_legacy_metadata( defaults, user, File.join( ingest_dir, dirname ), ix + 1, total )
       ok == true ? success_count += 1 : error_count += 1
       break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
     end
@@ -112,12 +113,12 @@ namespace :libra2 do
   #
   # convert a set of Libra extract assets into a new Libra metadata record
   #
-  def ingest_legacy_metadata( defaults, depositor, dirname )
+  def ingest_legacy_metadata( defaults, depositor, dirname, current, total )
 
      solr_doc, fedora_doc = IngestHelpers.load_legacy_ingest_content(dirname )
      id = solr_doc['id']
 
-     puts "Ingesting #{File.basename( dirname )} (#{id})..."
+     puts "Ingesting #{current} of #{total}: #{File.basename( dirname )} (#{id})..."
 
      # create a payload from the document
      payload = create_legacy_ingest_payload( solr_doc, fedora_doc )

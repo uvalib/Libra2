@@ -54,9 +54,10 @@ namespace :libra2 do
 
     success_count = 0
     error_count = 0
+    total = ingests.size
     ingests.each_with_index do | filename, ix |
       next if ix < start_ix
-      ok = ingest_new_content( user, File.join( ingest_dir, filename ) )
+      ok = ingest_new_content( user, File.join( ingest_dir, filename ), ix + 1, total )
       ok == true ? success_count += 1 : error_count += 1
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
@@ -94,10 +95,10 @@ namespace :libra2 do
   #
   # add new content to an existing metadata record
   #
-  def ingest_new_content( depositor, filename )
+  def ingest_new_content( depositor, filename, current, total )
 
      ingest_file = filename.gsub( '.xml', '' )
-     puts "Ingesting #{ingest_file} ..."
+     puts "Ingesting #{current} of #{total}: #{ingest_file} ..."
 
      work_id = IngestHelpers.get_ingest_id( filename )
      if work_id.blank?

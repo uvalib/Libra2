@@ -54,9 +54,10 @@ namespace :libra2 do
 
     success_count = 0
     error_count = 0
+    total = ingests.size
     ingests.each_with_index do | dirname, ix |
       next if ix < start_ix
-      ok = ingest_legacy_content( user, File.join( ingest_dir, dirname ) )
+      ok = ingest_legacy_content( user, File.join( ingest_dir, dirname ), ix + 1, total )
       ok == true ? success_count += 1 : error_count += 1
     end
     puts "#{success_count} item(s) processed successfully, #{error_count} error(s) encountered"
@@ -94,10 +95,10 @@ namespace :libra2 do
   #
   # add legacy content to an existing metadata record
   #
-  def ingest_legacy_content( depositor, dirname )
+  def ingest_legacy_content( depositor, dirname, current, total )
 
      assets = IngestHelpers.get_document_assets( dirname )
-     puts "Ingesting #{File.basename( dirname )} (#{assets.length} assets)..."
+     puts "Ingesting #{current} of #{total}: #{File.basename( dirname )} (#{assets.length} assets)..."
 
      work_id = IngestHelpers.get_legacy_ingest_id(dirname )
 
