@@ -1,5 +1,5 @@
 default: &default
-  url: <%= "redis://:#{ENV['REDIS_PASSWD'] || 'password'}@#{ENV['REDIS_HOST'] || 'localhost'}:#{ENV['REDIS_PORT'] || '6379'}" %>
+  url: <%= "redis://:#{ENV['REDIS_PASSWD'] || 'password'}@#{ENV['REDIS_HOST'] || 'localhost'}:#{ENV['REDIS_PORT'] || '6379'}/#{ENV['REDIS_DB'] || '0'}" %>
   timeout: <%= ENV['REDIS_TIMEOUT'] || 15 %>
 development:
   <<: *default
