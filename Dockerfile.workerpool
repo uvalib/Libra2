@@ -39,7 +39,7 @@ RUN chown -R webservice $APP_HOME /home/webservice && chgrp -R webservice $APP_H
 USER webservice
 
 # Define startup script
-CMD /bin/bash -l -c "scripts/entry.sh"
+CMD /bin/bash -l -c "scripts/entry-workerpool.sh"
 
 # move in the profile
 COPY data/container_bash_profile /home/webservice/.profile

@@ -1,9 +1,5 @@
-# remove stale pid files
-rm -f $APP_HOME/tmp/pids/resque-pool.pid > /dev/null 2>&1
+# remove stale pid file
 rm -f $APP_HOME/tmp/pids/server.pid > /dev/null 2>&1
-
-# start the resque pool daemon
-#nohup scripts/start_workers.sh &
 
 # run the deposit importer process
 nohup scripts/deposit_import.sh &

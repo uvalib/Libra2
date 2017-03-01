@@ -31,22 +31,15 @@ logit "Starting up..."
 # forever...
 while true; do
 
-   # determine if we are the active host... run workers on the non-sis host only
-   if is_active_host; then
+   # starting message
+   logit "Starting resque pool..."
 
-      # ending message
-      logit "Starting resque pool..."
+   # start up the resque pool
+   RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool $LOG_OPT $ENV_OPT start
+   res=$?
 
-      # start up the resque pool
-      RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool $LOG_OPT $ENV_OPT start
-      res=$?
-
-      # ending message
-      logit "Resque pool terminates unexpectedly with status: $res; sleeping for $SLEEP_TIME seconds..."
-
-   else
-      logit "Not the active host; doing nothing"
-   fi
+   # ending message
+   logit "Resque pool terminates unexpectedly with status: $res; sleeping for $SLEEP_TIME seconds..."
 
    # sleep for another minute
    sleep $SLEEP_TIME
