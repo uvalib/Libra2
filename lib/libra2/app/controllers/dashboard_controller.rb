@@ -27,7 +27,9 @@ class DashboardController < ApplicationController
   def gather_dashboard_information
 
     @user = current_user
-    (@response, @document_list) = search_results( q: "depositor_ssim:#{current_user.email}", rows: 100 )
+    (@response, @document_list) = search_results( q: "#{Solrizer.solr_name( 'depositor' )}:#{current_user.email}",
+                                                  sort: "#{Solrizer.solr_name('system_create', :stored_sortable, type: :date)} desc",
+                                                  rows: 999 )
 
     # a draft thesis owned by me
     #puts "===> query returns #{@response.docs.empty? ? "0" : @response.docs.size} item(s)"

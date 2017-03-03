@@ -17,6 +17,7 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
+
     config.view.gallery.partials = [:index_header, :index]
     config.view.masonry.partials = [:index]
     config.view.slideshow.partials = [:index]
@@ -136,6 +137,10 @@ class CatalogController < ApplicationController
     end
 
     SolrDocument.initialize_post(config)
+
+    # maximum number of items on a page
+    # we appear to use this on the dashboard page
+    config.max_per_page = 1000
 
     # Now we see how to over-ride Solr request handler defaults, in this
     # case for a BL "search field", which is really a dismax aggregate
