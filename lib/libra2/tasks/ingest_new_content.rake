@@ -114,7 +114,7 @@ namespace :libra2 do
      end
 
      # and upload the file
-     fileset = TaskHelpers.upload_file( depositor, work, ingest_file, ingest_file )
+     fileset = TaskHelpers.upload_file( depositor, work, ingest_file, File.basename( ingest_file ) )
      fileset.date_uploaded = DateTime.now
      fileset.save!
 

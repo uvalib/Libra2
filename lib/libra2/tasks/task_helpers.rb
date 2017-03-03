@@ -114,7 +114,7 @@ module TaskHelpers
   #
   def upload_file( user, work, filename, title, visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC )
 
-    print "uploading #{filename}... "
+    print "uploading #{filename} (#{title})... "
 
     fileset = ::FileSet.new
     fileset.title << title unless title.nil?
