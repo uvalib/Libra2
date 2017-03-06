@@ -12,8 +12,6 @@ RUN /bin/bash -l -c "rvm install 2.3.0"
 RUN /bin/bash -l -c "rvm use 2.3.0 --default"
 RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
 
-ENV RAILS_ENV=production
-
 # set the timezone appropriatly
 ENV TZ=EST5EDT
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -26,7 +24,7 @@ WORKDIR /tmp
 ADD Gemfile Gemfile
 ADD Gemfile.lock Gemfile.lock
 ADD vendor/gems vendor/gems
-RUN /bin/bash -l -c "bundle install"
+RUN /bin/bash -l -c "RAILS_ENV=production bundle install"
 
 # create work directory
 ENV APP_HOME /libra2
