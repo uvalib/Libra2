@@ -32,7 +32,8 @@ WORKDIR $APP_HOME
 
 ADD . $APP_HOME
 
-RUN /bin/bash -l -c "rake assets:precompile"
+ENV SECRET_KEY_BASE=xxxx
+RUN /bin/bash -l -c "RAILS_ENV=production rake assets:precompile"
 
 # Update permissions
 RUN chown -R webservice $APP_HOME /home/webservice && chgrp -R webservice $APP_HOME /home/webservice
