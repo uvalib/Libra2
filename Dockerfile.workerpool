@@ -12,6 +12,8 @@ RUN /bin/bash -l -c "rvm install 2.3.0"
 RUN /bin/bash -l -c "rvm use 2.3.0 --default"
 RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
 
+ENV RAILS_ENV=production
+
 # set the timezone appropriatly
 ENV TZ=EST5EDT
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
