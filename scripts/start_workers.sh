@@ -34,6 +34,11 @@ while true; do
    # starting message
    logit "Starting resque pool..."
 
+   # timestamp the resque logs so we know when we started
+   TS=$(date "+%Y-%m-%d %H:%M:%S")
+   echo "=========> STARTUP AT: $TS <=========" >> $STDOUT_LOGGER
+   echo "=========> STARTUP AT: $TS <=========" >> $STDERR_LOGGER
+
    # start up the resque pool
    RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool $LOG_OPT $ENV_OPT start
    res=$?
