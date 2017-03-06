@@ -24,7 +24,7 @@ WORKDIR /tmp
 ADD Gemfile Gemfile
 ADD Gemfile.lock Gemfile.lock
 ADD vendor/gems vendor/gems
-RUN /bin/bash -l -c "RAILS_ENV=production bundle install"
+RUN /bin/bash -l -c "bundle install --without development test"
 
 # create work directory
 ENV APP_HOME /libra2
