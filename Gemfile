@@ -63,6 +63,7 @@ group :development, :test do
   gem 'rspec-rails'
 end
 
+gem 'resque', '1.25.0'
 gem 'resque-pool'
 gem 'resque-web', require: 'resque_web'
 gem 'rest-client'
