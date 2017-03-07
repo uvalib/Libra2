@@ -23,9 +23,11 @@ module CurationConcerns
         work = GenericWork.where({ id: params[:id] })
         file_sets = work[0].file_sets
         file_sets.each { |file_set|
-          logger.info file_set.to_solr
           session[:files_pending][params[:id]].delete_if { |pending|
-            pending['label'] == file_set.title[0]
+            thumb_name = "#{CurationConcerns.config.derivatives_path}/#{thumbnail_from_fileset( fileset )}"
+            thumb_exist = File.exist?(thumb_name)
+            puts "Thumbnail Exists? #{thumb_exist}"
+            pending['label'] == file_set.title[0] && thumb_exist
           }
         }
       end
@@ -102,5 +104,18 @@ module CurationConcerns
 
     # use our custom presenter
     self.show_presenter = CustomGenericWorkPresenter
+
+    def thumbnail_from_fileset( fileset )
+      return "#{dirname_from_fileset( fileset )}/#{fileset.id[8]}-thumbnail.jpeg"
+    end
+
+    def dirname_from_fileset( fileset )
+      id = fileset.id
+      return "#{id[0]}#{id[1]}/#{id[2]}#{id[3]}/#{id[4]}#{id[5]}/#{id[6]}#{id[7]}"
+    end
+
+
+
+
   end
 end
