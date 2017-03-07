@@ -23,6 +23,7 @@ module CurationConcerns
         work = GenericWork.where({ id: params[:id] })
         file_sets = work[0].file_sets
         file_sets.each { |file_set|
+          logger.info file_set.to_solr
           session[:files_pending][params[:id]].delete_if { |pending|
             pending['label'] == file_set.title[0]
           }
