@@ -7,6 +7,8 @@ log/*
 .idea
 .solr_wrapper
 .travis.yml
+.ruby-version
+.ruby-gemset
 env.*
 fcrepo4-development-data
 hostfs
