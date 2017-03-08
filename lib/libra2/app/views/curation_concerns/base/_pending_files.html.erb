@@ -1,6 +1,6 @@
 <tr class="file_set attributes currently-processing" data-file-id="<%= id %>">
   <td class="thumbnail">
-      <%= image_tag(image_path("default.png"), { alt: "No preview available" }) %>
+      <%= image_tag( "#{ActionController::Base.helpers.image_path 'default.png'}", { alt: "No preview available" }) %>
   </td>
   <td class="attribute filename">
       <%= name %>
