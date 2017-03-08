@@ -12,7 +12,6 @@ require_dependency 'libra2/lib/helpers/value_snapshot'
 require_dependency 'libra2/lib/helpers/deposit_request'
 require_dependency 'libra2/lib/helpers/deposit_authorization'
 require_dependency 'libra2/lib/helpers/etd_helper'
-require_dependency 'libra2/lib/helpers/timed_token'
 
 require 'socket'
 
@@ -24,10 +23,6 @@ namespace :libra2 do
   default_last_id = "0"
   statekey_optional = "libra2:#{Rails.env.to_s}:deposit:optional:#{Socket.gethostname}"
   statekey_sis = "libra2:#{Rails.env.to_s}:deposit:sis:#{Socket.gethostname}"
-
-  # key definitions for exclusive access
-  permission_timeout = 300   # 300 seconds
-  permissionkey = "libra2:#{Rails.env.to_s}:timed:etdimport:#{Socket.gethostname}"
 
   desc "List new optional ETD deposit requests"
   task list_new_optional_etd_deposits: :environment do |t, args|
@@ -74,14 +69,6 @@ namespace :libra2 do
   desc "Ingest new optional ETD deposit requests"
   task ingest_optional_etd_deposits: :environment do |t, args|
 
-    #puts "key: #{permissionkey}"
-    t = Helpers::TimedToken.new( permissionkey, permission_timeout )
-    if t.is_available? == false
-      puts "ERROR: cannot acqure permission token, aborting"
-      next
-    end
-    puts "Acquired permission token"
-
     count = 0
 
     #puts "key: #{statekey_optional}"
@@ -121,21 +108,10 @@ namespace :libra2 do
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
-    puts "Releasing permission token"
-    t.release
-
   end
 
   desc "Ingest new SIS ETD deposit requests"
   task ingest_sis_etd_deposits: :environment do |t, args|
-
-    #puts "key: #{permissionkey}"
-    t = Helpers::TimedToken.new( permissionkey, permission_timeout )
-    if t.is_available? == false
-      puts "ERROR: cannot acqure permission token, aborting"
-      next
-    end
-    puts "Acquired permission token"
 
     count = 0
 
@@ -176,8 +152,6 @@ namespace :libra2 do
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
-    puts "Releasing permission token"
-    t.release
   end
 
   desc "Ingest specific SIS ETD deposit request; must supply the SIS deposit request id"
