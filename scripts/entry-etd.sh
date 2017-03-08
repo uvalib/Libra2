@@ -1,8 +1,11 @@
 # remove stale pid file
 rm -f $APP_HOME/tmp/pids/server.pid > /dev/null 2>&1
 
-# run the deposit importer process
-nohup scripts/deposit_import.sh &
+# run the optional deposit importer process
+nohup scripts/optional_deposit_import.sh &
+
+# run the SIS deposit importer process
+nohup scripts/sis_deposit_import.sh &
 
 # run the SIS exporter process
 nohup scripts/sis_export.sh &

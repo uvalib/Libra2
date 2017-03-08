@@ -1,5 +1,5 @@
 #
-# Runner process to call the rake tasks that control deposit importing from SIS and optional registration
+# Runner process to call the rake tasks that control deposit importing from optional registration
 #
 
 # source the helper...
@@ -10,8 +10,8 @@ DIR=$(dirname $0)
 export NAME=$(basename $0 .sh)
 export LOGGER=$(logger_name "$NAME.log")
 
-# our sleep time, currently 5 minutes
-export SLEEPTIME=300
+# our sleep time, currently 2 minutes
+export SLEEPTIME=120
 
 # helpful message...
 logit "Starting up..."
@@ -35,18 +35,8 @@ while true; do
 
       # ending message
       logit "Optional deposit import sequence completes with status: $res"
-
-      # starting message
-      logit "Beginning SIS deposit import sequence"
-
-      # do the SIS import
-      bundle exec rake libra2:etd:ingest_sis_etd_deposits >> $LOGGER 2>&1
-      res=$?
-
-      # ending message
-      logit "SIS deposit import sequence completes with status: $res"
-
    else
+      # idle message
       logit "Not the active host; doing nothing"
    fi
 
