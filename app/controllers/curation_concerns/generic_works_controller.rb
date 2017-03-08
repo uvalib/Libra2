@@ -26,8 +26,7 @@ module CurationConcerns
           session[:files_pending][params[:id]].delete_if { |pending|
             thumb_name = "#{CurationConcerns.config.derivatives_path}/#{thumbnail_from_fileset( file_set )}"
             thumb_exist = File.exist?(thumb_name)
-            puts "Thumbnail Exists? #{thumb_exist}"
-            pending['label'] == file_set.title[0] && thumb_exist
+            (pending['label'] == file_set.title[0]) && thumb_exist
           }
         }
       end
