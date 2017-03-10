@@ -1,4 +1,5 @@
-require "resque_web"
+#require "resque_web"
+require_dependency 'sidekiq/web'
 
 Rails.application.routes.draw do
 
@@ -51,7 +52,7 @@ Rails.application.routes.draw do
   get '/api/v1/audit' => 'api_v1_audit#search', :defaults => { :format => 'json' }
 
   # add the resque-web engine
-  mount ResqueWeb::Engine => '/resque'
+  #mount ResqueWeb::Engine => '/resque'
 
   Hydra::BatchEdit.add_routes(self)
   mount Qa::Engine => '/authorities'
@@ -139,6 +140,8 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  mount Sidekiq::Web => '/sidekiq'
 
   Hydra::BatchEdit.add_routes(self)
   # This must be the very last route in the file because it has a catch-all route for 404 errors.

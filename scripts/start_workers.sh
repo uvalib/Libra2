@@ -1,5 +1,5 @@
 #
-# Start the resque-pool and restart it whenever it terminates
+# Start the worker pool
 #
 
 # source the helper...
@@ -10,41 +10,31 @@ DIR=$(dirname $0)
 NAME=$(basename $0 .sh)
 LOGGER=$(logger_name "$NAME.log")
 
-# define the appropriate resque-pool loggers
-STDOUT_LOGGER=$(logger_name "resque-pool.stdout.log")
-STDERR_LOGGER=$(logger_name "resque-pool.stderr.log")
-LOG_OPT="--stdout $STDOUT_LOGGER --stderr $STDERR_LOGGER"
+# define the appropriate logger
+LOG_FILE=$(logger_name "libra-etd-workers.log")
+LOG_OPT="-L $LOG_FILE"
 
-# set the environment as necessary
-if [ -n "$RAILS_ENV" ]; then
-   ENV_OPT="--environment $RAILS_ENV"
-else
-   ENV_OPT=""
-fi
+# define the number of workers
+WORKER_COUNT=10
+WORKERS_OPT="-c $WORKER_COUNT"
 
-# define the time to sleep before attempting a restart
-SLEEP_TIME=60
+# define the sleep time in the event of a crash
+SLEEP_TIME=15
 
 # helpful message...
 logit "Starting up..."
 
-# forever...
 while true; do
 
    # starting message
-   logit "Starting resque pool..."
+   logit "Starting sidekiq with $WORKER_COUNT workers..."
 
-   # timestamp the resque logs so we know when we started
-   TS=$(date "+%Y-%m-%d %H:%M:%S")
-   echo "=========> STARTUP AT: $TS <=========" >> $STDOUT_LOGGER
-   echo "=========> STARTUP AT: $TS <=========" >> $STDERR_LOGGER
-
-   # start up the resque pool
-   RUN_AT_EXIT_HOOKS=true TERM_CHILD=1 resque-pool $LOG_OPT $ENV_OPT start
+   # start up sidekiq
+   sidekiq $LOG_OPT $WORKERS_OPT
    res=$?
 
    # ending message
-   logit "Resque pool terminates unexpectedly with status: $res; sleeping for $SLEEP_TIME seconds..."
+   logit "Sidekiq terminates unexpectedly with status: $res; sleeping for $SLEEP_TIME seconds..."
 
    # sleep for another minute
    sleep $SLEEP_TIME

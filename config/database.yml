@@ -13,6 +13,7 @@ default: &default
   adapter: mysql2
   encoding: utf8
   host: mysqldev.lib.virginia.edu
+  pool: 10
 
 development:
   <<: *default

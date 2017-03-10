@@ -45,15 +45,15 @@ group :development do
   gem 'web-console', '~> 2.0'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
+#  gem 'spring'
 end
 
 gem 'sufia', '7.1.0'
 gem 'curation_concerns', '1.3.3', :path => 'vendor/gems/curation_concerns-1.3.3'
 
-group :development, :test do
+#group :development, :test do
   #gem 'solr_wrapper', '>= 0.3'
-end
+#end
 
 gem 'rsolr', '~> 1.0'
 gem 'devise'
@@ -63,9 +63,8 @@ group :development, :test do
   gem 'rspec-rails'
 end
 
-gem 'resque', '1.25.0'
-gem 'resque-pool'
-gem 'resque-web', require: 'resque_web'
+gem 'sidekiq'
+
 gem 'rest-client'
 gem 'net-scp'
 gem 'json', '1.8.3'
