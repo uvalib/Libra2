@@ -27,7 +27,7 @@ namespace :libra2 do
       next
     end
 
-    ThesisMailers.optional_thesis_can_be_submitted( user.email, user.display_name ).deliver_now
+    ThesisMailers.optional_thesis_can_be_submitted( user.email, user.display_name ).deliver_later
 
     puts "Email sent to #{user.email} successfully"
 
@@ -50,7 +50,7 @@ namespace :libra2 do
       next
     end
 
-    ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name ).deliver_now
+    ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name ).deliver_later
 
     puts "Email sent to #{user.email} successfully"
 
@@ -73,7 +73,7 @@ namespace :libra2 do
       next
     end
 
-    ThesisMailers.thesis_submitted_author( work, "#{work.author_first_name} #{work.author_last_name}" ).deliver_now
+    ThesisMailers.thesis_submitted_author( work, "#{work.author_first_name} #{work.author_last_name}" ).deliver_later
 
     puts "Email sent to #{work.creator} successfully"
 
@@ -107,7 +107,7 @@ namespace :libra2 do
       next
     end
 
-    ThesisMailers.thesis_submitted_registrar( work, "#{work.author_first_name} #{work.author_last_name}", registrar.display_name, registrar.email ).deliver_now
+    ThesisMailers.thesis_submitted_registrar( work, "#{work.author_first_name} #{work.author_last_name}", registrar.display_name, registrar.email ).deliver_later
 
     puts "Email sent to #{registrar.email} successfully"
 

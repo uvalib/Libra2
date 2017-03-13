@@ -71,7 +71,7 @@ class DashboardController < ApplicationController
 
   # GET /test_email
   def test_email
-    TestMailers.email().deliver_now
+    TestMailers.email().deliver_later
   end
 
   # GET /computing_id
