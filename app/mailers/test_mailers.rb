@@ -1,6 +1,6 @@
 class TestMailers < ActionMailer::Base
 
-	def email()
-		mail(to: EXCEPTION_RECIPIENTS, from: MAIL_SENDER, subject: "Libra2 Test Email")
+	def email( to, from, subject )
+		mail( to: to, from: from, subject: subject )
 	end
 end

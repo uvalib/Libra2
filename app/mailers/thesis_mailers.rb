@@ -15,27 +15,22 @@ class ThesisMailers < ActionMailer::Base
 	  end
   end
 
-	def optional_thesis_can_be_submitted( whom, name )
+	def optional_thesis_can_be_submitted( to, sender_name, from )
 		subject = 'Access to upload your approved thesis to LIBRA'
-		to = whom
-		from = MAIL_SENDER
-		logger.info "Sending email (optional available); to: #{to} (#{name}), from: #{from}, subject: #{subject}"
-
-		@name = name
+		logger.info "Sending email (optional available); to: #{to} (#{sender_name}), from: #{from}, subject: #{subject}"
+		@name = sender_name
     mail( to: to, from: from, subject: subject )
 	end
 
-	def sis_thesis_can_be_submitted( whom, name )
+	def sis_thesis_can_be_submitted( to, sender_name, from )
 		subject = 'Access to upload your approved thesis or dissertation to LIBRA'
-		to = whom
-		from = MAIL_SENDER
-		logger.info "Sending email (SIS available); to: #{to} (#{name}), from: #{from}, subject: #{subject}"
+		logger.info "Sending email (SIS available); to: #{to} (#{sender_name}), from: #{from}, subject: #{subject}"
 
-		@name = name
+		@name = sender_name
 		mail( to: to, from: from, subject: subject )
 	end
 
-	def thesis_submitted_author( work, author )
+	def thesis_submitted_author( work, author, from )
 		@work = work
 		@advisee = author
 		@availability = visibility_string(work)
@@ -44,13 +39,12 @@ class ThesisMailers < ActionMailer::Base
 
 		subject = "Successful deposit of your thesis#{ " or dissertation" if @is_sis_thesis}"
 		to = work.creator
-		from = MAIL_SENDER
 		logger.info "Sending email (success to author); to: #{to} (#{author}), from: #{from}, subject: #{subject}"
 
 		mail( to: to, from: from, subject: subject )
 	end
 
-	def thesis_submitted_registrar( work, author, registrar_name, registrar_email )
+	def thesis_submitted_registrar( work, author, registrar_name, registrar_email, from )
 		@work = work
 		@advisee = author
 		@advisor = registrar_name
@@ -59,7 +53,6 @@ class ThesisMailers < ActionMailer::Base
 
 		subject = 'Successful deposit of your student\'s thesis'
 		to = registrar_email
-		from = MAIL_SENDER
 		logger.info "Sending email (success to registrar); to: #{to} (#{registrar_name}), from: #{from}, subject: #{subject}"
 
 		mail( to: to, from: from, subject: subject )

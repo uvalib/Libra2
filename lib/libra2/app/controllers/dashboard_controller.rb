@@ -71,7 +71,7 @@ class DashboardController < ApplicationController
 
   # GET /test_email
   def test_email
-    TestMailers.email().deliver_later
+    TestMailers.email( EXCEPTION_RECIPIENTS, MAIL_SENDER, 'Libra2 Test Email' ).deliver_later
   end
 
   # GET /computing_id

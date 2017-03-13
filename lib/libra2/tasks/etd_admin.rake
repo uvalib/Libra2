@@ -90,7 +90,7 @@ namespace :libra2 do
         req = Helpers::DepositRequest.create( r )
         if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
 			     user = Helpers::EtdHelper::lookup_user( req.who )
-           ThesisMailers.optional_thesis_can_be_submitted( user.email, user.display_name ).deliver_later
+           ThesisMailers.optional_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later
            puts "Created placeholder (optional) ETD for #{req.who} (request #{req.id})"
            count += 1
         else
@@ -134,7 +134,7 @@ namespace :libra2 do
         req = Helpers::DepositAuthorization.create( r )
         if Helpers::EtdHelper::new_etd_from_sis_request( req ) == true
           user = Helpers::EtdHelper::lookup_user( req.who )
-          ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name ).deliver_later
+          ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later
           puts "Created placeholder (SIS) ETD for #{req.who} (request #{req.id})"
           count += 1
         else
@@ -171,7 +171,7 @@ namespace :libra2 do
         req = Helpers::DepositAuthorization.create( r )
         if Helpers::EtdHelper::new_etd_from_sis_request( req ) == true
           user = Helpers::EtdHelper::lookup_user( req.who )
-          ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name ).deliver_later
+          ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later
           puts "Created placeholder (SIS) ETD for #{req.who} (request #{req.id})"
         else
           puts "ERROR ingesting sis authorization #{req.id} for #{req.who}; ignoring"
