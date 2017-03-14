@@ -130,24 +130,25 @@ class APIV1WorksController < APIBaseController
     start = numeric( params[:start], DEFAULT_START )
     limit = numeric( params[:limit], DEFAULT_LIMIT )
 
+    constraints = []
     field = search.author_email
     if search.field_set?( :author_email )
-      return batched_get( { author_email: field }, start, limit )
+      constraints << "author_email_tesim:#{field}"
     end
 
     field = search.create_date
     if search.field_set?( :create_date )
-      return batched_get( "system_create_dtsi:#{search.make_solr_date_search( field )}", start, limit )
+      constraints << "system_create_dtsi:#{search.make_solr_date_search( field )}"
     end
 
     field = search.depositor_email
     if search.field_set?( :depositor_email )
-      return batched_get( { depositor: field }, start, limit )
+      constraints << "depositor_tesim:#{field}"
     end
 
     field = search.modified_date
     if search.field_set?( :modified_date )
-      return batched_get( "system_modified_dtsi:#{search.make_solr_date_search( field )}", start, limit )
+      constraints << "system_modified_dtsi:#{search.make_solr_date_search( field )}"
     end
 
     field = search.status
@@ -157,15 +158,15 @@ class APIV1WorksController < APIBaseController
       else
          draft = 'false'
       end
-      return batched_get( { draft: draft }, start, limit )
+      constraints << "draft_tesim:#{draft}"
     end
 
     field = search.work_source
     if search.field_set?( :work_source )
-      return batched_get( "work_source_tesim:#{field}", start, limit )
+      constraints << "work_source_tesim:#{field}"
     end
 
-    return []
+    return batched_get( constraints, start, limit )
   end
 
   def work_transform( solr_works )
