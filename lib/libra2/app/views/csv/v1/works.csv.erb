@@ -33,8 +33,6 @@
               ] -%>
 <%= CSV.generate_line headers %>
 <%- @records.each do |rec| -%>
-    <% next if rec.is_draft? %>
-
    <%= raw( CSV.generate_line( [ rec.id,
                             rec.depositor_email,
                             rec.author_email,
