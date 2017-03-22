@@ -63,7 +63,9 @@ group :development, :test do
   gem 'rspec-rails'
 end
 
+# sidekiq worker support
 gem 'sidekiq'
+gem 'sidekiq-failures'
 
 gem 'rest-client'
 gem 'net-scp'
