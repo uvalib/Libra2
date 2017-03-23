@@ -516,6 +516,7 @@ module IngestHelpers
   def set_embargo_for_type(embargo )
     return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC if embargo.blank?
     return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED if embargo == 'uva'
+    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE if embargo == 'uetd'
 
     # none of the above
     return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
