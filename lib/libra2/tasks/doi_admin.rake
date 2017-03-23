@@ -13,22 +13,37 @@ namespace :libra2 do
   namespace :doi do
 
   #
-  # list DOIs for all works from the specified user
+  # list DOIs for all works
   #
-  desc "List DOI's for all my works; optionally provide depositor email"
-  task list_doi_my_works: :environment do |t, args|
-
-     who = ARGV[ 1 ]
-     who = TaskHelpers.default_user_email if who.nil?
-     task who.to_sym do ; end
+  desc "List DOI's for all works"
+  task list_doi_all_works: :environment do |t, args|
 
      count = 0
-     GenericWork.search_in_batches( {depositor: who} ) do |group|
+     GenericWork.search_in_batches( {} ) do |group|
        TaskHelpers.batched_process_solr_works( group, &method( :show_work_doi ) )
        count += group.size
      end
 
      puts "Listed #{count} work(s)"
+  end
+
+  #
+  # list DOIs for all works from the specified user
+  #
+  desc "List DOI's for all my works; optionally provide depositor email"
+  task list_doi_my_works: :environment do |t, args|
+
+    who = ARGV[ 1 ]
+    who = TaskHelpers.default_user_email if who.nil?
+    task who.to_sym do ; end
+
+    count = 0
+    GenericWork.search_in_batches( {depositor: who} ) do |group|
+      TaskHelpers.batched_process_solr_works( group, &method( :show_work_doi ) )
+      count += group.size
+    end
+
+    puts "Listed #{count} work(s)"
   end
 
   #
