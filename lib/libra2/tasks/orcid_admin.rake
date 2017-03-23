@@ -14,6 +14,7 @@ namespace :libra2 do
     count = 0
     status, r = ServiceClient::OrcidAccessClient.instance.get_all( )
     if ServiceClient::OrcidAccessClient.instance.ok?( status )
+      r.sort_by! { |details| details['cid'] }
       r.each do |details|
         puts "#{details['cid']} -> #{details['orcid']}"
         count += 1
