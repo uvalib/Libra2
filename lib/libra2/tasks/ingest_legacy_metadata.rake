@@ -226,9 +226,15 @@ namespace :libra2 do
      embargo_type = solr_doc.at_path( 'release_to_t[0]' )
      payload[ :embargo_type ] = embargo_type if embargo_type.present?
      release_date = solr_doc.at_path( 'embargo_embargo_release_date_t[0]' )
-     payload[ :embargo_release_date ] = release_date if release_date.present?
-     payload[ :embargo_period ] =
-         IngestHelpers.estimate_embargo_period( issued_date, release_date ) if issued_date.present? && release_date.present?
+     # if we find a release date them apply the embargo
+     if release_date.present?
+       payload[ :embargo_release_date ] = release_date
+       payload[ :embargo_period ] =
+         IngestHelpers.estimate_embargo_period( issued_date, release_date ) if issued_date.present?
+     else
+       #otherwise, assume no-embargo
+       payload.delete( :embargo_type )
+     end
 
      # document source
      payload[ :source ] = solr_doc.at_path( 'id' )

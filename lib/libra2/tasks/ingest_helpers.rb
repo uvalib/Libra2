@@ -171,7 +171,8 @@ module IngestHelpers
     end
 
     # ensure an embargo release date is defined if specified
-    if payload[:embargo_type].blank? == false && payload[:embargo_type] == 'uva' && payload[:embargo_release_date].blank?
+    if embargo_for_type( payload[:embargo_type] ) != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC &&
+       payload[:embargo_release_date].blank?
       errors << 'unspecified embargo release date for embargo item'
     end
 
@@ -224,9 +225,9 @@ module IngestHelpers
       w.date_published = payload[ :issued ] if payload[ :issued ]
 
       # embargo attributes
-      w.visibility = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
-      w.embargo_state = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
-      w.visibility_during_embargo = IngestHelpers.set_embargo_for_type( payload[:embargo_type ] )
+      w.visibility = IngestHelpers.embargo_for_type( payload[:embargo_type ] )
+      w.embargo_state = IngestHelpers.embargo_for_type( payload[:embargo_type ] )
+      w.visibility_during_embargo = IngestHelpers.embargo_for_type( payload[:embargo_type ] )
       w.embargo_end_date = payload[ :embargo_release_date ] if payload[ :embargo_release_date ]
       w.embargo_period = payload[ :embargo_period ] if payload[ :embargo_period ]
 
@@ -513,7 +514,7 @@ module IngestHelpers
   #
   # Determine the embargo type from the metadata
   #
-  def set_embargo_for_type(embargo )
+  def embargo_for_type( embargo )
     return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC if embargo.blank?
     return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED if embargo == 'uva'
     return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE if embargo == 'uetd'
