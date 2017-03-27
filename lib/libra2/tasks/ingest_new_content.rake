@@ -65,30 +65,6 @@ namespace :libra2 do
 
   end
 
-  desc "Purge new ingest ids; must provide the ingest directory"
-  task purge_new_ingest_id: :environment do |t, args|
-
-    ingest_dir = ARGV[ 1 ]
-    if ingest_dir.nil?
-      puts "ERROR: no ingest directory specified, aborting"
-      next
-    end
-    task ingest_dir.to_sym do ; end
-
-    # get the list of items to be ingested
-    ingests = IngestHelpers.get_ingest_list(ingest_dir )
-    if ingests.empty?
-      puts "ERROR: ingest directory does not contain contains any items, aborting"
-      next
-    end
-
-    ingests.each_with_index do | dirname, ix |
-      IngestHelpers.clear_ingest_id(File.join(ingest_dir, dirname ) )
-    end
-
-    puts "done"
-  end
-
   #
   # helpers
   #

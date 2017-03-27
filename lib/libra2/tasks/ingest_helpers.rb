@@ -233,7 +233,7 @@ module IngestHelpers
 
       # assume standard and published work type
       w.work_type = GenericWork::WORK_TYPE_THESIS
-      w.draft = 'false'
+      w.draft = 'true'
 
       w.publisher = payload[ :publisher ] if payload[ :publisher ]
       w.department = payload[ :department ] if payload[ :department ]
