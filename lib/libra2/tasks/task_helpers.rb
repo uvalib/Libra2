@@ -292,7 +292,7 @@ module TaskHelpers
     rescue => e
     end
 
-    return res.sort { |x, y| directory_sort_order( x, y ) }
+    return res
   end
 
   #

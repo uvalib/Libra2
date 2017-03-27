@@ -276,7 +276,10 @@ module IngestHelpers
   # get the list of new items from the work directory
   #
   def get_ingest_list( dirname )
-    return TaskHelpers.get_directory_list( dirname, /^.*\.xml$/ )
+    il = TaskHelpers.get_directory_list( dirname, /^.*\.workset$/ )
+
+    # sort alphanumerically
+    return il.sort
   end
 
   #
@@ -291,7 +294,10 @@ module IngestHelpers
   # get the list of Libra extract items from the work directory
   #
   def get_legacy_ingest_list(dirname )
-    return TaskHelpers.get_directory_list( dirname, /^extract./ )
+    il = TaskHelpers.get_directory_list( dirname, /^extract./ )
+
+    # sort by directory order
+    return il.sort { |x, y| TaskHelpers.directory_sort_order( x, y ) }
   end
 
   #
@@ -303,6 +309,25 @@ module IngestHelpers
     return json_doc, xml_doc
   end
 
+  #
+  # get the metadata filename and the asset filename(s) from the workset
+  #
+  def load_workset( filename )
+
+     md_filename = ''
+     asset_files = []
+     File.open( filename, 'r').each do |line|
+       if /^metadata : /.match( line )
+         md_filename = /^metadata : (.*)$/.match( line ).captures[ 0 ]
+       end
+
+       if /^asset : /.match( line )
+         asset_files << /^asset : (.*)$/.match( line ).captures[ 0 ]
+       end
+     end
+
+     return md_filename, asset_files
+  end
   #
   # load the hash of default attributes
   #

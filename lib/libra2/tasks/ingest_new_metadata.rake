@@ -75,7 +75,7 @@ namespace :libra2 do
     total = ingests.size
     ingests.each_with_index do | filename, ix |
       next if ix < start_ix
-      ok = ingest_new_metadata( defaults, user, File.join( ingest_dir, filename ), ix + 1, total )
+      ok = ingest_new_metadata( defaults, user, ingest_dir, filename, ix + 1, total )
       ok == true ? success_count += 1 : error_count += 1
       break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
     end
@@ -111,11 +111,14 @@ namespace :libra2 do
   #
 
   #
-  # convert an XML file into a new metadata record
+  # convert an XML file into a`` new metadata record
   #
-  def ingest_new_metadata( defaults, depositor, filename, current, total )
+  def ingest_new_metadata( defaults, depositor, dirname, wsname, current, total )
 
-     xml_doc = IngestHelpers.load_ingest_content( filename )
+     filename = File.join( dirname, wsname )
+     metadata_file, _ = IngestHelpers.load_workset( filename )
+
+     xml_doc = IngestHelpers.load_ingest_content( File.join( dirname, metadata_file ) )
      #id = solr_doc['id']
 
      puts "Ingesting #{current} of #{total}: #{filename}..."

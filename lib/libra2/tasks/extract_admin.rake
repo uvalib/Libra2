@@ -263,7 +263,10 @@ namespace :libra2 do
   # get the list of SOLR extract items from the work directory
   #
   def get_extract_list(dirname )
-    return TaskHelpers.get_directory_list( dirname, /^extract./ )
+    el = TaskHelpers.get_directory_list( dirname, /^extract./ )
+
+    # sort by directory order
+    return el.sort { |x, y| TaskHelpers.directory_sort_order( x, y ) }
   end
 
   #

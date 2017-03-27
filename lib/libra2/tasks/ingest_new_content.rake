@@ -57,7 +57,7 @@ namespace :libra2 do
     total = ingests.size
     ingests.each_with_index do | filename, ix |
       next if ix < start_ix
-      ok = ingest_new_content( user, File.join( ingest_dir, filename ), ix + 1, total )
+      ok = ingest_new_content( user, ingest_dir, filename, ix + 1, total )
       ok == true ? success_count += 1 : error_count += 1
       break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
     end
@@ -96,10 +96,12 @@ namespace :libra2 do
   #
   # add new content to an existing metadata record
   #
-  def ingest_new_content( depositor, filename, current, total )
+  def ingest_new_content( depositor, dirname, wsname, current, total )
 
-     ingest_file = filename.gsub( '.xml', '' )
-     puts "Ingesting #{current} of #{total}: #{ingest_file} ..."
+     filename = File.join( dirname, wsname )
+     _, asset_filenames = IngestHelpers.load_workset( filename )
+
+     puts "Ingesting #{current} of #{total}: #{filename} ..."
 
      work_id = IngestHelpers.get_ingest_id( filename )
      if work_id.blank?
@@ -113,10 +115,17 @@ namespace :libra2 do
        return false
      end
 
-     # and upload the file
-     fileset = TaskHelpers.upload_file( depositor, work, ingest_file, File.basename( ingest_file ) )
-     fileset.date_uploaded = DateTime.now
-     fileset.save!
+     asset_filenames.each_with_index do |f, ix|
+        puts "  asset #{ix + 1} of #{asset_filenames.length}: #{f}"
+
+        # handle dry running
+        next if ENV[ 'DRY_RUN' ]
+
+        # and upload the file
+        fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, f ), f )
+        fileset.date_uploaded = DateTime.now
+        fileset.save!
+     end
 
      return true
   end

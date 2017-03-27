@@ -152,7 +152,10 @@ namespace :libra2 do
   end
 
   def get_import_list( dirname )
-    return TaskHelpers.get_directory_list( dirname, /^work./ )
+    il = TaskHelpers.get_directory_list( dirname, /^work./ )
+
+    # sort by directory order
+    return il.sort { |x, y| TaskHelpers.directory_sort_order( x, y ) }
   end
 
   def get_file_list( dirname )
