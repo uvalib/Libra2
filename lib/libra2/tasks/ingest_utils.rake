@@ -160,7 +160,52 @@ namespace :libra2 do
 
   desc "Finalize legacy ingest works; must provide the ingest directory"
   task finalize_legacy_ingests: :environment do |t, args|
-    puts "==> ERROR NOT IMPLEMENTED"
+
+    ingest_dir = ARGV[ 1 ]
+    if ingest_dir.nil?
+      puts "ERROR: no ingest directory specified, aborting"
+      next
+    end
+    task ingest_dir.to_sym do ; end
+
+    # get the list of items to be ingested
+    ingests = IngestHelpers.get_legacy_ingest_list( ingest_dir )
+    if ingests.empty?
+      puts "ERROR: ingest directory does not contain contains any items, aborting"
+      next
+    end
+
+    count = 0
+    ingests.each_with_index do | dirname, ix |
+      work_id = IngestHelpers.get_legacy_ingest_id( File.join( ingest_dir, dirname ) )
+
+      if work_id.blank?
+        puts "ERROR: no work id for #{filename}, continuing anyway"
+        next
+      end
+
+      work = TaskHelpers.get_work_by_id( work_id )
+      if work.nil?
+        puts "ERROR: work #{work_id} does not exist, continuing anyway"
+        next
+      end
+
+      # only finalize draft items...
+      if work.is_draft?
+        puts "Finalizing #{ix + 1} of #{ingests.length} (#{work_id})..."
+        work.draft = 'false'
+
+        if update_work_unassigned_doi( work ) == true
+          count += 1
+        end
+
+      else
+        puts "Work #{ix + 1} of #{ingests.length} (#{work_id}) already finalized, ignoring"
+      end
+
+    end
+
+    puts "Finalized #{count} of #{ingests.length} ingest work(s)"
   end
 
   end   # namespace ingest
