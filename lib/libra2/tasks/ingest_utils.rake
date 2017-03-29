@@ -140,8 +140,8 @@ namespace :libra2 do
         next
       end
 
-      # only finalize draft items...
-      if work.is_draft?
+      # only finalize items without DOI's...
+      if work.identifier.blank?
          puts "Finalizing #{ix + 1} of #{ingests.length} (#{work_id})..."
 
          if update_work_unassigned_doi( work ) == true
@@ -149,7 +149,7 @@ namespace :libra2 do
          end
 
       else
-        puts "Work #{ix + 1} of #{ingests.length} (#{work_id}) already finalized, ignoring"
+        puts "Work #{ix + 1} of #{ingests.length} (#{work_id}) already has a DOI, ignoring"
       end
 
     end
@@ -189,8 +189,8 @@ namespace :libra2 do
         next
       end
 
-      # only finalize draft items...
-      if work.is_draft?
+      # only finalize items without DOI's...
+      if work.identifier.blank?
         puts "Finalizing #{ix + 1} of #{ingests.length} (#{work_id})..."
 
         if update_work_unassigned_doi( work ) == true
@@ -198,7 +198,7 @@ namespace :libra2 do
         end
 
       else
-        puts "Work #{ix + 1} of #{ingests.length} (#{work_id}) already finalized, ignoring"
+        puts "Work #{ix + 1} of #{ingests.length} (#{work_id}) already has a DOI, ignoring"
       end
 
     end
