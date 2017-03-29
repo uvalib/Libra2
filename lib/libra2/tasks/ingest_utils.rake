@@ -143,7 +143,6 @@ namespace :libra2 do
       # only finalize draft items...
       if work.is_draft?
          puts "Finalizing #{ix + 1} of #{ingests.length} (#{work_id})..."
-         work.draft = 'false'
 
          if update_work_unassigned_doi( work ) == true
             count += 1
@@ -193,7 +192,6 @@ namespace :libra2 do
       # only finalize draft items...
       if work.is_draft?
         puts "Finalizing #{ix + 1} of #{ingests.length} (#{work_id})..."
-        work.draft = 'false'
 
         if update_work_unassigned_doi( work ) == true
           count += 1
