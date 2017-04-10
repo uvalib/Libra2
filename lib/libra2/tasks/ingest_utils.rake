@@ -126,6 +126,7 @@ namespace :libra2 do
     end
 
     count = 0
+    errors = 0
     ingests.each_with_index do | filename, ix |
       work_id = IngestHelpers.get_ingest_id( File.join( ingest_dir, filename ) )
 
@@ -146,6 +147,8 @@ namespace :libra2 do
 
          if update_work_unassigned_doi( work ) == true
             count += 1
+         else
+           errors += 1
          end
 
       else
@@ -154,7 +157,7 @@ namespace :libra2 do
 
     end
 
-    puts "Finalized #{count} of #{ingests.length} ingest work(s)"
+    puts "Finalized #{count} of #{ingests.length} ingest work(s). #{errors} error(s) encountered."
   end
 
   desc "Finalize legacy ingest works; must provide the ingest directory"
@@ -175,6 +178,7 @@ namespace :libra2 do
     end
 
     count = 0
+    errors = 0
     ingests.each_with_index do | dirname, ix |
       work_id = IngestHelpers.get_legacy_ingest_id( File.join( ingest_dir, dirname ) )
 
@@ -195,6 +199,8 @@ namespace :libra2 do
 
         if update_work_unassigned_doi( work ) == true
           count += 1
+        else
+          errors += 1
         end
 
       else
@@ -203,7 +209,7 @@ namespace :libra2 do
 
     end
 
-    puts "Finalized #{count} of #{ingests.length} ingest work(s)"
+    puts "Finalized #{count} of #{ingests.length} ingest work(s). #{errors} error(s) encountered."
   end
 
   desc "Delete new ingest works; must provide the ingest directory"
