@@ -32,14 +32,17 @@ WORKDIR $APP_HOME
 
 ADD . $APP_HOME
 
+RUN /bin/bash -l -c "rake assets:precompile"
+
 # Update permissions
 RUN chown -R webservice $APP_HOME /home/webservice && chgrp -R webservice $APP_HOME /home/webservice
 
 # Specify the user
 USER webservice
 
-# Define startup script
-CMD /bin/bash -l -c "scripts/entry-workerpool.sh"
+# Define port and startup script
+EXPOSE 3000
+CMD /bin/bash -l -c "scripts/entry.sh"
 
 # move in the profile
 COPY data/container_bash_profile /home/webservice/.profile
