@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Runner process to call the rake task that controls the import from SIS
 #

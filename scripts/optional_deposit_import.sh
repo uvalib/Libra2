@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Runner process to call the rake tasks that control deposit importing from optional registration
 #

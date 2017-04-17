@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # remove stale pid file
 rm -f $APP_HOME/tmp/pids/server.pid > /dev/null 2>&1
 

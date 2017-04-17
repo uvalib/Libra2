@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Runner process to call the rake task that rolls up the daily download and view statistics
 #
