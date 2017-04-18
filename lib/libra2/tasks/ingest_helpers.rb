@@ -377,11 +377,16 @@ module IngestHelpers
   #
   def get_legacy_ingest_id( dirname )
 
-    f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
-    File.open( f, 'r') do |file|
-      id = file.read( )
-      return id
+    begin
+      f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
+      File.open( f, 'r') do |file|
+        id = file.read( )
+        return id
+      end
+    rescue => e
     end
+    return ''
+
   end
 
   #
@@ -389,10 +394,16 @@ module IngestHelpers
   #
   def set_legacy_ingest_id( dirname, id )
 
-    f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
-    File.open( f, 'w') do |file|
-      file.write( id )
+    begin
+      f = File.join( dirname, TaskHelpers::INGEST_ID_FILE )
+      File.open( f, 'w') do |file|
+        file.write( id )
+      end
+      return true
+    rescue => e
     end
+    return false
+
   end
 
   #

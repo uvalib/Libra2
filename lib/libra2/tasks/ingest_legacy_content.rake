@@ -78,6 +78,10 @@ namespace :libra2 do
      puts "Ingesting #{current} of #{total}: #{File.basename( dirname )} (#{assets.length} assets)..."
 
      work_id = IngestHelpers.get_legacy_ingest_id(dirname )
+     if work_id.blank?
+       puts "ERROR: no work id for #{File.basename( dirname )}, continuing anyway"
+       return false
+     end
 
      work = TaskHelpers.get_work_by_id( work_id )
      if work.nil?
