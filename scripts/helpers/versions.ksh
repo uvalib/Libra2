@@ -52,13 +52,16 @@ access_service "tokenauth service" $(endpoint_url $endpoint 8200)
 # user info service
 access_service "userinfo service" $(endpoint_url $endpoint 8240)
 
-# libra2
-access_service "libra2 webapp" $(endpoint_url $endpoint 8040)
+# libra-etd
+access_service "libra-etd webapp" $(endpoint_url $endpoint 8040)
+
+# libra-oc
+access_service "libra-oc webapp" $(endpoint_url $endpoint 8030)
 
 # deposit registration
 access_service "depositreg webapp" $(endpoint_url $endpoint 8221)
 
-# libra2 administration
-access_service "libra2 admin webapp" $(endpoint_url $endpoint 8222)
+# libra-etd administration
+access_service "libra-etd admin webapp" $(endpoint_url $endpoint 8222)
 
 exit 0
