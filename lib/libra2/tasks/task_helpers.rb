@@ -134,7 +134,7 @@ module TaskHelpers
   #
   def delete_fileset( user, fileset )
 
-    print "deleting file set #{fileset.id}... "
+    print "deleting file set #{fileset.id} (#{fileset.label})... "
 
     file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, user )
     file_actor.destroy
