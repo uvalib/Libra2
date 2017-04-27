@@ -28,8 +28,8 @@ namespace :libra2 do
 
       end
 
-      puts "Listed #{count} new ingested work(s)"
     end
+    puts "Listed #{count} new ingested work(s)"
   end
 
 
@@ -50,9 +50,8 @@ namespace :libra2 do
         end
 
       end
-
-      puts "Listed #{count} legacy ingested work(s)"
     end
+    puts "Listed #{count} legacy ingested work(s)"
 
   end
 

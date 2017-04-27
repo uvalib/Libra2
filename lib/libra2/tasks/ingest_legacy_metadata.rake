@@ -101,8 +101,8 @@ namespace :libra2 do
 
       end
 
-      puts "Listed #{count} legacy work(s)"
     end
+    puts "Listed #{count} legacy work(s)"
 
   end
 
