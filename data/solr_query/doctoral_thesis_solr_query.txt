@@ -1,1 +1,1 @@
-released_facet:true AND has_model_s:"info:fedora/afmodel:HydrangeaDoctoralDissertation" AND read_access_group_t:[* TO *] NOT note_t:"*Jefferson Trust*"
+released_facet:true AND has_model_s:"info:fedora/afmodel:HydrangeaDoctoralDissertation" AND read_access_group_t:[* TO *]
