@@ -105,6 +105,9 @@ module ServiceClient
        h['publication_date'] = work.date_published if work.date_published
        h['publication_milestone'] = work.degree if work.degree
        h['type'] = 'Text'
+
+       # open content uses the crossref schema
+       h['schema'] = 'crossref'
        h.to_json
      end
 
