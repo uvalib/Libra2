@@ -65,6 +65,36 @@ task list_by_id: :environment do |t, args|
   TaskHelpers.show_generic_work(work )
 end
 
+desc "Work counts by depositor"
+task count_by_depositor: :environment do |t, args|
+
+  depositors = {}
+  count = 0
+  GenericWork.search_in_batches( {} ) do |group|
+    group.each do |gw_solr|
+      begin
+        gw = GenericWork.find( gw_solr['id'] )
+        if depositors[ gw.depositor ].nil?
+          depositors[ gw.depositor ] = 1
+        else
+          depositors[ gw.depositor ] = depositors[ gw.depositor ] + 1
+        end
+      rescue => e
+        puts e
+      end
+    end
+
+    count += group.size
+  end
+
+  # output a summary...
+  depositors.keys.sort.each do |k|
+    puts " #{k} => #{depositors[k]} work(s)"
+  end
+
+  puts "Summerized #{count} work(s)"
+end
+
 desc "Delete all works"
 task del_all_works: :environment do |t, args|
 
