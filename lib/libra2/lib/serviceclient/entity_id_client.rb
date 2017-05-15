@@ -94,20 +94,26 @@ module ServiceClient
      # construct the request payload
      #
      def construct_payload( work )
-       h = {}
-       h['url'] = fully_qualified_work_url( work.id )
-       h['title'] = work.title.join( ' ' ) if work.title
-       h['publisher'] = work.publisher if work.publisher
-       h['creator_firstname'] = work.author_first_name if work.author_first_name
-       h['creator_lastname'] = work.author_last_name if work.author_last_name
-       h['creator_department'] = work.department if work.department
-       h['creator_institution'] = work.author_institution if work.author_institution
-       h['publication_date'] = work.date_published if work.date_published
-       h['publication_milestone'] = work.degree if work.degree
-       h['type'] = 'Text'
 
-       # open content uses the crossref schema
-       h['schema'] = 'crossref'
+       h = {}
+       # libra etd uses the crossref schema
+       schema = 'crossref'
+       h['schema'] = schema
+       h[schema] = {}
+
+       h[schema]['url'] = fully_qualified_work_url( work.id )
+       h[schema]['title'] = work.title.join( ' ' ) if work.title
+       h[schema]['publisher'] = work.publisher if work.publisher
+       h[schema]['creator_firstname'] = work.author_first_name if work.author_first_name
+       h[schema]['creator_lastname'] = work.author_last_name if work.author_last_name
+       h[schema]['creator_department'] = work.department if work.department
+       h[schema]['creator_institution'] = work.author_institution if work.author_institution
+       h[schema]['publication_date'] = work.date_published if work.date_published
+       h[schema]['publication_milestone'] = work.degree if work.degree
+       h[schema]['type'] = 'Text'
+
+       #puts "==> #{h.to_json}"
+
        h.to_json
      end
 
