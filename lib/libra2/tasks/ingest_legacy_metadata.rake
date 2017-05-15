@@ -16,7 +16,7 @@ namespace :libra2 do
   # MAX_COUNT    - Maximum number of items to process
   # DUMP_PAYLOAD - Output the entire document metadata before saving
   # DRY_RUN      - Dont actually create the items
-  # NO_DOI       - Dont assign a DOI to the created items
+  # NO_WARN      - Suppress warning behavior
   #
 
   #
@@ -54,6 +54,7 @@ namespace :libra2 do
       next
     end
 
+    puts "Loaded #{ingests.length} items for ingest..."
     # load any default attributes
     defaults = IngestHelpers.load_config_file( defaults_file )
 
@@ -141,7 +142,7 @@ namespace :libra2 do
        return false
      end
 
-     if warnings.empty? == false
+     if warnings.empty? == false && ENV['NO_WARN'].nil?
        puts " WARNING(S) identified for #{File.basename( dirname )} (#{id}), continuing anyway"
        puts " ==> #{warnings.join( "\n ==> " )}"
      end
@@ -227,14 +228,16 @@ namespace :libra2 do
      embargo_type = solr_doc.at_path( 'release_to_t[0]' )
      payload[ :embargo_type ] = embargo_type if embargo_type.present?
      release_date = solr_doc.at_path( 'embargo_embargo_release_date_t[0]' )
-     # if we find a release date them apply the embargo
+
+     # if we find a release date then attempt to convert and apply the embargo
      if release_date.present?
-       payload[ :embargo_release_date ] = release_date
-       payload[ :embargo_period ] =
-         IngestHelpers.estimate_embargo_period( issued_date, release_date ) if issued_date.present?
-     else
-       #otherwise, assume no-embargo
-       payload.delete( :embargo_type )
+
+       dt = datetime_from_string( release_date )
+       if dt.nil? == false
+          payload[ :embargo_release_date ] = dt
+          payload[ :embargo_period ] =
+             IngestHelpers.estimate_embargo_period( issued_date, release_date ) if issued_date.present?
+       end
      end
 
      # document source
@@ -259,6 +262,10 @@ namespace :libra2 do
      # notes
      notes = solr_doc.at_path( 'note_t[0]' )
      payload[ :notes ] = notes if notes.present?
+
+     #
+     # special post payload build embargo behavior
+     payload = apply_embargo_behavior( payload )
 
      return payload
   end
@@ -302,6 +309,48 @@ namespace :libra2 do
   end
 
   #
+  #
+  #
+  def apply_embargo_behavior( payload )
+
+    #puts "**** #{payload[ :source ]} ****"
+
+    #puts "==> ORIGINAL CREATE DATE: #{payload[ :create_date ]}"
+    #puts "==> ISSUED DATE:          #{payload[ :issued ]}"
+    #puts "==> EMBARGO TYPE:         #{payload[ :embargo_type ]}"
+    #puts "==> EMBARGO RELEASE DATE: #{payload[:embargo_release_date]}"
+    #puts "==> EMBARGO PERIOD:       #{payload[:embargo_period]}"
+
+    # if not an embargoable type, just return
+    return payload if payload[ :embargo_type ].blank?
+
+    # if we can determine an embargo release date
+    if payload[:embargo_release_date]
+
+      # check for the special case where the embargo release date is the same as the original create date
+      # this works around a special case in libra 1
+      erd = payload[:embargo_release_date].strftime( '%Y-%m-%d' )
+      if erd == payload[ :create_date ]
+         #puts "==> Special case for embargo; applying forever rule"
+         payload[:embargo_release_date] = GenericWork.calculate_embargo_release_date( GenericWork::EMBARGO_VALUE_FOREVER )
+      end
+
+    else
+      # embargo release date is blank...
+      #puts "==> Cannot determine embargo release date; applying forever rule"
+      payload[:embargo_release_date] = GenericWork.calculate_embargo_release_date( GenericWork::EMBARGO_VALUE_FOREVER )
+    end
+
+    #if payload[:embargo_release_date] > DateTime.now( )
+    #  puts "==> Embargo active until #{payload[:embargo_release_date].strftime( '%Y-%m-%d' )}"
+    #else
+    #  puts "==> Embargo has expired (released #{payload[:embargo_release_date].strftime( '%Y-%m-%d' )})"
+    #end
+
+    return payload
+  end
+
+  #
   # apply any default values and behavior to the standard payload
   #
   def apply_defaults_for_legacy_item( defaults, payload )
@@ -323,13 +372,15 @@ namespace :libra2 do
           new_notes += "#{v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )}"
           payload[ :notes ] = new_notes
 
-        when :force_embargo_period
-          payload[ :embargo_period ] = v
-          if payload[ :issued ]
-             payload[ :embargo_release_date ] = IngestHelpers.calculate_embargo_release_date( payload[ :issued ], v )
-          else
-             payload[ :embargo_release_date ] = GenericWork.calculate_embargo_release_date( v )
-          end
+          # apply embargo behavior earlier
+
+        #when :force_embargo_period
+        #  payload[ :embargo_period ] = v
+        #  if payload[ :issued ]
+        #     payload[ :embargo_release_date ] = IngestHelpers.calculate_embargo_release_date( payload[ :issued ], v )
+        #  else
+        #     payload[ :embargo_release_date ] = GenericWork.calculate_embargo_release_date( v )
+        #  end
 
        else if payload.key?( k ) == false
                payload[ k ] = v
@@ -339,6 +390,18 @@ namespace :libra2 do
 
     return payload
   end
+
+  #
+  # attempt to convert a date in the standard format to a date time
+  #
+  def datetime_from_string( date )
+    begin
+      return DateTime.strptime( date, '%Y-%m-%d' )
+    rescue => e
+      return nil
+    end
+  end
+
 
   end   # namespace ingest
 

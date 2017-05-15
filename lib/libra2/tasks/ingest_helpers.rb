@@ -613,7 +613,6 @@ module IngestHelpers
     return html_escape( field ).gsub( "\\", "\\\\\\" )
   end
 
-
 end
 
 #
