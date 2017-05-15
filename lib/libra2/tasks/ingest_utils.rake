@@ -182,13 +182,15 @@ namespace :libra2 do
       work_id = IngestHelpers.get_legacy_ingest_id( File.join( ingest_dir, dirname ) )
 
       if work_id.blank?
-        puts "ERROR: no work id for #{filename}, continuing anyway"
+        puts "ERROR: no work id for #{File.join( ingest_dir, dirname )}, continuing anyway"
+        errors += 1
         next
       end
 
       work = TaskHelpers.get_work_by_id( work_id )
       if work.nil?
         puts "ERROR: work #{work_id} does not exist, continuing anyway"
+        errors += 1
         next
       end
 
