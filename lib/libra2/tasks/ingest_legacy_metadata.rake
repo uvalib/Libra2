@@ -322,6 +322,7 @@ namespace :libra2 do
     #puts "==> EMBARGO PERIOD:       #{payload[:embargo_period]}"
 
     # if not an embargoable type, just return
+    puts "==> No embargo type, open item" if payload[ :embargo_type ].blank?
     return payload if payload[ :embargo_type ].blank?
 
     # if we can determine an embargo release date
@@ -331,21 +332,15 @@ namespace :libra2 do
       # this works around a special case in libra 1
       erd = payload[:embargo_release_date].strftime( '%Y-%m-%d' )
       if erd == payload[ :create_date ]
-         #puts "==> Special case for embargo; applying forever rule"
+         puts "==> Special case for embargo; applying forever rule"
          payload[:embargo_release_date] = GenericWork.calculate_embargo_release_date( GenericWork::EMBARGO_VALUE_FOREVER )
       end
 
     else
-      # embargo release date is blank...
-      #puts "==> Cannot determine embargo release date; applying forever rule"
-      payload[:embargo_release_date] = GenericWork.calculate_embargo_release_date( GenericWork::EMBARGO_VALUE_FOREVER )
+      # embargo release date is blank, this must be an open item
+      puts "==> No embargo release date, open item"
+      payload[ :embargo_type ] = nil
     end
-
-    #if payload[:embargo_release_date] > DateTime.now( )
-    #  puts "==> Embargo active until #{payload[:embargo_release_date].strftime( '%Y-%m-%d' )}"
-    #else
-    #  puts "==> Embargo has expired (released #{payload[:embargo_release_date].strftime( '%Y-%m-%d' )})"
-    #end
 
     return payload
   end

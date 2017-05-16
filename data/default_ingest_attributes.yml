@@ -14,7 +14,8 @@ notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Lib
 #
 # the default embargo type if we cannot determine one
 #
-default_embargo_type: uva
+# disable for masters theses
+#default_embargo_type: uva
 
 #
 # apply the specified embargo period; should be one of:
