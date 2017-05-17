@@ -387,17 +387,14 @@ namespace :libra2 do
 
       case k
 
-        when :notes
+        when :admin_notes
           next if v.blank?
 
           # create the admin notes for this item
-          new_notes = payload[ :notes ] || ''
-          new_notes += "\n\n" if new_notes.blank? == false
-
           original_create_date = payload[ :create_date ]
           time_now = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d %H:%M:%S" )
-          new_notes += "#{v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )}"
-          payload[ :notes ] = new_notes
+          notes = "#{v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )}"
+          payload[ k ] = [ notes ]
 
           # apply embargo behavior earlier
 

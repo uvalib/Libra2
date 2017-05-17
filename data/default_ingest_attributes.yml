@@ -7,9 +7,9 @@ institution: <%= GenericWork::DEFAULT_INSTITUTION %>
 license: <%= GenericWork::DEFAULT_LICENSE %>
 
 #
-# append to the notes record for informational purposes
+# the admin notes for informational purposes
 #
-notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
+admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
 
 #
 # the default embargo type if we cannot determine one
