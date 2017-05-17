@@ -13,7 +13,7 @@ fi
 
 echo "Processing $INFILE..."
 
-cat $INFILE | grep "libra-oa" | sed -e 's/^\| //g' | sed -e 's/ \| /\|/g' | sed -e 's/ *\|$//' > $OUTFILE
+cat $INFILE | grep "libra-oa" | sed -e 's/^\| //g' | sed -e 's/ \| /\|/g' | sed -e 's/ *\|$//' | tr -d " " > $OUTFILE
 
 echo "Created $OUTFILE successfully"
 
