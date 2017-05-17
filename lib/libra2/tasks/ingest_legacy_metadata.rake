@@ -22,7 +22,7 @@ namespace :libra2 do
   #
   # ingest metadata
   #
-  desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file and start index"
+  desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file, SIS data file and start index"
   task legacy_metadata: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
@@ -38,7 +38,13 @@ namespace :libra2 do
     end
     task defaults_file.to_sym do ; end
 
-    start = ARGV[ 3 ]
+    sisdata_file = ARGV[ 3 ]
+    if sisdata_file.nil?
+      sisdata_file = IngestHelpers::DEFAULT_SIS_DATA_FILE
+    end
+    task sisdata_file.to_sym do ; end
+
+    start = ARGV[ 4 ]
     if start.nil?
       start = "0"
     end
@@ -55,8 +61,18 @@ namespace :libra2 do
     end
 
     puts "Loaded #{ingests.length} items for ingest..."
+
     # load any default attributes
     defaults = IngestHelpers.load_config_file( defaults_file )
+
+    # load the SIS data
+    sisdata = IngestHelpers.load_sis_data_file( sisdata_file )
+    if sisdata.empty?
+      puts "ERROR: SIS datafile does not contain contains any items, aborting"
+      next
+    end
+
+    puts "Loaded #{sisdata.length} SIS data items..."
 
     # load depositor information
     depositor = Helpers::EtdHelper::lookup_user( IngestHelpers::DEFAULT_DEPOSITOR )
@@ -76,7 +92,7 @@ namespace :libra2 do
     total = ingests.size
     ingests.each_with_index do | dirname, ix |
       next if ix < start_ix
-      ok = ingest_legacy_metadata( defaults, user, File.join( ingest_dir, dirname ), ix + 1, total )
+      ok = ingest_legacy_metadata( defaults, sisdata, user, File.join( ingest_dir, dirname ), ix + 1, total )
       ok == true ? success_count += 1 : error_count += 1
       break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
     end
@@ -114,7 +130,7 @@ namespace :libra2 do
   #
   # convert a set of Libra extract assets into a new Libra metadata record
   #
-  def ingest_legacy_metadata( defaults, depositor, dirname, current, total )
+  def ingest_legacy_metadata( defaults, sis_data, depositor, dirname, current, total )
 
      solr_doc, fedora_doc = IngestHelpers.load_legacy_ingest_content(dirname )
      id = solr_doc['id']
@@ -122,7 +138,7 @@ namespace :libra2 do
      puts "Ingesting #{current} of #{total}: #{File.basename( dirname )} (#{id})..."
 
      # create a payload from the document
-     payload = create_legacy_ingest_payload( solr_doc, fedora_doc )
+     payload = create_legacy_ingest_payload( solr_doc, fedora_doc, sis_data )
 
      # merge in any default attributes
      payload = apply_defaults_for_legacy_item( defaults, payload )
@@ -172,7 +188,7 @@ namespace :libra2 do
   #
   # create a ingest payload from the Libra document
   #
-  def create_legacy_ingest_payload( solr_doc, fedora_doc )
+  def create_legacy_ingest_payload( solr_doc, fedora_doc, sis_data )
 
 
      payload = {}
@@ -233,7 +249,7 @@ namespace :libra2 do
      if release_date.present?
 
        dt = datetime_from_string( release_date )
-       if dt.nil? == false
+       if dt.present?
           payload[ :embargo_release_date ] = dt
           payload[ :embargo_period ] =
              IngestHelpers.estimate_embargo_period( issued_date, release_date ) if issued_date.present?
@@ -265,7 +281,7 @@ namespace :libra2 do
 
      #
      # special post payload build embargo behavior
-     payload = apply_embargo_behavior( payload )
+     payload = apply_embargo_behavior( sis_data, payload )
 
      return payload
   end
@@ -311,7 +327,7 @@ namespace :libra2 do
   #
   #
   #
-  def apply_embargo_behavior( payload )
+  def apply_embargo_behavior( sis_data, payload )
 
     #puts "**** #{payload[ :source ]} ****"
 
@@ -321,25 +337,41 @@ namespace :libra2 do
     #puts "==> EMBARGO RELEASE DATE: #{payload[:embargo_release_date]}"
     #puts "==> EMBARGO PERIOD:       #{payload[:embargo_period]}"
 
-    # if not an embargoable type, just return
-    puts "==> No embargo type, open item" if payload[ :embargo_type ].blank?
-    return payload if payload[ :embargo_type ].blank?
+    # if this item is marked as UVa, it is still under embargo with a release date of publish date + 130 years
+    if payload[ :embargo_type ] == 'uva'
+
+      # attempt to get a meaningful start date
+      dt = datetime_from_string( payload[ :issued ] )
+      dt = datetime_from_string( payload[ :create_date ] ) if dt.nil?
+
+      # embargo
+      puts "==> UVA work; applying forever rule"
+      payload[:embargo_release_date] = dt + 130.years
+      payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+      return payload
+    end
+
 
     # if we can determine an embargo release date
     if payload[:embargo_release_date]
 
-      # check for the special case where the embargo release date is the same as the original create date
-      # this works around a special case in libra 1
-      erd = payload[:embargo_release_date].strftime( '%Y-%m-%d' )
-      if erd == payload[ :create_date ]
-         puts "==> Special case for embargo; applying forever rule"
-         payload[:embargo_release_date] = GenericWork.calculate_embargo_release_date( GenericWork::EMBARGO_VALUE_FOREVER )
+      if sis_data.include? payload[ :source ]
+        if sis_data[ payload[ :source ] ] == 'ENG'
+          puts "==> Located metadata only work..."
+          payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        else
+          puts "==> Located UVA only work..."
+          payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+        end
+      else
+        puts "==> Cannot find corresponsing SIS record, open item"
+        payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
       end
 
     else
       # embargo release date is blank, this must be an open item
       puts "==> No embargo release date, open item"
-      payload[ :embargo_type ] = nil
+      payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     end
 
     return payload

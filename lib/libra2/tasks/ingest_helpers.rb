@@ -8,6 +8,7 @@ module IngestHelpers
 
   DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
   DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.yml'
+  DEFAULT_SIS_DATA_FILE = 'data/sis_data.txt'
   MAX_ABSTRACT_LENGTH = 32766
 
   # mapping of department names/mnemonics to actual textual values
@@ -154,10 +155,6 @@ module IngestHelpers
     # document title
     errors << 'missing title' if payload[ :title ].nil?
 
-    # author attributes
-    #errors << 'missing author first name' if payload[ :author_first_name ].nil?
-    #errors << 'missing author last name' if payload[ :author_last_name ].nil?
-
     # other required attributes
     errors << 'missing rights' if payload[ :rights ].nil?
     errors << 'missing publisher' if payload[ :publisher ].nil?
@@ -170,8 +167,13 @@ module IngestHelpers
       errors << "abstract too large (< #{MAX_ABSTRACT_LENGTH} bytes)"
     end
 
+    # ensure an embargo type is defined
+    if payload[:embargo_type].blank?
+      errors << 'unspecified embargo type'
+    end
+
     # ensure an embargo release date is defined if specified
-    if embargo_for_type( payload[:embargo_type] ) != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC &&
+    if payload[:embargo_type] != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC &&
        payload[:embargo_release_date].blank?
       errors << 'unspecified embargo release date for embargo item'
     end
@@ -225,9 +227,9 @@ module IngestHelpers
       w.date_published = payload[ :issued ] if payload[ :issued ]
 
       # embargo attributes
-      w.visibility = IngestHelpers.embargo_for_type( payload[:embargo_type ] )
-      w.embargo_state = IngestHelpers.embargo_for_type( payload[:embargo_type ] )
-      w.visibility_during_embargo = IngestHelpers.embargo_for_type( payload[:embargo_type ] )
+      w.visibility = payload[:embargo_type ]
+      w.embargo_state = payload[:embargo_type ]
+      w.visibility_during_embargo = payload[:embargo_type ]
       w.embargo_end_date = payload[ :embargo_release_date ] if payload[ :embargo_release_date ]
       w.embargo_period = payload[ :embargo_period ] if payload[ :embargo_period ]
 
@@ -328,6 +330,7 @@ module IngestHelpers
 
      return md_filename, asset_files
   end
+
   #
   # load the hash of default attributes
   #
@@ -347,6 +350,30 @@ module IngestHelpers
 
     config = yml.symbolize_keys
     return config.symbolize_keys || {}
+  end
+
+  #
+  # load the SIS data
+  #
+  def load_sis_data_file( filename )
+
+    sisdata = {}
+
+    begin
+      File.open( filename, 'r').each do |line|
+
+        # handle blank and commented lines
+        next if line.blank?
+        next if line[ 0 ] == '#'
+        tokens = line.strip.split( "|" )
+        sisdata[ tokens[ 0 ] ] = tokens[ 1 ]
+      end
+    rescue Errno::ENOENT
+      # do nothing, no file...
+    end
+
+    return sisdata
+
   end
 
   #
@@ -545,18 +572,6 @@ module IngestHelpers
     # give up and return what we were provided
     return date
 
-  end
-
-  #
-  # Determine the embargo type from the metadata
-  #
-  def embargo_for_type( embargo )
-    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC if embargo.blank?
-    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED if embargo == 'uva'
-    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE if embargo == 'uetd'
-
-    # none of the above
-    return Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
   end
 
   #
