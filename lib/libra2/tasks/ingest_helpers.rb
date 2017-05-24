@@ -588,7 +588,7 @@ module IngestHelpers
       when 'ger'
         return 'German'
       when 'spa'
-        return 'Spainish'
+        return 'Spanish'
     end
     return language_code
   end
