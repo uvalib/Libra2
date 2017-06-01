@@ -331,10 +331,10 @@ namespace :libra2 do
 
     #puts "**** #{payload[ :source ]} ****"
 
-    #puts "==> ORIGINAL CREATE DATE: #{payload[ :create_date ]}"
+    #puts "==> ORIGINAL CREATE DATE: #{payload[ :create_date ]} (#{payload[ :create_date ].class})"
     #puts "==> ISSUED DATE:          #{payload[ :issued ]}"
-    #puts "==> EMBARGO TYPE:         #{payload[ :embargo_type ]}"
-    #puts "==> EMBARGO RELEASE DATE: #{payload[:embargo_release_date]}"
+    #puts "==> EMBARGO TYPE:         #{payload[ :embargo_type ]} (#{payload[ :embargo_type ].class})"
+    #puts "==> EMBARGO RELEASE DATE: #{payload[:embargo_release_date]} (#{payload[ :embargo_release_date ].class})"
     #puts "==> EMBARGO PERIOD:       #{payload[:embargo_period]}"
 
     # if this item is marked as UVa, it is still under embargo with a release date of publish date + 130 years
@@ -355,22 +355,39 @@ namespace :libra2 do
     # if we can determine an embargo release date
     if payload[:embargo_release_date]
 
+      #
+      # a special case here.
+      # If the embargo release date is within a few days of the create date, we are to treat this as an open
+      # item
+      #
+      cd = datetime_from_string( payload[ :create_date ] )
+      duration = ( payload[:embargo_release_date] - cd ).to_i
+      if duration.abs <= 5
+        puts "==> Embargo duration + or - 5 days or less (#{duration.abs}), identified as open item"
+        payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+        return payload
+      end
+
+      #
+      # The 'normal' case. A standard embargo item (that may have already expired). Look in SIS to determine if
+      # this is an engineering embargo or not.
+      #
       if sis_data.include? payload[ :source ]
         if sis_data[ payload[ :source ] ] == 'ENG'
-          puts "==> Located metadata only work..."
+          puts "==> Identified as metadata only work..."
           payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
         else
-          puts "==> Located UVA only work..."
+          puts "==> Identified as UVA only work..."
           payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
         end
       else
-        puts "==> Cannot find corresponsing SIS record, open item"
+        puts "==> Cannot find corresponsing SIS record, identified as open item"
         payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
       end
 
     else
       # embargo release date is blank, this must be an open item
-      puts "==> No embargo release date, open item"
+      puts "==> No embargo release date, identified as open item"
       payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     end
 
@@ -421,7 +438,8 @@ namespace :libra2 do
   def datetime_from_string( date )
     begin
       return DateTime.strptime( date, '%Y-%m-%d' )
-    rescue => e
+    rescue => ex
+      puts "==> EXCEPTION: #{ex} for #{date}"
       return nil
     end
   end
