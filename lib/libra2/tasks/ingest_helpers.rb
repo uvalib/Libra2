@@ -197,7 +197,7 @@ module IngestHelpers
     warnings << 'missing modified date' if payload[ :modified_date ].nil?
     warnings << 'missing language' if payload[ :language ].nil?
     warnings << 'missing notes' if payload[ :notes ].nil?
-    #warnings << 'missing admin notes' if payload[ :admin_notes ].nil?
+    warnings << 'missing admin notes' if payload[ :admin_notes ].nil?
 
     return errors, warnings
   end
