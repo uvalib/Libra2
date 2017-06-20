@@ -381,8 +381,8 @@ namespace :libra2 do
           payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
         end
       else
-        puts "==> Cannot find corresponsing SIS record, identified as open item"
-        payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+        puts "==> Cannot find corresponding SIS record, identified as UVA only work"
+        payload[ :embargo_type ] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
       end
 
     else
