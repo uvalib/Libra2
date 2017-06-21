@@ -32,8 +32,10 @@ report_version "authtoken-ws" "tokenauth service"
 report_version "user-ws" "userinfo service"
 
 report_version "libra-etd" "libra-etd webapp"
+report_version "libra-etd-workerpool" "libra-etd worker pool"
 
 report_version "libra-oc" "libra-oc webapp"
+report_version "libra-oc-workerpool" "libra-oc workerpool"
 
 report_version "deposit-registration" "depositreg webapp"
 
