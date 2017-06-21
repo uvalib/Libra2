@@ -89,7 +89,7 @@ module PublicHelper
       # place a blank line after each CR in the source data
       description = description.gsub( "<br />", "<br /><br />")
       description = CGI.unescapeHTML( String.new description.to_s )
-      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Abstract:", description ).render )
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Abstract:", raw( description ) ).render )
    end
 
    def display_degree( degree )
