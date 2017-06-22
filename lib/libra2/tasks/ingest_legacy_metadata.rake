@@ -100,29 +100,6 @@ namespace :libra2 do
 
   end
 
-  desc "Enumerate legacy Libra items"
-  task legacy_list: :environment do |t, args|
-
-    count = 0
-    GenericWork.search_in_batches( {} ) do |group|
-      group.each do |gw_solr|
-
-        begin
-           gw = GenericWork.find( gw_solr['id'] )
-           if gw.is_legacy_thesis?
-             puts "#{gw.work_source} #{gw.identifier || 'None'}"
-             count += 1
-           end
-        rescue => e
-        end
-
-      end
-
-    end
-    puts "Listed #{count} legacy work(s)"
-
-  end
-
   #
   # helpers
   #
