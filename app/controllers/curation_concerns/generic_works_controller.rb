@@ -9,42 +9,44 @@ module CurationConcerns
     before_action :add_pending_file_test
 
     def is_me
-      work = GenericWork.where({ id: params[:id] })
-      if work.empty? || current_user.nil?
+      work = GenericWork.find( params[:id] )
+      if work.nil? || current_user.nil?
         render404()
-      elsif !work[0].is_mine?(current_user.email)
+      elsif !work.is_mine?(current_user.email)
         render404()
       end
     end
 
     def add_pending_file_test
+
       # remove any files that have been processed
       if session[:files_pending].present? && session[:files_pending][params[:id]].present?
-        work = GenericWork.where({ id: params[:id] })
-        file_sets = work[0].file_sets
-        file_sets.each { |file_set|
-          session[:files_pending][params[:id]].delete_if { |pending|
-            thumb_name = "#{CurationConcerns.config.derivatives_path}/#{thumbnail_from_fileset( file_set )}"
-            thumb_exist = File.exist?(thumb_name)
-            (pending['label'] == file_set.title[0]) && thumb_exist
+        work = GenericWork.find( params[:id] )
+        if work
+          work.file_sets.each { |file_set|
+            session[:files_pending][params[:id]].delete_if { |pending|
+              (pending['label'] == file_set.title[0])
+            }
           }
-        }
+        end
+
       end
-        # if there are still files to be processed, alert the page.
-        @pending_file_test = session[:files_pending].present? ? session[:files_pending][params[:id]] : nil
+
+      # if there are still files to be processed, alert the page.
+      @pending_file_test = session[:files_pending].present? ? session[:files_pending][params[:id]] : nil
      end
 
     def save_file_display_name
+
       # TODO-PER: This is a hack to try to figure out how to save the file's display title. There is probably a better way to do this.
       if params['action'] == 'update'
-        work = GenericWork.where({ id: params[:id] })
-        if work.length > 0
-          file_sets = work[0].file_sets
+        work = GenericWork.find( params[:id] )
+        if work
           previously_uploaded_files_label = params['previously_uploaded_files_label']
           if previously_uploaded_files_label.present?
             previously_uploaded_files_label.each_with_index { |label, i|
               file_attributes = { title: [ label ]}
-              actor = ::CurationConcerns::Actors::FileSetActor.new(file_sets[i], current_user)
+              actor = ::CurationConcerns::Actors::FileSetActor.new(work.file_sets[i], current_user)
               actor.update_metadata(file_attributes)
             }
           end

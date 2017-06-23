@@ -113,11 +113,8 @@ class SubmissionController < ApplicationController
 
   def get_work_item
     id = params[:id]
-    work = GenericWork.where({ id: id })
-    if work.length > 0
-      return work[ 0 ]
-    end
-    return nil
+    work = GenericWork.find( id )
+		return work
   end
 
 	def can_view(work)
