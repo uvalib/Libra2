@@ -14,7 +14,7 @@ function report_version {
       tag=$(cat $tagfile)
    fi
 
-   echo " $reportname -> $tag"
+   printf "%-25s| %s\n" "$reportname" "$tag"
 }
 
 echo "Versions configured for production deployment"

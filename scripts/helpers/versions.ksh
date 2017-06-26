@@ -14,7 +14,7 @@ function access_service {
 
    if [ -n "$url" ]; then
       version=$(get_version $url)
-      echo " $name => $version"
+      printf "%-25s| %s\n" "$name" "$version"
    else
       echo "WARNING $name endpoint not defined; no version info available"
    fi
@@ -31,7 +31,7 @@ if [ -z "$DOCKER_HOST" ]; then
    exit 1
 fi
 
-endpoint=$(echo $DOCKER_HOST | awk -F: '{print $1}')
+endpoint=$(echo $DOCKER_HOST | awk -F: '{print $2}'|tr -d "/")
 echo "Versions @ $endpoint"
 
 # deposit auth service
