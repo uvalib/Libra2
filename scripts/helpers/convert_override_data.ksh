@@ -13,7 +13,7 @@ fi
 
 echo "Processing $INFILE..."
 
-cat $INFILE | grep "libra-oa" | tr "\r" "\n" | awk -F, '{printf "%s|uva||\n", $2}' > $OUTFILE
+cat $INFILE | grep "libra-oa" | tr "\r" "\n" | awk -F, '{printf "%s|open||\n", $2}' > $OUTFILE
 
 echo "Created $OUTFILE successfully"
 
