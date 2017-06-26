@@ -9,6 +9,7 @@ module IngestHelpers
   DEFAULT_DEPOSITOR = TaskHelpers::DEFAULT_USER
   DEFAULT_DEFAULT_FILE = 'data/default_ingest_attributes.yml'
   DEFAULT_SIS_DATA_FILE = 'data/sis_data.txt'
+  DEFAULT_EMBARGO_OVERRIDE_FILE = 'data/embargo_override.txt'
   MAX_ABSTRACT_LENGTH = 32766
 
   # mapping of department names/mnemonics to actual textual values
@@ -373,6 +374,30 @@ module IngestHelpers
     end
 
     return sisdata
+
+  end
+
+  #
+  # load the override data
+  #
+  def load_override_data_file( filename )
+
+    overridedata = {}
+
+    begin
+      File.open( filename, 'r').each do |line|
+
+        # handle blank and commented lines
+        next if line.blank?
+        next if line[ 0 ] == '#'
+        tokens = line.strip.split( "|" )
+        overridedata[ tokens[ 0 ] ] = tokens[ 1 ]
+      end
+    rescue Errno::ENOENT
+      # do nothing, no file...
+    end
+
+    return overridedata
 
   end
 

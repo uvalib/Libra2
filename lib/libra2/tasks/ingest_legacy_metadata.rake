@@ -22,7 +22,7 @@ namespace :libra2 do
   #
   # ingest metadata
   #
-  desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file, SIS data file and start index"
+  desc "Ingest legacy Libra data; must provide the ingest directory; optionally provide a defaults file, SIS data file, embargo override file and start index"
   task legacy_metadata: :environment do |t, args|
 
     ingest_dir = ARGV[ 1 ]
@@ -44,7 +44,13 @@ namespace :libra2 do
     end
     task sisdata_file.to_sym do ; end
 
-    start = ARGV[ 4 ]
+    embargo_override_file = ARGV[ 4 ]
+    if embargo_override_file.nil?
+      embargo_override_file = IngestHelpers::DEFAULT_EMBARGO_OVERRIDE_FILE
+    end
+    task embargo_override_file.to_sym do ; end
+
+    start = ARGV[ 5 ]
     if start.nil?
       start = "0"
     end
@@ -74,6 +80,15 @@ namespace :libra2 do
 
     puts "Loaded #{sisdata.length} SIS data items..."
 
+    # load the override data
+    overridedata = IngestHelpers.load_override_data_file( embargo_override_file )
+    if overridedata.empty?
+      puts "ERROR: override datafile does not contain contains any items, aborting"
+      next
+    end
+
+    puts "Loaded #{overridedata.length} override items..."
+
     # load depositor information
     depositor = Helpers::EtdHelper::lookup_user( IngestHelpers::DEFAULT_DEPOSITOR )
     if depositor.nil?
@@ -92,7 +107,7 @@ namespace :libra2 do
     total = ingests.size
     ingests.each_with_index do | dirname, ix |
       next if ix < start_ix
-      ok = ingest_legacy_metadata( defaults, sisdata, user, File.join( ingest_dir, dirname ), ix + 1, total )
+      ok = ingest_legacy_metadata( defaults, sisdata, overridedata,user, File.join( ingest_dir, dirname ), ix + 1, total )
       ok == true ? success_count += 1 : error_count += 1
       break if ENV[ 'MAX_COUNT' ] && ENV[ 'MAX_COUNT' ].to_i == ( success_count + error_count )
     end
@@ -107,7 +122,7 @@ namespace :libra2 do
   #
   # convert a set of Libra extract assets into a new Libra metadata record
   #
-  def ingest_legacy_metadata( defaults, sis_data, depositor, dirname, current, total )
+  def ingest_legacy_metadata( defaults, sis_data, override_data, depositor, dirname, current, total )
 
      solr_doc, fedora_doc = IngestHelpers.load_legacy_ingest_content(dirname )
      id = solr_doc['id']
@@ -115,7 +130,7 @@ namespace :libra2 do
      puts "Ingesting #{current} of #{total}: #{File.basename( dirname )} (#{id})..."
 
      # create a payload from the document
-     payload = create_legacy_ingest_payload( solr_doc, fedora_doc, sis_data )
+     payload = create_legacy_ingest_payload( solr_doc, fedora_doc, sis_data, override_data )
 
      # merge in any default attributes
      payload = apply_defaults_for_legacy_item( defaults, payload )
@@ -165,7 +180,7 @@ namespace :libra2 do
   #
   # create a ingest payload from the Libra document
   #
-  def create_legacy_ingest_payload( solr_doc, fedora_doc, sis_data )
+  def create_legacy_ingest_payload( solr_doc, fedora_doc, sis_data, override_data )
 
 
      payload = {}
@@ -258,7 +273,7 @@ namespace :libra2 do
 
      #
      # special post payload build embargo behavior
-     payload = apply_embargo_behavior( sis_data, payload )
+     payload = apply_embargo_behavior( sis_data, override_data, payload )
 
      return payload
   end
@@ -304,9 +319,15 @@ namespace :libra2 do
   #
   #
   #
-  def apply_embargo_behavior( sis_data, payload )
+  def apply_embargo_behavior( sis_data, override_data, payload )
 
-    #puts "**** #{payload[ :source ]} ****"
+    # check for override information
+    if override_data.include? payload[ :source ]
+      puts "==> Applying override attributes..."
+      payload[ :embargo_type ] = override_data[ payload[ :source ] ]
+      payload.delete( :embargo_release_date )
+      return payload
+    end
 
     #puts "==> ORIGINAL CREATE DATE: #{payload[ :create_date ]} (#{payload[ :create_date ].class})"
     #puts "==> ISSUED DATE:          #{payload[ :issued ]}"
