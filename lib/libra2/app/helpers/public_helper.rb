@@ -25,9 +25,8 @@ module PublicHelper
    end
 
    def display_title(work)
-      return 'Not Found' if work.nil?
-      title = CGI.unescapeHTML( String.new work[:title][0].to_s )
-      return raw( title )
+      return 'Not Found' if work.nil? || work[:title].nil? || work[:title][0].nil?
+      return raw( work[:title][0] )
    end
 
    def display_author( work )
@@ -86,9 +85,6 @@ module PublicHelper
    def display_description( description )
       return '' if description.blank?
       description = simple_format( description )
-      # place a blank line after each CR in the source data
-      description = description.gsub( "<br />", "<br /><br />")
-      description = CGI.unescapeHTML( String.new description.to_s )
       return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Abstract:", raw( description ) ).render )
    end
 
