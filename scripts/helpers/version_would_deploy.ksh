@@ -19,13 +19,13 @@ for host in dockerprod1 dockerprod2; do
       fi
 
       service=$(echo $line | awk -F\| '{print $1}')
-      tag=$(echo $line | awk -F\| '{print $2}')
+      new_tag=$(echo $line | awk -F\| '{print $2}')
 
       current=$(grep "$service" $TMP_FILE)
       if [ -n "$current" ]; then
-         new_tag=$(echo $current | awk -F\| '{print $2}')
-         if [ "$new_tag" != "$tag" ]; then
-            printf "%-25s %s => %s\n" "$service" "$tag" "$new_tag"
+         current_tag=$(echo $current | awk -F\| '{print $2}')
+         if [ "$current_tag" != "$new_tag" ]; then
+            printf "%-25s %s => %s\n" "$service" "$current_tag" "$new_tag"
          fi
       fi
 
