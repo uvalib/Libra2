@@ -139,7 +139,8 @@ class SubmissionController < ApplicationController
 			files.push({
 							title: file.title.join(" "),
 							location: download_path(file),
-							date: file.date_uploaded
+							date: file.date_uploaded,
+							id: file.id
 						})
 		}
 		files = files.sort { |a,b|
