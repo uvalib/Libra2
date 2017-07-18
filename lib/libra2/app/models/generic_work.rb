@@ -2,6 +2,9 @@ require_dependency 'concerns/libra2/basic_metadata'
 require_dependency 'concerns/libra2/orcid_behavior'
 require_dependency 'libra2/app/indexers/libra2_indexer'
 
+require_dependency 'libra2/app/helpers/ordered_string_helper'
+include OrderedStringHelper
+
 class GenericWork < ActiveFedora::Base
 
   include ::CurationConcerns::WorkBehavior
@@ -165,6 +168,39 @@ class GenericWork < ActiveFedora::Base
   # specify the indexer used to create the SOLR document
   def self.indexer
     ::Libra2Indexer
+  end
+
+  #
+  # we want to handle the keyword list as an ordered set
+  #
+  def keyword
+    return OrderedStringHelper.deserialize(super )
+  end
+
+  def keyword= values
+    super OrderedStringHelper.serialize(values )
+  end
+
+  #
+  # we want to handle the related_url list as an ordered set
+  #
+  def related_url
+    return OrderedStringHelper.deserialize(super )
+  end
+
+  def related_url= values
+    super OrderedStringHelper.serialize(values )
+  end
+
+  #
+  # we want to handle the sponsoring_agency list as an ordered set
+  #
+  def sponsoring_agency
+    return OrderedStringHelper.deserialize(super )
+  end
+
+  def sponsoring_agency= values
+    super OrderedStringHelper.serialize(values )
   end
 
   # determine which fields can have multiple values...
