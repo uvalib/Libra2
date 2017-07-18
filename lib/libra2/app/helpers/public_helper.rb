@@ -112,12 +112,11 @@ module PublicHelper
 
    def display_related_links( links )
       return '' if links.blank?
-      a = []
-      links.each { |link|
-         display = links.length > 1 ? raw("&bull; #{link}") : link
-         a.push( display )
-      }
-      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Related Links:", raw( a.join( '<br>' ) ) ).render )
+      links = links.map do |link|
+         content_tag :li, link
+      end
+
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Related Links:", links ).render )
    end
 
    def display_doi_link(work)
