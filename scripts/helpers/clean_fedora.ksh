@@ -13,14 +13,15 @@ if [ -z "$FEDORA_PASSWD" ]; then
    exit 1
 fi
 
-read -r -p "$FEDORA_URL: ARE YOU SURE? [Y/n]? " response
+NAMESPACE=libra2
+
+read -r -p "$FEDORA_URL/$NAMESPACE: ARE YOU SURE? [Y/n]? " response
 case "$response" in 
   y|Y ) echo "Cleaning $FEDORA_URL ..."
   ;;
   * ) exit 1
 esac
 
-NAMESPACE=libra2
 for i in $NAMESPACE/dev $NAMESPACE/test $NAMESPACE/prod; do
 
    url=$FEDORA_URL/$i
