@@ -107,7 +107,7 @@ module PublicHelper
    def display_sponsoring_agency( sponsoring_agency )
       return '' if sponsoring_agency.blank?
       sa = sponsoring_agency.join( ' ')
-      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Sponsoring Agency:", sa ).render )
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Sponsoring Agency:", sponsoring_agency ).render )
    end
 
    def display_related_links( links )
