@@ -22,7 +22,7 @@ module CurationConcerns
         super
 
         # save file download statistics
-        file_download_event( params['id'], current_user )
+        file_download_event( params['id'] )
 
       when String
         # For derivatives stored on the local file system

@@ -3,8 +3,8 @@ module StatisticsHelper
   #
   # record a work view event
   #
-  def work_view_event( id, user )
-    puts "==> work view event: work id #{id}, user: #{user}"
+  def work_view_event( id, user = nil )
+    puts "==> work view event: work id #{id}"
     event = find_existing_view_event( id, user )
     if event.nil? == false
       event.work_views += 1
@@ -17,8 +17,8 @@ module StatisticsHelper
   #
   # record a file download event
   #
-  def file_download_event( id, user )
-    puts "==> file download event: file id #{id}, user: #{user}"
+  def file_download_event( id, user = nil )
+    puts "==> file download event: file id #{id}"
     event = find_existing_download_event( id, user )
     if event.nil? == false
        event.downloads += 1
