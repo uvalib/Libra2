@@ -25,7 +25,7 @@ class SubmissionController < ApplicationController
 			@files = get_file_sets(@work)
 
 			# save work view statistics
-			work_view_event( @work.id ) if @is_preview == false
+			record_work_view_event( @work.id ) if @is_preview == false
 		else
 			render404public()
 		end
