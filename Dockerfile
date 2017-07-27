@@ -16,6 +16,9 @@ RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
 ENV TZ=EST5EDT
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# set the locale correctly
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+
 # Create the run user and group
 RUN groupadd -r webservice && useradd -r -g webservice webservice && mkdir /home/webservice
 
