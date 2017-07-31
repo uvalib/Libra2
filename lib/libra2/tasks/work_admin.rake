@@ -29,6 +29,18 @@ task list_all_works: :environment do |t, args|
   puts "Listed #{count} work(s)"
 end
 
+desc "Summerize all works"
+task sumnmerize_all_works: :environment do |t, args|
+
+  count = 0
+  GenericWork.search_in_batches( {} ) do |group|
+    TaskHelpers.batched_process_solr_works( group, &method( :summerize_generic_work_callback ) )
+    count += group.size
+  end
+
+  puts "Summerized #{count} work(s)"
+end
+
 desc "List my works; optionally provide depositor email"
 task list_my_works: :environment do |t, args|
 
@@ -43,6 +55,22 @@ task list_my_works: :environment do |t, args|
   end
 
   puts "Listed #{count} work(s)"
+end
+
+desc "Summerize my works; optionally provide depositor email"
+task summerize_my_works: :environment do |t, args|
+
+  who = ARGV[ 1 ]
+  who = TaskHelpers.default_user_email if who.nil?
+  task who.to_sym do ; end
+
+  count = 0
+  GenericWork.search_in_batches( { depositor: who } ) do |group|
+    TaskHelpers.batched_process_solr_works( group, &method( :summerize_generic_work_callback ) )
+    count += group.size
+  end
+
+  puts "Summerized #{count} work(s)"
 end
 
 desc "List work by id; must provide the work id"
@@ -254,6 +282,10 @@ end
 
 def show_generic_work_callback( work )
   TaskHelpers.show_generic_work( work )
+end
+
+def summerize_generic_work_callback( work )
+  puts "id:#{work.id} ws:#{work.work_source} doi:#{work.identifier} assets:#{work.file_sets.size}"
 end
 
 def delete_generic_work_callback( work )
