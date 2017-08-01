@@ -143,8 +143,9 @@ class SubmissionController < ApplicationController
 							id: file.id
 						})
 		}
+		# ensure they are sorted in upload date order so the oldest is listed first
 		files = files.sort { |a,b|
-			a[:title].downcase <=> b[:title].downcase
+	  		a[:date] <=> b[:date]
 		}
 		return files
 	end
