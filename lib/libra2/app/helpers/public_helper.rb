@@ -171,4 +171,19 @@ module PublicHelper
      end
      return res
   end
+
+  #
+  # make the filename safe for download by removing any characters that might cause problems
+  #
+  def safe_filename( filename )
+    ret = filename
+
+    # remove commas
+    ret = ret.gsub( /,/, '' )
+
+    # remove colons
+    ret = ret.gsub( /:/, '' )
+
+    return ret
+  end
 end
