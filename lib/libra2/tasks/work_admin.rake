@@ -30,7 +30,7 @@ task list_all_works: :environment do |t, args|
 end
 
 desc "Summerize all works"
-task sumnmerize_all_works: :environment do |t, args|
+task summerize_all_works: :environment do |t, args|
 
   count = 0
   GenericWork.search_in_batches( {} ) do |group|
