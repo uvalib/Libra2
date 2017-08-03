@@ -62,7 +62,7 @@ module PublicHelper
       return '' if work.nil?
       #return '' if work.contributor.blank?
       # special case, we want to show the advisor field as blank
-      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Advisors:", '').render ) if work.contributor.blank?
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Advisor:", '').render ) if work.contributor.blank?
 
       # advisers are tagged with a numeric index so sorting them ensures they are presented in the correct order
       contributors = work.contributor.sort
@@ -79,7 +79,8 @@ module PublicHelper
             advisors.push(contributor) # this shouldn't happen, but perhaps it will if old data gets in there.
          end
       }
-      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Advisors:", raw( advisors.join( '<br>' ) ) ).render )
+      label = 'Advisor'.pluralize( advisors.length )
+      return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("#{label}:", raw( advisors.join( '<br>' ) ) ).render )
    end
 
    def display_description( description )
