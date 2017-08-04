@@ -650,7 +650,7 @@ module IngestHelpers
   # escape special characters as necessary
   #
   def escape_field( field )
-    return html_escape( field ).gsub( "\\", "\\\\\\" )
+    return html_escape( field ).gsub( "\\", "&#92;" )
   end
 
 end
