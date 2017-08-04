@@ -622,7 +622,11 @@ module IngestHelpers
   # maps department name from L1 to L2
   #
   def department_lookup( department )
+    # look for a perfect match
     return DEPARTMENT_MAP[ department ] if DEPARTMENT_MAP.key? ( department )
+    # attempt to uppercase the key and see if that works
+    return DEPARTMENT_MAP[ department.upcase ] if DEPARTMENT_MAP.key? ( department.upcase )
+    # give up and go home...
     return department
   end
 
