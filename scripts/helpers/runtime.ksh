@@ -27,11 +27,11 @@ function endpoint_url {
 }
 
 if [ -z "$DOCKER_HOST" ]; then
-   echo "ERROR $DOCKER_HOST is not defined, aborting"
+   echo "ERROR: DOCKER_HOST is not defined, aborting"
    exit 1
 fi
 
-endpoint=$(echo $DOCKER_HOST | awk -F: '{print $1}')
+endpoint=$(echo $DOCKER_HOST | awk -F: '{print $2}'|tr -d "/")
 echo "Versions @ $endpoint"
 
 # deposit auth service
