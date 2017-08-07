@@ -14,9 +14,9 @@ class APIV1FilesetsController < APIBaseController
   #
   def all_filesets
 
-    start = numeric( params[:start], DEFAULT_START )
-    limit = numeric( params[:limit], DEFAULT_LIMIT )
-    filesets = batched_get( {}, start, limit )
+    #start = numeric( params[:start], DEFAULT_START )
+    #limit = numeric( params[:limit], DEFAULT_LIMIT )
+    filesets = batched_get( {} )
 
     respond_to do |format|
       format.json do
@@ -37,7 +37,7 @@ class APIV1FilesetsController < APIBaseController
   #
   def get_fileset
 
-    filesets = batched_get( { id: params[:id] }, 0, 1 )
+    filesets = batched_get( { id: params[:id] } )
     if filesets.empty?
       render_json_fileset_response(:not_found )
     else
@@ -132,12 +132,12 @@ class APIV1FilesetsController < APIBaseController
     return solr_filesets.map { | fs | API::Fileset.new.from_solr( fs, "#{public_site_url}/api/v1" ) }
   end
 
-  def batched_get( constraints, start_ix, end_ix )
+  def batched_get( constraints )
 
     res = []
-    count = end_ix - start_ix
+    block_size = DEFAULT_LIMIT
     tstart = Time.now
-    FileSet.search_in_batches( constraints, {:rows => count} ) do |group|
+    FileSet.search_in_batches( constraints, {:rows => block_size} ) do |group|
       elapsed = Time.now - tstart
       puts "===> extracted #{group.length} filesets(s) in #{elapsed}"
       #group.each { |r| puts "#{r.class}" }

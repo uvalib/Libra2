@@ -10,10 +10,10 @@ class APIV1WorksController < APIBaseController
   # get all works, supports json (default) and csv responses
   #
   def all_works
-    start = numeric( params[:start], DEFAULT_START )
-    limit = numeric( params[:limit], DEFAULT_LIMIT )
+    #start = numeric( params[:start], DEFAULT_START )
+    #limit = numeric( params[:limit], DEFAULT_LIMIT )
 
-    works = batched_get( {}, start, limit )
+    works = batched_get( {} )
     respond_to do |format|
       format.json do
          if works.empty?
@@ -60,7 +60,7 @@ class APIV1WorksController < APIBaseController
   # get a specific work details
   #
   def get_work
-    works = batched_get( { id: params[:id] }, 0, 1 )
+    works = batched_get( { id: params[:id] } )
     if works.empty?
       render_json_works_response(:not_found )
     else
@@ -127,8 +127,8 @@ class APIV1WorksController < APIBaseController
 
   def do_works_search( search )
 
-    start = numeric( params[:start], DEFAULT_START )
-    limit = numeric( params[:limit], DEFAULT_LIMIT )
+    #start = numeric( params[:start], DEFAULT_START )
+    #limit = numeric( params[:limit], DEFAULT_LIMIT )
 
     constraints = []
     field = search.author_email
@@ -166,7 +166,7 @@ class APIV1WorksController < APIBaseController
       constraints << "work_source_tesim:#{field}"
     end
 
-    return batched_get( constraints, start, limit )
+    return batched_get( constraints )
   end
 
   def work_transform( solr_works )
@@ -222,13 +222,13 @@ class APIV1WorksController < APIBaseController
     return nil
   end
 
-  def batched_get( constraints, start_ix, end_ix )
+  def batched_get( constraints )
 
     puts "===> query: #{constraints}"
     res = []
-    count = end_ix - start_ix
+    block_size = DEFAULT_LIMIT
     tstart = Time.now
-    GenericWork.search_in_batches( constraints, {:rows => count} ) do |group|
+    GenericWork.search_in_batches( constraints, {:rows => block_size} ) do |group|
       elapsed = Time.now - tstart
       puts "===> extracted #{group.length} work(s) in #{elapsed}"
       #group.each { |r| puts "#{r.class}" }

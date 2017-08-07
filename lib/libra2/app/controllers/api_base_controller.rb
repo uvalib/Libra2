@@ -10,8 +10,7 @@ class APIBaseController < ApplicationController
   before_action :validate_token
 
   # default query limits
-  DEFAULT_START = 0
-  DEFAULT_LIMIT = 999
+  DEFAULT_LIMIT = 1000
 
   # handle exceptions in a special manner
   rescue_from Exception do |exception|
