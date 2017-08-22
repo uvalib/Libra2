@@ -3,6 +3,11 @@
 <% if user.orcid.present? %>
   <dt><%= orcid_label('profile') %></dt>
   <dd><%= link_to extract_orcid_for_display( user.orcid ), user.orcid, { target: '_blank' } %></dd>
+<%else%>
+  <dd>
+  <%= orcid_oauth_button %>
+  </dd>
+  <br/>
 <% end %>
 
 <% if Sufia.config.arkivo_api && user.zotero_userid.present? %>
