@@ -87,7 +87,10 @@ class SubmissionController < ApplicationController
 
 		return if work.nil?
 		author = Helpers::EtdHelper::lookup_user( User.cid_from_email( work.creator ) )
-		ThesisMailers.thesis_submitted_author( work, author.display_name, MAIL_SENDER ).deliver_later unless author.nil?
+    return if author.nil?
+
+    # send the email
+		ThesisMailers.thesis_submitted_author( work, author.display_name, MAIL_SENDER ).deliver_later
 
 	end
 
@@ -99,16 +102,24 @@ class SubmissionController < ApplicationController
 		# do nothing for SIS work
 		return if work.is_sis_thesis?
 
-		computing_id = work.registrar_computing_id
-		return if computing_id.nil? || computing_id.empty?
-		author = Helpers::EtdHelper::lookup_user( User.cid_from_email( work.creator ) )
+    # do nothing if the registrar is blank
+		return if work.registrar_computing_id.blank?
 
-		registrar = Helpers::EtdHelper::lookup_user( computing_id )
+    # lookup the registrar info and return if we cannot find them
+    registrar = Helpers::EtdHelper::lookup_user( work.registrar_computing_id )
+    return if registrar.nil?
+
+    # lookup author information
+    author_id = User.cid_from_email( work.creator )
+		author = Helpers::EtdHelper::lookup_user( author_id )
+    author_name = author.nil? ? author_id : author.display_name
+
+    # send the email
 		ThesisMailers.thesis_submitted_registrar( work,
-																							author.display_name,
+                                              author_name,
 																							registrar.display_name,
 																							registrar.email,
-																							MAIL_SENDER ).deliver_later unless registrar.nil?
+																							MAIL_SENDER ).deliver_later
 
 	end
 
