@@ -13,7 +13,7 @@ module Helpers
       # lookup the user by computing id
       user_info = lookup_user( deposit_authorization.who )
       if user_info.nil?
-        puts "Cannot locate user info for #{deposit_authorization.who}"
+        puts "ERROR: cannot locate user info for #{deposit_authorization.who}"
         return false
       end
 
@@ -68,7 +68,7 @@ module Helpers
       # lookup the user by computing id
       user_info = lookup_user( deposit_request.who )
       if user_info.nil?
-        puts "Cannot locate user info for #{deposit_request.who}"
+        puts "ERROR: cannot locate user info for #{deposit_request.who}"
         return false
       end
 
