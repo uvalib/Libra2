@@ -6,6 +6,7 @@ class SubmissionController < ApplicationController
   include UrlHelper
 	include ServiceHelper
 	include StatisticsHelper
+  include WorkHelper
 
 	skip_before_filter :require_auth, only: [ 'public_view' ]
 	before_action :authenticate_user!, only: [ 'submit']
@@ -13,7 +14,7 @@ class SubmissionController < ApplicationController
 
 	def public_view
 		@id = params[:id]
-		@work = get_work_item
+		@work = get_generic_work( @id )
 
 		@can_view = can_view(@work)
 		if @can_view
@@ -33,7 +34,7 @@ class SubmissionController < ApplicationController
 
 	def submit
 		id = params[:id]
-		work = get_work_item
+		work = get_generic_work( id )
 
 		if work.present?
 
@@ -70,7 +71,7 @@ class SubmissionController < ApplicationController
 	def unpublish
 		if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
 			id = params[:id]
-			work = get_work_item
+			work = get_generic_work( id )
 			if work.present?
 				work.draft = 'true'
 				work.save!
@@ -110,12 +111,6 @@ class SubmissionController < ApplicationController
 																							MAIL_SENDER ).deliver_later unless registrar.nil?
 
 	end
-
-  def get_work_item
-    id = params[:id]
-    work = GenericWork.find( id )
-		return work
-  end
 
 	def can_view(work)
 

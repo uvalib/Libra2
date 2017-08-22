@@ -2,6 +2,8 @@ module CurationConcerns
 
   class GenericWorksController < ApplicationController
 
+    include WorkHelper
+
     after_action  :save_file_display_name
 
     before_action :set_requirements, only: [ :show ]
@@ -9,7 +11,7 @@ module CurationConcerns
     before_action :add_pending_file_test
 
     def is_me
-      work = GenericWork.find( params[:id] )
+      work = get_generic_work( params[:id] )
       if work.nil? || current_user.nil?
         render404()
       elsif !work.is_mine?(current_user.email)
@@ -21,7 +23,7 @@ module CurationConcerns
 
       # remove any files that have been processed
       if session[:files_pending].present? && session[:files_pending][params[:id]].present?
-        work = GenericWork.find( params[:id] )
+        work = get_generic_work( params[:id] )
         if work
           work.file_sets.each { |file_set|
             session[:files_pending][params[:id]].delete_if { |pending|
@@ -40,7 +42,7 @@ module CurationConcerns
 
       # TODO-PER: This is a hack to try to figure out how to save the file's display title. There is probably a better way to do this.
       if params['action'] == 'update'
-        work = GenericWork.find( params[:id] )
+        work = get_generic_work( params[:id] )
         if work
           previously_uploaded_files_label = params['previously_uploaded_files_label']
           if previously_uploaded_files_label.present?
