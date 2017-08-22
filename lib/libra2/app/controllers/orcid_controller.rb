@@ -19,11 +19,10 @@ class OrcidController < ApplicationController
                            orcid_scope: nil, orcid_expires_at: nil, orcid_linked_at: nil
                           )
       flash[:notice] = 'Your ORCID ID was successfully removed'
-      redirect_to sufia.profile_path(current_user)
     else
       flash[:error] = 'The was a problem removing your ORCID ID'
-      redirect_to sufia.edit_profile_path(current_user)
     end
+    redirect_to root_path
   end
 
   private
