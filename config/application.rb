@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
 
 require 'rails/all'
 
@@ -50,7 +50,7 @@ module Libra2
 
     # Look in the app namespace for stuff - this lets us override without cluttering up the root/app tree.
     paths[ 'app/controllers' ] << "lib/#{app_namespace}/app/controllers"
-    paths[ 'app/controllers/concerns' ] << "lib/#{app_namespace}/app/controllers/concerns"
+    #paths[ 'app/controllers/concerns' ] << "lib/#{app_namespace}/app/controllers/concerns"
     paths[ 'app/views' ] << "lib/#{app_namespace}/app/views"
     paths[ 'app/models' ] << "lib/#{app_namespace}/app/models"
     paths[ 'app/helpers' ] << "lib/#{app_namespace}/app/helpers"
