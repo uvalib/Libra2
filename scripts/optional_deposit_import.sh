@@ -31,7 +31,7 @@ while true; do
       logit "Beginning optional deposit import sequence"
 
       # do the optional import
-      bundle exec rake libra2:etd:ingest_optional_etd_deposits >> $LOGGER 2>&1
+      rake libra2:etd:ingest_optional_etd_deposits >> $LOGGER 2>&1
       res=$?
 
       # ending message

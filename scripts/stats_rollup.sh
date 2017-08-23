@@ -31,7 +31,7 @@ while true; do
       logit "Beginning statistics rollup sequence"
 
       # do the optional import
-      bundle exec rake libra2:statistics:create_yesterdays_aggregate >> $LOGGER 2>&1
+      rake libra2:statistics:create_yesterdays_aggregate >> $LOGGER 2>&1
       res=$?
 
       # ending message
