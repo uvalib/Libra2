@@ -97,6 +97,11 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           'date_published',
                           object.date_published,
                           :searchable )
+
+      Solrizer.set_field( solr_doc,
+                          'thumbnail_url_display',
+                          object.thumbnail_url,
+                          :displayable )
     end
   end
 
