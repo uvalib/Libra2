@@ -59,5 +59,9 @@ module Libra2
     paths[ 'config' ] << "lib/#{app_namespace}/config"
 
     config.autoload_paths << "#{Rails.root}/lib"
+
+    require "#{config.root}/lib/libra2/app/helpers/url_helper"
+    include UrlHelper
+    Rails.application.routes.default_url_options[:host] = public_site_url
   end
 end

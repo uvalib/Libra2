@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160929085375) do
+ActiveRecord::Schema.define(version: 20170822183524) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,     null: false
@@ -341,6 +341,11 @@ ActiveRecord::Schema.define(version: 20160929085375) do
     t.string   "arkivo_subscription",    limit: 255
     t.binary   "zotero_token",           limit: 65535
     t.string   "zotero_userid",          limit: 255
+    t.string   "orcid_access_token",     limit: 255
+    t.string   "orcid_refresh_token",    limit: 255
+    t.string   "orcid_scope",            limit: 255
+    t.datetime "orcid_expires_at"
+    t.datetime "orcid_linked_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
