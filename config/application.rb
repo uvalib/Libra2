@@ -44,6 +44,7 @@ module Libra2
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
+    #puts "==> #{paths.to_json}"
     # Look in the global namespace for stuff - this lets us override without cluttering up the root/app tree.
     # this namespace is used for global look & feel; anything that can be shared between Virgo and Libra
     paths[ 'lib/assets' ] << "lib/#{shared_namespace}/assets"
@@ -58,6 +59,10 @@ module Libra2
     paths[ 'lib/tasks' ] << "lib/#{app_namespace}/tasks"
     paths[ 'config' ] << "lib/#{app_namespace}/config"
 
-    config.autoload_paths << "#{Rails.root}/lib"
+    config.autoload_paths += %W(
+      #{Rails.root}/lib/#{app_namespace}/app/controllers/concerns
+      #{Rails.root}/lib/#{app_namespace}/app/models/concerns
+    )
+
   end
 end

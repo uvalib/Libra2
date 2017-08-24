@@ -1,12 +1,11 @@
 class CatalogController < ApplicationController
+  include BlacklightAdvancedSearch::Controller
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
   include Sufia::Catalog
-  include BlacklightAdvancedSearch::Controller
 
-  # These before_filters apply the hydra access controls
-  before_filter :enforce_show_permissions, only: :show
-  skip_before_filter :default_html_head
+  # This filter applies the hydra access controls
+  before_action :enforce_show_permissions, only: :show
 
   def self.uploaded_field
     solr_name('system_create', :stored_sortable, type: :date)
@@ -18,13 +17,6 @@ class CatalogController < ApplicationController
 
   configure_blacklight do |config|
 
-    config.view.gallery.partials = [:index_header, :index]
-    config.view.masonry.partials = [:index]
-    config.view.slideshow.partials = [:index]
-
-
-    config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
-    config.show.partials.insert(1, :openseadragon)
     # default advanced config values
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
     # config.advanced_search[:qt] ||= 'advanced'
@@ -42,7 +34,7 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       qt: "search",
       rows: 10,
-      qf: "title_tesim name_tesim"
+      qf: "title_tesim description_tesim keyword_tesim authors_tesim contributors_tesim"
     }
 
     # solr field configuration for document/show views
@@ -108,7 +100,6 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("format", :stored_searchable), label: "File Format"
     config.add_show_field solr_name("identifier", :stored_searchable), label: "Identifier"
 
-    SolrDocument.initialize_pre(config)
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
@@ -127,7 +118,7 @@ class CatalogController < ApplicationController
     # This one uses all the defaults set by the solr request handler. Which
     # solr request handler? The one set in config[:default_solr_parameters][:qt],
     # since we aren't specifying it otherwise.
-    config.add_search_field('all_fields', label: 'All Fields', include_in_advanced_search: false) do |field|
+    config.add_search_field('all_fields', label: 'All Fields') do |field|
       all_names = config.show_fields.values.map(&:field).join(" ")
       title_name = solr_name("title", :stored_searchable)
       field.solr_parameters = {
@@ -136,11 +127,6 @@ class CatalogController < ApplicationController
       }
     end
 
-    SolrDocument.initialize_post(config)
-
-    # maximum number of items on a page
-    # we appear to use this on the dashboard page
-    config.max_per_page = 1000
 
     # Now we see how to over-ride Solr request handler defaults, in this
     # case for a BL "search field", which is really a dismax aggregate
