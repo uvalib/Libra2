@@ -1,7 +1,7 @@
 module OrderedStringHelper
 
   # defaults
-  TOKEN_DELIMITER = '|'.freeze
+  TOKEN_DELIMITER ||= '|'.freeze
 
   #
   # convert a serialized array to a normal array of values
