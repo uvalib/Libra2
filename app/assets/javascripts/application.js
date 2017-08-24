@@ -18,5 +18,5 @@
 
 //= require_tree .
 //= require sufia
-//= require_tree ../../../lib/libra2/app/assets/javascripts
+//= require_tree ../../../lib/libraetd/app/assets/javascripts
 

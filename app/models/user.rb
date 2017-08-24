@@ -1,4 +1,4 @@
-require_dependency 'concerns/libra2/user_attributes'
+require_dependency 'concerns/libraetd/user_attributes'
 
 class User < ActiveRecord::Base
   # Connects this user object to Hydra behaviors.

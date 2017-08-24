@@ -1,4 +1,4 @@
-require_dependency 'libra2/lib/serviceclient/orcid_access_client'
+require_dependency 'libraetd/lib/serviceclient/orcid_access_client'
 
 module UpdateOrcidBehavior
 

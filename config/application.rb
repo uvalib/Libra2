@@ -21,8 +21,8 @@ module Libra2
     # We introduce several namespaces in order to partition rails components clearly and stay out of the base app namespace
     # which will be subject to changes from the sufia folks.
     #
-    shared_namespace = "uva"
-    app_namespace = "libra2"
+    shared_namespace = 'uva'
+    app_namespace = 'libraetd'
 
     config.generators do |g|
       g.test_framework :rspec, :spec => true
@@ -51,7 +51,6 @@ module Libra2
 
     # Look in the app namespace for stuff - this lets us override without cluttering up the root/app tree.
     paths[ 'app/controllers' ] << "lib/#{app_namespace}/app/controllers"
-    #paths[ 'app/controllers/concerns' ] << "lib/#{app_namespace}/app/controllers/concerns"
     paths[ 'app/views' ] << "lib/#{app_namespace}/app/views"
     paths[ 'app/models' ] << "lib/#{app_namespace}/app/models"
     paths[ 'app/helpers' ] << "lib/#{app_namespace}/app/helpers"
