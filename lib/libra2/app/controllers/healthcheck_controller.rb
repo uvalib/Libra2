@@ -1,6 +1,6 @@
 class HealthcheckController < ApplicationController
 
-  skip_before_filter :require_auth
+  #skip_before_filter :require_auth
 
   # the basic health status object
   class Health
