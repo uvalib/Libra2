@@ -25,4 +25,58 @@ en:
         header: Files
         empty:  "No files have been uploaded. You can add one by clicking \"Edit\" and using the \"Files\" tab."
 
+    schema_org:
+      default: &default
+         type: "string"
+         value: "value"
+      author_first_name:
+         <<: *default
+         property: "author_first_name"
+      author_last_name:
+         <<: *default
+         property: "author_last_name"
+      author_institution:
+         <<: *default
+         property: "author_institution"
+      Date created:
+         <<: *default
+         property: "Date created"
+      Date issued:
+         <<: *default
+         property: "Date issued"
+      degree:
+         <<: *default
+         property: "degree"
+      department:
+         <<: *default
+         property: "department"
+      description:
+         <<: *default
+         property: "description"
+      language:
+         <<: *default
+         property: "language"
+      keyword:
+         <<: *default
+         property: "keyword"
+      my_orcid:
+         <<: *default
+         property: "my_orcid"
+      notes:
+         <<: *default
+         property: "notes"
+      related_url:
+         <<: *default
+         property: "related_url"
+      Rights:
+         <<: *default
+         property: "Rights"
+      sponsoring_agency:
+         <<: *default
+         property: "sponsoring_agency"
+      Title:
+         <<: *default
+         property: "Title"
+
+
 
