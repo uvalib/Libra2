@@ -44,7 +44,7 @@ class DashboardController < ApplicationController
   end
 
   def development_login # TODO-PER: Temp route to get login working quickly.
-    if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
+    if ENV['ENABLE_TEST_FEATURES'].present?
       sign_in_user_id( params[:user] )
       redirect_to '/'
     end

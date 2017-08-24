@@ -6,7 +6,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '2a2b3cafe0e03bfe1207af84c084bdb69942fe1e3fc2db9b4a62af82eef1f9860bc26640bfb680b8f6ffd0c6d2b60736ae7ab1046e29622217d2cc773e4bc641'
+  # config.secret_key = 'cbf7218beb1f2846e006921553b613047c5f03f081168a59ecdbe4f99e7573eba69075e43d79d53395bbcdde7471fa233ab9265b02a506d5b9f7e0323a5db53e'
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
@@ -90,6 +90,12 @@ Devise.setup do |config|
   # from the server. You can disable this option at your own risk.
   # config.clean_up_csrf_token_on_authentication = true
 
+  # When false, Devise will not attempt to reload routes on eager load.
+  # This can reduce the time taken to boot the app but if your application
+  # requires the Devise mappings to be loaded during boot time the application
+  # won't boot properly.
+  # config.reload_routes = true
+
   # ==> Configuration for :database_authenticatable
   # For bcrypt, this is the cost for hashing the password and defaults to 11. If
   # using other algorithms, it sets how many times you want the password to be hashed.
@@ -102,7 +108,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 11
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = 'abbc64643c55bf4b8062ace655f6445e28c7ceff5a9bc2203cd8d4d139711d72c65d5a760519882f2ee768b456097debcd778481518d4fa3ff54d9bd3f9dd028'
+  # config.pepper = '532af0dcfd1a3a72aae2bd65fd8b7224d34fc7fd7eea5da3238a3aca0faa340e088fcdb02246a781c7e35f38d9abe011ac3a8c229159792f5a6e9957ea22e320'
 
   # Send a notification email when the user's password is changed
   # config.send_password_change_notification = false
@@ -251,6 +257,14 @@ Devise.setup do |config|
   #   manager.intercept_401 = false
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
+  require 'devise/custom_failure'
+
+  # Use Pubcookie authentication
+  config.warden do |manager|
+    manager.intercept_401 = false
+    manager.default_strategies(scope: :user).unshift :pubcookie_authentication
+    manager.failure_app = CustomFailure
+  end
 
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine

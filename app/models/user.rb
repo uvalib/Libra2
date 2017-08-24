@@ -19,8 +19,8 @@ class User < ActiveRecord::Base
   include Blacklight::User
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable,
+         :rememberable, :trackable
 
   # Method added by Blacklight; Blacklight uses #to_s on your
   # user class to get a user-displayable login/identifier for
@@ -28,4 +28,12 @@ class User < ActiveRecord::Base
   def to_s
     email
   end
+
+  #
+  # use the existing sufia role mapper to determine who is an admin
+  #
+  def admin?
+    groups.include?( 'admin' )
+  end
+
 end

@@ -69,7 +69,7 @@ class SubmissionController < ApplicationController
   end
 
 	def unpublish
-		if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
+		if ENV['ENABLE_TEST_FEATURES'].present?
 			id = params[:id]
 			work = get_generic_work( id )
 			if work.present?

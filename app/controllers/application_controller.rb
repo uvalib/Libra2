@@ -12,9 +12,6 @@ class ApplicationController < ActionController::Base
   include CurationConcerns::ThemedLayoutController
   layout 'sufia-one-column'
 
-  # Adds Libra2 authentication behavior
-  include Libra2::AuthenticationBehavior
-
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -47,7 +44,7 @@ class ApplicationController < ActionController::Base
     def set_debugging_override()
       @today = Time.now
       @grounds_override = false
-      if ENV['ALLOW_FAKE_NETBADGE'] == 'true'
+      if ENV['ENABLE_TEST_FEATURES'].present?
         @grounds_override = params[:grounds] if params[:grounds].present?
         if params[:time].present?
           months = params[:time].to_i
