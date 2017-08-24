@@ -9,10 +9,10 @@ Sufia.config do |config|
   # config.subject_prefix = "Contact form:"
 
   # How many notifications should be displayed on the dashboard
-  #config.max_notifications_for_dashboard = 5
+  # config.max_notifications_for_dashboard = 5
 
   # How frequently should a file be audited.
-  #config.max_days_between_audits = 7
+  # config.max_days_between_audits = 7
 
   # Enable displaying usage statistics in the UI
   # Defaults to FALSE
@@ -30,7 +30,7 @@ Sufia.config do |config|
   # config.citations = false
 
   # Where to store tempfiles, leave blank for the system temp directory (e.g. /tmp)
-  # config.temp_file_base = '/home/developer1'
+  config.temp_file_base = File.join( Rails.root, 'hostfs', 'tmp' )
 
   # Specify the form of hostpath to be used in Endnote exports
   # config.persistent_hostpath = 'http://localhost/files/'
@@ -94,11 +94,19 @@ Sufia.config do |config|
 
   # The user who runs audit jobs. Update this if you aren't using emails
   # config.audit_user_key = 'audituser@example.com'
+  #
+  # The banner image. Should be 5000px wide by 1000px tall.
+  # config.banner_image = 'https://cloud.githubusercontent.com/assets/92044/18370978/88ecac20-75f6-11e6-8399-6536640ef695.jpg'
 
   # Temporary path to hold uploads before they are ingested into FCrepo.
-  # This must be a lambda that returns a Pathname
-  #  config.upload_path = ->() { Rails.root + 'tmp' + 'uploads' }
+  # These must be lambdas that return a Pathname. Can be configured separately
   config.upload_path = ->() { Rails.root + 'hostfs' + 'uploads' + 'tmp' }
+  #config.cache_path = ->() { Rails.root + 'hostfs' + 'uploads' + 'cache' }
+  #config.cache_path = ->() { '/tmp' }
+
+  # Location on local file system where derivatives will be stored.
+  # If you use a multi-server architecture, this MUST be a shared volume.
+  config.derivatives_path = File.join( Rails.root, 'hostfs', 'uploads', 'derivatives' )
 
   # If browse-everything has been configured, load the configs.  Otherwise, set to nil.
   begin
