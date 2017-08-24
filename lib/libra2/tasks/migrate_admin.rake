@@ -81,6 +81,30 @@ namespace :migrate do
       puts "Processed #{count} work(s)"
     end
 
+    desc "Refresh by re-saving each GenericWork"
+    task refresh: :environment do |t, args|
+
+      successes = 0
+      errors = 0
+      GenericWork.search_in_batches( {} ) do |group|
+        group.each do |w|
+          begin
+            print "."
+            work = GenericWork.find( w['id'] )
+            work.save!
+
+            successes += 1
+          rescue => e
+            errors += 1
+          end
+        end
+      end
+
+      puts "done"
+      puts "Processed #{successes} work(s), #{errors} error(s) encountered"
+
+    end
+
     def convert_date_format( date_str )
 
       return false, date_str if date_str.blank?
