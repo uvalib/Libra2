@@ -17,6 +17,10 @@
 //= require blacklight/blacklight
 
 //= require_tree .
+
+//= require dataTables/jquery.dataTables
+//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
+
 //= require sufia
 //= require_tree ../../../lib/libraetd/app/assets/javascripts
 
