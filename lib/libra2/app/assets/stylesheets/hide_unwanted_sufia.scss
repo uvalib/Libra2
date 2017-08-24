@@ -3,28 +3,18 @@
 //
 // All pages
 //
-#masthead {
+.main-header {
+    a[href="/concern/generic_works/new"] {
+        display: none;
+    }
+    a[href="/collections/new"] {
+        display: none;
+    }
     a[href="/dashboard/works"] {
         display: none;
     }
     a[href="/dashboard/collections"] {
         display: none;
-    }
-
-    .dropdown-menu {
-      a[href="/dashboard/transfers"] {
-        display: none;
-      }
-      a[href="/dashboard/highlights"] {
-        display: none;
-      }
-      a[href="/dashboard/shares"] {
-        display: none;
-      }
-
-      .divider {
-         display: none;
-      }
     }
 }
 
@@ -43,31 +33,18 @@
 // the search button drop down
 #search-form-header {
     display: none;
-  //.input-group-btn {
-  //  a[data-search-label="My Collections"] {
-  //    display: none; // search button within collections
-  //  }
-  //  a[data-search-label="My Highlights"] {
-  //    display: none; // search button within highlights
-  //  }
-  //  a[data-search-label="My Shares"] {
-  //    display: none; // search button within shares
-  //  }
-  //}
 }
 
 
 //
 // Dashboard
 //
-.dashboard {
-    .heading-row {
-       display: none;
-    }
+.heading-row {
+   display: none;
+}
 
-    #transfers, #notifications, #proxy_management {
-      display: none;
-    }
+#transfers, #notifications, #proxy_management {
+   display: none;
 }
 
 //
@@ -85,6 +62,18 @@
             display: none;
         }
     }
+}
+
+//
+// Show
+//
+
+.thesis-thumbnail {
+
+   // download image button
+   a {
+     display: none;
+   }
 }
 
 //
