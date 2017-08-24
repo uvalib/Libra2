@@ -1,1 +1,1 @@
-bundle exec rake libra2:work:create_new_work $1
+rake libraetd:work:create_new_work $1

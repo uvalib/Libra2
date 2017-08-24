@@ -4,7 +4,7 @@
 
 require_dependency 'libra2/lib/serviceclient/orcid_access_client'
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :orcid do
 
@@ -90,7 +90,7 @@ namespace :libra2 do
 
   end   # namespace orcid
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

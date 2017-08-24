@@ -1,1 +1,1 @@
-bundle exec rake libra2:attach:add $1 $2
+rake libraetd:attach:add $1 $2

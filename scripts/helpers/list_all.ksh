@@ -1,1 +1,1 @@
-bundle exec rake libra2:work:list_all_works
+rake libraetd:work:list_all_works

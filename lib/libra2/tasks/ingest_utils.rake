@@ -6,7 +6,7 @@
 require_dependency 'libra2/tasks/ingest_helpers'
 include IngestHelpers
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :ingest do
 
@@ -296,7 +296,7 @@ namespace :libra2 do
 
   end   # namespace ingest
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

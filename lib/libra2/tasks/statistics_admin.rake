@@ -5,7 +5,7 @@
 require_dependency 'libra2/app/helpers/statistics_helper'
 include StatisticsHelper
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :statistics do
 
@@ -140,7 +140,7 @@ namespace :libra2 do
 
 end   # namespace statistics
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

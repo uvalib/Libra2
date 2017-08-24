@@ -15,7 +15,7 @@ require_dependency 'libra2/lib/helpers/etd_helper'
 
 require 'socket'
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :etd do
 
@@ -375,7 +375,7 @@ namespace :libra2 do
 
   end   # namespace etd
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

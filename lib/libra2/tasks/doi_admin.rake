@@ -8,7 +8,7 @@ include TaskHelpers
 
 require_dependency 'libra2/lib/serviceclient/entity_id_client'
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :doi do
 
@@ -374,7 +374,7 @@ namespace :libra2 do
 
   end   # namespace doi
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

@@ -2,7 +2,7 @@
 # Some helper tasks to manage data import and export
 #
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :data do
 
@@ -219,7 +219,7 @@ namespace :libra2 do
 
 end   # namespace data
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

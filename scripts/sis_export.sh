@@ -31,7 +31,7 @@ while true; do
       logit "Beginning SIS export sequence"
 
       # do the optional import
-      rake libra2:sis:export >> $LOGGER 2>&1
+      rake libraetd:sis:export >> $LOGGER 2>&1
       res=$?
 
       # ending message

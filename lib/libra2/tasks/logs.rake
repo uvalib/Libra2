@@ -1,4 +1,4 @@
-namespace :libra2 do
+namespace :libraetd do
 
 	namespace :logs do
 		def get_request_line(input, output)
@@ -122,4 +122,4 @@ namespace :libra2 do
 		end
 	end # namespace logs
 
-end # namespace libra2
+end # namespace libraetd

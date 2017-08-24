@@ -1,1 +1,1 @@
-bundle exec rake libra2:download:work_download $1 $2 $3
+rake libraetd:download:work_download $1 $2 $3

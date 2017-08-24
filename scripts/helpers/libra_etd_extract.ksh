@@ -54,7 +54,7 @@ function solr_extract {
 
       QUERY=data/solr_query/${item}_solr_query.txt
       RESULTS=$EXTRACT_DIR/${item}
-      rake libra2:extract:solr_extract $RESULTS $QUERY $MAX_RECORDS
+      rake libraetd:extract:solr_extract $RESULTS $QUERY $MAX_RECORDS
       res=$?
       bomb_if_error $res
    done
@@ -79,7 +79,7 @@ function asset_extract {
       ASSET_RECORDS=$EXTRACT_DIR/file_asset
       ITEM_RECORDS=$EXTRACT_DIR/${item}
 
-      rake libra2:extract:asset_extract $ITEM_RECORDS $ASSET_RECORDS
+      rake libraetd:extract:asset_extract $ITEM_RECORDS $ASSET_RECORDS
       res=$?
       bomb_if_error $res
    done

@@ -11,7 +11,7 @@ include ServiceHelper
 
 require_dependency 'libra2/lib/serviceclient/entity_id_client'
 
-namespace :libra2 do
+namespace :libraetd do
 
 namespace :work do
 
@@ -379,7 +379,7 @@ end
 
 end   # namespace work
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

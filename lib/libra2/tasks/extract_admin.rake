@@ -2,7 +2,7 @@
 # Tasks to manage legacy Libra export
 #
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :extract do
 
@@ -282,7 +282,7 @@ namespace :libra2 do
 
   end   # namespace extract
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

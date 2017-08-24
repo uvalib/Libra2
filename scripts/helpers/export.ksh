@@ -1,1 +1,1 @@
-bundle exec rake libra2:data:bulk_export $1 $2
+rake libraetd:data:bulk_export $1 $2

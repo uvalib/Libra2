@@ -6,7 +6,7 @@
 require_dependency 'libra2/tasks/task_helpers'
 include TaskHelpers
 
-namespace :libra2 do
+namespace :libraetd do
 
 namespace :edit do
 
@@ -207,7 +207,7 @@ end
 
   end   # namespace edit
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

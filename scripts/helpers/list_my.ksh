@@ -1,1 +1,1 @@
-bundle exec rake libra2:work:list_my_works $1
+rake libraetd:work:list_my_works $1

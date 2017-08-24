@@ -4,7 +4,7 @@
 
 require_dependency 'libra2/lib/serviceclient/deposit_auth_client'
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :sis do
 
@@ -64,7 +64,7 @@ namespace :libra2 do
 
   end   # namespace sis
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

@@ -1,1 +1,1 @@
-bundle exec rake libra2:attach:remove $1 $2
+rake libraetd:attach:remove $1 $2

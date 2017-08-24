@@ -1,1 +1,1 @@
-bundle exec rake libra2:work:del_by_id $1
+rake libraetd:work:del_by_id $1

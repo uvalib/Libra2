@@ -1,1 +1,1 @@
-bundle exec rake libra2:data:bulk_import $1
+rake libraetd:data:bulk_import $1

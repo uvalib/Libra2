@@ -4,7 +4,7 @@
 
 require_dependency 'libra2/lib/helpers/key_helper'
 
-namespace :libra2 do
+namespace :libraetd do
 
   namespace :redis do
 
@@ -121,7 +121,7 @@ namespace :libra2 do
 
   end   # namespace redis
 
-end   # namespace libra2
+end   # namespace libraetd
 
 #
 # end of file

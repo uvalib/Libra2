@@ -1,1 +1,1 @@
-bundle exec rake libra2:etd:reset_last_optional_id $1
+rake libraetd:etd:reset_last_optional_id $1
