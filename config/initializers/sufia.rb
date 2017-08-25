@@ -38,7 +38,6 @@ Sufia.config do |config|
   # If you have ffmpeg installed and want to transcode audio and video uncomment this line
   config.enable_ffmpeg = true
 
-  # Specify the path to the ffmpeg tool
   config.ffmpeg_path = "#{Rails.application.root}/tools/ffmpeg-3.2.3-64bit-static/ffmpeg"
 
   # Sufia uses NOIDs for files and collections instead of Fedora UUIDs

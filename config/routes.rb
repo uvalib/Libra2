@@ -1,10 +1,9 @@
-require_dependency 'sidekiq/web'
-
 Rails.application.routes.draw do
 
-  root 'dashboard#index'
+  # libra-etd specific endpoints
+
   get 'logout' => 'dashboard#logout'
-  get 'development_login' => 'dashboard#development_login' # TODO-PER: Temp route to get login working quickly.
+  #get 'development_login' => 'dashboard#development_login' # TODO-PER: Temp route to get login working quickly.
   get "/test_exception_notifier" => "dashboard#test_exception_notifier"
   get "/test_email" => "dashboard#test_email"
   get '/public_view/:id' => 'submission#public_view'
@@ -50,14 +49,25 @@ Rails.application.routes.draw do
   get '/api/v1/audit/user/:id' => 'api_v1_audit#by_user', :defaults => { :format => 'json' }
   get '/api/v1/audit' => 'api_v1_audit#search', :defaults => { :format => 'json' }
 
-  # add the resque-web engine
-  #mount ResqueWeb::Engine => '/resque'
+  concern :exportable, Blacklight::Routes::Exportable.new
+  resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
+    concerns :exportable
+  end
+
+  resources :bookmarks do
+    concerns :exportable
+
+    collection do
+      delete 'clear'
+    end
+  end
 
   Hydra::BatchEdit.add_routes(self)
   mount Qa::Engine => '/authorities'
+
   mount Blacklight::Engine => '/'
-  
-    concern :searchable, Blacklight::Routes::Searchable.new
+  mount BlacklightAdvancedSearch::Engine => '/'
+  concern :searchable, Blacklight::Routes::Searchable.new
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
     concerns :searchable
@@ -78,7 +88,7 @@ Rails.application.routes.draw do
   
   mount CurationConcerns::Engine, at: '/'
   resources :welcome, only: 'index'
-  #root 'sufia/homepage#index'
+  root 'dashboard#index'
   curation_concerns_collections
   curation_concerns_basic_routes
   curation_concerns_embargo_management
@@ -96,11 +106,9 @@ Rails.application.routes.draw do
     end
   end
 
+  require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
-  Hydra::BatchEdit.add_routes(self)
-  # This must be the very last route in the file because it has a catch-all route for 404 errors.
-  # This behavior seems to show up only in production mode.
-  mount Sufia::Engine => '/'
+  mount Sufia::Engine, at: '/'
 
 end
