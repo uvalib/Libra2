@@ -2,9 +2,10 @@
   <td class="thumbnail">
     <%= render_thumbnail_tag member, {}, { suppress_link: true } %>
   </td>
-  <td class="attribute filename"><%= member.link_name %></td>
+  <td class="attribute filename"><%= member.label %></td>
   <td class="attribute permission"><%= display_array(member.title) %></td>
   <td class="attribute date_uploaded"><%= file_date_created(member.date_uploaded) %></td>
+
   <td>
   </td>
 </tr>
