@@ -36,4 +36,7 @@ Rails.application.configure do
 
   # run jobs inline in development
   config.active_job.queue_adapter = :inline
+
+  # pull environment variables when running in the debugger
+  ENV.update(eval(`sh -c 'source libra_etd_env.ksh && ruby -e "p ENV"'`) || {})
 end

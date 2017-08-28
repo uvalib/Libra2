@@ -30,3 +30,5 @@
 /scripts/helpers/db_clean.ksh
 /reingest.sh
 .DS_Store
+
+libra_etd_env.ksh
