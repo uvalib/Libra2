@@ -13,14 +13,6 @@
 			<%= link_to "Public View", locally_hosted_work_url( presenter.solr_document.id ), {class: 'btn btn-default', data: { 'no-turbolink' => true }} %>
 		<% end %>
 	<% end %>
-	<% if presenter.display_feature_link? %>
-		<%= link_to "Feature", sufia.featured_work_path(presenter, format: :json),
-					data: {behavior: 'feature'}, id: 'featureLink', name: 'featureLink', class: 'btn btn-default' %>
-	<% end %>
-	<% if presenter.display_unfeature_link? %>
-		<%= link_to "Unfeature", sufia.featured_work_path(presenter, format: :json),
-					data: {behavior: 'unfeature'}, id: 'unfeatureLink', name: 'unfeatureLink', class: 'btn btn-default' %>
-	<% end %>
 	<!-- COinS hook for Zotero -->
 	<span class="Z3988" title="<%= export_as_openurl_ctx_kev(presenter) %>"></span>
 </div>
