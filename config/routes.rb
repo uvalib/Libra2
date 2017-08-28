@@ -106,6 +106,11 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace 'orcid' do
+    get :landing
+    delete :destroy
+  end
+
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 

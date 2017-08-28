@@ -4,6 +4,7 @@ require_dependency 'libraetd/app/indexers/libra2_indexer'
 
 require_dependency 'libraetd/app/helpers/ordered_string_helper'
 include OrderedStringHelper
+include UrlHelper
 
 class GenericWork < ActiveFedora::Base
 
@@ -289,19 +290,35 @@ class GenericWork < ActiveFedora::Base
 
   def self.calculate_embargo_release_date( embargo_period )
     case embargo_period
-      when GenericWork::EMBARGO_VALUE_6_MONTH
-        return Time.now( ) + 6.months
-      when GenericWork::EMBARGO_VALUE_1_YEAR
-        return Time.now( ) + 1.year
-      when GenericWork::EMBARGO_VALUE_2_YEAR
-        return Time.now( ) + 2.years
-      when GenericWork::EMBARGO_VALUE_5_YEAR
-        return Time.now( ) + 5.years
-      when GenericWork::EMBARGO_VALUE_FOREVER
-        return Time.now( ) + 130.years
+    when GenericWork::EMBARGO_VALUE_6_MONTH
+      return Time.now( ) + 6.months
+    when GenericWork::EMBARGO_VALUE_1_YEAR
+      return Time.now( ) + 1.year
+    when GenericWork::EMBARGO_VALUE_2_YEAR
+      return Time.now( ) + 2.years
+    when GenericWork::EMBARGO_VALUE_5_YEAR
+      return Time.now( ) + 5.years
+    when GenericWork::EMBARGO_VALUE_FOREVER
+      return Time.now( ) + 130.years
     end
     raise "Unknown embargo period."
   end
+
+  #
+  # Thumbnail url for solr
+  #
+  def thumbnail_url
+    # Just show defaults for now
+    ActionController::Base.helpers.image_url 'default.png', host: public_site_url
+
+    # Actual thumbnails are ready to go below.
+    #if self.thumbnail.present?
+    #  Rails.application.routes.url_helpers.download_url(self.thumbnail.id, file: 'thumbnail')
+    #else
+    #  ActionController::Base.helpers.image_url 'default.png'
+    #end
+  end
+
 end
 
 #

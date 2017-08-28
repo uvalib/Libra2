@@ -2,7 +2,18 @@
 
 <% if user.orcid.present? %>
   <dt><%= orcid_label('profile') %></dt>
-  <dd><%= link_to extract_orcid_for_display( user.orcid ), user.orcid, { target: '_blank' } %></dd>
+  <dd>
+  <%= link_to extract_orcid_for_display( user.orcid ), user.orcid, { target: '_blank' } %>
+  <%= link_to "<i class='fa fa-times-circle'></i>".html_safe, orcid_destroy_path,
+    method: :delete, class: 'text-danger',
+    data: {confirm: 'Are you sure you want to remove your ORCID account from Libra?'}
+  %>
+  </dd>
+<%else%>
+  <dd>
+  <%= orcid_oauth_button %>
+  </dd>
+  <br/>
 <% end %>
 
 <% if Sufia.config.arkivo_api && user.zotero_userid.present? %>

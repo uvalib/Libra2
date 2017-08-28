@@ -63,5 +63,9 @@ module Libra2
       #{Rails.root}/lib/#{app_namespace}/app/models/concerns
     )
 
+    require "#{config.root}/lib/#{app_namespace}/app/helpers/url_helper"
+    include UrlHelper
+    Rails.application.routes.default_url_options[:host] = public_site_url
+
   end
 end
