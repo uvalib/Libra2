@@ -28,7 +28,6 @@ libra-oa:10070|open||
 libra-oa:10074|open||
 libra-oa:10076|open||
 libra-oa:10252|open||
-libra-oa:6338|open||
 libra-oa:9834|open||
 libra-oa:9840|open||
 libra-oa:9873|open||
