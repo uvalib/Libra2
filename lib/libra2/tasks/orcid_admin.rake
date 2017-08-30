@@ -8,8 +8,8 @@ namespace :libra2 do
 
   namespace :orcid do
 
-  desc "List known ORCID's"
-  task list_orcids: :environment do |t, args|
+  desc "List known ORCID's from the ORCID service"
+  task list_remote_orcids: :environment do |t, args|
 
     count = 0
     status, r = ServiceClient::OrcidAccessClient.instance.get_all( )
@@ -26,8 +26,25 @@ namespace :libra2 do
     end
   end
 
-  desc "Harvest ORCID's"
-  task harvest_orcids: :environment do |t, args|
+  desc "List known local ORCID's"
+  task list_local_orcids: :environment do |t, args|
+
+    count = 0
+    User.order( :email ).each do |user|
+       if user.orcid.blank? == false
+         orcid = user.orcid.gsub( 'http://orcid.org/', '' )
+         cid = User.cid_from_email( user.email )
+         puts "#{cid} -> #{orcid} (authenticated: #{user.orcid_access_token.blank? ? 'NO' : 'yes'})"
+         count += 1
+       end
+    end
+
+    puts "#{count} ORCIDS(s) listed"
+
+  end
+
+  desc "Harvest local ORCID's and push to ORCID service"
+  task harvest_local_orcids: :environment do |t, args|
 
      count = 0
      User.order( :email ).each do |user|
@@ -46,6 +63,21 @@ namespace :libra2 do
      end
 
      puts "#{count} ORCID(s) harvested"
+  end
+
+  desc "Purge unauthenticated local ORCID's"
+  task purge_local_orcids: :environment do |t, args|
+
+    count = 0
+    User.order( :email ).each do |user|
+      if user.orcid.blank? == false && user.orcid_access_token.blank? == true
+        user.orcid = nil
+        user.save!
+        count += 1
+      end
+    end
+    puts "#{count} ORCID(s) purged"
+
   end
 
   desc "Search ORCID; must provide a search pattern, optionally provide a start index and max count"
