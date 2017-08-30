@@ -5,31 +5,26 @@ module UpdateOrcidBehavior
     extend ActiveSupport::Concern
 
     included do
-      before_action :save_orcid_if_provided, only: [ :update ]
+      after_action :update_orcid, only: [ :landing ]
+      after_action :remove_orcid, only: [ :destroy ]
     end
 
     private
 
     #
-    # save an updated value if appropriate and remove it as it is a special/fake field
+    # Update the ORCID service with the just associated ORCID
     #
-    def save_orcid_if_provided
-      if params[:generic_work][:my_orcid].blank? == false
-        # supplied ORCID is not blank...
-        if current_user.orcid != "http://orcid.org/#{params[:generic_work][:my_orcid]}"
-          current_user.orcid = params[:generic_work][:my_orcid]
-          current_user.save!
-          update_orcid_service( User.cid_from_email( current_user.email ), params[:generic_work][:my_orcid] )
-        end
-      else
-        # supplied ORCID is blank...
-        if current_user.orcid.blank? == false
-          current_user.orcid = ''
-          current_user.save!
-          update_orcid_service( User.cid_from_email( current_user.email ), '' )
-        end
+    def update_orcid
+      if current_user.orcid.present?
+        update_orcid_service( User.cid_from_email( current_user.email ), current_user.orcid.gsub( 'http://orcid.org/', '' ) )
       end
-      params[:generic_work].delete( :my_orcid ) if params[:generic_work][:my_orcid]
+    end
+
+    #
+    # Remove the ORCID from the service for the current user
+    #
+    def remove_orcid
+      update_orcid_service( User.cid_from_email( current_user.email ), '' )
     end
 
     #

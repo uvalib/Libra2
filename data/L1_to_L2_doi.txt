@@ -1178,7 +1178,6 @@ libra-oa:3314 doi:10.18130/V38F89
 libra-oa:3316 doi:10.18130/V34N6C
 libra-oa:3334 doi:10.18130/V30Z2Q
 libra-oa:3339 doi:10.18130/V3W51G
-libra-oa:3333 doi:10.18130/V3RF8N
 libra-oa:3350 doi:10.18130/V3MN6Q
 libra-oa:3351 doi:10.18130/V3GZ3F
 libra-oa:3360 doi:10.18130/V3C51T
@@ -3273,3 +3272,5 @@ libra-oa:9641 doi:10.18130/V3TK44
 libra-oa:11692 doi:10.18130/V3PS26
 libra-oa:10023 doi:10.18130/V3K57Z
 libra-oa:9683 doi:10.18130/V3FC6D
+libra-oa:6338 doi:10.18130/V31C6P
+libra-oa:3544 doi:10.18130/V3W57R
