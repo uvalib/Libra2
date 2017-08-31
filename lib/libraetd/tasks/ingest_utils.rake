@@ -17,13 +17,17 @@ namespace :libraetd do
     GenericWork.search_in_batches( {} ) do |group|
       group.each do |gw_solr|
 
-        begin
-          gw = GenericWork.find( gw_solr['id'] )
-          if gw.is_ingested_thesis?
-            puts "#{gw.work_source} #{gw.identifier || 'None'}"
-            count += 1
-          end
-        rescue => e
+        source = gw_solr[ Solrizer.solr_name( 'work_source' ) ]
+        source = source.first if source.present?
+
+        if GenericWork.ingested_thesis?( source )
+
+          id = gw_solr[ Solrizer.solr_name( 'identifier' ) ]
+          id = id.first if id.present?
+          id = 'None' if id.blank?
+
+          puts "#{source} #{id}"
+          count += 1
         end
 
       end
@@ -40,15 +44,18 @@ namespace :libraetd do
     GenericWork.search_in_batches( {} ) do |group|
       group.each do |gw_solr|
 
-        begin
-           gw = GenericWork.find( gw_solr['id'] )
-           if gw.is_legacy_thesis?
-             puts "#{gw.work_source} #{gw.identifier || 'None'}"
-             count += 1
-           end
-        rescue => e
-        end
+        source = gw_solr[ Solrizer.solr_name( 'work_source' ) ]
+        source = source.first if source.present?
 
+        if GenericWork.legacy_thesis?( source )
+
+           id = gw_solr[ Solrizer.solr_name( 'identifier' ) ]
+           id = id.first if id.present?
+           id = 'None' if id.blank?
+
+           puts "#{source} #{id}"
+           count += 1
+        end
       end
     end
     puts "Listed #{count} legacy ingested work(s)"

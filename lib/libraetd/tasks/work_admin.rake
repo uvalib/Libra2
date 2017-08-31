@@ -135,13 +135,13 @@ task count_by_source: :environment do |t, args|
       source = source[ 0 ] if source.present?
       source = '' if source.blank?
 
-      if source.start_with? GenericWork::THESIS_SOURCE_SIS
+      if GenericWork.sis_thesis? source
         sources[ :sis ] += 1
-      elsif source.start_with? GenericWork::THESIS_SOURCE_OPTIONAL
+      elsif GenericWork.optional_thesis? source
         sources[ :optional ] += 1
-      elsif source.start_with? GenericWork::THESIS_SOURCE_LEGACY
+      elsif GenericWork.legacy_thesis? source
         sources[ :legacy ] += 1
-      elsif source.start_with? GenericWork::THESIS_SOURCE_INGEST
+      elsif GenericWork.ingested_thesis? source
         sources[ :ingested ] += 1
       else
         sources[ :unknown ] += 1
