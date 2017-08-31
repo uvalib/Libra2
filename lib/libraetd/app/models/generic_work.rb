@@ -237,23 +237,19 @@ class GenericWork < ActiveFedora::Base
   end
 
   def is_sis_thesis?
-    return false if work_source.nil?
-    return work_source.start_with? GenericWork::THESIS_SOURCE_SIS
+    return GenericWork.sis_thesis?( work_source )
   end
 
   def is_optional_thesis?
-    return false if work_source.nil?
-    return work_source.start_with? GenericWork::THESIS_SOURCE_OPTIONAL
+    return GenericWork.optional_thesis?( work_source )
   end
 
   def is_legacy_thesis?
-    return false if work_source.nil?
-    return work_source.start_with? GenericWork::THESIS_SOURCE_LEGACY
+    return GenericWork.legacy_thesis?( work_source )
   end
 
   def is_ingested_thesis?
-    return false if work_source.nil?
-    return work_source.start_with? GenericWork::THESIS_SOURCE_INGEST
+    return GenericWork.ingested_thesis?( work_source )
   end
 
   def sis_authorization_id
@@ -270,6 +266,26 @@ class GenericWork < ActiveFedora::Base
   def self.doi_url( doi )
     return '' if doi.nil?
     return "https://doi.org/#{doi.gsub('doi:', '')}"
+  end
+
+  def self.sis_thesis?( source )
+    return false if source.nil?
+    return source.start_with? GenericWork::THESIS_SOURCE_SIS
+  end
+
+  def self.optional_thesis?( source )
+    return false if source.nil?
+    return source.start_with? GenericWork::THESIS_SOURCE_OPTIONAL
+  end
+
+  def self.legacy_thesis?( source )
+    return false if source.nil?
+    return source.start_with? GenericWork::THESIS_SOURCE_LEGACY
+  end
+
+  def self.ingested_thesis?( source )
+    return false if source.nil?
+    return source.start_with? GenericWork::THESIS_SOURCE_INGEST
   end
 
   def self.displayable_embargo_period( embargo_period )
