@@ -100,16 +100,17 @@ task count_by_depositor: :environment do |t, args|
   count = 0
   GenericWork.search_in_batches( {} ) do |group|
     group.each do |gw_solr|
-      begin
-        gw = GenericWork.find( gw_solr['id'] )
-        if depositors[ gw.depositor ].nil?
-          depositors[ gw.depositor ] = 1
-        else
-          depositors[ gw.depositor ] = depositors[ gw.depositor ] + 1
-        end
-      rescue => e
-        puts e
+
+      depositor = gw_solr[ Solrizer.solr_name( 'depositor' ) ]
+      depositor = depositor[ 0 ] if depositor.present?
+      depositor = 'unknown' if depositor.blank?
+
+      if depositors[ depositor ].nil?
+        depositors[ depositor ] = 1
+      else
+        depositors[ depositor ] = depositors[ depositor ] + 1
       end
+
     end
 
     count += group.size
@@ -118,6 +119,41 @@ task count_by_depositor: :environment do |t, args|
   # output a summary...
   depositors.keys.sort.each do |k|
     puts " #{k} => #{depositors[k]} work(s)"
+  end
+
+  puts "Summerized #{count} work(s)"
+end
+
+desc "Work counts by work source"
+task count_by_source: :environment do |t, args|
+
+  sources = { :ingested => 0, :legacy => 0, :optional => 0, :sis => 0, :unknown => 0 }
+  count = 0
+  GenericWork.search_in_batches( {} ) do |group|
+    group.each do |gw_solr|
+      source = gw_solr[ Solrizer.solr_name( 'work_source' ) ]
+      source = source[ 0 ] if source.present?
+      source = '' if source.blank?
+
+      if source.start_with? GenericWork::THESIS_SOURCE_SIS
+        sources[ :sis ] += 1
+      elsif source.start_with? GenericWork::THESIS_SOURCE_OPTIONAL
+        sources[ :optional ] += 1
+      elsif source.start_with? GenericWork::THESIS_SOURCE_LEGACY
+        sources[ :legacy ] += 1
+      elsif source.start_with? GenericWork::THESIS_SOURCE_INGEST
+        sources[ :ingested ] += 1
+      else
+        sources[ :unknown ] += 1
+      end
+    end
+
+    count += group.size
+  end
+
+  # output a summary...
+  sources.keys.sort.each do |k|
+    puts " #{k} => #{sources[k]} work(s)"
   end
 
   puts "Summerized #{count} work(s)"
