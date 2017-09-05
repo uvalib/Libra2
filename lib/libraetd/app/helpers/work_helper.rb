@@ -8,7 +8,8 @@ module WorkHelper
     begin
        work = GenericWork.find( id )
        return work
-    rescue ActiveFedora::ObjectNotFoundError, Ldp::Gone
+    rescue ActiveFedora::ObjectNotFoundError, Ldp::Gone, URI::InvalidURIError => ex
+      puts "==> get_generic_work exception: #{ex}"
        return nil
     end
 
