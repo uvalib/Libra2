@@ -6,6 +6,10 @@ class APIV1WorksController < APIBaseController
                                         :update_work
                                       ]
 
+  # definitions
+  INCLUDE_FILESETS ||= true
+  EXCLUDE_FILESETS ||= false
+
   #
   # get all works, supports json (default) and csv responses
   #
@@ -19,11 +23,13 @@ class APIV1WorksController < APIBaseController
          if works.empty?
             render_json_works_response(:not_found )
          else
-            render_json_works_response(:ok, work_transform( works ) )
+            # dont provide fileset information here, it takes too long and we just want work information
+            render_json_works_response(:ok, work_transform( works, EXCLUDE_FILESETS ) )
          end
       end
       format.csv do
-        render_csv_works_response( work_transform( works ) )
+        # provide fileset information here because this is used for work export
+        render_csv_works_response( work_transform( works, INCLUDE_FILESETS ) )
       end
     end
 
@@ -43,11 +49,13 @@ class APIV1WorksController < APIBaseController
             if works.empty?
                render_json_works_response(:not_found )
             else
-               render_json_works_response(:ok, work_transform( works ) )
+              # dont provide fileset information here, it takes too long and we just want work information
+               render_json_works_response(:ok, work_transform( works, EXCLUDE_FILESETS ) )
             end
          end
          format.csv do
-           render_csv_works_response( work_transform( works ) )
+           # provide fileset information here because this is used for work export
+           render_csv_works_response( work_transform( works, INCLUDE_FILESETS ) )
          end
        end
     else
@@ -64,7 +72,8 @@ class APIV1WorksController < APIBaseController
     if works.empty?
       render_json_works_response(:not_found )
     else
-      render_json_works_response(:ok, work_transform(works ) )
+      # provide fileset information here
+      render_json_works_response(:ok, work_transform(works, INCLUDE_FILESETS ) )
     end
   end
 
@@ -169,9 +178,12 @@ class APIV1WorksController < APIBaseController
     return batched_get( constraints )
   end
 
-  def work_transform( solr_works )
+  def work_transform( solr_works, add_filesets )
     return [] if solr_works.empty?
     res = []
+
+    puts "===> no fileset information required" unless add_filesets == true
+
     solr_works.each do |solr|
 
       # make an API work record
@@ -179,8 +191,9 @@ class APIV1WorksController < APIBaseController
 
       filesets = w.filesets
       w.filesets = []
+
       # add the fileset information if necessary
-      if filesets.empty? == false
+      if add_filesets == true && filesets.empty? == false
         tstart = Time.now
         FileSet.search_in_batches( { id: filesets } ) do |fsg|
           elapsed = Time.now - tstart
@@ -191,7 +204,6 @@ class APIV1WorksController < APIBaseController
           end
           tstart = Time.now
         end
-
       end
       res << w
     end
