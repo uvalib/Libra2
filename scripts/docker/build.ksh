@@ -11,6 +11,9 @@ echo "*****************************************"
 INSTANCE=libra2
 NAMESPACE=uvadave
 
+# pull base image to ensure we have the latest
+docker pull centos:7
+
 # build the image
 docker build -t $NAMESPACE/$INSTANCE .
 
