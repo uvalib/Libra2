@@ -10,13 +10,11 @@ RUN cd /tmp/ruby-2.4.1 && ./configure && make && make install
 RUN rm -fr /tmp/ruby-2.4.1
 
 # install application dependancies
-RUN yum -y install file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel && yum -y install nodejs
-
-# install libreoffice
-#RUN cd /tmp && wget https://download.documentfoundation.org/libreoffice/stable/5.3.2/rpm/x86_64/LibreOffice_5.3.2_Linux_x86-64_rpm.tar.gz
-#RUN cd /tmp && tar xzfv LibreOffice_5.3.2_Linux_x86-64_rpm.tar.gz
-#RUN cd /tmp/LibreOffice_5.3.2.2_Linux_x86-64_rpm/RPMS/ && yum -y localinstall *.rpm
-#RUN ln -s /opt/libreoffice5.3/program/soffice /usr/local/bin/soffice
+RUN yum -y install file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel
+RUN yum -y install clamav clamav-update clamav-devel
+#&& yum -y install nodejs
+# temp workaround until centos 7.4 (https://bugs.centos.org/view.php?id=13669&nbn=1)
+RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/http-parser/2.7.1/3.el7/x86_64/http-parser-2.7.1-3.el7.x86_64.rpm && yum -y install nodejs
 
 # Create the run user and group
 RUN groupadd -r webservice && useradd -r -g webservice webservice && mkdir /home/webservice
@@ -42,6 +40,7 @@ RUN bundle install
 ENV APP_HOME /libra2
 WORKDIR $APP_HOME
 
+# copy the application
 ADD . $APP_HOME
 
 # precompile the assets
@@ -49,6 +48,9 @@ RUN RAILS_ENV=production SECRET_KEY_BASE=x rake assets:precompile
 
 # Update permissions
 RUN chown -R webservice $APP_HOME /home/webservice && chgrp -R webservice $APP_HOME /home/webservice
+
+# freshen the antivirus definitions and update permissions so we can do this again
+RUN freshclam && chmod -R o+w /var/lib/clamav
 
 # Specify the user
 USER webservice
@@ -59,3 +61,7 @@ CMD scripts/entry.sh
 
 # Move in other assets
 COPY data/container_bash_profile /home/webservice/.profile
+
+#
+# end of file
+#
