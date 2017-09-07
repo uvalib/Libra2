@@ -393,6 +393,11 @@
    position: fixed;
    width: 361px;
    z-index: 99999;
+
+  #with_files_submit_exit, #with_files_submit_continue {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }
 
 .turbolinks-progress-bar {
