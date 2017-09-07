@@ -4,7 +4,7 @@ module CurationConcerns
 
     include WorkHelper
 
-    after_action  :save_file_display_name
+    after_action  :save_file_display_name, only: [ :update ]
 
     before_action :set_requirements, only: [ :show ]
     before_action :is_me
@@ -41,28 +41,28 @@ module CurationConcerns
     def save_file_display_name
 
       # TODO-PER: This is a hack to try to figure out how to save the file's display title. There is probably a better way to do this.
-      if params['action'] == 'update'
-        work = get_generic_work( params[:id] )
-        if work
-          previously_uploaded_files_label = params['previously_uploaded_files_label']
-          if previously_uploaded_files_label.present?
-            previously_uploaded_files_label.each_with_index { |label, i|
-              file_attributes = { title: [ label ]}
-              actor = ::CurationConcerns::Actors::FileSetActor.new(work.file_sets[i], current_user)
-              actor.update_metadata(file_attributes)
-            }
-          end
-
-          # If files were just uploaded, then we need to alert the show page that the files might be pending.
-          if params['uploaded_files'].present?
-          session[:files_pending] = {} if session[:files_pending].nil?
-          session[:files_pending][params[:id]] = [] if session[:files_pending][params[:id]].nil?
-          params['uploaded_files'].each { |file|
-            session[:files_pending][params[:id]].push({ 'id' => file['id'], 'label' => file['label'], 'name' => file['name'] })
+      work = get_generic_work( params[:id] )
+      if work
+        previously_uploaded_files_label = params['previously_uploaded_files_label']
+        if previously_uploaded_files_label.present?
+          previously_uploaded_files_label.each_with_index { |label, i|
+            file_attributes = { title: [ label ]}
+            actor = ::CurationConcerns::Actors::FileSetActor.new(work.file_sets[i], current_user)
+            actor.update_metadata(file_attributes)
           }
-            end
         end
+
+        # If files were just uploaded, then we need to alert the show page that the files might be pending.
+        if params['uploaded_files'].present?
+        session[:files_pending] = {} if session[:files_pending].nil?
+        session[:files_pending][params[:id]] = [] if session[:files_pending][params[:id]].nil?
+        params['uploaded_files'].each { |file|
+          session[:files_pending][params[:id]].push({ 'id' => file['id'], 'label' => file['label'], 'name' => file['name'] })
+        }
+        end
+
       end
+
     end
 
     def set_requirements
@@ -114,8 +114,15 @@ module CurationConcerns
       return "#{id[0]}#{id[1]}/#{id[2]}#{id[3]}/#{id[4]}#{id[5]}/#{id[6]}#{id[7]}"
     end
 
+    def after_update_response
+      # redirect to the dashboard if we did a 'save and exit'
+      if params[:save_with_files_exit].present?
+        redirect_to main_app.root_path
+      else
+        redirect_to [main_app, curation_concern]
+      end
+    end
 
 
-
-  end
+    end
 end
