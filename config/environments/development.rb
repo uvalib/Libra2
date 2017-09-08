@@ -37,6 +37,11 @@ Rails.application.configure do
   # run jobs inline in development
   config.active_job.queue_adapter = :inline
 
+  # logging to standard out for development
+  logger           = ActiveSupport::Logger.new(STDOUT)
+  logger.formatter = config.log_formatter
+  config.logger = ActiveSupport::TaggedLogging.new(logger)
+
   # pull environment variables when running in the debugger
   ENV.update(eval(`sh -c 'source libra_etd_env.ksh && ruby -e "p ENV"'`) || {})
 end
