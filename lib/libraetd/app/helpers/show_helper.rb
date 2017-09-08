@@ -49,7 +49,7 @@ module ShowHelper
   # TODO - DPG: issue introduced in the sufia-7.3.1 upgrade; this is the hack workaround
   # try not to judge... we need to deploy monday and my brain is not working today
   def fix_contributor_label( str )
-    return str.gsub( '<th>Contributors</th>', '<th>Advisors</th>' )
+    return raw( str.gsub( '<th>Contributors</th>', '<th>Advisors</th>' ) )
   end
 
   def show_visibility_line(state, period)
