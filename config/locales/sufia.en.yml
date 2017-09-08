@@ -53,6 +53,9 @@ en:
       description:
          <<: *default
          property: "description"
+      identifier:
+         <<: *default
+         property: "identifier"
       language:
          <<: *default
          property: "language"
