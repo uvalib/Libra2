@@ -9,7 +9,8 @@ license: <%= GenericWork::DEFAULT_LICENSE %>
 #
 # the admin notes for informational purposes
 #
-admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
+#admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
+admin_notes: 'This thesis was digitized by Inter-Library Loan staff, Alderman Library.'
 
 #
 # the default embargo type if we cannot determine one
