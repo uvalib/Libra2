@@ -16,7 +16,7 @@ admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 
 #
 # enable for new ingests (jefferson trust items, ILL)
 # disable for masters & doctoral theses
-#default_embargo_type: <%= Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
+default_embargo_type: <%= Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
 
 #
 # apply the specified embargo period; should be one of:
@@ -24,4 +24,4 @@ admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 
 #
 # enable for new ingests (jefferson trust items, ILL)
 # disable for masters & doctoral theses
-#force_embargo_period: forever
+force_embargo_period: forever
