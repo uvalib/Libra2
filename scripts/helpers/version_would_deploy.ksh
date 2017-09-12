@@ -1,3 +1,5 @@
+#set -x
+
 DIR=$(dirname $0)
 
 DEPLOY_FILE=/tmp/deploy.versions
@@ -6,8 +8,7 @@ DEPLOY_FILE=/tmp/deploy.versions
 for host in dockerprod1 dockerprod2; do
    TMP_FILE=/tmp/$host.versions
    rm -fr $TMP_FILE > /dev/null 2>&1
-   DOCKER_HOST=tcp://$host.lib.virginia.edu:2376
-   ./$DIR/versions.ksh > $TMP_FILE
+   DOCKER_HOST=tcp://$host.lib.virginia.edu:2376 ./$DIR/versions.ksh > $TMP_FILE
 done
 
 for host in dockerprod1 dockerprod2; do
