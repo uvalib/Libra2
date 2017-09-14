@@ -41,33 +41,33 @@ namespace :migrate do
 
     end
 
-    desc "Migrate date format for all works."
-    task date_format: :environment do |t, args|
+    #desc "Migrate date format for all works."
+    #task date_format: :environment do |t, args|
 
-      count = 0
-      works = GenericWork.all
-      works.each { |work|
-        changed_create, date_created = convert_date_format( work.date_created )
-        changed_published, date_published = convert_date_format( work.date_published )
+    #  count = 0
+    #  works = GenericWork.all
+    #  works.each { |work|
+    #    changed_create, date_created = convert_date_format( work.date_created )
+    #    changed_published, date_published = convert_date_format( work.date_published )
 
-        if changed_create || changed_published
-          if changed_create
-            puts "Updating work #{work.id} date_created from #{work.date_created} -> #{date_created}"
-            work.date_created = date_created
-          end
+    #    if changed_create || changed_published
+    #      if changed_create
+    #        puts "Updating work #{work.id} date_created from #{work.date_created} -> #{date_created}"
+    #        work.date_created = date_created
+    #      end
 
-          if changed_published
-            puts "Updating work #{work.id} date_published from #{work.date_published} -> #{date_published}"
-            work.date_published = date_published
-          end
+    #      if changed_published
+    #        puts "Updating work #{work.id} date_published from #{work.date_published} -> #{date_published}"
+    #        work.date_published = date_published
+    #      end
 
-          count += 1
-          work.save!
-        end
-      }
+    #      count += 1
+    #      work.save!
+    #    end
+    #  }
 
-      puts "#{count} works updated"
-    end
+    #  puts "#{count} works updated"
+    #end
 
     desc "Migrate advisor format for all works."
     task advisor_format: :environment do |t, args|
@@ -104,6 +104,55 @@ namespace :migrate do
       puts "Processed #{successes} work(s), #{errors} error(s) encountered"
 
     end
+
+    desc "Fix missing timestamp on admin notes"
+    task fix_admin_notes: :environment do |t, args|
+
+      count = 0
+      successes = 0
+      errors = 0
+      GenericWork.search_in_batches( {} ) do |group|
+        group.each do |w|
+          begin
+            count += 1
+            print "."
+            work = GenericWork.find( w['id'] )
+
+            if work.admin_notes.blank? == false
+              updated = false
+              updated_notes = []
+              work.admin_notes.each do |note|
+                if /^Thesis originally/.match( note )
+                  note = "#{w['system_create_dtsi']} | #{note}"
+                  updated = true
+                elsif /^This thesis was/.match( note )
+                  note = "#{w['system_create_dtsi']} | #{note}"
+                  updated = true
+                end
+                updated_notes << note
+
+              end
+
+              if updated == true
+                 work.admin_notes = updated_notes;
+                 work.save!
+                 successes += 1
+              end
+
+            end
+
+          rescue => e
+            errors += 1
+          end
+        end
+      end
+
+      puts "done"
+      puts "Processed #{count} work(s), #{successes} work(s) updated successfully, #{errors} error(s) encountered"
+
+    end
+
+    private
 
     def convert_date_format( date_str )
 
