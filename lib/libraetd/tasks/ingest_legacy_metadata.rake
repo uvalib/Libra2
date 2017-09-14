@@ -408,7 +408,7 @@ namespace :libraetd do
           # create the admin notes for this item
           original_create_date = payload[ :create_date ]
           time_now = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d %H:%M:%S" )
-          notes = "#{v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )}"
+          notes = "#{DateTime.now} | #{v.gsub( 'LIBRA1_CREATE_DATE', original_create_date ).gsub( 'CURRENT_DATE', time_now )}"
           payload[ k ] = [ notes ]
 
           # apply embargo behavior earlier

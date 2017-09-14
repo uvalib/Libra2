@@ -376,7 +376,7 @@ def create_generic_work( work_type, user, title, description )
     w.department = 'Placeholder department'
     w.degree = 'Placeholder degree'
     w.notes = 'Placeholder notes'
-    w.admin_notes << 'Placeholder admin notes'
+    w.admin_notes << "#{DateTime.now} | Placeholder admin notes"
     w.language = GenericWork::DEFAULT_LANGUAGE
 
     # assign some contributors
