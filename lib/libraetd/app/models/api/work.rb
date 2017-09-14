@@ -322,7 +322,7 @@ class Work
     if field_set?( :admin_notes ) && @admin_notes.blank? == false
       # update and audit the information
       audit_add( work.id, 'Admin Notes', @admin_notes, by_whom )
-      work.admin_notes = work.admin_notes.concat( @admin_notes )
+      work.admin_notes = work.admin_notes + @admin_notes
     end
     if field_changed?(:rights, work.rights, [ @rights ] )
       # update and audit the information
