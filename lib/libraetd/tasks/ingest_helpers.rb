@@ -276,6 +276,21 @@ module IngestHelpers
   end
 
   #
+  # given a label number, source name and work, construct the appropriate file label
+  #
+  def construct_file_label( number, source_name, generic_work )
+
+    unknown = 'UNKNOWN'
+    last_name = generic_work.author_last_name.blank? ? unknown : generic_work.author_last_name.split( ' ' ).first
+    first_name = generic_work.author_first_name.blank? ? unknown : generic_work.author_first_name.split( ' ' ).first
+    year = generic_work.date_published.blank? ? unknown : generic_work.date_published
+    degree = generic_work.degree.blank? ? unknown : generic_work.degree.split( ' ' ).first
+    suffix = File.extname( source_name )
+
+    return "#{number}_#{last_name}_#{first_name}_#{year}_#{degree}#{suffix}"
+  end
+
+  #
   # get the list of new items from the work directory
   #
   def get_ingest_list( dirname )

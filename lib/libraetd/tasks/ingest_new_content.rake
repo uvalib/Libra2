@@ -92,13 +92,14 @@ namespace :libraetd do
      end
 
      asset_filenames.each_with_index do |f, ix|
-        puts "  asset #{ix + 1} of #{asset_filenames.length}: #{f}"
+        label = IngestHelpers.construct_file_label( ix + 1, f, work )
+        puts "  asset #{ix + 1} of #{asset_filenames.length}: #{f} (#{label})"
 
         # handle dry running
         next if ENV[ 'DRY_RUN' ]
 
         # and upload the file
-        fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, f ), f )
+        fileset = TaskHelpers.upload_file( depositor, work, File.join( dirname, f ), label )
         fileset.date_uploaded = DateTime.now
         fileset.save!
      end
