@@ -335,6 +335,24 @@ def delete_generic_work_callback( work )
   work.destroy
 end
 
+def relabel_generic_work_callback( work )
+
+   relabel = false
+   work.file_sets.each_with_index do |fs, ix|
+     current = fs.title.first
+     label = IngestHelpers.construct_file_label( ix + 1, fs.label, work )
+     if current != label
+       puts "Updating asset #{ix + 1} of work #{work.id}: #{current} => #{label}"
+       fs.title = [ label ]
+       fs.save!
+       relabel = true
+     end
+   end
+
+   return relabel
+
+end
+
 def create_work( user, title, description )
    return( create_generic_work( GenericWork::WORK_TYPE_GENERIC, user, title, description ) )
 end

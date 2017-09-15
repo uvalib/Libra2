@@ -301,6 +301,46 @@ namespace :libraetd do
     puts "Deleted #{count} of #{ingests.length} ingest work(s)"
   end
 
+  desc "Relabel files in new ingest works; must provide the ingest directory"
+  task relabel_new_ingests: :environment do |t, args|
+
+    ingest_dir = ARGV[ 1 ]
+    if ingest_dir.nil?
+      puts "ERROR: no ingest directory specified, aborting"
+      next
+    end
+    task ingest_dir.to_sym do ; end
+
+    # get the list of items to be ingested
+    ingests = IngestHelpers.get_ingest_list( ingest_dir )
+    if ingests.empty?
+      puts "ERROR: ingest directory does not contain contains any items, aborting"
+      next
+    end
+
+    count = 0
+    ingests.each_with_index do | filename, ix |
+      work_id = IngestHelpers.get_ingest_id( File.join( ingest_dir, filename ) )
+
+      if work_id.blank?
+        puts "ERROR: no work id for #{filename}, continuing anyway"
+        next
+      end
+
+      work = TaskHelpers.get_work_by_id( work_id )
+      if work.nil?
+        puts "ERROR: work #{work_id} does not exist, continuing anyway"
+        next
+      end
+
+      count += 1 unless relabel_generic_work_callback( work ) == false
+
+    end
+
+    puts "Relabeled #{count} of #{ingests.length} ingest work(s)"
+
+  end
+
   end   # namespace ingest
 
 end   # namespace libraetd
