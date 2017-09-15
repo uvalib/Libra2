@@ -25,8 +25,7 @@ class APIV1FilesController < APIBaseController
   end
 
   # no token validation for the file upload
-  skip_before_filter :validate_token, only: [:add_file, :add_file_options]
-
+  skip_before_action :validate_token, only: [:add_file, :add_file_options]
   before_action :validate_user, only: [ :add_file ]
 
   #

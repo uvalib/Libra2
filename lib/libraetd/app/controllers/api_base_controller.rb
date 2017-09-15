@@ -5,8 +5,8 @@ class APIBaseController < ApplicationController
   include ServiceHelper
 
   # disable rails auth behavior and add our own
-  #skip_before_filter :require_auth
-  skip_before_filter :verify_authenticity_token
+  #skip_before_action :require_auth
+  skip_before_action :verify_authenticity_token
   before_action :validate_token
 
   # default query limits
