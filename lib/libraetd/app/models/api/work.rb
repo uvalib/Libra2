@@ -324,21 +324,26 @@ class Work
       audit_add( work.id, 'Admin Notes', @admin_notes, by_whom )
       work.admin_notes = work.admin_notes + @admin_notes
     end
-    if field_changed?(:rights, work.rights, [ @rights ] )
+    if field_changed?(:rights, work.rights.first, @rights )
       # update and audit the information
-      audit_change( work.id, 'Rights', work.rights, [ @rights ], by_whom )
+      audit_change( work.id, 'Rights', work.rights.first, @rights, by_whom )
       work.rights = [ @rights ]
     end
-    if field_changed?(:title, work.title, [ @title ] )
+    if field_changed?(:title, work.title.first, @title )
       # update and audit the information
-      audit_change( work.id, 'Title', work.title, [ @title ], by_whom )
+      audit_change( work.id, 'Title', work.title.first, @title, by_whom )
       work.title = [ @title ]
     end
-    if field_changed?(:advisors, work.contributor, @advisors )
-      # update and audit the information
-      audit_change( work.id, 'Advisors', work.contributor, @advisors, by_whom )
-      work.contributor = @advisors
+
+    if field_set?( :advisors )
+      adv_array = relation_to_array( work.contributor )
+      if field_changed?(:advisors, adv_array, @advisors )
+        # update and audit the information
+        audit_change( work.id, 'Advisors', adv_array, @advisors, by_whom )
+        work.contributor = @advisors
+      end
     end
+
     if field_changed?(:keywords, work.keyword, @keywords )
       # update and audit the information
       audit_change( work.id, 'Keywords', work.keyword, @keywords, by_whom )
@@ -468,6 +473,10 @@ class Work
 
   def audit_add( id, what, new_value, by_whom )
     WorkAudit.audit( id, by_whom, "#{what} updated to include '#{new_value}'" )
+  end
+
+  def relation_to_array( arr )
+    return arr.map { |e| e.to_s }
   end
 
 end
