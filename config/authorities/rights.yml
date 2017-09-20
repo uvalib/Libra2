@@ -1,10 +1,13 @@
 terms:
     - id: CC-BY (permitting free use with proper attribution)
       term: CC-BY (permitting free use with proper attribution)
+      url: http://creativecommons.org/licenses/by/4.0/
       active: true
     - id: CC0 (permitting unconditional free use, with or without attribution)
       term: CC0 (permitting unconditional free use, with or without attribution)
+      url:
       active: false
     - id: All rights reserved (no additional license for public reuse)
       term: All rights reserved (no additional license for public reuse)
+      url:
       active: true

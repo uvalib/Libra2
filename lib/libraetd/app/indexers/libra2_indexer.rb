@@ -102,7 +102,35 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           'thumbnail_url_display',
                           object.thumbnail_url,
                           :displayable )
+
+      Solrizer.set_field( solr_doc,
+                          'rights_display',
+                          rights_labels(object),
+                          :displayable )
+
+      Solrizer.set_field( solr_doc,
+                          'rights_url',
+                          rights_urls(object),
+                          :displayable )
+
     end
+  end
+
+  private
+  def rights_labels doc
+    doc.rights.map do |r|
+      rights(r, 'term')
+    end if doc.rights.present?
+  end
+
+  def rights_urls doc
+    doc.rights.map do |r|
+      rights(r, 'url')
+    end if doc.rights.present?
+  end
+
+  def rights id, term
+    CurationConcerns::QaSelectService.new('rights').authority.find(id).fetch(term)
   end
 
 end
