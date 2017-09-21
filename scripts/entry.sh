@@ -15,5 +15,8 @@ nohup scripts/sis_export.sh &
 # run the SIS importer process
 nohup scripts/sis_import.sh &
 
+# run the sitemap generator process
+nohup scripts/sitemap_generator.sh &
+
 # run the server
 rails server -b 0.0.0.0 -p 3000 Puma
