@@ -12,7 +12,10 @@ export NAME=$(basename $0 .sh)
 export LOGGER=$(logger_name "$NAME.log")
 
 # the time we want the action to occur
-export ACTION_TIME="00:15"
+# this is the time in EST
+#export ACTION_TIME="00:15"
+# we are running in UTC
+export ACTION_TIME="04:15"
 
 # helpful message...
 logit "Starting up..."
