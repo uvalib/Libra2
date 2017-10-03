@@ -18,6 +18,7 @@
 /public/system
 /public/uploads
 /public/assets
+/public/sitemap*
 /uploads
 
 /fits.log
