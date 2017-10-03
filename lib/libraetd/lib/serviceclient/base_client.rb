@@ -4,7 +4,7 @@ module ServiceClient
 
    class BaseClient
 
-     DEFAULT_RETRIES = 3
+     DEFAULT_RETRIES ||= 3
 
      def configuration
        @configuration
@@ -114,6 +114,9 @@ module ServiceClient
        rescue RestClient::BadRequest => ex
          log_error( method, url, ex, payload )
          return 400, {}
+       rescue RestClient::Unauthorized => ex
+         log_error( method, url, ex, payload )
+         return 401, {}
        rescue RestClient::ResourceNotFound => ex
          #log_error( method, url, ex, payload )
          return 404, {}
@@ -141,6 +144,9 @@ module ServiceClient
        rescue RestClient::BadRequest => ex
          log_error( :get, url, ex )
          return 400, {}
+       rescue RestClient::Unauthorized => ex
+         log_error( :get, url, ex, payload )
+         return 401, {}
        rescue RestClient::ResourceNotFound => ex
          #log_error( :get, url, ex )
          return 404, {}
@@ -164,6 +170,9 @@ module ServiceClient
        rescue RestClient::BadRequest => ex
          log_error( :delete, url, ex )
          return 400
+       rescue RestClient::Unauthorized => ex
+         log_error( :delete, url, ex, payload )
+         return 401, {}
        rescue RestClient::ResourceNotFound => ex
          #log_error( :delete, url, ex )
          return 404
