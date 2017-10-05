@@ -30,7 +30,8 @@ namespace :migrate do
             work.save!
 
             successes += 1
-          rescue => e
+          rescue => ex
+            puts ex
             errors += 1
           end
         end
@@ -94,7 +95,8 @@ namespace :migrate do
             work.save!
 
             successes += 1
-          rescue => e
+          rescue => ex
+            puts ex
             errors += 1
           end
         end
@@ -141,7 +143,8 @@ namespace :migrate do
 
             end
 
-          rescue => e
+          rescue => ex
+            puts ex
             errors += 1
           end
         end
@@ -169,19 +172,19 @@ namespace :migrate do
             updated_rights = ""
 
             if /^None \(users must comply with ordinary copyright law\)$/.match( current_rights )
-              updated_rights = 'bla bla bla'
+              updated_rights = 'All rights reserved (no additional license for public reuse)'
               updated = true
             elsif /^Attribution \(CC BY\)/.match( current_rights )
-              updated_rights = 'bla bla bla'
+              updated_rights = 'CC-BY (permitting free use with proper attribution)'
               updated = true
             elsif /^None$/.match( current_rights )
-              updated_rights = 'bla bla bla'
+              updated_rights = 'All rights reserved (no additional license for public reuse)'
               updated = true
-            elsif /^CC0 \(permitting unconditional free use, with or without attribution\)/.match( current_rights )
-              updated_rights = 'bla bla bla'
-              updated = true
+            #elsif /^CC0 \(permitting unconditional free use, with or without attribution\)/.match( current_rights )
+            #  updated_rights = 'bla bla bla'
+            #  updated = true
             elsif /^No Rights Reserved \(CC0\)/.match( current_rights )
-              updated_rights = 'bla bla bla'
+              updated_rights = 'CC0 (permitting unconditional free use, with or without attribution)'
               updated = true
             end
 
@@ -189,8 +192,8 @@ namespace :migrate do
               puts "\nUpdating work #{w['id']}: rights \"#{current_rights}\" -> \"#{updated_rights}\"\n"
               begin
                 work = GenericWork.find( w['id'] )
-                #work.rights = updated_rights;
-                #work.save!
+                work.rights = [ updated_rights ]
+                work.save!
                 successes += 1
               rescue => ex
                 puts ex
