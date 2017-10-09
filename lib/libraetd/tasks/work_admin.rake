@@ -29,16 +29,16 @@ task list_all_works: :environment do |t, args|
   puts "Listed #{count} work(s)"
 end
 
-desc "Summerize all works"
-task summerize_all_works: :environment do |t, args|
+desc "Summarize all works"
+task summarize_all_works: :environment do |t, args|
 
   count = 0
   GenericWork.search_in_batches( {} ) do |group|
-    TaskHelpers.batched_process_solr_works( group, &method( :summerize_generic_work_callback ) )
+    TaskHelpers.batched_process_solr_works( group, &method( :summarize_generic_work_callback ) )
     count += group.size
   end
 
-  puts "Summerized #{count} work(s)"
+  puts "Summarized #{count} work(s)"
 end
 
 desc "List my works; optionally provide depositor email"
@@ -57,8 +57,8 @@ task list_my_works: :environment do |t, args|
   puts "Listed #{count} work(s)"
 end
 
-desc "Summerize my works; optionally provide depositor email"
-task summerize_my_works: :environment do |t, args|
+desc "Summarize my works; optionally provide depositor email"
+task summarize_my_works: :environment do |t, args|
 
   who = ARGV[ 1 ]
   who = TaskHelpers.default_user_email if who.nil?
@@ -66,11 +66,11 @@ task summerize_my_works: :environment do |t, args|
 
   count = 0
   GenericWork.search_in_batches( { depositor: who } ) do |group|
-    TaskHelpers.batched_process_solr_works( group, &method( :summerize_generic_work_callback ) )
+    TaskHelpers.batched_process_solr_works( group, &method( :summarize_generic_work_callback ) )
     count += group.size
   end
 
-  puts "Summerized #{count} work(s)"
+  puts "Summarized #{count} work(s)"
 end
 
 desc "List work by id; must provide the work id"
@@ -121,7 +121,7 @@ task count_by_depositor: :environment do |t, args|
     puts " #{k} => #{depositors[k]} work(s)"
   end
 
-  puts "Summerized #{count} work(s)"
+  puts "Summarized #{count} work(s)"
 end
 
 desc "Work counts by work source"
@@ -156,7 +156,38 @@ task count_by_source: :environment do |t, args|
     puts " #{k} => #{sources[k]} work(s)"
   end
 
-  puts "Summerized #{count} work(s)"
+  puts "Summarized #{count} work(s)"
+end
+
+desc "Work counts by visibility"
+task count_by_visibility: :environment do |t, args|
+
+  embargos = {}
+  count = 0
+  GenericWork.search_in_batches( {} ) do |group|
+    group.each do |gw_solr|
+
+      embargo_state = gw_solr[ Solrizer.solr_name( 'embargo_state' ) ]
+      embargo_state = embargo_state[ 0 ] if embargo_state.present?
+      embargo_state = 'unknown' if embargo_state.blank?
+
+      if embargos[ embargo_state ].nil?
+        embargos[ embargo_state ] = 1
+      else
+        embargos[ embargo_state ] = embargos[ embargo_state ] + 1
+      end
+
+    end
+
+    count += group.size
+  end
+
+  # output a summary...
+  embargos.keys.sort.each do |k|
+    puts " #{k} => #{embargos[k]} work(s)"
+  end
+
+  puts "Summarized #{count} work(s)"
 end
 
 desc "Delete all works"
@@ -320,7 +351,7 @@ def show_generic_work_callback( work )
   TaskHelpers.show_generic_work( work )
 end
 
-def summerize_generic_work_callback( work )
+def summarize_generic_work_callback(work )
   puts "id:#{work.id} ws:#{work.work_source} doi:#{work.identifier} assets:#{work.file_sets.size}"
 end
 
