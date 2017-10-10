@@ -1,6 +1,14 @@
 module OrcidHelper
 
    #
+   # per the ORCID license, the best way to show an ORCID
+   #
+   def display_orcid_from_url( orcid_url )
+      return '' if orcid_url.blank?
+      return orcid_url.gsub( /https?:\/\//, '' )
+   end
+
+   #
    # extract the bare ORCID from the full URL
    #
    def orcid_from_orcid_url( orcid_url )
