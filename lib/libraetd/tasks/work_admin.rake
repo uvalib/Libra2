@@ -437,7 +437,7 @@ def create_generic_work( work_type, user, title, description )
     contributor << TaskHelpers.contributor_fields_from_cid( 2, 'naw4t' )
     w.contributor = contributor
 
-    w.rights << 'Determine your rights assignments here'
+    w.rights << 'All rights reserved (no additional license for public reuse)'
     w.license = GenericWork::DEFAULT_LICENSE
 
     print "getting DOI..."
