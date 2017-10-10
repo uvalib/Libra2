@@ -16,7 +16,6 @@ module CurationConcerns
     delegate :embargo_state,              to: :model
     delegate :embargo_end_date,           to: :model
     delegate :visibility_during_embargo,  to: :model
-    delegate :my_orcid,                   to: :model
 
     #delegate :required?,  to: :model
     #delegate :readonly?,  to: :model
@@ -28,7 +27,6 @@ module CurationConcerns
         :author_last_name,
         :department,
         :author_institution,
-        :my_orcid,
 
         :contributor,
         :description,
@@ -96,7 +94,7 @@ module CurationConcerns
           # { contributor_department: [] },
           # { contributor_last_name: [] },
           # { contributor_institution: [] },
-          :embargo_state, :embargo_end_date, :embargo_period, :visibility_during_embargo, :rights, :license, :my_orcid ]
+          :embargo_state, :embargo_end_date, :embargo_period, :visibility_during_embargo, :rights, :license ]
     end
   end
 end

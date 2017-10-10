@@ -62,9 +62,6 @@ en:
       keyword:
          <<: *default
          property: "keyword"
-      my_orcid:
-         <<: *default
-         property: "my_orcid"
       notes:
          <<: *default
          property: "notes"

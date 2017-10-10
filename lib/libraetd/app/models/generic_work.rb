@@ -1,5 +1,4 @@
 require_dependency 'concerns/libraetd/basic_metadata'
-require_dependency 'concerns/libraetd/orcid_behavior'
 require_dependency 'libraetd/app/indexers/libra2_indexer'
 
 require_dependency 'libraetd/app/helpers/ordered_string_helper'
@@ -10,7 +9,6 @@ class GenericWork < ActiveFedora::Base
 
   include ::CurationConcerns::WorkBehavior
   include Libra2::BasicMetadata
-  include Libra2::OrcidBehavior
   include Sufia::WorkBehavior
 
   self.human_readable_type = 'Generic Work'

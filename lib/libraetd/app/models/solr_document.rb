@@ -9,9 +9,6 @@ class SolrDocument
   # Adds Sufia behaviors to the SolrDocument.
   include Sufia::SolrDocumentBehavior
 
-  # just a way to provide common functionality
-  include Libra2::OrcidBehavior
-
   # self.unique_key = 'id'
   
   # Email uses the semantic field mappings below to generate the body of an email.

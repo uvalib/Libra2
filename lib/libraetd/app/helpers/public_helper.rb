@@ -53,11 +53,6 @@ module PublicHelper
       return "#{image_tag 'orcid.png', alt: t('sufia.user_profile.orcid.alt')} #{link_to orcid_from_orcid_url( orcid ), normalize_orcid_url( orcid ), { target: '_blank' }}".html_safe
    end
 
-   def extract_orcid_for_display( orcid )
-      return '' if orcid.blank?
-      return orcid.gsub( 'http://orcid.org/', '' )
-   end
-
    def display_advisers(work)
       return '' if work.nil?
       #return '' if work.contributor.blank?
