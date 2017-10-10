@@ -3,6 +3,8 @@
 #
 
 require_dependency 'libraetd/lib/serviceclient/orcid_access_client'
+require_dependency 'libraetd/app/helpers/orcid_helper'
+include OrcidHelper
 
 namespace :libraetd do
 
@@ -184,11 +186,6 @@ namespace :libraetd do
   #  end
 
   #end
-
-    def orcid_from_orcid_url( orcid_url )
-    return '' if orcid_url.blank?
-    return orcid_url.gsub( 'http://orcid.org/', '' )
-  end
 
   end   # namespace orcid
 
