@@ -11,7 +11,7 @@ class Users::SessionsController < Devise::SessionsController
     if Rails.env.development?
       request.env['HTTP_REMOTE_USER'] = ENV['DEV_USER']
     end
-    #super
+    super
   end
 
   # DELETE /resource/sign_out

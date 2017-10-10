@@ -257,13 +257,13 @@ Devise.setup do |config|
   #   manager.intercept_401 = false
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
-  require 'devise/custom_failure'
+  #require 'devise/custom_failure'
 
   # Use Pubcookie authentication
   config.warden do |manager|
-    manager.intercept_401 = false
+    #manager.intercept_401 = false
     manager.default_strategies(scope: :user).unshift :pubcookie_authentication
-    manager.failure_app = CustomFailure
+    #manager.failure_app = CustomFailure
   end
 
   # ==> Mountable engine configurations

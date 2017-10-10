@@ -22,8 +22,15 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::RoutingError, :with => :render404
   rescue_from ActionView::MissingTemplate, :with => :render404
 
+  rescue_from UncaughtThrowError do |exception|
+    render401 if exception.tag == :warden
+
+    # what do we do if this is not a :warden error?
+  end
+
   #rescue_from Exception do |exception|
   #  puts "======> #{exception.class}"
+  #  puts "======> #{exception.inspect}"
   #  render404
   #end
 
@@ -35,8 +42,12 @@ class ApplicationController < ActionController::Base
       # 1) They work here and are trying to see if Libra is active, but have no reason to upload,
       # 2) They are a student who has submitted to SIS, but has jumped the gun and went to Libra before their thesis had been created,
       # 3) They are a random UVA student who stumbled here but has no business here.
-      render :file => "#{Rails.root}/public/401.html", :status => :unauthorized, :layout => false
+      render401
     end
+  end
+
+  def render401
+    render :file => "#{Rails.root}/public/401.html", :status => :unauthorized, :layout => false
   end
 
   def render404public
