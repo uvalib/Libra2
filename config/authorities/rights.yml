@@ -1,6 +1,6 @@
 terms:
-    - id: CC-BY (permitting free use with proper attribution)
-      term: CC-BY (permitting free use with proper attribution)
+    - id: Attribution 4.0 International (CC BY)
+      term: Attribution 4.0 International (CC BY)
       url: http://creativecommons.org/licenses/by/4.0/
       active: true
     - id: CC0 (permitting unconditional free use, with or without attribution)

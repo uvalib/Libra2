@@ -180,9 +180,6 @@ namespace :migrate do
             elsif /^None$/.match( current_rights )
               updated_rights = 'All rights reserved (no additional license for public reuse)'
               updated = true
-            #elsif /^CC0 \(permitting unconditional free use, with or without attribution\)/.match( current_rights )
-            #  updated_rights = 'bla bla bla'
-            #  updated = true
             elsif /^No Rights Reserved \(CC0\)/.match( current_rights )
               updated_rights = 'CC0 (permitting unconditional free use, with or without attribution)'
               updated = true
@@ -201,6 +198,50 @@ namespace :migrate do
               end
             end
           end
+        end
+      end
+
+      puts "done"
+      puts "Processed #{count} work(s), #{successes} work(s) updated successfully, #{errors} error(s) encountered"
+
+    end
+
+    desc "Fix rights again"
+    task fix_rights_again: :environment do |t, args|
+
+      count = 0
+      successes = 0
+      errors = 0
+      GenericWork.search_in_batches( {} ) do |group|
+        group.each do |w|
+          count += 1
+          print "."
+
+          if w['rights_tesim'].present?
+            current_rights = w['rights_tesim'][ 0 ]
+            updated = false
+            updated_rights = ""
+
+            if /^CC-BY \(permitting free use with proper attribution\)$/.match( current_rights )
+              updated_rights = 'Attribution 4.0 International (CC BY)'
+              updated = true
+            end
+
+            if updated == true
+              puts "\nUpdating work #{w['id']}: rights \"#{current_rights}\" -> \"#{updated_rights}\"\n"
+              begin
+                work = GenericWork.find( w['id'] )
+                work.rights = [ updated_rights ]
+                work.save!
+                successes += 1
+              rescue => ex
+                puts ex
+                errors += 1
+              end
+            end
+
+          end
+
         end
       end
 
