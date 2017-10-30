@@ -47,7 +47,7 @@ group :development do
 end
 
 # Sufia Related
-gem 'sufia', '~> 7.3.1'
+gem 'sufia', '~> 7.4.1'
 gem 'curation_concerns', '~> 1.7.6', github: 'uvalib/curation_concerns', branch: '1.7.6'
 gem 'blacklight_advanced_search'
 gem 'devise'
