@@ -96,7 +96,7 @@ namespace :migrate do
 
             successes += 1
           rescue => ex
-            puts ex
+            puts "EXCEPTION: #{ex}"
             errors += 1
           end
         end
