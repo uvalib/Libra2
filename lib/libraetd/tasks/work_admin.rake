@@ -93,6 +93,46 @@ task list_by_id: :environment do |t, args|
   TaskHelpers.show_generic_work(work )
 end
 
+desc "Display all titles"
+task display_all_titles: :environment do |t, args|
+
+  count = 0
+  GenericWork.search_in_batches( {} ) do |group|
+    group.each do |gw_solr|
+
+      title = gw_solr[ Solrizer.solr_name( 'title' ) ]
+      title = title[ 0 ] if title.present?
+      title = '(blank)' if title.blank?
+
+      puts "#{gw_solr['id']}: #{title}"
+    end
+
+    count += group.size
+  end
+
+  puts "Displayed #{count} work(s)"
+end
+
+desc "Display all abstracts"
+task display_all_abstracts: :environment do |t, args|
+
+  count = 0
+  GenericWork.search_in_batches( {} ) do |group|
+    group.each do |gw_solr|
+
+      abstract = gw_solr[ Solrizer.solr_name( 'description' ) ]
+      abstract = abstract[ 0 ] if abstract.present?
+      abstract = '(blank)' if abstract.blank?
+
+      puts "#{gw_solr['id']}: #{abstract}"
+    end
+
+    count += group.size
+  end
+
+  puts "Displayed #{count} work(s)"
+end
+
 desc "Work counts by depositor"
 task count_by_depositor: :environment do |t, args|
 
