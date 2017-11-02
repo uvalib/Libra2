@@ -104,6 +104,8 @@ task display_all_titles: :environment do |t, args|
       title = title[ 0 ] if title.present?
       title = '(blank)' if title.blank?
 
+      # remove CR/LF
+      title = title.gsub( "\n", "" ) if title.present?
       puts "#{gw_solr['id']}: #{title}"
     end
 
@@ -124,6 +126,8 @@ task display_all_abstracts: :environment do |t, args|
       abstract = abstract[ 0 ] if abstract.present?
       abstract = '(blank)' if abstract.blank?
 
+      # remove CR/LF
+      abstract = abstract.gsub( "\n", "" ) if abstract.present?
       puts "#{gw_solr['id']}: #{abstract}"
     end
 
