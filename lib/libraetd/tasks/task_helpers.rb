@@ -65,6 +65,19 @@ module TaskHelpers
   end
 
   #
+  # get a fileset by the specified ID
+  #
+  def get_fileset_by_id( id )
+
+    begin
+      return FileSet.find( id )
+    rescue => e
+    end
+
+    return nil
+  end
+
+  #
   # download a random cat image
   #
   def get_random_image( )
@@ -189,6 +202,26 @@ module TaskHelpers
     end
 
     puts '*' * 40
+
+  end
+
+  #
+  # show full details of a generic work
+  #
+  def show_fileset( fileset )
+
+    return if fileset.nil?
+    puts " id => #{fileset.id}"
+    puts " label => #{fileset.label}"
+    puts " title => #{fileset.title[0]}"
+    puts " depositor => #{fileset.depositor}"
+    puts " created => #{fileset.date_uploaded}"
+    puts " modified => #{fileset.date_modified}"
+
+    works = fileset.in_works()
+    referenced = "NO works"
+    referenced = works.map {|w| "#{w.id}" }.join( ', ' ) if works.present?
+    puts " referenced => #{referenced}"
 
   end
 
