@@ -127,13 +127,26 @@ class SubmissionController < ApplicationController
 
 		# can view if the work exists and is published, or if it is draft and the owner is logged in.
 
-		return false if work.nil?
+    # no work, no access
+    if work.nil?
+      puts "==> work is undefined; view access is DENIED"
+      return false
+    end
 
-		# this work is owned by the current user.
-		return true if current_user.present? && work.is_mine?( current_user.email )
+    # this work is owned by the current user regardless of visibility
+    if current_user.present? && work.is_mine?( current_user.email )
+      puts "==> work is user owned; view access is GRANTED"
+      return true
+    end
 
-		# This work has been published.
-		return !work.is_draft?
+    # if this work has NOT been published.
+    if work.is_draft?
+      puts "==> work is draft; view access is DENIED"
+      return false
+    end
+
+    puts "==> work is published; view access is GRANTED"
+    return true
 	end
 
 	def get_file_sets(work)
@@ -143,7 +156,8 @@ class SubmissionController < ApplicationController
 		files = []
 		file_sets.each { |file|
 			files.push({
-							title: file.title.join(" "),
+              title: file.title.join(" "),
+							#title: file.title.join(" ").blank? ? "UNKNOWN" : file.title.join(" "),
 							location: download_path(file),
 							date: file.date_uploaded,
 							id: file.id
@@ -153,6 +167,7 @@ class SubmissionController < ApplicationController
 		files = files.sort { |a,b|
 	  		a[:date] <=> b[:date]
 		}
+
 		return files
 	end
 end

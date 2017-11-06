@@ -46,10 +46,21 @@ module CurationConcerns
     end
 
     def is_allowed_to_see_file(id)
+
+      # TODO: roll-up identical functionality from EmbargoHelper:allow_file_access
+
       file_set = ::FileSet.find(id)
-      return false if file_set.nil?
+      if file_set.nil?
+         puts "==> fileset is undefined; view access is DENIED"
+         return false
+      end
+
       works = file_set.in_works()
-      return false if works.nil? || works.empty?
+      if works.nil? || works.empty?
+         puts "==> fileset is unassociated with any work; view access is DENIED"
+         return false
+      end
+
       work = works[0]
       set_debugging_override()
       # can see the file according to these rules:
@@ -59,18 +70,25 @@ module CurationConcerns
       # - if the embargo period is over
       # - if the work is under UVA embargo and the user is on grounds
       if current_user.nil? == false && work.is_mine?( current_user.email )
+         puts "==> owning work is user owned; view access is GRANTED"
          return true
       elsif work.is_draft? == true
+        puts "==> owning work is private; view access is DENIED"
         return false
       elsif view_context.is_under_embargo(work) == false
+        puts "==> owning work is public; view access is GRANTED"
         # it's not embargoed so we can see it
         return true
       elsif view_context.is_engineering_embargo(work) == true
+        puts "==> owning work is engineering embargo; view access is DENIED"
         # can never see engineering embargoed files
         return false
       else
         # must be UVA embargo, so only see files on grounds.
-        return view_context.is_on_grounds()
+        on_grounds = view_context.is_on_grounds()
+        puts "==> owning work is under embargo and we are off grounds; view access is DENIED" if on_grounds == false
+        puts "==> owning work is under embargo and we are on grounds; view access is GRANTED" if on_grounds == true
+        return on_grounds
       end
     end
 

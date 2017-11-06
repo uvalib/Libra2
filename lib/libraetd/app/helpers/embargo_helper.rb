@@ -32,11 +32,35 @@ module EmbargoHelper
 	end
 
 	def allow_file_access(work)
-		return true if work.is_draft? # Only the author can see the draft view, and the author should always be able to see files.
-		return true if !is_under_embargo(work) # show files if there is no embargo
-		return false if is_engineering_embargo(work) # hide files if "dark", or engineering embargo
-		# The only other choice is non-engineering embargo, in which case the files are shown if on grounds.
-		return is_on_grounds()
+
+    # TODO: roll-up identical functionality from DownloadBehavior:is_allowed_to_see_file
+
+		#return true if work.is_draft? # Only the author can see the draft view, and the author should always be able to see files.
+
+    if current_user.nil? == false && work.is_mine?( current_user.email )
+      puts "==> work is user owned; file access is GRANTED"
+      return true
+    end
+
+    # show files if there is no embargo
+		if is_under_embargo(work) == false
+      puts "==> work is public; file access is GRANTED"
+      # it's not embargoed so we can see it
+      return true
+    end
+
+    # can never see engineering embargoed files
+		if is_engineering_embargo(work)
+      puts "==> work is under engineering embargo; file access is DENIED"
+      return false
+    end
+
+    # must be UVA embargo, so only see files on grounds.
+    on_grounds = is_on_grounds()
+    puts "==> work is under embargo and we are off grounds; file access is DENIED" if on_grounds == false
+    puts "==> work is under embargo and we are on grounds; file access is GRANTED" if on_grounds == true
+    return on_grounds
+
 	end
 
 	def is_on_grounds()
