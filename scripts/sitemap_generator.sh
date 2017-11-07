@@ -12,9 +12,12 @@ export LOGGER=$(logger_name "$NAME.log")
 
 # the time we want the action to occur
 # this is the time in EST
-#export ACTION_TIME="00:30"
+export ACTION_TIME="00:30"
+export ACTION_TIMEZONE="EST"
+
 # we are running in UTC
-export ACTION_TIME="04:30"
+#export ACTION_TIME="04:30"
+#export ACTION_TIMEZONE="UTC"
 
 # helpful message...
 logit "Sitemap generator starting up..."
@@ -23,8 +26,8 @@ logit "Sitemap generator starting up..."
 while true; do
 
    # sleeping message...
-   logit "Sleeping until $ACTION_TIME..."
-   sleep_until $ACTION_TIME
+   logit "Sleeping until $ACTION_TIME ($ACTION_TIMEZONE)..."
+   sleep_until $ACTION_TIME $ACTION_TIMEZONE
 
    # starting message
    logit "Beginning sitemap generator sequence"

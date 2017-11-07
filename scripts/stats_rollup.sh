@@ -13,9 +13,12 @@ export LOGGER=$(logger_name "$NAME.log")
 
 # the time we want the action to occur
 # this is the time in EST
-#export ACTION_TIME="00:15"
+export ACTION_TIME="00:15"
+export ACTION_TIMEZONE="EST"
+
 # we are running in UTC
-export ACTION_TIME="04:15"
+#export ACTION_TIME="04:15"
+#export ACTION_TIMEZONE="UTC"
 
 # helpful message...
 logit "Starting up..."
@@ -24,8 +27,8 @@ logit "Starting up..."
 while true; do
 
    # sleeping message...
-   logit "Sleeping until $ACTION_TIME..."
-   sleep_until $ACTION_TIME
+   logit "Sleeping until $ACTION_TIME ($ACTION_TIMEZONE)..."
+   sleep_until $ACTION_TIME $ACTION_TIMEZONE
 
    # determine if we are the active host... only run on one host even though we may be deployed on many
    if is_active_host; then

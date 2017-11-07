@@ -46,10 +46,11 @@ function logit {
 #
 function sleep_until {
    local target=$1
-   local current_time=$(date "+%H:%M")
+   local timezone=$2
+   local current_time=$(TZ=$timezone date "+%H:%M")
    while [ $target != $current_time ]; do
       sleep 59
-      current_time=$(date "+%H:%M")
+      current_time=$(TZ=$timezone date "+%H:%M")
    done
 }
 
