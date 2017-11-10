@@ -177,35 +177,69 @@ task set_embargo_by_id: :environment do |t, args|
   puts "Work #{work_id} embargo period updated to #{GenericWork.displayable_embargo_period( embargo_period )}"
 end
 
-  desc "Apply publication_date to all published works."
-  task apply_publication_date: :environment do |t, args|
+desc "Apply publication_date to all published works."
+task apply_publication_date: :environment do |t, args|
 
-    count = 0
-    works = GenericWork.where({ draft: 'false' })
-    works.each { |work|
+  count = 0
+  works = GenericWork.where({ draft: 'false' })
+  works.each { |work|
 
-      if work.date_published.nil? == false
-        puts "Skipping work #{work.id} (already has a publication date of #{work.date_published})"
-        next
-      end
+    if work.date_published.nil? == false
+      puts "Skipping work #{work.id} (already has a publication date of #{work.date_published})"
+      next
+    end
 
-      # if we have a modification date use it, otherwise use the create date
-      if work.modified_date.nil? == false
-        pub_date = work.modified_date.strftime( "%Y-%m-%d" )
-        puts "Using modified_date as publication date for #{work.id} (#{pub_date})"
-        work.date_published = pub_date
-      else
-        puts "Using create_date as publication date for #{work.id} (#{work.date_created})"
-        work.date_published = work.date_created
-      end
+    # if we have a modification date use it, otherwise use the create date
+    if work.modified_date.nil? == false
+      pub_date = work.modified_date.strftime( "%Y-%m-%d" )
+      puts "Using modified_date as publication date for #{work.id} (#{pub_date})"
+      work.date_published = pub_date
+    else
+      puts "Using create_date as publication date for #{work.id} (#{work.date_created})"
+      work.date_published = work.date_created
+    end
 
-      work.save!
-      count += 1
-    }
-    puts "#{count} works updated"
+    work.save!
+    count += 1
+  }
+  puts "#{count} works updated"
+end
+
+desc "Add to admin notes of work; must provide the work id and the admin note"
+task admin_note_by_id: :environment do |t, args|
+
+  work_id = ARGV[ 1 ]
+  if work_id.blank?
+    puts "ERROR: no work id specified, aborting"
+    next
   end
 
-  end   # namespace edit
+  task work_id.to_sym do ; end
+
+  admin_note = ARGV[ 2 ]
+  if admin_note.blank?
+    puts "ERROR: no admin note specified, aborting"
+    next
+  end
+
+  task admin_note.to_sym do ; end
+
+  work = TaskHelpers.get_work_by_id( work_id )
+  if work.nil?
+    puts "ERROR: work #{work_id} does not exist, aborting"
+    next
+  end
+
+  admin_note = "#{DateTime.now} | #{admin_note}"
+
+  work.admin_notes = [] if work.admin_notes.nil?
+  work.admin_notes = work.admin_notes + [ admin_note ]
+  work.save!
+  puts "Work #{work_id} admin note added \"#{admin_note}\""
+
+end
+
+end   # namespace edit
 
 end   # namespace libraetd
 
