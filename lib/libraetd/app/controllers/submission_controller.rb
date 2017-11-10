@@ -155,9 +155,13 @@ class SubmissionController < ApplicationController
 		file_sets = work.file_sets
 		files = []
 		file_sets.each { |file|
+      # ensure the title on the public page is not blank
+      title = file.title.join(" ")
+      title = file.label if title.blank?
+      title = 'UNKNOWN' if title.blank?
+
 			files.push({
-              title: file.title.join(" "),
-							#title: file.title.join(" ").blank? ? "UNKNOWN" : file.title.join(" "),
+              title: title,
 							location: download_path(file),
 							date: file.date_uploaded,
 							id: file.id
