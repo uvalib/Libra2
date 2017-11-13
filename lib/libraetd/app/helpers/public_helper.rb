@@ -180,6 +180,9 @@ module PublicHelper
     # remove colons
     ret = ret.gsub( /:/, '' )
 
+    # change spaces to underscores
+    ret = ret.gsub( / /, '_' )
+
     return ret
   end
 end
