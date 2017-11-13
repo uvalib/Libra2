@@ -27,7 +27,8 @@ Rails.application.routes.draw do
   get '/api/v1/filesets' => 'api_v1_filesets#all_filesets', :defaults => { :format => 'json' }
   get '/api/v1/filesets/:id' => 'api_v1_filesets#get_fileset'
   delete '/api/v1/filesets/:id' => 'api_v1_filesets#remove_fileset'
-  put '/api/v1/filesets' => 'api_v1_filesets#add_fileset'
+  post '/api/v1/filesets' => 'api_v1_filesets#add_fileset'
+  put '/api/v1/filesets/:id' => 'api_v1_filesets#update_fileset'
 
   # api file endpoints
   match '/api/v1/files' => 'api_v1_files#add_file_options', via: :options

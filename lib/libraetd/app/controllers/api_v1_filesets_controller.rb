@@ -6,7 +6,8 @@ class APIV1FilesetsController < APIBaseController
   include UrlHelper
 
   before_action :validate_user, only: [ :add_fileset,
-                                        :remove_fileset
+                                        :remove_fileset,
+                                        :update_fileset
                                       ]
 
   #
@@ -108,6 +109,31 @@ class APIV1FilesetsController < APIBaseController
 
   end
 
+  #
+  # update a fileset
+  #
+  def update_fileset
+    fileset = get_the_fileset
+    if fileset.nil?
+      render_standard_response( :not_found, 'Fileset not available' )
+    else
+
+      fileset_update = API::Fileset.new.from_json( fileset_params_whitelist )
+      if fileset_update.valid_for_update? == true
+
+         # apply the update and save the fileset
+         fileset_update.apply_to_fileset( fileset, User.cid_from_email( @api_user.email) )
+         fileset.save!
+
+         render_standard_response( :ok )
+
+      else
+        render_standard_response( :bad_request, 'Missing or incorrect parameter' )
+      end
+
+    end
+  end
+
   private
 
   #
@@ -145,6 +171,11 @@ class APIV1FilesetsController < APIBaseController
       tstart = Time.now
     end
     return res
+  end
+
+  def fileset_params_whitelist
+    params.require(:fileset).permit( :file_name
+    )
   end
 
 end

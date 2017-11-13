@@ -15,6 +15,8 @@ class Fileset
   attr_accessor :date_uploaded
   attr_accessor :date_modified
 
+  attr_accessor :filesets
+
   def initialize
     @id = ''
     @source_name = ''
@@ -22,6 +24,21 @@ class Fileset
     @file_size = 0
     @file_url = ''
     @thumb_url = ''
+
+    # the set of fields specified during construction
+    @field_set = []
+  end
+
+  #
+  # we create these work items from JSON records when accepting a set of updates
+  # we have to keep track of what was set so we can distinguish it from a default
+  # value that was not specifically set
+  #
+  def from_json( json )
+
+    @file_name = set_field( :file_name, json ) unless set_field( :file_name, json ) == nil
+    return self
+
   end
 
   def from_solr( solr, base_url )
@@ -40,6 +57,29 @@ class Fileset
     @date_uploaded = solr_extract_only( solr, 'date_uploaded', 'date_uploaded_dtsi' )
     @date_modified = solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
     return self
+  end
+
+  def valid_for_update?
+
+    # if we specified anything else
+    return @field_set.empty? == false
+
+  end
+
+  def apply_to_fileset( fileset, by_whom )
+
+    if field_changed?(:file_name, fileset.label, @file_name )
+      # update and audit the information
+      audit_change( fileset.id, 'File name', fileset.title[ 0 ], @file_name, by_whom )
+      fileset.title = [ @file_name ]
+    end
+
+  end
+
+  # ignore the @field_set when creating JSON
+  def as_json(options={})
+    options[:except] ||= ['field_set']
+    super( options )
   end
 
   private
@@ -67,6 +107,38 @@ class Fileset
     return '' if id.blank?
     return '' if id.size < 8
     return "#{id[0]}#{id[1]}/#{id[2]}#{id[3]}/#{id[4]}#{id[5]}/#{id[6]}#{id[7]}"
+  end
+
+  def set_field( field, json )
+    if json.key?( field )
+      #puts "==> #{field} was set"
+      @field_set << field unless @field_set.include?( field )
+      return json[field] unless json[field] == ['']
+      return []
+    end
+    return nil
+  end
+
+  # was this field specifically set during construction
+  def field_set?( field )
+    return @field_set.include?( field )
+  end
+
+  def field_changed?(field, before, after )
+
+    # if we did not set the field then it has not changed
+    return false if field_set?( field ) == false
+
+    # if they are the same, then it has not changed
+    return false if after == before
+
+    #puts "==> #{field} has changed"
+    return true
+  end
+
+  def audit_change( id, what, old_value, new_value, by_whom )
+    #WorkAudit.audit( id, by_whom, "#{what} updated from: '#{old_value}' to: '#{new_value}'" )
+    puts "==> FILESET AUDIT: fileset #{id} #{what} updated from: #{old_value} to: #{new_value} by #{by_whom}"
   end
 
 end

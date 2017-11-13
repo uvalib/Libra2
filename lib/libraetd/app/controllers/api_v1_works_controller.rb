@@ -111,7 +111,7 @@ class APIV1WorksController < APIBaseController
       render_standard_response( :not_found )
     else
 
-      work_update = API::Work.new.from_json( params_whitelist )
+      work_update = API::Work.new.from_json( work_params_whitelist )
       if work_update.valid_for_update? == true
 
         # apply the update and save the work
@@ -251,7 +251,7 @@ class APIV1WorksController < APIBaseController
     return res
   end
 
-  def params_whitelist
+  def work_params_whitelist
     params.require(:work).permit( :abstract,
                                   :author_email,
                                   :author_first_name,
