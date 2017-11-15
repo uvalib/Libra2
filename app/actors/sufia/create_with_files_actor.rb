@@ -18,10 +18,14 @@ module Sufia
       uploaded_files = [] if uploaded_files.nil?
       ids = []
       labels = []
-        uploaded_files.each { |uploaded_file|
-          ids.push(uploaded_file['id'])
-          labels.push(uploaded_file['label'])
-        }
+      uploaded_files.each do |uploaded_file|
+        ids.push(uploaded_file['id'])
+        # use the file name if there's not a label
+        label = (uploaded_file['label'] || uploaded_file['name'])
+        uploaded_file['label'] = label
+        labels.push( label )
+
+      end
       self.uploaded_file_ids = ids
       self.uploaded_file_labels = labels
     end

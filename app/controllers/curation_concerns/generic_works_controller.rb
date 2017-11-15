@@ -9,6 +9,7 @@ module CurationConcerns
     before_action :set_requirements, only: [ :show ]
     before_action :is_me
     before_action :add_pending_file_test
+    before_action :dont_allow_blank_file_labels, only: [:create, :update]
 
     def is_me
       work = get_generic_work( params[:id] )
@@ -36,7 +37,18 @@ module CurationConcerns
 
       # if there are still files to be processed, alert the page.
       @pending_file_test = session[:files_pending].present? ? session[:files_pending][params[:id]] : nil
-     end
+    end
+
+    def dont_allow_blank_file_labels
+      if params["uploaded_files"].present?
+        params["uploaded_files"].each do |file|
+          if file['label'].blank?
+            file['label'] = file['name']
+          end
+        end
+      end
+
+    end
 
     def save_file_display_name
 
@@ -46,6 +58,8 @@ module CurationConcerns
         previously_uploaded_files_label = params['previously_uploaded_files_label']
         if previously_uploaded_files_label.present?
           previously_uploaded_files_label.each_with_index { |label, i|
+            # prevent blank labels from being saved
+            next if label.blank?
             file_attributes = { title: [ label ]}
             actor = ::CurationConcerns::Actors::FileSetActor.new(work.file_sets[i], current_user)
             actor.update_metadata(file_attributes)
@@ -57,7 +71,11 @@ module CurationConcerns
         session[:files_pending] = {} if session[:files_pending].nil?
         session[:files_pending][params[:id]] = [] if session[:files_pending][params[:id]].nil?
         params['uploaded_files'].each { |file|
-          session[:files_pending][params[:id]].push({ 'id' => file['id'], 'label' => file['label'], 'name' => file['name'] })
+          session[:files_pending][params[:id]].push({
+            'id' => file['id'],
+            'label' => (file['label'] || file['name']),
+            'name' => file['name'] 
+          })
         }
         end
 
