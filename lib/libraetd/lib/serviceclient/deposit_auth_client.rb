@@ -77,8 +77,10 @@ module ServiceClient
      def import
        url = "#{self.url}/import?auth=#{self.authtoken}"
        status, response = rest_post( url, nil )
-       return status, response['count'] if ok?( status ) && response['count']
-       return status, 0
+       if ok?( status )
+          return status, response['new_count'], response['update_count'], response['duplicate_count'], response['error_count']
+       end
+       return status, 0, 0, 0, 0
      end
 
      #
@@ -87,8 +89,10 @@ module ServiceClient
      def export
        url = "#{self.url}/export?auth=#{self.authtoken}"
        status, response = rest_post( url, nil )
-       return status, response['count'] if ok?( status ) && response['count']
-       return status, 0
+       if ok?( status )
+          return status, response['export_count'], response['error_count']
+       end
+       return status, 0, 0
      end
 
      #

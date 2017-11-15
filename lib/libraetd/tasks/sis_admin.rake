@@ -12,13 +12,13 @@ namespace :libraetd do
   task import: :environment do |t, args|
 
     # initiate the import
-    status, count = ServiceClient::DepositAuthClient.instance.import
+    status, new_count, update_count, duplicate_count, error_count = ServiceClient::DepositAuthClient.instance.import
     if ServiceClient::DepositAuthClient.instance.ok?( status ) == false
       puts "ERROR: import request returns #{status}, aborting"
       next
     end
 
-    puts "Import request successful; #{count} item(s) processed"
+    puts "Import request successful; #{new_count} new, #{update_count} updated, #{duplicate_count} duplicate and #{error_count} error item(s) processed"
 
   end
 
@@ -26,13 +26,13 @@ namespace :libraetd do
   task export: :environment do |t, args|
 
     # initiate the export
-    status, count = ServiceClient::DepositAuthClient.instance.export
+    status, export_count, error_count = ServiceClient::DepositAuthClient.instance.export
     if ServiceClient::DepositAuthClient.instance.ok?( status ) == false
       puts "ERROR: export request returns #{status}, aborting"
       next
     end
 
-    puts "Export request successful; #{count} item(s) processed"
+    puts "Export request successful; #{export_count} item(s) and #{error_count} error(s) processed"
 
   end
 
