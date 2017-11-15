@@ -6,7 +6,6 @@
 require_dependency 'libraetd/tasks/task_helpers'
 include TaskHelpers
 
-require_dependency 'libraetd/lib/serviceclient/deposit_reg_client'
 require_dependency 'libraetd/lib/serviceclient/deposit_auth_client'
 require_dependency 'libraetd/lib/helpers/value_snapshot'
 require_dependency 'libraetd/lib/helpers/deposit_request'
@@ -17,33 +16,11 @@ require 'socket'
 
 namespace :libraetd do
 
-  namespace :etd do
+  namespace :sisetd do
 
   # keys definitions for state
   default_last_id = "0"
-  statekey_optional = "libra2:#{Rails.env.to_s}:deposit:optional:#{Socket.gethostname}"
   statekey_sis = "libra2:#{Rails.env.to_s}:deposit:sis:#{Socket.gethostname}"
-
-  desc "List new optional ETD deposit requests"
-  task list_new_optional_etd_deposits: :environment do |t, args|
-
-    #puts "key: #{statekey_optional}"
-    s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
-    last_id = s.val
-
-    if last_id.nil? || last_id.blank?
-      puts "ERROR: loading last processed id, aborting"
-      next
-    end
-
-    show_optional_since( last_id )
-
-  end
-
-  desc "List all optional ETD deposit requests"
-  task list_all_optional_etd_deposits: :environment do |t, args|
-    show_optional_since( 0 )
-  end
 
   desc "List new SIS ETD deposit requests"
   task list_new_sis_etd_deposits: :environment do |t, args|
@@ -64,50 +41,6 @@ namespace :libraetd do
   desc "List all SIS ETD deposit requests"
   task list_all_sis_etd_deposits: :environment do |t, args|
     show_sis_since( 0 )
-  end
-
-  desc "Ingest new optional ETD deposit requests"
-  task ingest_optional_etd_deposits: :environment do |t, args|
-
-    count = 0
-
-    #puts "key: #{statekey_optional}"
-    s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
-    last_id = s.val
-
-    if last_id.nil? || last_id.blank?
-      puts "ERROR: loading last processed id, aborting"
-      puts "Releasing permission token"
-      t.release
-      next
-    end
-
-    puts "Ingesting new optional ETD deposits since id: #{last_id}"
-
-    status, resp = ServiceClient::DepositRegClient.instance.list_requests( last_id )
-    if ServiceClient::DepositRegClient.instance.ok?( status )
-      resp.each do |r|
-        req = Helpers::DepositRequest.create( r )
-        if Helpers::EtdHelper::new_etd_from_deposit_request( req ) == true
-			     user = Helpers::EtdHelper::lookup_user( req.who )
-           ThesisMailers.optional_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later
-           puts "Created placeholder (optional) ETD for #{req.who} (request #{req.id})"
-           count += 1
-        else
-          puts "ERROR ingesting optional request #{req.id} for #{req.who}; ignoring"
-        end
-
-        # save the current ID so we do not process it again
-        s.val = req.id
-
-      end
-
-      puts "Done; #{count} optional ETD(s) created"
-    else
-      puts "No optional ETD deposit requests located" if status == 404
-      puts "ERROR: request returned #{status}" unless status == 404
-    end
-
   end
 
   desc "Ingest new SIS ETD deposit requests"
@@ -232,22 +165,6 @@ namespace :libraetd do
 
   end
 
-  desc "List last optional ETD id"
-  task list_last_optional_id: :environment do |t, args|
-
-    #puts "key: #{statekey_optional}"
-    s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
-    last_id = s.val
-
-    if last_id.nil? || last_id.blank?
-      puts "ERROR: loading last processed id, aborting"
-      next
-    end
-
-    puts "Last id: #{last_id}"
-
-  end
-
   desc "Reset last SIS ETD id; optionally provide the last id"
   task reset_last_sis_id: :environment do |t, args|
 
@@ -257,28 +174,6 @@ namespace :libraetd do
 
     #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
-    last_id = s.val
-
-    if last_id.nil? || last_id.blank?
-      puts "ERROR: loading last processed id, aborting"
-      next
-    end
-
-    s.val = id.to_i
-
-    puts "Reset to #{id}, was #{last_id}"
-
-  end
-
-  desc "Reset last optional ETD id; optionally provide the last id"
-  task reset_last_optional_id: :environment do |t, args|
-
-    id = ARGV[ 1 ]
-    id = default_last_id if id.nil?
-    task id.to_sym do ; end
-
-    #puts "key: #{statekey_optional}"
-    s = Helpers::ValueSnapshot.new( statekey_optional, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
@@ -344,26 +239,6 @@ namespace :libraetd do
 
   end
 
-  def show_optional_since( since_id )
-
-    puts "Listing optional ETD deposits since id: #{since_id}"
-    count = 0
-
-    status, resp = ServiceClient::DepositRegClient.instance.list_requests( since_id )
-    if ServiceClient::DepositRegClient.instance.ok?( status )
-      resp.each do |r|
-        dump_etd_request r
-        count += 1
-      end
-
-      puts "#{count} optional ETD deposit(s) listed"
-    else
-      puts "No optional ETD deposit requests located" if status == 404
-      puts "ERROR: request returned #{status}" unless status == 404
-    end
-
-  end
-
   def dump_etd_request( req )
 
     req.keys.each do |k|
@@ -373,7 +248,7 @@ namespace :libraetd do
     puts "*" * 40
   end
 
-  end   # namespace etd
+  end   # namespace sisetd
 
 end   # namespace libraetd
 

@@ -1,1 +1,1 @@
-rake libraetd:etd:ingest_sis_etd_deposits $1
+rake libraetd:sisetd:ingest_sis_etd_deposits $1

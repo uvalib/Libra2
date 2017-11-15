@@ -1,1 +1,1 @@
-rake libraetd:etd:reset_last_sis_id $1
+rake libraetd:sisetd:reset_last_sis_id $1

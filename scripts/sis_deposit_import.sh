@@ -31,7 +31,7 @@ while true; do
       logit "Beginning SIS deposit import sequence"
 
       # do the SIS import
-      rake libraetd:etd:ingest_sis_etd_deposits >> $LOGGER 2>&1
+      rake libraetd:sisetd:ingest_sis_etd_deposits >> $LOGGER 2>&1
       res=$?
 
       # ending message

@@ -1,1 +1,1 @@
-rake libraetd:etd:reset_last_optional_id $1
+rake libraetd:optionaletd:reset_last_optional_id $1

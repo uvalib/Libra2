@@ -1,1 +1,1 @@
-rake libraetd:etd:list_sis_etd_deposits
+rake libraetd:sisetd:list_sis_etd_deposits

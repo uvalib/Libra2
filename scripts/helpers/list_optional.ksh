@@ -1,1 +1,1 @@
-rake libraetd:etd:list_optional_etd_deposits
+rake libraetd:optionaletd:list_optional_etd_deposits
