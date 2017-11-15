@@ -9,7 +9,6 @@ include TaskHelpers
 require_dependency 'libraetd/lib/serviceclient/deposit_reg_client'
 require_dependency 'libraetd/lib/helpers/value_snapshot'
 require_dependency 'libraetd/lib/helpers/deposit_request'
-require_dependency 'libraetd/lib/helpers/deposit_authorization'
 require_dependency 'libraetd/lib/helpers/etd_helper'
 
 require 'socket'

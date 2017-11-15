@@ -8,7 +8,6 @@ include TaskHelpers
 
 require_dependency 'libraetd/lib/serviceclient/deposit_auth_client'
 require_dependency 'libraetd/lib/helpers/value_snapshot'
-require_dependency 'libraetd/lib/helpers/deposit_request'
 require_dependency 'libraetd/lib/helpers/deposit_authorization'
 require_dependency 'libraetd/lib/helpers/etd_helper'
 
@@ -117,40 +116,8 @@ namespace :libraetd do
 
   end
 
-  desc "Ingest specific optional ETD deposit request; must supply the optional deposit request id"
-  task ingest_one_optional_etd_deposit: :environment do |t, args|
-
-    id = ARGV[ 1 ]
-    if id.nil?
-      puts "ERROR: no optional request id specified, aborting"
-      next
-    end
-    task id.to_sym do ; end
-
-    puts "NOT IMPLEMENTED YET"
-
-  end
-
-  desc "List optional deposit options"
-  task list_deposit_options: :environment do |t, args|
-
-    status, resp = ServiceClient::DepositRegClient.instance.list_deposit_options( )
-    if ServiceClient::DepositRegClient.instance.ok?( status )
-
-      resp['department'].each do |d|
-         puts "Department: '#{d}'"
-      end
-      resp['degree'].each do |d|
-         puts "Degree:     '#{d}'"
-      end
-    else
-      puts "ERROR: options service returns #{status}"
-    end
-
-  end
-
-  desc "List last SIS ETD id"
-  task list_last_sis_id: :environment do |t, args|
+  desc "List last inbound id"
+  task list_last_inbound_id: :environment do |t, args|
 
     #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
@@ -165,8 +132,8 @@ namespace :libraetd do
 
   end
 
-  desc "Reset last SIS ETD id; optionally provide the last id"
-  task reset_last_sis_id: :environment do |t, args|
+  desc "Reset last inbound id; optionally provide the last id"
+  task reset_last_inbound_id: :environment do |t, args|
 
     id = ARGV[ 1 ]
     id = default_last_id if id.nil?
