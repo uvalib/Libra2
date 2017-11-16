@@ -8,6 +8,7 @@ module Helpers
 
   class DepositAuthorization
 
+      attr_accessor :inbound_id
       attr_accessor :id
       attr_accessor :who
       attr_accessor :first_name
@@ -22,6 +23,7 @@ module Helpers
       attr_accessor :exported_at
 
       def initialize( json )
+        @inbound_id = json['inbound_id'] || '0'
         @id = json['id'] || '0'
         @who = json[ 'computing_id'] || ''
         @first_name = json[ 'first_name'] || ''

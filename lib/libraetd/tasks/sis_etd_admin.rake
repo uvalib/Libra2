@@ -21,10 +21,11 @@ namespace :libraetd do
   default_last_id = "0"
   statekey_sis = "libra2:#{Rails.env.to_s}:deposit:sis:#{Socket.gethostname}"
 
-  desc "List new SIS ETD deposit requests"
+  #
+  #
+  desc "List new inbound SIS ETD deposit requests"
   task list_new_sis_etd_deposits: :environment do |t, args|
 
-    #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
@@ -37,55 +38,60 @@ namespace :libraetd do
 
   end
 
-  desc "List all SIS ETD deposit requests"
+  #
+  #
+  desc "List all inbound SIS ETD deposit requests"
   task list_all_sis_etd_deposits: :environment do |t, args|
     show_sis_since( 0 )
   end
 
-  desc "Ingest new SIS ETD deposit requests"
+  #
+  #
+  desc "Ingest new inbound SIS ETD deposit requests"
   task ingest_sis_etd_deposits: :environment do |t, args|
 
-    count = 0
-
-    #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
     if last_id.nil? || last_id.blank?
       puts "ERROR: loading last processed id, aborting"
-      puts "Releasing permission token"
+      puts "INFO: releasing permission token"
       t.release
       next
     end
 
-    puts "Ingesting new SIS ETD deposits since id: #{last_id}"
+    puts "INFO: ingesting new inbound SIS ETD deposits since id: #{last_id}"
 
-    status, resp = ServiceClient::DepositAuthClient.instance.list_requests( last_id )
+    successes = 0
+    errors = 0
+
+    status, resp = ServiceClient::DepositAuthClient.instance.get_all_inbound( last_id )
     if ServiceClient::DepositAuthClient.instance.ok?( status )
       resp.each do |r|
         req = Helpers::DepositAuthorization.create( r )
-        if Helpers::EtdHelper::new_etd_from_sis_request( req ) == true
-          user = Helpers::EtdHelper::lookup_user( req.who )
-          ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later
-          puts "Created placeholder (SIS) ETD for #{req.who} (request #{req.id})"
-          count += 1
+        if Helpers::EtdHelper::process_inbound_sis_authorization(req ) == true
+          puts "INFO: created or updated (SIS) ETD for #{req.who} (inbound #{req.inbound_id})"
+          successes += 1
         else
-          puts "ERROR ingesting sis authorization #{req.id} for #{req.who}; ignoring"
+          puts "ERROR: processing inbound SIS authorization #{req.inbound_id} for #{req.who}; ignoring"
+          errors += 1
         end
 
-        # save the current ID so we do not process it again
-        s.val = req.id
+        # save the current inbound ID so we do not process it again
+        s.val = req.inbound_id
 
       end
 
-      puts "Done; #{count} SIS ETD(s) created"
+      puts "INFO: done; #{successes} inbound SIS ETD(s) created or updated, #{errors} error(s) encountered"
     else
-      puts "No SIS ETD deposit requests located" if status == 404
+      puts "INFO: no inbound SIS ETD deposit requests located" if status == 404
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
   end
 
+  #
+  #
   desc "Ingest specific SIS ETD deposit request; must supply the SIS deposit request id"
   task ingest_one_sis_etd_deposit: :environment do |t, args|
 
@@ -101,25 +107,24 @@ namespace :libraetd do
 
       resp.each do |r|
         req = Helpers::DepositAuthorization.create( r )
-        if Helpers::EtdHelper::new_etd_from_sis_request( req ) == true
-          user = Helpers::EtdHelper::lookup_user( req.who )
-          ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later
-          puts "Created placeholder (SIS) ETD for #{req.who} (request #{req.id})"
+        if Helpers::EtdHelper::process_inbound_sis_authorization(req ) == true
+          puts "INFO: created or updated (SIS) ETD for #{req.who} (request #{req.id})"
         else
-          puts "ERROR ingesting sis authorization #{req.id} for #{req.who}; ignoring"
+          puts "ERROR: processing SIS authorization #{req.id} for #{req.who}; ignoring"
         end
       end
     else
-      puts "No SIS deposit request located" if status == 404
+      puts "INFO: no inbound SIS deposit requests located" if status == 404
       puts "ERROR: request returned #{status}" unless status == 404
     end
 
   end
 
+  #
+  #
   desc "List last inbound id"
   task list_last_inbound_id: :environment do |t, args|
 
-    #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
@@ -132,6 +137,8 @@ namespace :libraetd do
 
   end
 
+  #
+  #
   desc "Reset last inbound id; optionally provide the last id"
   task reset_last_inbound_id: :environment do |t, args|
 
@@ -139,7 +146,6 @@ namespace :libraetd do
     id = default_last_id if id.nil?
     task id.to_sym do ; end
 
-    #puts "key: #{statekey_sis}"
     s = Helpers::ValueSnapshot.new( statekey_sis, default_last_id )
     last_id = s.val
 
@@ -154,6 +160,8 @@ namespace :libraetd do
 
   end
 
+  #
+  #
   desc "Mark SIS EDT as submitted; must provide the work id"
   task mark_sis_etd_as_submitted: :environment do |t, args|
 
@@ -182,25 +190,27 @@ namespace :libraetd do
       next
     end
 
-    puts "Marked SIS ETD #{work_id} as submitted"
+    puts "INFO: marked SIS ETD #{work_id} as submitted"
 
   end
 
+  private
+
   def show_sis_since( since_id )
 
-    puts "Listing SIS ETD deposits since id: #{since_id}"
+    puts "INFO: listing SIS ETD deposits since id: #{since_id}"
     count = 0
 
-    status, resp = ServiceClient::DepositAuthClient.instance.list_requests( since_id )
+    status, resp = ServiceClient::DepositAuthClient.instance.get_all_inbound( since_id )
     if ServiceClient::DepositAuthClient.instance.ok?( status )
       resp.each do |r|
         dump_etd_request r
         count += 1
       end
 
-      puts "#{count} SIS ETD deposit(s) listed"
+      puts "INFO: #{count} SIS ETD deposit(s) listed"
     else
-      puts "No SIS ETD deposit requests located" if status == 404
+      puts "INFO: no inbound SIS ETD deposit requests located" if status == 404
       puts "ERROR: request returned #{status}" unless status == 404
     end
 

@@ -6,30 +6,41 @@ module Helpers
 
   class EtdHelper
 
-    @default_email_domain = 'virginia.edu'
+    def self.process_inbound_sis_authorization( deposit_authorization )
 
-    def self.new_etd_from_sis_request( deposit_authorization )
-
-      # lookup the user by computing id
-      user_info = lookup_user( deposit_authorization.who )
-      if user_info.nil?
-        puts "ERROR: cannot locate user info for #{deposit_authorization.who}"
+      # lookup the user and create their account as necessary
+      user, _ = lookup_or_create_user( deposit_authorization.who )
+      if user.nil?
         return false
       end
 
-      # locate the user and create the account if we cannot... cant create an ETD without an owner
-      email = user_info.email
-      email = "#{user_info.id}@#{@default_email_domain}" if email.nil? || email.blank?
-      user = User.find_by_email( email )
-      user = create_user( user_info, email ) if user.nil?
+      # determine if this is an update to an existing work
+      work_source = "#{GenericWork::THESIS_SOURCE_SIS}:#{deposit_authorization.id}"
+      existing = find_existing_work( work_source )
+      if existing.present?
+        puts "INFO: found existing work for this authorization (#{deposit_authorization.id})"
+        # only apply updates to draft works
+        if existing.is_draft?
+          before = existing.title.present? ? existing.title[ 0 ] : ''
+          if deposit_authorization.title != before
+             existing.title = [ deposit_authorization.title ]
+             existing.save!
+             puts "INFO: updated work #{existing.id} title from: '#{before}' to '#{deposit_authorization.title}'"
+          end
+          return true
+        else
+          puts "ERROR: SIS update for a published work (#{existing.id}); ignoring"
+          return false
+        end
+      end
 
       ok = true
       GenericWork.create!( title: [ deposit_authorization.title ] ) do |w|
 
         # generic work attributes
         w.apply_depositor_metadata( user )
-        w.creator = email
-        w.author_email = email
+        w.creator = user.email
+        w.author_email = user.email
         w.author_first_name = deposit_authorization.first_name
         w.author_last_name = deposit_authorization.last_name
         w.author_institution = GenericWork::DEFAULT_INSTITUTION
@@ -48,7 +59,7 @@ module Helpers
         w.license = GenericWork::DEFAULT_LICENSE
 
         # where the authorization comes from
-        w.work_source = "#{GenericWork::THESIS_SOURCE_SIS}:#{deposit_authorization.id}"
+        w.work_source = work_source
 
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
         if ServiceClient::EntityIdClient.instance.ok?( status )
@@ -60,23 +71,19 @@ module Helpers
         end
 
       end
+
+      # send the email if necessary
+      ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later if ok
       return ok
     end
 
-    def self.new_etd_from_deposit_request( deposit_request )
+    def self.process_inbound_optional_authorization( deposit_request )
 
-      # lookup the user by computing id
-      user_info = lookup_user( deposit_request.who )
-      if user_info.nil?
-        puts "ERROR: cannot locate user info for #{deposit_request.who}"
+      # lookup the user and create their account as necessary
+      user, extended_info = lookup_or_create_user( deposit_request.who )
+      if user.nil?
         return false
       end
-
-      # locate the user and create the account if we cannot... cant create an ETD without an owner
-      email = user_info.email
-      email = "#{user_info.id}@#{@default_email_domain}" if email.nil? || email.blank?
-      user = User.find_by_email( email )
-      user = create_user( user_info, email ) if user.nil?
 
       # default values
       default_title = 'Enter your title here'
@@ -86,10 +93,10 @@ module Helpers
 
         # generic work attributes
         w.apply_depositor_metadata( user )
-        w.creator = email
-        w.author_email = email
-        w.author_first_name = user_info.first_name || 'First name'
-        w.author_last_name = user_info.last_name || 'Last name'
+        w.creator = user.email
+        w.author_email = user.email
+        w.author_first_name = extended_info.first_name || 'First name'
+        w.author_last_name = extended_info.last_name || 'Last name'
         w.author_institution = GenericWork::DEFAULT_INSTITUTION
 
         w.date_created = CurationConcerns::TimeService.time_in_utc.strftime( "%Y-%m-%d" )
@@ -121,10 +128,44 @@ module Helpers
         end
 
       end
+      ThesisMailers.optional_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later if ok
       return ok
     end
 
     private
+
+    #
+    # look for a work that corresponds to the specified work source. This tells us that we have
+    # previously created a placeholder ETD for the student
+    #
+    def self.find_existing_work( work_source )
+
+      works = GenericWork.where( {work_source: work_source } )
+      if works.present?
+        return works.first
+      end
+      return nil
+
+    end
+
+
+    def self.lookup_or_create_user( cid )
+
+      # lookup the user by computing id
+      user_info = lookup_user( cid )
+      if user_info.nil?
+        puts "ERROR: cannot locate user info for #{cid}"
+        return nil, nil
+      end
+
+      # locate the user and create the account if we cannot... cant create an ETD without an owner
+      email = user_info.email
+      email = User.email_from_cid( user_info.id ) if email.nil? || email.blank?
+      user = User.find_by_email( email )
+      user = create_user( user_info, email ) if user.nil?
+
+      return user, user_info
+    end
 
     def self.create_user( user_info, email )
 
@@ -138,7 +179,7 @@ module Helpers
                        telephone: user_info.phone,
                        title: user_info.description )
       user.save!
-      puts "Created new account for #{user_info.id}"
+      puts "INFO: created new account for #{user_info.id}"
       return( user )
 
     end

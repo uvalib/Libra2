@@ -33,10 +33,10 @@ module ServiceClient
      end
 
      #
-     # get any requests later than the supplied request identifier (requests come in sequence)
+     # get all inbound requests later than the supplied request identifier (requests come in sequence)
      #
-     def list_requests( id )
-       url = "#{self.url}?auth=#{self.authtoken}&later=#{id}"
+     def get_all_inbound( id )
+       url = "#{self.url}/inbound?auth=#{self.authtoken}&after=#{id}"
        status, response = rest_get( url )
        return status, response['details'] if ok?( status ) && response['details']
        return status, ''
