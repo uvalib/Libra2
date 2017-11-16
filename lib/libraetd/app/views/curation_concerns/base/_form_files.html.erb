@@ -1,112 +1,112 @@
 <div class="form-instructions">
-	View <a target="_blank" href="http://www.library.virginia.edu/libra/etds/etds-checklist/">ETD Submission Checklist</a>
-	for help.
+  View <a target="_blank" href="http://www.library.virginia.edu/libra/etds/etds-checklist/">ETD Submission Checklist</a>
+  for help.
 </div>
 <div id="fileupload">
-	<!-- Redirect browsers with JavaScript disabled to the origin page -->
-	<noscript><input type="hidden" name="redirect" value="<%= main_app.root_path %>"></noscript>
-	<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-	<div class="row fileupload-buttonbar">
-		<div class="file-hint">Acceptable files types are <span class="acceptable-file-type-list"></span>.</div>
-		<div class="col-xs-7">
-			<!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-success fileinput-button">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span>Add files...</span>
-                    <input type="file" name="files[]" multiple>
-                </span>
-			<% if browser_supports_directory_upload? %>
-				<!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-success fileinput-button">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span>Add folder...</span>
-                    <input type="file" name="files[]" multiple directory webkitdirectory>
-                </span>
-			<% end %>
-			<button type="reset" class="btn btn-warning cancel hidden">
-				<span class="glyphicon glyphicon-ban-circle"></span>
-				<span>Cancel upload</span>
-			</button>
-			<!-- The global file processing state -->
-			<span class="fileupload-process"></span>
-		</div>
-		<!-- The global progress state -->
-		<div class="col-xs-5 fileupload-progress fade">
-			<!-- The global progress bar -->
-			<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-				<div class="progress-bar progress-bar-success" style="width:0%;"></div>
-			</div>
-			<!-- The extended global progress state -->
-			<div class="progress-extended">&nbsp;</div>
-		</div>
-	</div>
+  <!-- Redirect browsers with JavaScript disabled to the origin page -->
+  <noscript><input type="hidden" name="redirect" value="<%= main_app.root_path %>"></noscript>
+  <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+  <div class="row fileupload-buttonbar">
+    <div class="file-hint">Acceptable files types are <span class="acceptable-file-type-list"></span>.</div>
+    <div class="col-xs-7">
+      <!-- The fileinput-button span is used to style the file input field as button -->
+      <span class="btn btn-success fileinput-button">
+        <span class="glyphicon glyphicon-plus"></span>
+        <span>Add files...</span>
+        <input type="file" name="files[]" multiple>
+      </span>
+      <% if browser_supports_directory_upload? %>
+        <!-- The fileinput-button span is used to style the file input field as button -->
+        <span class="btn btn-success fileinput-button">
+          <span class="glyphicon glyphicon-plus"></span>
+          <span>Add folder...</span>
+          <input type="file" name="files[]" multiple directory webkitdirectory>
+        </span>
+      <% end %>
+      <button type="reset" class="btn btn-warning cancel hidden">
+        <span class="glyphicon glyphicon-ban-circle"></span>
+        <span>Cancel upload</span>
+      </button>
+      <!-- The global file processing state -->
+      <span class="fileupload-process"></span>
+    </div>
+    <!-- The global progress state -->
+    <div class="col-xs-5 fileupload-progress fade">
+      <!-- The global progress bar -->
+      <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+      </div>
+      <!-- The extended global progress state -->
+      <div class="progress-extended">&nbsp;</div>
+    </div>
+  </div>
 
   <div class="dropzone">
     <%= t('curation_concerns.base.form_files.dropzone') %>
   </div>
 
   <!-- The table listing the files available for upload/download -->
-	<table role="presentation" class="table table-striped"><tbody class="files">
-	<tr>
-		<th>Filename</th>
-		<th>Display Label<div class="file-hint">Rename your file here</div></th>
-		<th></th>
-		<th></th>
-	</tr>
-	</tbody></table>
-	<% if @pending_file_test.present? %>
-		<fieldset id="uploaded-files">
-			<legend>Pending Files</legend>
-			<div class="file-hint">These files have not yet been processed. Please wait a few minutes and refresh this page.</div>
-			<table role="presentation" class="table table-striped uploaded-files">
-				<tbody>
-				<tr>
-					<th>Filename</th>
-					<th>Display Label</th>
-					<th></th>
-					<th></th>
-				</tr>
-	<% @pending_file_test.each { |file| %>
-				<tr>
-					<td><%= file['name'] %></td>
-					<td class="pending-file-label"><%= file['label'] %></td>
-					<td></td>
-					<td></td>
-				</tr>
-	<% } %>
-				</tbody>
-				</table>
-			</fieldset>
-	<% end %>
+  <table role="presentation" class="table table-striped"><tbody class="files">
+      <tr>
+        <th>Filename</th>
+        <th>Display Label <span class="label label-info required-tag">required</span><div class="file-hint">Rename your file here</div></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </tbody></table>
+    <% if @pending_file_test.present? %>
+      <fieldset id="uploaded-files">
+        <legend>Pending Files</legend>
+        <div class="file-hint">These files have not yet been processed. Please wait a few minutes and refresh this page.</div>
+        <table role="presentation" class="table table-striped uploaded-files">
+          <tbody>
+            <tr>
+              <th>Filename</th>
+              <th>Display Label</th>
+              <th></th>
+              <th></th>
+            </tr>
+            <% @pending_file_test.each { |file| %>
+              <tr>
+                <td><%= file['name'] %></td>
+                <td class="pending-file-label"><%= file['label'] %></td>
+                <td></td>
+                <td></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </fieldset>
+    <% end %>
 
-	<% if defined?(f.object.file_sets) && f.object.file_sets.present? %>
-		<fieldset id="uploaded-files">
-			<legend>Previously Uploaded Files</legend>
-			<table role="presentation" class="table table-striped uploaded-files">
-				<tbody>
-				<tr>
-					<th>Filename</th>
-					<th>Display Label<div class="file-hint">Rename your file here</div></th>
-					<th></th>
-					<th></th>
-				</tr>
-				<% f.object.file_sets.each do |file| %>
-					<tr data-file-id="<%= file.id %>">
-						<td><span class="file-name"><%= file.solr_document.label %></span></td>
-						<td><input type="text" class="string optional form-control" name="previously_uploaded_files_label[]" value="<%= display_array(file.title) %>" /></td>
-						<td></td>
-						<td>
-							<button class="btn btn-danger delete delete-previous-file" data-type="DELETE" data-url="/concern/file_sets/<%= file.id %>.json">
-							<i class="glyphicon glyphicon-trash"></i>
-							<span></span>
-						</button>
-						</td>
-					</tr>
-				<% end %>
-				</tbody>
-			</table>
-		</fieldset>
-	<% end %>
+    <% if defined?(f.object.file_sets) && f.object.file_sets.present? %>
+      <fieldset id="uploaded-files">
+        <legend>Previously Uploaded Files</legend>
+        <table role="presentation" class="table table-striped uploaded-files">
+          <tbody>
+            <tr>
+              <th>Filename</th>
+              <th>Display Label <span class="label label-info required-tag">required</span><div class="file-hint">Rename your file here</div></th>
+              <th></th>
+              <th></th>
+            </tr>
+            <% f.object.file_sets.each do |file| %>
+              <tr data-file-id="<%= file.id %>">
+                <td><span class="file-name"><%= file.solr_document.label %></span></td>
+                <td><input type="text" class="string required form-control" name="previously_uploaded_files_label[]" value="<%= display_array(file.title) %>" /></td>
+                <td></td>
+                <td>
+                  <button class="btn btn-danger delete delete-previous-file" data-type="DELETE" data-url="/concern/file_sets/<%= file.id %>.json">
+                    <i class="glyphicon glyphicon-trash"></i>
+                    <span></span>
+                  </button>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </fieldset>
+    <% end %>
 </div>
 
 <%= render 'sufia/uploads/js_templates' %>

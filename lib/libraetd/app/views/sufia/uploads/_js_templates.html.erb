@@ -106,9 +106,11 @@
             {% } %}
         </td>
         <td>
-        <input type="text" class="string optional form-control" name="uploaded_files[][label]" value="{%=createDisplayLabel(file) %}" />
-                <input type="hidden" name="uploaded_files[][id]" value="{%=file.id%}">
-                <input type="hidden" name="uploaded_files[][name]" value="{%=file.name%}">
+        <div class="form-group required ">
+          <input type="text" class="string form-control required" name="uploaded_files[][label]" value="{%=createDisplayLabel(file) %}" />
+                  <input type="hidden" name="uploaded_files[][id]" value="{%=file.id%}">
+                  <input type="hidden" name="uploaded_files[][name]" value="{%=file.name%}">
+        </div>
         </td>
         <td>
             <span class="size">{%=o.formatFileSize(file.size)%}</span>
