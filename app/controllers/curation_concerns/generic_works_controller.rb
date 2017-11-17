@@ -4,8 +4,9 @@ module CurationConcerns
 
     include WorkHelper
 
-    after_action  :save_file_display_name, only: [ :update ]
+    after_action :save_file_display_name, only: [ :update ]
 
+    before_action :sanitize_fields, only: [ :update ]
     before_action :set_requirements, only: [ :show ]
     before_action :is_me
     before_action :add_pending_file_test
@@ -48,6 +49,15 @@ module CurationConcerns
         end
       end
 
+    end
+
+    #
+    # attempt to clean some of the fields for forbidden characters
+    #
+    def sanitize_fields
+      if params[:generic_work]
+        params[:generic_work][:description] = sanitize_field( params[:generic_work][:description] ) if params[:generic_work][:description].present?
+      end
     end
 
     def save_file_display_name

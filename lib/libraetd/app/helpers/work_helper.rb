@@ -15,4 +15,16 @@ module WorkHelper
 
   end
 
+  #
+  # remove what we decide are forbidden characters from the supplied field
+  #
+  def sanitize_field( field )
+    sanitized = field.gsub( /\\u0000/, '' )
+    # TODO: dpg ... more here
+    #
+    if field != sanitized
+       puts "==> sanitize_field: before '#{field}', after '#{sanitized}'"
+    end
+    return sanitized
+  end
 end
