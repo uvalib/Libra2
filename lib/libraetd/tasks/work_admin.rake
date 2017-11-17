@@ -95,46 +95,25 @@ end
 
 desc "Display all titles"
 task display_all_titles: :environment do |t, args|
-
-  count = 0
-  GenericWork.search_in_batches( {} ) do |group|
-    group.each do |gw_solr|
-
-      title = gw_solr[ Solrizer.solr_name( 'title' ) ]
-      title = title[ 0 ] if title.present?
-      title = '(blank)' if title.blank?
-
-      # remove CR/LF
-      title = title.gsub( "\n", "" ) if title.present?
-      puts "#{gw_solr['id']}: #{title}"
-    end
-
-    count += group.size
-  end
-
-  puts "Displayed #{count} work(s)"
+  show_all_of_specified_field( Solrizer.solr_name( 'title' ) )
 end
 
 desc "Display all abstracts"
 task display_all_abstracts: :environment do |t, args|
+  show_all_of_specified_field( Solrizer.solr_name( 'description' ) )
+end
 
-  count = 0
-  GenericWork.search_in_batches( {} ) do |group|
-    group.each do |gw_solr|
+desc "Display all fields; must provide the solrized field name"
+task display_all_fields: :environment do |t, args|
 
-      abstract = gw_solr[ Solrizer.solr_name( 'description' ) ]
-      abstract = abstract[ 0 ] if abstract.present?
-      abstract = '(blank)' if abstract.blank?
-
-      # remove CR/LF
-      abstract = abstract.gsub( "\n", "" ) if abstract.present?
-      puts "#{gw_solr['id']}: #{abstract}"
-    end
-
-    count += group.size
+  field = ARGV[ 1 ]
+  if field.blank?
+    puts "ERROR: no field name specified, aborting"
+    next
   end
+  task field.to_sym do ; end
 
-  puts "Displayed #{count} work(s)"
+  show_all_of_specified_field( field )
 end
 
 desc "Work counts by depositor"
@@ -390,6 +369,26 @@ end
 #
 # helpers
 #
+
+def show_all_of_specified_field( field_name )
+
+  count = 0
+  GenericWork.search_in_batches( {} ) do |group|
+    group.each do |gw_solr|
+
+      field = gw_solr[ field_name ]
+      field = field[ 0 ] if field.present? && field.instance_of?( Array )
+      field = '(blank)' if field.blank?
+
+      # remove CR/LF
+      puts "#{gw_solr['id']}: #{field}"
+    end
+
+    count += group.size
+  end
+
+  puts "Displayed #{count} work(s)"
+end
 
 def show_generic_work_callback( work )
   TaskHelpers.show_generic_work( work )
