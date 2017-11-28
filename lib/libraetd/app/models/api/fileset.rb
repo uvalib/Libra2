@@ -68,9 +68,12 @@ class Fileset
 
   def apply_to_fileset( fileset, by_whom )
 
-    if field_changed?(:file_name, fileset.label, @file_name )
+    works = fileset.in_works
+    work_id = works.empty? ? 'unknown' : works[0].id
+
+    if field_changed?(:file_name, fileset.title[ 0 ], @file_name )
       # update and audit the information
-      audit_change( fileset.id, 'File name', fileset.title[ 0 ], @file_name, by_whom )
+      audit_change( work_id, "File #{fileset.label} display label", fileset.title[ 0 ], @file_name, by_whom )
       fileset.title = [ @file_name ]
     end
 
@@ -137,8 +140,7 @@ class Fileset
   end
 
   def audit_change( id, what, old_value, new_value, by_whom )
-    #WorkAudit.audit( id, by_whom, "#{what} updated from: '#{old_value}' to: '#{new_value}'" )
-    puts "==> FILESET AUDIT: fileset #{id} #{what} updated from: #{old_value} to: #{new_value} by #{by_whom}"
+    WorkAudit.audit( id, by_whom, "#{what} updated from: '#{old_value}' to: '#{new_value}'" )
   end
 
 end

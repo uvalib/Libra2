@@ -72,7 +72,7 @@ class APIV1FilesetsController < APIBaseController
 
             # audit the information
             #audit_log( "File #{label} for work id #{work_id} (#{work.identifier}) added by #{User.cid_from_email( @api_user.email)}" )
-            WorkAudit.audit( work_id, User.cid_from_email( @api_user.email), "File #{label} added" )
+            WorkAudit.audit( work_id, User.cid_from_email( @api_user.email), "File #{File.basename( filename )}/#{label} added" )
 
             render_standard_response( :ok )
          else
@@ -98,7 +98,7 @@ class APIV1FilesetsController < APIBaseController
       work_id = works.empty? ? 'unknown' : works[0].id
 
       # audit the information
-      WorkAudit.audit( work_id, User.cid_from_email( @api_user.email), "File #{fileset.title[0]} deleted" )
+      WorkAudit.audit( work_id, User.cid_from_email( @api_user.email), "File #{fileset.label}/#{fileset.title[0]} deleted" )
 
       file_actor = ::CurationConcerns::Actors::FileSetActor.new( fileset, @api_user )
       file_actor.destroy
