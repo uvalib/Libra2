@@ -8,8 +8,7 @@ class APIV1OptionsController < APIBaseController
   def degrees
     status, resp = ServiceClient::DepositRegClient.instance.list_deposit_options( )
     if ServiceClient::DepositRegClient.instance.ok?( status )
-      options = extract_distinct_degrees( resp )
-      render_options_response( :ok, options )
+      render_options_response( :ok, resp['degrees'] )
     else
       render_options_response( status )
     end
@@ -21,8 +20,7 @@ class APIV1OptionsController < APIBaseController
   def departments
     status, resp = ServiceClient::DepositRegClient.instance.list_deposit_options( )
     if ServiceClient::DepositRegClient.instance.ok?( status )
-      options = extract_distinct_departments( resp )
-      render_options_response( :ok, options )
+      render_options_response( :ok, resp['departments'] )
     else
       render_options_response( status )
     end
@@ -56,35 +54,6 @@ class APIV1OptionsController < APIBaseController
 
   def render_options_response( status, options = [] )
     render json: API::OptionsListResponse.new( status, options ), :status => status
-  end
-
-  #
-  # extract a list of distinct degrees from the options response
-  #
-  def extract_distinct_degrees( options )
-    degrees = []
-    options.each do |o|
-      options.each do |o|
-        if o['degrees'].present?
-          o['degrees'].each do |d|
-            degrees << d
-          end
-        end
-      end
-    end
-
-    return degrees.uniq
-  end
-
-  #
-  # extract a list of distinct departments from the options response
-  #
-  def extract_distinct_departments( options )
-    departments = []
-    options.each do |o|
-      departments << o['department'] if o['department'].present?
-    end
-    return departments.uniq
   end
 
 end
