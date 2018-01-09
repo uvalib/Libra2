@@ -5,7 +5,7 @@ alias bdf='df -k'
 # prompt
 export HOST=$(hostname -s)
 export PWD=`pwd`
-export PS1='(libra2:$HOST) $PWD$ '
+export PS1='(libra-etd:$HOST) $PWD$ '
 
 # command editor
 set -o vi
