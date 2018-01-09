@@ -4,7 +4,7 @@ if [ -z "$DOCKER_HOST" ]; then
 fi
 
 # set the definitions
-INSTANCE=libra2
+INSTANCE=libra-etd
 NAMESPACE=uvadave
 
 # environment attributes
