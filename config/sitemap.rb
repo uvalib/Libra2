@@ -1,5 +1,5 @@
 # Set the host name for URL creation
-SitemapGenerator::Sitemap.default_host = "https://libra2.lib.virginia.edu"
+SitemapGenerator::Sitemap.default_host = "https://libraetd.lib.virginia.edu"
 
 SitemapGenerator::Sitemap.create do
   constraints = "embargo_state_tesim:open"
