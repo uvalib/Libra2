@@ -150,42 +150,207 @@ namespace :libraetd do
 
   #end
 
-  #desc "Update ORCID with an activity; must provide the work id; optionally provide author email"
-  #task update_author_activity: :environment do |t, args|
+  desc "Update ORCID with an activity; must provide the work id; optionally provide author email"
+  task update_author_activity: :environment do |t, args|
 
-  #  work_id = ARGV[ 1 ]
-  #  if work_id.nil?
-  #    puts "ERROR: no work id parameter specified, aborting"
-  #    next
-  #  end
+    work_id = ARGV[ 1 ]
+    if work_id.nil?
+      puts "ERROR: no work id parameter specified, aborting"
+      next
+    end
 
-  #  task work_id.to_sym do ; end
+    task work_id.to_sym do ; end
 
-  #  who = ARGV[ 2 ]
-  #  who = TaskHelpers.default_user_email if who.nil?
-  #  task who.to_sym do ; end
+    who = ARGV[ 2 ]
+    who = TaskHelpers.default_user_email if who.nil?
+    task who.to_sym do ; end
 
-  #  cid = User.cid_from_email( who )
+    cid = User.cid_from_email( who )
 
-  #  work = TaskHelpers.get_work_by_id( work_id )
-  #  if work.nil?
-  #    puts "ERROR: work #{work_id} does not exist, aborting"
-  #    next
-  #  end
+    work = TaskHelpers.get_work_by_id( work_id )
+    if work.nil?
+      puts "ERROR: work #{work_id} does not exist, aborting"
+      next
+    end
 
-  #  if Helpers.work_suitable_for_orcid_activity( cid, work ) == false
-  #    puts "ERROR: work #{work_id} is not suitable to report as activity for #{cid}, aborting"
-  #    next
-  #  end
+    suitable, why = work_suitable_for_orcid_activity( cid, work )
+    if suitable == false
+      puts "ERROR: work #{work_id} is unsuitable to report as activity for #{cid} (#{why}), aborting"
+      next
+    end
 
-  #  status, update_code = ServiceClient::OrcidAccessClient.instance.set_activity_by_cid( cid, work )
-  #  if ServiceClient::OrcidAccessClient.instance.ok?( status )
-  #    puts "==> OK, update code [#{update_code}]"
-  #  else
-  #    puts "ERROR: ORCID service returns #{status}, aborting"
-  #  end
+    status, update_code = ServiceClient::OrcidAccessClient.instance.set_activity_by_cid( cid, work )
+    if ServiceClient::OrcidAccessClient.instance.ok?( status )
+      if work.orcid_put_code.blank?
+        work.orcid_put_code = update_code
+        work.save!
+      end
 
-  #end
+      puts "Success; work #{work_id} reported as activity for #{cid} (update code #{update_code})"
+    else
+      puts "ERROR: ORCID service returns #{status}, aborting"
+    end
+
+  end
+
+
+  desc "Update ORCID with all author activity; optionally provide the author email"
+  task update_all_author_activity: :environment do |t, args|
+
+    who = ARGV[ 1 ]
+    who = TaskHelpers.default_user_email if who.nil?
+    task who.to_sym do ; end
+
+    cid = User.cid_from_email( who )
+
+    count = 0
+    reported = 0
+    errors = 0
+    GenericWork.search_in_batches( { depositor: who } ) do |group|
+      group.each do |lw_solr|
+        begin
+          work = GenericWork.find( lw_solr['id'] )
+          suitable, why = work_suitable_for_orcid_activity( cid, work )
+          if suitable == false
+            puts "ERROR: work #{work.id} is unsuitable to report as activity for #{cid} (#{why})"
+            next
+          end
+
+          status, update_code = ServiceClient::OrcidAccessClient.instance.set_activity_by_cid( cid, work )
+          if ServiceClient::OrcidAccessClient.instance.ok?( status )
+            if work.orcid_put_code.blank?
+              work.orcid_put_code = update_code
+              work.save!
+            end
+
+            reported += 1
+            puts "Success; work #{work.id} reported as activity for #{cid} (update code #{update_code})"
+          else
+            errors += 1
+            puts "ERROR: ORCID service returns #{status} for work #{work.id} reported as activity for #{cid}"
+          end
+
+        rescue => e
+          errors += 1
+          puts e
+        end
+      end
+      count += group.size
+    end
+
+    puts "Processed #{count} work(s), #{reported} reported, #{errors} errors"
+
+  end
+
+  desc "Update ORCID with all activity"
+  task update_all_activity: :environment do |t, args|
+
+    count = 0
+    reported = 0
+    errors = 0
+    GenericWork.search_in_batches( { } ) do |group|
+      group.each do |lw_solr|
+        begin
+          work = GenericWork.find( lw_solr['id'] )
+
+          depositor_cid = User.cid_from_email( work.depositor )
+
+          suitable, why = work_suitable_for_orcid_activity( depositor_cid, work )
+          if suitable == false
+            puts "ERROR: work #{work.id} is unsuitable to report as activity for #{depositor_cid} (#{why})"
+            next
+          end
+
+          status, update_code = ServiceClient::OrcidAccessClient.instance.set_activity_by_cid( depositor_cid, work )
+          if ServiceClient::OrcidAccessClient.instance.ok?( status )
+            if work.orcid_put_code.blank?
+              work.update orcid_put_code: update_code, orcid_status: GenericWork.complete_orcid_status
+            end
+
+            reported += 1
+            puts "Success; work #{work.id} reported as activity for #{depositor_cid} (update code #{update_code})"
+          else
+            errors += 1
+            puts "ERROR: ORCID service returns #{status} for work #{work.id} reported as activity for #{depositor_cid}"
+          end
+
+        rescue => e
+          errors += 1
+          puts e
+        end
+      end
+      count += group.size
+    end
+
+    puts "Processed #{count} work(s), #{reported} reported, #{errors} errors"
+
+  end
+
+
+
+  desc "Report ORCID status; optionally provide the depositor email"
+  task report_status: :environment do |t, args|
+
+    who = ARGV[ 1 ]
+    if who
+      task who.to_sym do ; end
+    end
+
+    count = 0
+    reported = 0
+    pending = 0
+    errors = 0
+    GenericWork.search_in_batches( { } ) do |group|
+      group.each do |lw_solr|
+        begin
+
+          depositor = lw_solr[ Solrizer.solr_name( 'depositor' ) ]
+          depositor = depositor[ 0 ] if depositor.present?
+          next if who && who != depositor
+
+          count += 1
+
+          status = lw_solr[ Solrizer.solr_name( 'orcid_status' ) ]
+          status = status[ 0 ] if status.present?
+          if status == 'complete'
+            puts "Work #{lw_solr['id']}: already reported (depositor #{User.cid_from_email( depositor )})"
+            reported += 1
+            next
+          end
+
+          work = GenericWork.find( lw_solr['id'] )
+          depositor_cid = User.cid_from_email( work.depositor )
+
+          suitable, why = work_suitable_for_orcid_activity( depositor_cid, work )
+          if suitable == false
+            puts "Work #{work.id}: unsuitable to report as activity for #{depositor_cid} (#{why})"
+            next
+          end
+
+          user = User.find_by_email( work.depositor )
+          if user.present?
+            if user.orcid.present? && user.orcid_access_token.present?
+              pending += 1
+              puts "Work #{work.id}: will be reported for #{depositor_cid}"
+            else
+              puts "Work #{work.id}: missing depositor ORCID/OAUTH for #{depositor_cid}"
+            end
+
+          else
+            errors += 1
+            puts "Work #{work.id}: missing depositor record for #{depositor_cid}"
+          end
+
+        rescue => ex
+          errors += 1
+          puts ex
+        end
+      end
+    end
+
+    puts "Processed #{count} work(s), #{pending} pending, #{reported} already reported, #{errors} errors"
+
+  end
 
   end   # namespace orcid
 
