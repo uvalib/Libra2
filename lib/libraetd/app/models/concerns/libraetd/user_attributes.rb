@@ -14,6 +14,10 @@ module Libra2::UserAttributes
     return department.match( /-?eng$/ )
   end
 
+  def computing_id
+    User.cid_from_email(self.email)
+  end
+
   included do
 
      # extract the computing ID from the supplied email address; assumes computing_id@blablabla.bla

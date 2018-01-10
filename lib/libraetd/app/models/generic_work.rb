@@ -1,4 +1,5 @@
 require_dependency 'concerns/libraetd/basic_metadata'
+require_dependency 'concerns/libraetd/orcid_behavior'
 require_dependency 'libraetd/app/indexers/libra2_indexer'
 
 require_dependency 'libraetd/app/helpers/ordered_string_helper'
@@ -9,6 +10,7 @@ class GenericWork < ActiveFedora::Base
 
   include ::CurationConcerns::WorkBehavior
   include Libra2::BasicMetadata
+  include Libra2::OrcidBehavior
   include Sufia::WorkBehavior
 
   self.human_readable_type = 'Generic Work'
@@ -163,6 +165,15 @@ class GenericWork < ActiveFedora::Base
     #property :date_created, predicate: ::RDF::Vocab::DC.created do |index|
     index.as :stored_searchable
   end
+
+  property :orcid_status, predicate: ::RDF::URI('http://example.org/terms/orcid_status'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :orcid_put_code, predicate: ::RDF::URI('http://example.org/terms/orcid_put_code'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
 
   # specify the indexer used to create the SOLR document
   def self.indexer

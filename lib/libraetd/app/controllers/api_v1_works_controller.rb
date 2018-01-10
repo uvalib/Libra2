@@ -119,8 +119,10 @@ class APIV1WorksController < APIBaseController
         work.save!
 
         # if this work published, send the metadata to the DOI service
+        # Also update ORCID
         if work.is_draft? == false && work_update.resubmit_metadata? == true
           update_doi_metadata( work )
+          OrcidSyncJob.perform_later(work.id, User.cid_from_email(work.author_email))
         end
 
         render_standard_response( :ok )

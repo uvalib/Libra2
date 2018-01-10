@@ -147,6 +147,17 @@ class SolrDocument
     self[Solrizer.solr_name('date_published')]
   end
 
+  def orcid_status
+    orcid_status = self[Solrizer.solr_name('orcid_status')]
+    orcid_status.first if orcid_status
+  end
+
+  def orcid_put_code
+    self[Solrizer.solr_name('orcid_put_code')]
+  end
+
+
+
   def is_thesis?
     return false if work_type.nil?
     return work_type[ 0 ] == GenericWork::WORK_TYPE_THESIS

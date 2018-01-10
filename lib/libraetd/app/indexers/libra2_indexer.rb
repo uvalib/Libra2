@@ -112,6 +112,14 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           'rights_url',
                           rights_urls(object),
                           :displayable )
+      Solrizer.set_field( solr_doc,
+                          'orcid_status',
+                          object.orcid_status,
+                          :searchable )
+      Solrizer.set_field( solr_doc,
+                          'orcid_put_code',
+                          object.orcid_put_code,
+                          :searchable )
 
     end
   end

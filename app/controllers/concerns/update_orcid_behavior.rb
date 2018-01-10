@@ -20,6 +20,7 @@ module UpdateOrcidBehavior
   def update_orcid
     if current_user.orcid.present?
       update_orcid_attributes(User.cid_from_email(current_user.email ), current_user )
+      OrcidSyncAllJob.perform_later(current_user.id)
     end
   end
 
@@ -28,6 +29,14 @@ module UpdateOrcidBehavior
   #
   def remove_orcid
     remove_orcid_attributes( User.cid_from_email( current_user.email ) )
+    # remove pending statuses
+    GenericWork.where(
+      orcid_status: GenericWork.pending_orcid_status,
+      depositor: current_user.email
+    ).each do |work|
+      work.update(orcid_status: nil)
+    end
+
   end
 
   #
@@ -40,11 +49,11 @@ module UpdateOrcidBehavior
 
     puts "==> updating ORCID attributes for #{cid} (#{orcid})"
     status = ServiceClient::OrcidAccessClient.instance.set_attribs_by_cid(
-        cid,
-        orcid,
-        user.orcid_access_token,
-        user.orcid_refresh_token,
-        user.orcid_scope )
+      cid,
+      orcid,
+      user.orcid_access_token,
+      user.orcid_refresh_token,
+      user.orcid_scope )
 
     if ServiceClient::OrcidAccessClient.instance.ok?( status ) == false
       puts "ERROR: ORCID service returns #{status}"
@@ -59,11 +68,11 @@ module UpdateOrcidBehavior
 
     puts "==> clearing ORCID attributes for #{cid}"
     status = ServiceClient::OrcidAccessClient.instance.set_attribs_by_cid(
-        cid,
-        '',
-        '',
-        '',
-        '' )
+      cid,
+      '',
+      '',
+      '',
+      '' )
 
     if ServiceClient::OrcidAccessClient.instance.ok?( status ) == false
       puts "ERROR: ORCID service returns #{status}"

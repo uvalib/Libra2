@@ -17,6 +17,10 @@ module ServiceClient
        return( status == 200 || status == 201 )
      end
 
+     def retry?( status )
+       status == 408
+     end
+
      #
      # configuration helper
      #
@@ -223,5 +227,50 @@ module ServiceClient
 
      end
    end
+
+   #
+   # attempt to extract YYYY-MM-DD from a date string
+   #
+   def self.extract_yyyymmdd_from_datestring( date )
+
+     return nil if date.blank?
+
+     #puts "==> DATE IN [#{date}]"
+     begin
+
+       # try yyyy-mm-dd (at the start of the string)
+       dts = date.match( /^(\d{4}-\d{1,2}-\d{1,2})/ )
+       return dts[ 0 ] if dts
+
+       # try yyyy/mm/dd (at the start of the string)
+       dts = date.match( /^(\d{4}\/\d{1,2}\/\d{1,2})/ )
+       return dts[ 0 ].gsub( '/', '-' ) if dts
+
+       # try yyyy-mm (at the start of the string)
+       dts = date.match( /^(\d{4}-\d{1,2})/ )
+       return dts[ 0 ] if dts
+
+       # try yyyy/mm (at the start of the string)
+       dts = date.match( /^(\d{4}\/\d{1,2})/ )
+       return dts[ 0 ].gsub( '/', '-' ) if dts
+
+       # try mm/dd/yyyy (at the start of the string)
+       dts = date.match( /^(\d{1,2}\/\d{1,2}\/\d{4})/ )
+       return DateTime.strptime( dts[ 0 ], "%m/%d/%Y" ).strftime( "%Y-%m-%d" ) if dts
+
+       # try yyyy (anywhere in the string)
+       dts = date.match( /(\d{4})/ )
+       return dts[ 0 ] if dts
+
+     rescue => ex
+       #puts "==> EXCEPTION: #{ex}"
+       # do nothing...
+     end
+
+     # not sure what format
+     return nil
+   end
+
+
 
 end

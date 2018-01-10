@@ -77,13 +77,13 @@ module ServiceClient
      #
      # update user activity (work)
      #
-     #def set_activity_by_cid( id, work )
-     #  url = "#{self.url}/cid/#{id}/activity?auth=#{self.authtoken}"
-     #  payload =  self.construct_activity_payload( work )
-     #  status, response = rest_put( url, payload )
-     #  return status, response['update_code'] if ok?( status ) && response['update_code']
-     #  return status, ''
-     #end
+     def set_activity_by_cid( id, work )
+       url = "#{self.url}/cid/#{id}/activity?auth=#{self.authtoken}"
+       payload =  self.construct_activity_payload( work )
+       status, response = rest_put( url, payload )
+       return status, response['update_code'] if ok?( status ) && response['update_code']
+       return status, ''
+     end
 
      #
      # search ORCID database
@@ -117,25 +117,26 @@ module ServiceClient
      #
      # construct the activity request payload
      #
-     #def construct_activity_payload( work )
-     #  h = {}
+     def construct_activity_payload( work )
+       h = {}
 
-       #h['update_code'] = work.update_code if work.update_code.present?
+       h['update_code'] = work.orcid_put_code if work.orcid_put_code.present?
 
-     #  metadata = 'work'
-     #  h[metadata] = {}
-     #  h[metadata]['title'] = work.title.join( ' ' ) if work.title.present?
-     #  h[metadata]['abstract'] = work.abstract if work.abstract.present?
-     #  yyyymmdd = ServiceClient.extract_yyyymmdd_from_datestring( work.published_date )
-     #  yyyymmdd = ServiceClient.extract_yyyymmdd_from_datestring( work.date_created ) if yyyymmdd.nil?
-     #  h[metadata]['publication_date'] = yyyymmdd if yyyymmdd.present?
-     #  h[metadata]['url'] = work.doi_url if work.doi_url.present?
-     #  h[metadata]['authors'] = author_cleanup( work.authors ) if work.authors.present?
-     #  h[metadata]['resource_type'] = map_to_orcid_type( work.resource_type ) if work.resource_type.present?
+       metadata = 'work'
+       h[metadata] = {}
+       h[metadata]['title'] = work.title.join( ' ' ) if work.title.present?
+       h[metadata]['description'] = work.description if work.description.present?
+       yyyymmdd = ServiceClient.extract_yyyymmdd_from_datestring( work.date_published )
+       yyyymmdd = ServiceClient.extract_yyyymmdd_from_datestring( work.date_created ) if yyyymmdd.nil?
+       h[metadata]['publication_date'] = yyyymmdd if yyyymmdd.present?
+       doi_url = GenericWork.doi_url work.identifier
+       h[metadata]['url'] = doi_url if doi_url.present?
+       h[metadata]['authors'] = author_cleanup( work )
+       h[metadata]['resource_type'] = 'dissertation'
 
        #puts "==> #{h.to_json}"
-     #  return h.to_json
-     #end
+       return h.to_json
+     end
 
      def authtoken
        configuration[ :authtoken ]
@@ -148,22 +149,18 @@ module ServiceClient
      private
 
      #
-     # cleanup author list
-     # this includes ensuring the index value is the correct type and removing any duplicates
+     # cleanup author
+     # formats the author info
+     # author index is set as the doc id for now
      #
-     #def author_cleanup( authors )
+     def author_cleanup( doc )
+       [{
+         index: 0,
+         first_name: doc.author_first_name,
+         last_name: doc.author_last_name
+       }]
 
-     #  res = []
-     #  authors.each do | p |
-     #    ix = p.index
-     #    ix = ix.to_i if ix.instance_of? String
-     #    res << Author.new(
-     #        index: ix,
-     #        first_name: p.first_name,
-     #        last_name: p.last_name )
-     #  end
-     #  return res.uniq { |p| p.index }
-     #end
+     end
 
      #
      # map the sufia resource type to the ORCID resource type

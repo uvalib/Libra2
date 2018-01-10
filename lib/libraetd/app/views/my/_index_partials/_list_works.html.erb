@@ -21,6 +21,7 @@
   </td>
 
   <td class='text-center'><%= file_date_created(document.date_created) %></td>
+  <td class='text-center'><%= displayable_orcid_status( document.orcid_status ) %></td>
   <td class='text-center'><%= render_visibility_with_draft(document) %></td>
 
   <td class='text-center'>
