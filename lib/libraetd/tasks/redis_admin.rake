@@ -16,7 +16,7 @@ namespace :libraetd do
      keys = kh.keys( "libra2:*:deposit:*" )
      if keys.nil? == false
        keys.each do |k|
-         puts " #{k} => value #{kh.value( k )}"
+         puts " #{k} => value #{kh.get_value( k )}"
          count += 1
        end
      end
@@ -116,6 +116,32 @@ namespace :libraetd do
     end
 
     puts "#{count} key(s) deleted"
+
+  end
+
+  desc "Clone a key (handle with care); provide the source key and the clone name"
+  task clone_one: :environment do |t, args|
+
+    source_key = ARGV[ 1 ]
+    if source_key.nil?
+      puts "ERROR: no source key provided"
+      next
+    end
+
+    task source_key.to_sym do ; end
+
+    cloned_key = ARGV[ 2 ]
+    if cloned_key.nil?
+      puts "ERROR: no clone key provided"
+      next
+    end
+
+    task cloned_key.to_sym do ; end
+
+    kh = Helpers::KeyHelper.new
+    val = kh.get_value( source_key )
+    kh.set_value( cloned_key, val )
+    puts "#{source_key} cloned to #{cloned_key}; value #{val}"
 
   end
 

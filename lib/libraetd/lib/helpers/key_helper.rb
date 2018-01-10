@@ -17,7 +17,13 @@ module Helpers
        return keys
     end
 
-    def value( key )
+    def set_value( key, value )
+      return if redis_connect( ) == false
+      redis_set_value( key, value )
+      redis_close( )
+    end
+
+    def get_value( key )
       return nil if redis_connect( ) == false
       val = redis_get_value( key )
       return nil if redis_close( ) == false
