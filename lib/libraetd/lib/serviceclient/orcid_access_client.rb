@@ -132,7 +132,7 @@ module ServiceClient
        doi_url = GenericWork.doi_url work.identifier
        h[metadata]['url'] = doi_url if doi_url.present?
        h[metadata]['authors'] = author_cleanup( work )
-       h[metadata]['resource_type'] = 'dissertation'
+       h[metadata]['resource_type'] = 'supervised-student-publication'
 
        #puts "==> #{h.to_json}"
        return h.to_json
