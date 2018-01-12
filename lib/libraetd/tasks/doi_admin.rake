@@ -47,10 +47,10 @@ namespace :libraetd do
   end
 
   #
-  # get the EZID service metadata for the specified work
+  # get the ID service metadata for the specified work
   #
-  desc "Get EZID metadata for the specified work; must provide the work id"
-  task get_ezid_metadata_by_work: :environment do |t, args|
+  desc "Get ID service metadata for the specified work; must provide the work id"
+  task get_id_service_metadata_by_work: :environment do |t, args|
 
     work_id = ARGV[ 1 ]
     if work_id.nil?
@@ -70,16 +70,16 @@ namespace :libraetd do
     if ServiceClient::EntityIdClient.instance.ok?( status )
       puts r
     else
-      puts "ERROR: EZID service returns #{status}, aborting"
+      puts "ERROR: ID service returns #{status}, aborting"
     end
 
   end
 
   #
-  # get the EZID service metadata for the specified DOI
+  # get the ID service metadata for the specified DOI
   #
-  desc "Get EZID metadata for the specified DOI; must provide the DOI"
-  task get_ezid_metadata_by_doi: :environment do |t, args|
+  desc "Get ID service metadata for the specified DOI; must provide the DOI"
+  task get_id_service_metadata_by_doi: :environment do |t, args|
 
     doi = ARGV[ 1 ]
     if doi.nil?
@@ -93,7 +93,7 @@ namespace :libraetd do
     if ServiceClient::EntityIdClient.instance.ok?( status )
       puts r
     else
-      puts "ERROR: EZID service returns #{status}, aborting"
+      puts "ERROR: ID service returns #{status}, aborting"
     end
 
   end
@@ -193,9 +193,9 @@ namespace :libraetd do
   end
 
   #
-  # resubmit the EZID metadata for the specified work
+  # resubmit the ID service metadata for the specified work
   #
-  desc "Update DOI metadata for the specified work; must provide the work id"
+  desc "Update ID service metadata for the specified work; must provide the work id"
   task update_doi_metadata_by_work: :environment do |t, args|
 
     work_id = ARGV[ 1 ]
@@ -219,9 +219,9 @@ namespace :libraetd do
   end
 
   #
-  # resubmit the EZID metadata for all published works from the specified depositor
+  # resubmit the ID service metadata for all published works from the specified depositor
   #
-  desc "Update DOI metadata for all my submitted works; optionally provide depositor email"
+  desc "Update ID service metadata for all my submitted works; optionally provide depositor email"
   task update_doi_metadata_my_works: :environment do |t, args|
 
     who = ARGV[ 1 ]
@@ -238,9 +238,9 @@ namespace :libraetd do
   end
 
   #
-  # resubmit the EZID metadata for all published works
+  # resubmit the ID service metadata for all published works
   #
-  desc "Update DOI metadata for all submitted works"
+  desc "Update ID service metadata for all submitted works"
   task update_doi_metadata_all_works: :environment do |t, args|
 
     count = 0
@@ -268,7 +268,7 @@ namespace :libraetd do
 
     status = ServiceClient::EntityIdClient.instance.remove( doi )
     if ServiceClient::EntityIdClient.instance.ok?( status ) == false
-      puts "ERROR: EZID service returns #{status}, aborting"
+      puts "ERROR: ID service returns #{status}, aborting"
     else
       puts "DOI successfully deleted"
     end
@@ -291,7 +291,7 @@ namespace :libraetd do
 
     status = ServiceClient::EntityIdClient.instance.revoke( doi )
     if ServiceClient::EntityIdClient.instance.ok?( status ) == false
-      puts "ERROR: EZID service returns #{status}, aborting"
+      puts "ERROR: ID service returns #{status}, aborting"
     else
       puts "DOI successfully revoked"
     end

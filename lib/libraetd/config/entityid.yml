@@ -1,5 +1,5 @@
 default: &default
-  shoulder: <%= ENV['EZID_SHOULDER'] %>
+  shoulder: <%= ENV['ID_SERVICE_SHOULDER'] %>
   authtoken: <%= ENV['API_TOKEN'] %>
   url: <%= ENV['ENTITYID_URL'] %>
   timeout: <%= ENV['WEBSERVICE_TIMEOUT'] || 10 %>
