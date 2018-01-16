@@ -5,28 +5,25 @@ namespace :libraetd do
     task unescape_html: :environment do
       successes = 0
       errors = 0
-      fields = [:title, :description]
 
       GenericWork.search_in_batches( {} ) do |group|
         group.each do |w|
           begin
             print "."
             work = GenericWork.find( w['id'] )
-            fields.each do |field|
-              attrib = work[field].first
-              cleaned = CGI.unescapeHTML attrib
-              # try array, then singular field
-              puts field, cleaned
-              begin
-                work[field] = [cleaned]
-              rescue
-                work[field] = cleaned
-              end
+              title = work['title'].first
+              cleaned = CGI.unescapeHTML title
+              work.title = [cleaned]
+              puts "title:", title, cleaned
 
-            end
-            work.save!
+              abstract = work['description']
+              cleaned = CGI.unescapeHTML abstract
+              work.description = cleaned
+              puts "abstract:", abstract, cleaned
 
-            successes += 1
+              work.save!
+
+              successes += 1
           rescue => ex
             puts "EXCEPTION: #{ex}"
             errors += 1
