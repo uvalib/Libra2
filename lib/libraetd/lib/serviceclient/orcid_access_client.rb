@@ -125,14 +125,19 @@ module ServiceClient
        metadata = 'work'
        h[metadata] = {}
        h[metadata]['title'] = work.title.join( ' ' ) if work.title.present?
-       h[metadata]['description'] = work.description if work.description.present?
+       h[metadata]['abstract'] = work.description if work.description.present?
        yyyymmdd = ServiceClient.extract_yyyymmdd_from_datestring( work.date_published )
        yyyymmdd = ServiceClient.extract_yyyymmdd_from_datestring( work.date_created ) if yyyymmdd.nil?
        h[metadata]['publication_date'] = yyyymmdd if yyyymmdd.present?
        doi_url = GenericWork.doi_url work.identifier
        h[metadata]['url'] = doi_url if doi_url.present?
        h[metadata]['authors'] = author_cleanup( work )
-       h[metadata]['resource_type'] = 'supervised-student-publication'
+
+       type = 'supervised-student-publication'
+       if is_phd?(work.degree)
+         type = 'dissertation'
+       end
+       h[metadata]['resource_type'] = type
 
        #puts "==> #{h.to_json}"
        return h.to_json
@@ -160,6 +165,10 @@ module ServiceClient
          last_name: doc.author_last_name
        }]
 
+     end
+
+     def is_phd?(degree)
+       degree ? degree.include?('PHD') : false
      end
 
      #
