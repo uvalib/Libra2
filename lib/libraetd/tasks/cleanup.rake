@@ -9,21 +9,25 @@ namespace :libraetd do
       GenericWork.search_in_batches( {} ) do |group|
         group.each do |w|
           begin
-            print "."
+            puts w['id']
             work = GenericWork.find( w['id'] )
-              title = work['title'].first
-              cleaned = CGI.unescapeHTML title
-              work.title = [cleaned]
-              puts "title:", title, cleaned
+            title = work['title'].first
+            cleaned_title = CGI.unescapeHTML title
+            work.title = [cleaned_title]
+            puts "title:", title, cleaned_title
 
-              abstract = work['description']
-              cleaned = CGI.unescapeHTML abstract
-              work.description = cleaned
-              puts "abstract:", abstract, cleaned
 
+            abstract = work['description']
+            cleaned_abstract = CGI.unescapeHTML abstract
+            work.description = cleaned_abstract
+            puts "abstract:", abstract, cleaned_abstract
+
+            if (title != cleaned_title) || (abstract != cleaned_abstract)
               work.save!
+              puts 'saved'
+            end
 
-              successes += 1
+            successes += 1
           rescue => ex
             puts "EXCEPTION: #{ex}"
             errors += 1
