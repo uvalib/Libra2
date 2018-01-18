@@ -9,22 +9,42 @@ namespace :libraetd do
       GenericWork.search_in_batches( {} ) do |group|
         group.each do |w|
           begin
-            puts w['id']
-            work = GenericWork.find( w['id'] )
-            title = work['title'].first
-            cleaned_title = CGI.unescapeHTML title
-            work.title = [cleaned_title]
-            puts "title:", title, cleaned_title
+            print "."
 
+            title = ''
+            cleaned_title = ''
+            abstract = ''
+            cleaned_abstract = ''
+            update = false
 
-            abstract = work['description']
-            cleaned_abstract = CGI.unescapeHTML abstract
-            work.description = cleaned_abstract
-            puts "abstract:", abstract, cleaned_abstract
+            if w['title_tesim'].present?
+              title = w['title_tesim'][ 0 ]
+              cleaned_title = CGI.unescapeHTML title
+              if title != cleaned_title
+                puts "\nID: #{w['id']}"
+                puts "old title: #{title}"
+                puts "new title: #{cleaned_title}"
+                 update = true
+              end
+            end
 
-            if (title != cleaned_title) || (abstract != cleaned_abstract)
+            if w['description_tesim'].present?
+              abstract = w['description_tesim'][ 0 ]
+              cleaned_abstract = CGI.unescapeHTML abstract
+              if abstract != cleaned_abstract
+                puts "\nID: #{w['id']}"
+                puts "old abstract: #{abstract}"
+                puts "new abstract: #{cleaned_abstract}"
+                 update = true
+              end
+            end
+
+            if update == true
+
+              work = GenericWork.find( w['id'] )
+              work.title = [cleaned_title] if cleaned_title.present?
+              work.description = cleaned_abstract if cleaned_abstract.present?
               work.save!
-              puts 'saved'
             end
 
             successes += 1
