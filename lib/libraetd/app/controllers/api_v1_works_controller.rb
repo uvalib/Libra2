@@ -122,7 +122,8 @@ class APIV1WorksController < APIBaseController
         # Also update ORCID
         if work.is_draft? == false && work_update.resubmit_metadata? == true
           update_doi_metadata( work )
-          OrcidSyncJob.perform_later(work.id, User.cid_from_email(work.author_email))
+          author = User.find_by(email: work.author_email)
+          OrcidSyncJob.perform_later(work.id, author.id) if author.present?
         end
 
         render_standard_response( :ok )
