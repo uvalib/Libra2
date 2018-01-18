@@ -16,7 +16,7 @@ class OrcidSyncJob < BaseOrcidJob
     user = nil
     begin
        user = User.find(user_id)
-    rescue RecordNotFound => ex
+    rescue ActiveRecord::RecordNotFound => ex
        puts "==> ERROR: cannot find user #{user_id} (#{ex})"
        return
     end
