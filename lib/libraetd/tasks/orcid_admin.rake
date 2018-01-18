@@ -50,14 +50,20 @@ namespace :libraetd do
 
     count = 0
     User.order( :email ).each do |user|
-      if user.orcid.blank?
 
-        cid = User.cid_from_email( user.email )
-        status, attribs = ServiceClient::OrcidAccessClient.instance.get_attribs_by_cid(cid )
-        if ServiceClient::OrcidAccessClient.instance.ok?( status )
-          orcid = orcid_from_orcid_url( attribs['uri'] )
-          puts "#{cid} <- #{orcid}"
-          user.orcid = orcid
+      cid = User.cid_from_email( user.email )
+      status, attribs = ServiceClient::OrcidAccessClient.instance.get_attribs_by_cid(cid )
+      if ServiceClient::OrcidAccessClient.instance.ok?( status )
+        # puts attribs.to_json
+        orcid = attribs['orcid']
+        puts "#{cid} <- #{orcid}"
+        user.orcid = orcid
+        user.orcid_access_token = attribs['oauth_access_token']
+        user.orcid_refresh_token = attribs['oauth_refresh_token']
+        user.orcid_scope = attribs['scope']
+        puts user.changes
+        if user.changed?
+          user.orcid_linked_at = DateTime.parse(attribs['created_at'])
           user.save!
           count += 1
         end
