@@ -6,7 +6,7 @@ development:
 test:
   user: <%= ENV['FEDORA_USER'] || "fedoraAdmin" %>
   password: <%= ENV['FEDORA_PASSWD'] || "fedoraAdmin" %>
-  url: <%= ENV['FEDORA_TEST_URL'] || "http://127.0.0.1:#{ENV['FCREPO_TEST_PORT'] || 8986}/rest" %>
+  url: <%= ENV['FEDORA_URL'] || "http://127.0.0.1:#{ENV['FCREPO_TEST_PORT'] || 8986}/rest" %>
   base_path: /libra2/test
 production:
   user: <%= ENV['FEDORA_USER']  || "fedoraAdmin" %>
