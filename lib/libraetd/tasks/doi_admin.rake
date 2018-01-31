@@ -20,7 +20,7 @@ namespace :libraetd do
 
      count = 0
      GenericWork.search_in_batches( {} ) do |group|
-       TaskHelpers.batched_process_solr_works( group, &method( :show_work_doi ) )
+       TaskHelpers.batched_process_solr_works( group, &method( :show_work_doi_callback ) )
        count += group.size
      end
 
@@ -39,7 +39,7 @@ namespace :libraetd do
 
     count = 0
     GenericWork.search_in_batches( {depositor: who} ) do |group|
-      TaskHelpers.batched_process_solr_works( group, &method( :show_work_doi ) )
+      TaskHelpers.batched_process_solr_works( group, &method( :show_work_doi_callback ) )
       count += group.size
     end
 
@@ -118,7 +118,7 @@ namespace :libraetd do
       next
     end
 
-    if update_work_doi( work )
+    if update_work_doi_callback(work )
       puts "New DOI assigned to work #{work.id} (#{work.identifier})"
     end
 
@@ -136,7 +136,7 @@ namespace :libraetd do
 
     count = 0
     GenericWork.search_in_batches( {} ) do |group|
-      TaskHelpers.batched_process_solr_works( group, &method( :update_work_doi ) )
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_doi_callback ) )
       count += group.size
     end
 
@@ -155,7 +155,7 @@ namespace :libraetd do
 
     count = 0
     GenericWork.search_in_batches( {depositor: who} ) do |group|
-      TaskHelpers.batched_process_solr_works( group, &method( :update_work_unassigned_doi ) )
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_unassigned_doi_callback ) )
       count += group.size
     end
 
@@ -170,7 +170,7 @@ namespace :libraetd do
 
     count = 0
     GenericWork.search_in_batches( {} ) do |group|
-      TaskHelpers.batched_process_solr_works( group, &method( :update_work_doi ) )
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_doi_callback ) )
       count += group.size
     end
 
@@ -185,7 +185,7 @@ namespace :libraetd do
 
     count = 0
     GenericWork.search_in_batches( {} ) do |group|
-      TaskHelpers.batched_process_solr_works( group, &method( :update_work_unassigned_doi ) )
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_unassigned_doi_callback ) )
       count += group.size
     end
 
@@ -212,7 +212,7 @@ namespace :libraetd do
       next
     end
 
-    if update_work_metadata( work )
+    if update_work_metadata_callback(work )
       puts "Updated DOI metadata for work #{work.id} (#{work.identifier})"
     end
 
@@ -230,7 +230,7 @@ namespace :libraetd do
 
     count = 0
     GenericWork.search_in_batches( {depositor: who} ) do |group|
-      TaskHelpers.batched_process_solr_works( group, &method( :update_work_metadata ) )
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_metadata_callback ) )
       count += group.size
     end
 
@@ -245,7 +245,7 @@ namespace :libraetd do
 
     count = 0
     GenericWork.search_in_batches( {} ) do |group|
-      TaskHelpers.batched_process_solr_works( group, &method( :update_work_metadata ) )
+      TaskHelpers.batched_process_solr_works( group, &method( :update_work_metadata_callback ) )
       count += group.size
     end
 
@@ -302,19 +302,20 @@ namespace :libraetd do
   # helper methods
   #
 
-  def show_work_doi( work )
+  def show_work_doi_callback(work )
     puts "#{work.id} => #{work.identifier || 'None'} (#{work.is_draft? ? 'draft' : 'published'})"
   end
 
   # update the DOI for the supplied work
-  def update_work_unassigned_doi( work )
+  def update_work_unassigned_doi_callback(work )
+    print "."
     if work.identifier.blank? == true
-      update_work_doi( work )
+      update_work_doi_callback(work )
     end
   end
 
   # update the DOI for the supplied work
-  def update_work_doi( work )
+  def update_work_doi_callback(work )
 
       if work.identifier.blank? == false
         if work.is_draft? == true
@@ -357,8 +358,9 @@ namespace :libraetd do
   end
 
   # update the metadata for the supplied work
-  def update_work_metadata( work )
+  def update_work_metadata_callback(work )
 
+    print "."
     if work.is_draft?
       puts "Work #{work.identifier} is draft... ignoring"
       return false

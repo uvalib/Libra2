@@ -151,7 +151,7 @@ namespace :libraetd do
       if work.identifier.blank?
          puts "Finalizing #{ix + 1} of #{ingests.length} (#{work_id})..."
 
-         if update_work_unassigned_doi( work ) == true
+         if update_work_unassigned_doi_callback(work ) == true
             count += 1
          else
            errors += 1
@@ -205,7 +205,7 @@ namespace :libraetd do
       if work.identifier.blank?
         puts "Finalizing #{ix + 1} of #{ingests.length} (#{work_id})..."
 
-        if update_work_unassigned_doi( work ) == true
+        if update_work_unassigned_doi_callback(work ) == true
           count += 1
         else
           errors += 1
