@@ -274,7 +274,7 @@ class GenericWork < ActiveFedora::Base
 
   def self.doi_url( doi )
     return '' if doi.nil?
-    return "https://doi.org/#{doi.gsub('doi:', '')}"
+    return "#{ENV['DOI_BASE_URL']}/#{doi.gsub('doi:', '')}"
   end
 
   def self.sis_thesis?( source )

@@ -250,27 +250,7 @@ module IngestHelpers
       w.admin_notes = payload[ :admin_notes ] if payload[ :admin_notes ]
       w.work_source = payload[ :source ] if payload[ :source ]
 
-      # mint and assign the DOI
-      #if ENV[ 'NO_DOI' ].blank?
-      #   status, id = ServiceClient::EntityIdClient.instance.newid( w )
-      #   if ServiceClient::EntityIdClient.instance.ok?( status )
-      #      w.identifier = id
-      #      w.permanent_url = GenericWork.doi_url( id )
-      #   else
-      #      puts "ERROR: cannot mint DOI (#{status})"
-      #      ok = false
-      #   end
-      #end
     end
-
-    # update the DOI metadata if necessary
-    #if ENV[ 'NO_DOI' ].blank?
-    #  if ok && work.is_draft? == false
-    #    ok = update_doi_metadata( work )
-    #  end
-    #else
-    #  puts "INFO: no DOI assigned..."
-    #end
 
     return ok, work
   end
