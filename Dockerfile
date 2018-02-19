@@ -4,10 +4,10 @@ FROM centos:7
 RUN yum -y update && yum -y install which tar wget make gcc-c++ zlib-devel libyaml-devel autoconf patch readline-devel libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel
 
 # install ruby
-RUN cd /tmp && wget https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.1.tar.gz
-RUN cd /tmp && tar xzvf ruby-2.4.1.tar.gz
-RUN cd /tmp/ruby-2.4.1 && ./configure && make && make install
-RUN rm -fr /tmp/ruby-2.4.1
+RUN cd /tmp && wget https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.3.tar.gz
+RUN cd /tmp && tar xzvf ruby-2.4.3.tar.gz
+RUN cd /tmp/ruby-2.4.3 && ./configure && make && make install
+RUN rm -fr /tmp/ruby-2.4.3
 
 # install application dependancies
 RUN yum -y install file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel
