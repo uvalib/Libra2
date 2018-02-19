@@ -7,7 +7,7 @@ RUN yum -y update && yum -y install which tar wget make gcc-c++ zlib-devel libya
 RUN cd /tmp && wget https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.3.tar.gz
 RUN cd /tmp && tar xzvf ruby-2.4.3.tar.gz
 RUN cd /tmp/ruby-2.4.3 && ./configure && make && make install
-RUN rm -fr /tmp/ruby-2.4.3
+RUN rm -fr /tmp/ruby-2.4.3 && rm /tmp/ruby-2.4.3.tar.gz
 
 # install application dependancies
 RUN yum -y install file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel
