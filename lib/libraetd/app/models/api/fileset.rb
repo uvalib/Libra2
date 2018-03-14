@@ -144,7 +144,11 @@ class Fileset
   end
 
   def date_formatter( date_string )
-    date_string.to_s.to_datetime.in_time_zone.strftime("%b %d, %Y %H:%M %Z")
+    begin
+      date_string.to_s.to_datetime.in_time_zone.strftime("%b %d, %Y %H:%M %Z")
+    rescue
+      ''
+    end
   end
 
 end
