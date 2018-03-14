@@ -166,7 +166,7 @@ class Work
     @title = solr_extract_first( solr, 'title' )
     @abstract = solr_extract_first( solr, 'description' )
 
-    @create_date = date_formatter solr_extract_only( solr, 'date_uploaded', 'date_uploaded_dtsi' )
+    @create_date = date_formatter solr_extract_only( solr, 'create_date', 'system_create_dtsi' )
     @modified_date = date_formatter solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
     @published_date = date_formatter solr_extract_first( solr, 'date_published' )
 
