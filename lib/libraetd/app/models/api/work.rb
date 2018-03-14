@@ -168,7 +168,7 @@ class Work
 
     @create_date = date_formatter solr_extract_only( solr, 'date_uploaded', 'date_uploaded_dtsi' )
     @modified_date = date_formatter solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
-    @published_date = solr_extract_first( solr, 'date_published' )
+    @published_date = date_formatter solr_extract_first( solr, 'date_published' )
 
     @creator_email = solr_extract_first( solr, 'creator' )
     @embargo_state = translate_embargo_name( solr_extract_first( solr, 'embargo_state' ) )
@@ -481,7 +481,11 @@ class Work
   end
 
   def date_formatter( date_string )
-    date_string.to_s.to_datetime.in_time_zone.strftime("%b %d, %Y %H:%M %Z")
+    begin
+      date_string.to_s.to_datetime.in_time_zone.strftime("%b %d, %Y %H:%M %Z")
+    rescue
+      ''
+    end
   end
 
 end
