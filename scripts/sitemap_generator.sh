@@ -11,13 +11,9 @@ export NAME=$(basename $0 .sh)
 export LOGGER=$(logger_name "$NAME.log")
 
 # the time we want the action to occur
-# this is the time in EST
+# this is specified in localtime
 export ACTION_TIME="00:30"
-export ACTION_TIMEZONE="EST"
-
-# we are running in UTC
-#export ACTION_TIME="04:30"
-#export ACTION_TIMEZONE="UTC"
+export ACTION_TIMEZONE="America/New_York"
 
 # helpful message...
 logit "Sitemap generator starting up..."
