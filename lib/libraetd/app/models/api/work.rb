@@ -166,9 +166,9 @@ class Work
     @title = solr_extract_first( solr, 'title' )
     @abstract = solr_extract_first( solr, 'description' )
 
-    @create_date = solr_extract_first( solr, 'date_created' )
-    @modified_date = solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
-    @published_date = solr_extract_first( solr, 'date_published' )
+    @create_date = date_formatter solr_extract_only( solr, 'create_date', 'system_create_dtsi' )
+    @modified_date = date_formatter solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
+    @published_date = date_formatter solr_extract_first( solr, 'date_published' )
 
     @creator_email = solr_extract_first( solr, 'creator' )
     @embargo_state = translate_embargo_name( solr_extract_first( solr, 'embargo_state' ) )
@@ -421,6 +421,7 @@ class Work
     return 'unknown'
   end
 
+
   private
 
   def extract_date_from_datetime( dt )
@@ -477,6 +478,14 @@ class Work
 
   def relation_to_array( arr )
     return arr.map { |e| e.to_s }
+  end
+
+  def date_formatter( date_string )
+    begin
+      date_string.to_s.to_datetime.in_time_zone.strftime("%b %d, %Y %H:%M %Z")
+    rescue
+      ''
+    end
   end
 
 end

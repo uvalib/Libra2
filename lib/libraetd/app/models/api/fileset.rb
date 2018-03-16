@@ -54,8 +54,8 @@ class Fileset
 
     @file_url, @thumb_url = content_urls( base_url, @id )
 
-    @date_uploaded = solr_extract_only( solr, 'date_uploaded', 'date_uploaded_dtsi' )
-    @date_modified = solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
+    @date_uploaded = date_formatter solr_extract_only( solr, 'date_uploaded', 'date_uploaded_dtsi' )
+    @date_modified = date_formatter solr_extract_only( solr, 'date_modified', 'date_modified_dtsi' )
     return self
   end
 
@@ -141,6 +141,14 @@ class Fileset
 
   def audit_change( id, what, old_value, new_value, by_whom )
     WorkAudit.audit( id, by_whom, "#{what} updated from: '#{old_value}' to: '#{new_value}'" )
+  end
+
+  def date_formatter( date_string )
+    begin
+      date_string.to_s.to_datetime.in_time_zone.strftime("%b %d, %Y %H:%M %Z")
+    rescue
+      ''
+    end
   end
 
 end
