@@ -389,10 +389,27 @@
    color: white;
 }
 
+form [role='complementary'] {
+  &.affix {
+    right: 30px;
+    top: 20px;
+    max-width: 380px;
+    @media(min-width:1400px) {
+      right: 10%;
+    }
+  }
+  @media(max-width:767px){
+    &.affix {
+      position: relative;
+      right: inherit;
+    }
+  }
+
+}
+
 #form-progress {
-   position: fixed;
-   width: 361px;
-   z-index: 99999;
+  width: 361px;
+  z-index: 99999;
 
   #with_files_submit_exit, #with_files_submit_continue {
     padding-left: 10px;
