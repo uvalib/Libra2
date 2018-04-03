@@ -484,7 +484,7 @@ class Work
     begin
       date_string.to_s.to_datetime.in_time_zone.strftime("%b %d, %Y %H:%M %Z")
     rescue
-      ''
+      date_string
     end
   end
 
