@@ -2,7 +2,7 @@ module PublicHelper
 
    def file_date(date)
       return "Unknown" if date.nil?
-      return date.strftime("%B %d, %Y")
+      return date.in_time_zone.strftime("%B %d, %Y")
    end
 
    def file_date_created(date)
@@ -10,19 +10,20 @@ module PublicHelper
       date = date.join() if date.kind_of?(Array)
       return file_date(date) if date.kind_of?(DateTime)
       begin
-         return file_date(DateTime.strptime(date, "%Y:%m:%d"))
+        return file_date(DateTime.strptime(date, "%Y:%m:%d"))
       rescue
          begin
-            return file_date(DateTime.strptime(date, "%m/%d/%Y"))
+           return file_date(DateTime.strptime(date, "%m/%d/%Y"))
          rescue
             begin
-               return file_date(DateTime.strptime(date, "%Y-%m-%d"))
+              return file_date(DateTime.strptime(date, "%Y-%m-%d"))
             rescue
                return date
             end
          end
       end
    end
+
 
    def display_title(work)
       return 'Not Found' if work.nil? || work[:title].nil? || work[:title][0].nil?
