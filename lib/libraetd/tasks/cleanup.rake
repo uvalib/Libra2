@@ -59,5 +59,41 @@ namespace :libraetd do
       puts "Processed #{successes} work(s), #{errors} error(s) encountered"
 
     end
+
+    desc "Normalizes degree names in given csv"
+    task(:normalize_degrees, [:csv_path] => :environment ) do |t, args|
+      require 'csv'
+
+      degrees = ServiceClient::DepositRegClient.instance.list_deposit_options( ).last['degrees']
+
+
+      CSV.foreach(args.csv_path, headers: true) do |row|
+        begin
+          id = row['Id'].strip
+          work = GenericWork.where(id: id).first
+          if work
+
+            degree = row['Degree']
+
+            if degrees.include? degree
+              if work.degree != degree
+                work.degree = degree
+                saved = work.save
+                puts "#{id} - Degree: #{degree} - Saved: #{saved}"
+              else
+                puts "#{id} - Degree unchanged"
+              end
+            else
+              puts "#{id} - Degree '#{degree}' not included in the list of degrees."
+            end
+
+          else
+            puts "#{id} not found"
+          end
+        rescue NoMethodError => e
+          puts e
+        end
+      end
+    end
   end
 end
