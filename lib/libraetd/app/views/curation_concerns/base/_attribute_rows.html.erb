@@ -7,7 +7,7 @@
 
 <%= show_line(presenter, :contributor, t( 'simple_form.labels.defaults.contributor' ), true, include_empty: true, catalog_search_link: false ) %>
 <%= show_line(presenter, :description, t( 'simple_form.labels.defaults.description' ), true, include_empty: true, catalog_search_link: false, render_as: :custom_show ) %>
-<%= show_wrap_required(CurationConcerns::Renderers::AttributeRenderer.new("Rights", presenter.solr_document.rights, {include_empty: true}).render) %>
+<%= show_wrap_required(CurationConcerns::Renderers::AttributeRenderer.new("Rights", rights_link(presenter.solr_document.rights), {include_empty: true}).render) %>
 <%= presenter.attribute_to_html( :keyword, label: t( 'simple_form.labels.defaults.keyword' ), include_empty: true, render_as: :custom_show ) %>
 <%= presenter.attribute_to_html( :language, include_empty: true) %>
 <%= presenter.attribute_to_html( :related_url, label: t( 'simple_form.labels.defaults.related_url' ), include_empty: true, render_as: :custom_show ) %>

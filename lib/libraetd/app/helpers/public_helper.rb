@@ -135,8 +135,20 @@ module PublicHelper
 
    def display_rights(rights)
       return '' if rights.blank?
-      rights = rights.join(' ') if rights.kind_of?(Array)
+      rights = rights_link rights
       return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Rights:", rights ).render )
+   end
+
+   def rights_link value
+      value = value.try(:first) || value
+      license = CurationConcerns::QaSelectService.new('rights').authority.find(value)
+      license = {'term' => value} unless license.present?
+
+      if license['url'].present?
+        link_to(license['term'], license['url'], target: '_blank')
+      else
+        license['term']
+      end
    end
 
    def display_publication_date( date )
