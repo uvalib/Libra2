@@ -10,13 +10,13 @@ module PublicHelper
       date = date.join() if date.kind_of?(Array)
       return file_date(date) if date.kind_of?(DateTime)
       begin
-        return file_date(DateTime.strptime(date, "%Y:%m:%d"))
+        return file_date(Date.strptime(date, "%Y:%m:%d"))
       rescue
          begin
-           return file_date(DateTime.strptime(date, "%m/%d/%Y"))
+           return file_date(Date.strptime(date, "%m/%d/%Y"))
          rescue
             begin
-              return file_date(DateTime.strptime(date, "%Y-%m-%d"))
+              return file_date(Date.strptime(date, "%Y-%m-%d"))
             rescue
                return date
             end
