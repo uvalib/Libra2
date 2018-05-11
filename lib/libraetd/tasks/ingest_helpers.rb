@@ -138,7 +138,8 @@ module IngestHelpers
       'not available',
       'No Abstract Found',
       'No abstract available',
-      'No abstract found'
+      'No abstract found',
+      'Department of '
   ]
 
   #

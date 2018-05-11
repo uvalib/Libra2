@@ -1,0 +1,29 @@
+#
+# values to use if these are not specified in the ingest
+#
+rights: 'All rights reserved (no additional license for public reuse)'
+publisher: <%= GenericWork::DEFAULT_PUBLISHER %>
+institution: "The Judge Advocate General's School, United States Army"
+license: <%= GenericWork::DEFAULT_LICENSE %>
+degree: 'LLM (Master of Laws)'
+
+#
+# the admin notes for informational purposes
+#
+#admin_notes: 'Thesis originally deposited on LIBRA1_CREATE_DATE in version 1.28 of Libra. This thesis was migrated to Libra2 on CURRENT_DATE.'
+admin_notes: 'Item originally accessible in ContentDM.  Subscription to ContentDM expires June 2018.  Items deposited in LibraETD Spring of 2018.'
+
+#
+# the default embargo type if we cannot determine one
+#
+# enable for new ingests (jefferson trust items, ILL)
+# disable for masters & doctoral theses
+default_embargo_type: <%= Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC %>
+
+#
+# apply the specified embargo period; should be one of:
+# 6_months, 1_year, 2_year, 5_year, forever (130 years)
+#
+# enable for new ingests (jefferson trust items, ILL)
+# disable for masters & doctoral theses
+#force_embargo_period: forever
