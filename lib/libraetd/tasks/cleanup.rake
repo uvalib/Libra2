@@ -63,6 +63,7 @@ namespace :libraetd do
     desc "Normalizes degree names in given csv"
     task(:normalize_degrees, [:csv_path] => :environment ) do |t, args|
       require 'csv'
+      log = ActiveSupport::Logger.new('hostfs/logs/degree_cleanup.log')
 
       degrees = ServiceClient::DepositRegClient.instance.list_deposit_options( ).last['degrees']
 
@@ -79,19 +80,21 @@ namespace :libraetd do
               if work.degree != degree
                 work.degree = degree
                 saved = work.save
-                puts "#{id} - Degree: #{degree} - Saved: #{saved}"
+                log.info "#{id} - Degree: #{degree} - Saved: #{saved}"
               else
-                puts "#{id} - Degree unchanged"
+                log.info "#{id} - Degree unchanged"
               end
             else
-              puts "#{id} - Degree '#{degree}' not included in the list of degrees."
+              log.warn "#{id} - Degree '#{degree}' not included in the list of degrees."
             end
 
           else
-            puts "#{id} not found"
+            log.warn "#{id} - Not found"
           end
+          print '.'
         rescue NoMethodError => e
-          puts e
+          log.error e
+          put e
         end
       end
     end
