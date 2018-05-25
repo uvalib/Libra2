@@ -43,7 +43,7 @@ module PublicHelper
       return '' if work.nil?
       author_display = "#{work.author_last_name}, #{work.author_first_name}"
       author_display += ", #{work.department}" if work.department
-      author_display += ", #{work.author_institution}" if work.department
+      author_display += ", #{work.author_institution}" if work.author_institution
       author_display
    end
 
