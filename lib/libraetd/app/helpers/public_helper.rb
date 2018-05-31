@@ -42,8 +42,8 @@ module PublicHelper
    def construct_author( work )
       return '' if work.nil?
       author_display = "#{work.author_last_name}, #{work.author_first_name}"
-      author_display += ", #{work.department}" if work.department
-      author_display += ", #{work.author_institution}" if work.author_institution
+      author_display += ", #{work.department}" if work.department.present?
+      author_display += ", #{work.author_institution}" if work.author_institution.present?
       author_display
    end
 
