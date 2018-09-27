@@ -1,3 +1,5 @@
+require 'ruby-progressbar'
+
 namespace :libraetd do
   namespace :index do
 
