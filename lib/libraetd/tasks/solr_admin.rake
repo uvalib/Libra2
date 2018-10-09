@@ -87,6 +87,12 @@ namespace :libraetd do
       rescue Errno::ENETDOWN
         puts "ERROR: Errno::ENETDOWN (#{line})"
         error_uris << line
+      rescue Faraday::TimeoutError
+        puts "ERROR: Faraday::TimeoutError (#{line})"
+        error_uris << line
+      rescue Mysql2::Error
+        puts "ERROR: Mysql2::Error (#{line})"
+        error_uris << line
       end
 
       index += 1
