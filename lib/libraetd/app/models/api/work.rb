@@ -50,9 +50,9 @@ class Work
   NO_EMBARGO_STATE = 'No Embargo'.freeze
 
   EMBARGO_STATE_MAP = {
-     NO_EMBARGO_STATE => 'open',
-     'UVA Only Embargo' => 'authenticated',
-     'Metadata Only Embargo' => 'restricted'
+    NO_EMBARGO_STATE => 'open',
+    'UVA Only Embargo' => 'authenticated',
+    'Metadata Only Embargo' => 'restricted'
   }
 
   PENDING_STATUS = 'pending'.freeze
@@ -192,11 +192,11 @@ class Work
     @url = GenericWork.doi_url( @identifier )
 
     if solr_extract_first( solr, 'draft') == 'true'
-       if @modified_date.blank? == false
-         @status = INPROGRESS_STATUS
-       else
-         @status = PENDING_STATUS
-       end
+      if @modified_date.blank? == false
+        @status = INPROGRESS_STATUS
+      else
+        @status = PENDING_STATUS
+      end
     else
       @status = SUBMITTED_STATUS
     end
@@ -225,15 +225,32 @@ class Work
   # resubmit the metadata if any of the fields that are included have changed
   #
   def resubmit_metadata?
-    return true if field_set?( :author_email )
-    return true if field_set?( :author_first_name )
-    return true if field_set?( :author_last_name )
-    return true if field_set?( :author_department )
-    return true if field_set?( :author_institution )
-    return true if field_set?( :title )
-    return true if field_set?( :degree )
-    return true if field_set?( :published_date )
-    return false
+    resubmit_fields = %w(
+      author_email
+      author_first_name
+      author_last_name
+      author_department
+      author_institution
+      title
+      degree
+      published_date
+      publisher
+      subject
+      abstract
+      embargo_state
+      embargo_end_date
+      notes
+      rights
+      advisors
+      keywords
+      language
+      related_links
+      sponsoring_agency
+      degree
+    )
+
+    # check if there any resubmit fields in the field set
+    ( @field_set & resubmit_fields ).empty?
   end
 
   def apply_to_work( work, by_whom )
@@ -425,8 +442,8 @@ class Work
   private
 
   def extract_date_from_datetime( dt )
-     return '' if dt.blank?
-     return dt.strftime( '%Y-%m-%d' )
+    return '' if dt.blank?
+    return dt.strftime( '%Y-%m-%d' )
   end
 
   def field_changed?(field, before, after )
