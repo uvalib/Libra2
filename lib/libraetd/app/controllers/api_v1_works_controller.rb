@@ -150,7 +150,7 @@ class APIV1WorksController < APIBaseController
 
     field = search.create_date
     if search.field_set?( :create_date )
-      constraints << "system_create_dtsi:#{search.make_solr_date_search( field )}"
+      constraints << "date_created_tesim:#{search.make_solr_date_search( field )}"
     end
 
     field = search.depositor_email
