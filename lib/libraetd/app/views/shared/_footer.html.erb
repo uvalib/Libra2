@@ -1,6 +1,6 @@
 <%= render partial: '/shared/piwik' %>
-<uvalib-footer-responsive>
-  <div class="footer-extended" bottom-bar>
+<uvalib-footer>
+  <div class="footer-extended" slot="bottom-bar">
     <div class="footer-extended-left">
       <a href="http://www.library.virginia.edu/libra/terms-of-use/" class="footer-link">Libra Terms</a> &nbsp; | &nbsp;
       <a href="mailto:<%= MAIL_SENDER %>" class="footer-link">Libra Feedback</a>
@@ -10,4 +10,4 @@
       <%= image_tag "hydra.png", alt: "Hydra Community Badge"  %>
     </div>
   </div>
-</uvalib-footer-responsive>
+</uvalib-footer>
