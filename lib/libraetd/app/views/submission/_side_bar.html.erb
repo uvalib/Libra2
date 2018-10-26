@@ -1,28 +1,28 @@
 <div id="sidebar" class="col-xs-12 col-sm-3 col-sm-pull-9">
 
-	<div id="metrics">
-		<span class="file_label"><%= "#{t("sufia.public.stats.work_views")}: " %></span><span class="badge"><%= get_work_view_count( @work ) %></span>
-	</div>
+  <div id="metrics">
+    <span class="file_label"><%= "#{t("sufia.public.stats.work_views")}: " %></span><span class="badge"><%= get_work_view_count( @work ) %></span>
+  </div>
 
-	<h2>Files</h2>
-	<p class="file-notice"><%= embargo_notice(@work) %></p>
-	<% if allow_file_access(@work) %>
-		<% if show_proof_embargo_notice(@work) %>
-			<div class="proof-file-notice">
-				<p class="preview-warning">
-					The files listed below will <b>NOT</b> be available to <%= is_engineering_embargo(@work) ? "anyone" : "the general public" %> until the embargo date has passed.
-				</p>
-			</div>
-		<% end %>
-	<div id="uploads">
-			<% @files.each { |file| %>
-			<div class="file_asset_record">
-        <p><%= link_to(file[:title], "#{file[:location]}?filename=#{safe_filename( file[:title] )}", data: { turbolinks: false } )%></p>
-			<p><span class="file_label">Uploaded:</span><%= file_date_created(file[:date]) %></p>
-  		<p><span class="file_label"><%= "#{t("sufia.public.stats.file_downloads")}: " %></span><span class="badge"><%= get_file_download_count( file[:id] ) %></p>
-			</div>
-			<% } %>
+  <h2>Files</h2>
+  <p class="file-notice"><%= embargo_notice(@work) %></p>
+  <% if allow_file_access(@work) %>
+    <% if show_proof_embargo_notice(@work) %>
+      <div class="proof-file-notice">
+        <p class="preview-warning">
+        The files listed below will <b>NOT</b> be available to <%= is_engineering_embargo(@work) ? "anyone" : "the general public" %> until the embargo date has passed.
+        </p>
+      </div>
+    <% end %>
+    <div id="uploads">
+      <% @files.each { |file| %>
+        <div class="file_asset_record">
+          <p><%= link_to(file[:title], "#{file[:location]}?filename=#{safe_filename( file[:title] )}", data: { turbolinks: false } )%></p>
+          <p><span class="file_label">Uploaded:</span><%= file_date_created(file[:date]) %></p>
+          <p><span class="file_label"><%= "#{t("sufia.public.stats.file_downloads")}: " %></span><span class="badge"><%= get_file_download_count( file[:id] ) %></p>
+        </div>
+      <% } %>
 
-	</div>
-	<% end %>
+    </div>
+  <% end %>
 </div>
