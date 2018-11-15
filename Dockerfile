@@ -17,7 +17,7 @@ RUN yum -y install clamav clamav-update clamav-devel
 RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/http-parser/2.7.1/3.el7/x86_64/http-parser-2.7.1-3.el7.x86_64.rpm && yum -y install nodejs
 
 # Create the run user and group
-RUN groupadd -r webservice && useradd -r -g webservice webservice && mkdir /home/webservice
+RUN groupadd --gid 18570 sse && useradd --uid 1984 -g sse docker
 
 # set the timezone appropriatly
 ENV TZ=UTC
@@ -47,20 +47,20 @@ ADD . $APP_HOME
 RUN RAILS_ENV=production SECRET_KEY_BASE=x rake assets:precompile
 
 # Update permissions
-RUN chown -R webservice $APP_HOME /home/webservice && chgrp -R webservice $APP_HOME /home/webservice
+RUN chown -R docker $APP_HOME /home/docker && chgrp -R sse $APP_HOME /home/docker
 
 # freshen the antivirus definitions and update permissions so we can do this again
 RUN freshclam && chmod -R o+w /var/lib/clamav
 
 # Specify the user
-USER webservice
+USER docker
 
 # Define port and startup script
 EXPOSE 3000
 CMD scripts/entry.sh
 
 # Move in other assets
-COPY data/container_bash_profile /home/webservice/.profile
+COPY data/container_bash_profile /home/docker/.profile
 
 #
 # end of file
