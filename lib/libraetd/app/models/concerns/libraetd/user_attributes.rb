@@ -9,9 +9,10 @@ module Libra2::UserAttributes
   end
 
   # is the user an engineering student
+  # Matches "Engineering" ignoring case
   def is_engineering?
     return false if department.nil?
-    return department.match( /-?eng$/ )
+    return department.match? /Engineering/i
   end
 
   def computing_id
