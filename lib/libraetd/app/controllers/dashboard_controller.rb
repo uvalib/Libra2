@@ -79,7 +79,8 @@ class DashboardController < ApplicationController
     respond_to do |wants|
       wants.json {
         status, resp = ServiceClient::UserInfoClient.instance.get_by_id( params[:id] )
-        if ServiceClient::UserInfoClient.instance.ok?( status )
+        if ServiceClient::UserInfoClient.instance.ok?( status ) && resp['private'] != 'true'
+
            resp[:institution] = GenericWork::DEFAULT_INSTITUTION
            resp[:index] = params[:index]
         else
