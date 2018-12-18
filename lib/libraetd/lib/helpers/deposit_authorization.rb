@@ -41,6 +41,7 @@ module Helpers
       def self.create( json )
          new( json )
       end
+
   end
 end
 
