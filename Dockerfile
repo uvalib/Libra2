@@ -27,18 +27,15 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 # install bundler
-RUN gem install bundler --no-ri --no-rdoc
-
-# Copy the Gemfile and Gemfile.lock into the image.
-# Temporarily set the working directory to where they are.
-WORKDIR /tmp
-ADD Gemfile Gemfile
-ADD Gemfile.lock Gemfile.lock
-RUN bundle install
+RUN gem install bundler -v 1.17.3 --no-ri --no-rdoc
 
 # create work directory
 ENV APP_HOME /libra2
 WORKDIR $APP_HOME
+
+# Copy the Gemfile and Gemfile.lock into the image.
+ADD Gemfile Gemfile.lock ./
+RUN bundle install --jobs=4 --without=["development" "test"] --no-cache
 
 # copy the application
 ADD . $APP_HOME
