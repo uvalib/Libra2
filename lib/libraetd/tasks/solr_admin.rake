@@ -116,7 +116,7 @@ namespace :libraetd do
 
     puts "#{total_count} items processed. #{successes} re-indexed, #{error_uris.count} errors, #{start_ix} ignored"
     if error_uris.present?
-      error_uris.each_with_index do |ix, uri|
+      error_uris.each_with_index do |uri, ix|
         puts "ERROR #{ix + 1}: #{uri}"
       end
     end
