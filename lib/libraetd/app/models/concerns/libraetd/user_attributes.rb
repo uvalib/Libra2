@@ -8,12 +8,6 @@ module Libra2::UserAttributes
     return title.match( /^Undergraduate/ )
   end
 
-  # is the user an engineering student
-  def is_engineering?
-    return false if department.nil?
-    return department.match( /-?eng$/ )
-  end
-
   def computing_id
     User.cid_from_email(self.email)
   end

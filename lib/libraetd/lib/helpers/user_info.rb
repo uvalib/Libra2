@@ -17,6 +17,7 @@ module Helpers
       attr_accessor :office
       attr_accessor :phone
       attr_accessor :email
+      attr_accessor :private
 
       def initialize( json )
         @id = json['cid'] || '0'
@@ -33,6 +34,7 @@ module Helpers
 
         # we have had some problems here; make sure all emails are lower case
         @email = @email.downcase
+        @private = json[ 'private'] || ''
       end
 
       def self.create( json )

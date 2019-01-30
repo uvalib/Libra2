@@ -8,12 +8,12 @@
 
   <label class="radio">
 
- <% if current_user && current_user.is_engineering? %>
-        <% embargo_label = 'libra.visibility.embargo_engineering.label_html' %>
-        <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
+    <% if f.object.department.match? /Engineering/i  %>
+      <% embargo_label = 'libra.visibility.embargo_engineering.label_html' %>
+      <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
     <% else %>
-        <% embargo_label = 'libra.visibility.embargo.label_html' %>
-        <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
+      <% embargo_label = 'libra.visibility.embargo.label_html' %>
+      <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
     <% end %>
       <%= f.radio_button :embargo_state, embargo_visibility, data: { 'target': '#collapseEmbargo' } %>
 
