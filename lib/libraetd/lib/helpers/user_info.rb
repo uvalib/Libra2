@@ -25,11 +25,11 @@ module Helpers
         @first_name = json[ 'first_name'] || ''
         @initials = json[ 'initials'] || ''
         @last_name = json[ 'last_name'] || ''
-        @description = json[ 'description'] || ''
-        @department = json[ 'department'] || ''
-        @title = json[ 'title'] || ''
-        @office = json[ 'office'] || ''
-        @phone = json[ 'phone'] || ''
+        @description = json[ 'description'] ? json['description'].first : ''
+        @department = json[ 'department'] ? json['department'].first : ''
+        @title = json[ 'title'] ? json['title'].first : ''
+        @office = json[ 'office'] ? json['office'].first : ''
+        @phone = json[ 'phone'] ? json['phone'].first : ''
         @email = json[ 'email'] || ''
 
         # we have had some problems here; make sure all emails are lower case
