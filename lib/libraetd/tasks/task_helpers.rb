@@ -71,7 +71,8 @@ module TaskHelpers
 
     begin
       return FileSet.find( id )
-    rescue => e
+    rescue => ex
+      puts "==> get_fileset_by_id exception: #{ex}"
     end
 
     return nil

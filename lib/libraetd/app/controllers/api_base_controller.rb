@@ -27,7 +27,8 @@ class APIBaseController < ApplicationController
     id = params[:id] if id.nil?
     begin
       return GenericWork.find( id )
-    rescue => e
+    rescue => ex
+      puts "==> get_the_work exception: #{ex}"
     end
     return nil
   end
@@ -36,7 +37,8 @@ class APIBaseController < ApplicationController
     id = params[:id] if id.nil?
     begin
       return FileSet.find( id )
-    rescue => e
+    rescue => ex
+      puts "==> get_the_fileset exception: #{ex}"
     end
     return nil
   end

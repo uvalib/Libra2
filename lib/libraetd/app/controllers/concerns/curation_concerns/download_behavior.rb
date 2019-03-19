@@ -49,7 +49,14 @@ module CurationConcerns
 
       # TODO: roll-up identical functionality from EmbargoHelper:allow_file_access
 
-      file_set = ::FileSet.find(id)
+      file_set = nil
+      begin
+        file_set = ::FileSet.find(id)
+      rescue => ex
+        puts "==> fileset find exception: #{ex}; view access is DENIED"
+        return false
+      end
+
       if file_set.nil?
          puts "==> fileset is undefined; view access is DENIED"
          return false
