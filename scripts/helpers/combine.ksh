@@ -21,6 +21,7 @@ libra-oa:3500 doi:10.18130/V3/HOOJSE
 libra-oa:3272 doi:10.18130/V3/NEPGOL
 libra-oa:2781 doi:10.18130/V3/QAIK3R
 libra-oa:2638 doi:10.18130/V3/2IVQ9Z
+libra-oa:2966 doi:10.18130/V3/YIZOVR
 XXEND
 
 OUTFILE=~/Downloads/L1_to_L2_doi.txt
