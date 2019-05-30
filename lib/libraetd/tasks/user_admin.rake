@@ -169,7 +169,7 @@ def create_user( name, email, password )
 
   display_name = info.nil? ? name : info.display_name
   title = info.nil? ? name : info.description
-  department = info.nil? ? name : info.department
+  department = info.nil? ? name : info.department.first
   user = User.new( email: email,
                    password: password,
                    password_confirmation: password,
