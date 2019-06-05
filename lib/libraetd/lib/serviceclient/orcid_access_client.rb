@@ -68,7 +68,7 @@ module ServiceClient
      #
      # delete specified user's ORCID attributes
      #
-     def del_attribs_by_cid(id )
+     def del_attribs_by_cid(id)
        url = "#{self.url}/cid/#{id}?auth=#{self.authtoken}"
        status, _ = rest_delete( url )
        return status

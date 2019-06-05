@@ -67,12 +67,7 @@ module UpdateOrcidBehavior
     return if cid.blank?
 
     puts "==> clearing ORCID attributes for #{cid}"
-    status = ServiceClient::OrcidAccessClient.instance.set_attribs_by_cid(
-      cid,
-      '',
-      '',
-      '',
-      '' )
+    status = ServiceClient::OrcidAccessClient.instance.del_attribs_by_cid( cid )
 
     if ServiceClient::OrcidAccessClient.instance.ok?( status ) == false
       puts "ERROR: ORCID service returns #{status}"
