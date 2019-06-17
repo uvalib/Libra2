@@ -43,15 +43,19 @@ class HealthcheckController < ApplicationController
     msg = ''
     begin
       _ = GenericWork.first
-    rescue RSolr::Error::Http => ex
+    rescue RSolr::Error::Http, RSolr::Error::ConnectionRefused => ex
       ok = false
       msg = 'SOLR connection error'
+      puts "SOLR connection error during healthcheck"
     rescue Ldp::HttpError => ex
       ok = false
       msg = 'Fedora connection error'
+      puts "Fedora connection error during healthcheck"
     rescue => ex
       ok = false
       msg = "Error: #{ex.class}"
+      puts "#{ex.class} error during healthcheck"
+      puts "#{ex.backtrace.join("\n\t")}"
     end
     status[ :repository ] = Health.new( ok, msg )
 
