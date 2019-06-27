@@ -8,7 +8,8 @@
 
   <label class="radio">
 
-    <% if f.object.department.match? /Engineering/i  %>
+    <%# Misnamed, but checks for embargoed status %>
+    <% if is_engineering_embargo(f.object)  %>
       <% embargo_label = 'libra.visibility.embargo_engineering.label_html' %>
       <% embargo_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
     <% else %>

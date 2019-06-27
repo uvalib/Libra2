@@ -162,10 +162,6 @@ task set_embargo_by_id: :environment do |t, args|
     next
   end
 
-  if work.is_draft?
-    puts "ERROR: work #{work_id} has not been submitted, aborting"
-    next
-  end
 
   work.embargo_state = embargo_type
   work.embargo_period = embargo_period
