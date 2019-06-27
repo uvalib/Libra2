@@ -24,12 +24,15 @@
             <%= link_to t('sufia.deposit_agreement'),
                         deposit_agreement_url,
                         target: '_blank' %>
+            <span>, including discussing my deposit access options with my faculty advisor.</span>
           </label>
       <% else %>
           <%= t('sufia.passive_consent_to_agreement') %><br>
           <%= link_to t('sufia.deposit_agreement'),
                       deposit_agreement_url,
                       target: '_blank' %>
+
+          <span>, including discussing my deposit access options with my faculty advisor.</span>
       <% end %>
       <br>
       <%= link_to t(:'helpers.action.cancel'),
