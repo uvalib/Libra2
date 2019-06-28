@@ -265,6 +265,7 @@ class APIV1WorksController < APIBaseController
                                   :depositor_email,
                                   :embargo_state,
                                   :embargo_end_date,
+                                  :embargo_period,
                                   :language,
                                   :notes,
                                   :published_date,

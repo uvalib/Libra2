@@ -56,6 +56,17 @@ class GenericWork < ActiveFedora::Base
   EMBARGO_VALUE_2_YEAR = '2_year'.freeze
   EMBARGO_VALUE_5_YEAR = '5_year'.freeze
   EMBARGO_VALUE_FOREVER = 'forever'.freeze
+  EMBARGO_VALUE_CUSTOM = 'custom'.freeze
+
+  def self.all_embargo_periods
+    [GenericWork::EMBARGO_VALUE_6_MONTH,
+     GenericWork::EMBARGO_VALUE_1_YEAR,
+     GenericWork::EMBARGO_VALUE_2_YEAR,
+     GenericWork::EMBARGO_VALUE_5_YEAR,
+     GenericWork::EMBARGO_VALUE_FOREVER,
+     GenericWork::EMBARGO_VALUE_CUSTOM
+    ]
+  end
 
   # Custom Metadata
 
@@ -309,6 +320,8 @@ class GenericWork < ActiveFedora::Base
       return "5 years"
     when GenericWork::EMBARGO_VALUE_FOREVER
       return "forever"
+    when GenericWork::EMBARGO_VALUE_CUSTOM
+      return "custom time period"
     end
     raise "Unknown embargo period."
   end
@@ -325,6 +338,8 @@ class GenericWork < ActiveFedora::Base
       return Time.now( ) + 5.years
     when GenericWork::EMBARGO_VALUE_FOREVER
       return Time.now( ) + 130.years
+    when GenericWork::EMBARGO_VALUE_CUSTOM
+      return nil
     end
     raise "Unknown embargo period."
   end

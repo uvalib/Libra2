@@ -18,4 +18,4 @@
 <%= CurationConcerns::Renderers::AttributeRenderer.new("Date created", file_date_created(presenter.solr_document.date_created), {include_empty: true}).render %>
 <%= CurationConcerns::Renderers::AttributeRenderer.new("Date issued", file_date_created(presenter.solr_document.date_published), {include_empty: true}).render %>
 <%= presenter.attribute_to_html( :identifier, include_empty: true ) if presenter.solr_document.is_draft? == false %>
-<%= show_visibility_line(presenter.solr_document.embargo_state, presenter.solr_document.embargo_period) %>
+<%= show_visibility_line(presenter.solr_document.embargo_state, presenter.solr_document.embargo_period, presenter.solr_document.embargo_end_date) %>

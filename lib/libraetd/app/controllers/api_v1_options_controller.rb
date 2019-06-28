@@ -46,7 +46,10 @@ class APIV1OptionsController < APIBaseController
   # get embargo status options
   #
   def embargos
-    options = ['No Embargo', 'UVA Only Embargo', 'Metadata Only Embargo' ]
+    options = {}
+    options[:state_options] = ['No Embargo', 'UVA Only Embargo', 'Metadata Only Embargo' ]
+    options[:period_options] = GenericWork.all_embargo_periods
+
     render_options_response( :ok, options )
   end
 

@@ -5,10 +5,10 @@ module EmbargoHelper
     # it is a good bet that the next thing the user will do is publish.
     # This probably won't be called if there isn't an embargo, but just in case, we set the release date to the past.
     return Time.now() - 1.day if work.embargo_state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-    if work.is_draft?
+    if work.is_draft? && work.embargo_period != GenericWork::EMBARGO_VALUE_CUSTOM
       return GenericWork.calculate_embargo_release_date( work.embargo_period )
     else
-      return work.embargo_end_date
+      return work.embargo_end_date.to_date
     end
   end
 

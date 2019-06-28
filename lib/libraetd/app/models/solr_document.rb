@@ -42,7 +42,8 @@ class SolrDocument
   end
 
   def embargo_end_date
-    self[Solrizer.solr_name('embargo_end_date')]
+    # this is a dtsim and isnt matching using Solrizer
+    self[Solrizer.solr_name('embargo_end_date')] || self['embargo_end_date_dtsim']
   end
 
   def embargo_period

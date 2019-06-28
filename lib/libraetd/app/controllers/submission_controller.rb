@@ -39,7 +39,8 @@ class SubmissionController < ApplicationController
     if work.present?
 
       work.draft = 'false'
-      if work.embargo_state != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      if work.embargo_state != Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC &&
+          work.embargo_period != GenericWork::EMBARGO_VALUE_CUSTOM
         end_date = GenericWork.calculate_embargo_release_date( work.embargo_period )
         work.embargo_end_date = DateTime.new(end_date.year, end_date.month, end_date.day)
       end

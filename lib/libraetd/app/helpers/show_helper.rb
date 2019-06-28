@@ -52,22 +52,26 @@ module ShowHelper
     return raw( str.gsub( '<th>Contributors</th>', '<th>Advisors</th>' ) )
   end
 
-  def show_visibility_line(state, period)
+  def show_visibility_line(state, period, end_date)
     th = content_tag(:th, "Visibility", {})
     if state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-      state_str = t("libra.visibility.open.text")
+      embargo_str = t("libra.visibility.open.text")
     elsif state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       state_str = t("libra.visibility.embargo_engineering.text")
       period = period[0] if period.kind_of?(Array)
-      period = GenericWork.displayable_embargo_period( period )
-      state_str = "#{state_str} until #{period} from submitting this thesis"
+      period_display = GenericWork.displayable_embargo_period( period )
+      embargo_str = "#{state_str} until #{period} from submitting this thesis"
     elsif state == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
       state_str = t("libra.visibility.embargo.text")
       period = period[0] if period.kind_of?(Array)
-      period = GenericWork.displayable_embargo_period( period )
-      state_str = "#{state_str} until #{period} from submitting this thesis"
+      period_display = GenericWork.displayable_embargo_period( period )
+      embargo_str = "#{state_str} until #{period_display} from submitting this thesis"
     end
-    state_el = content_tag(:li, state_str, { class: "attribute embargo_state" })
+    if period == GenericWork::EMBARGO_VALUE_CUSTOM
+      end_date = end_date[0] if end_date.kind_of?(Array)
+      embargo_str = "#{state_str} until #{file_date_created(end_date)}"
+    end
+    state_el = content_tag(:li, embargo_str, { class: "attribute embargo_state" })
     ul = content_tag(:ul, state_el, { class: "tabular"})
     td = content_tag(:td, ul, {})
     return content_tag(:tr, raw(th + td))

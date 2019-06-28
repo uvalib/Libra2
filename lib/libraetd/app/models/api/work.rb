@@ -129,6 +129,7 @@ class Work
 
     @embargo_state = set_field( :embargo_state, json ) unless set_field( :embargo_state, json ) == nil
     @embargo_end_date = set_field( :embargo_end_date, json ) unless set_field( :embargo_end_date, json ) == nil
+    @embargo_period = set_field( :embargo_period, json ) unless set_field( :embargo_period, json ) == nil
 
     @notes = set_field( :notes, json ) unless set_field( :notes, json ) == nil
     @admin_notes = set_field( :admin_notes, json ) unless set_field( :admin_notes, json ) == nil
@@ -214,6 +215,7 @@ class Work
     # handle special cases...
     return false if field_set?( :embargo_state ) && valid_embargo_state?( @embargo_state ) == false
     return false if field_set?( :embargo_end_date ) && valid_embargo_date?( @embargo_end_date ) == false
+    return false if field_set?( :embargo_period ) && valid_embargo_period?( @embargo_period ) == false
     return false if field_set?( :status ) && [ PENDING_STATUS, SUBMITTED_STATUS ].include?( @status ) == false
 
     # if we specified anything else
@@ -239,6 +241,7 @@ class Work
       abstract
       embargo_state
       embargo_end_date
+      embargo_period
       notes
       rights
       advisors
@@ -299,6 +302,12 @@ class Work
       work.degree = @degree
     end
 
+    if field_changed?(:embargo_period, work.embargo_period, @embargo_period )
+      # update and audit the information
+      audit_change( work.id, 'Embargo Period', work.embargo_period, @embargo_period, by_whom )
+      work.embargo_period = @embargo_period
+    end
+
     if field_changed?(:embargo_state, work.embargo_state, embargo_state_name )
       # update and audit the information
       audit_change( work.id, 'Embargo Type', work.embargo_state, embargo_state_name, by_whom )
@@ -330,6 +339,7 @@ class Work
         work.embargo_end_date = convert_string_to_datetime( @embargo_end_date )
       end
     end
+
     if field_changed?(:notes, work.notes, @notes )
       # update and audit the information
       audit_change( work.id, 'Notes', work.notes, @notes, by_whom )
@@ -466,6 +476,10 @@ class Work
 
   def valid_embargo_state?( state )
     return EMBARGO_STATE_MAP.keys.include? state
+  end
+
+  def valid_embargo_period?( period )
+    return GenericWork.all_embargo_periods.include? period
   end
 
   def translate_embargo_name( state )
