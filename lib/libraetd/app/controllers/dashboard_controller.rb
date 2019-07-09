@@ -9,12 +9,14 @@ class DashboardController < ApplicationController
   include Blacklight::AccessControls::Catalog
 
   include AuthenticationHelper
+  include ::UpdateOrcidBehavior
 
   copy_blacklight_config_from(CatalogController)
 
   before_action :authenticate_user!, except: [ 'development_login']
   before_action :find_collections, only: :gather_dashboard_information
   before_action :find_collections_with_edit_access, only: :gather_dashboard_information
+  before_action :sync_orcid_info, only: :index
 
   #blacklight_config.search_builder_class = ::MySearchBuilder
 

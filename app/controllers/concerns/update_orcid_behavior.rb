@@ -7,11 +7,6 @@ module UpdateOrcidBehavior
 
   include OrcidHelper
 
-  included do
-    after_action :update_orcid, only: [ :landing ]
-    after_action :remove_orcid, only: [ :destroy ]
-  end
-
   private
 
   #
@@ -72,6 +67,42 @@ module UpdateOrcidBehavior
     if ServiceClient::OrcidAccessClient.instance.ok?( status ) == false
       puts "ERROR: ORCID service returns #{status}"
     end
+  end
+
+
+  #
+  # syncs Libra's ORCID info with the UVA ORCID service
+  #
+  def sync_orcid_info
+    status, attribs = ServiceClient::OrcidAccessClient.instance.
+      get_attribs_by_cid current_user.computing_id
+
+    libra_orcid_present = current_user.orcid.present?
+    orcid_service_present = (status == 200)
+    orcid_service_user_not_found = (status == 404)
+
+    if libra_orcid_present && orcid_service_user_not_found
+      # Orcid was removed from the service
+      current_user.update(orcid: nil, orcid_access_token: nil, orcid_refresh_token: nil,
+                          orcid_scope: nil, orcid_expires_at: nil, orcid_linked_at: nil
+                         )
+      remove_orcid
+
+    elsif !libra_orcid_present && orcid_service_present
+      # orcid was added in the service. Libra needs to copy the info
+      current_user.update(orcid: attribs['uri'],
+                          orcid_access_token: attribs['oauth_access_token'],
+                          orcid_refresh_token: attribs['oauth_refresh_token'],
+                          orcid_linked_at: attribs['created_at'],
+                          orcid_scope: attribs['scope']
+                         )
+      OrcidSyncAllJob.perform_later(current_user.id)
+
+    elsif ServiceClient::OrcidAccessClient.instance.ok?( status ) == false
+      # problem with the service
+      puts "ERROR: ORCID service returns #{status}"
+    end
+
   end
 
 end

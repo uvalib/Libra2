@@ -3,6 +3,9 @@ class OrcidController < ApplicationController
   # Adds ORCID handling behavior to the controller.
   include UpdateOrcidBehavior
 
+  after_action :update_orcid, only: [ :landing ]
+  after_action :remove_orcid, only: [ :destroy ]
+
   ORCID_MESSAGE= '<a href="http://www.library.virginia.edu/libra/orcid-at-uva/" target="_blank">Click here for more information about how Libra works with your ORCID ID.</a>'
 
   def landing
