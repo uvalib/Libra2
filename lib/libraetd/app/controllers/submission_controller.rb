@@ -20,7 +20,7 @@ class SubmissionController < ApplicationController
     if @can_view
       @is_preview = @work.is_draft?
       if !@is_preview # on the public page, there shouldn't be the the concept of logging in.
-        @hide_user_controls = true # this should either be nil or true. Then the layout file works for all pages.
+        @hide_login_controls = true
       end
       set_debugging_override()
       @files = get_file_sets(@work)
