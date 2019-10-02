@@ -171,7 +171,7 @@ class SolrDocument
 
   def self.custom_fields()
     return [
-        { name: 'department', label: 'Department' },
+        { name: 'department', label: 'Plan / Program' },
         { name: 'degree', label: 'Degree' },
         { name: 'notes', label: 'Notes' },
         { name: 'sponsoring_agency', label: 'Sponsoring Agency' }

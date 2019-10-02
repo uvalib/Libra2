@@ -465,7 +465,7 @@ def create_generic_work( work_type, user, title, description )
     w.draft = work_type == GenericWork::WORK_TYPE_THESIS ? 'true' : 'false'
 
     w.publisher = GenericWork::DEFAULT_PUBLISHER
-    w.department = 'Placeholder department'
+    w.department = 'Placeholder Plan / Program'
     w.degree = 'Placeholder degree'
     w.notes = 'Placeholder notes'
     w.admin_notes << "#{DateTime.now} | Placeholder admin notes"
