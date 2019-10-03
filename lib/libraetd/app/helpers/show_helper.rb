@@ -18,8 +18,6 @@ module ShowHelper
     missing = false
     missing = true if tr.include?('<span itemprop="name">First Name: </span>')
     missing = true if tr.include?('<span itemprop="name">Last Name: </span>')
-    missing = true if tr.include?('<span itemprop="name">Department: </span>')
-    missing = true if tr.include?('<span itemprop="name">Institution: </span>')
     if missing
       tr = tr.gsub("<tr>", "<tr class='required-field'>")
       return raw(tr)
