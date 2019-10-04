@@ -108,8 +108,8 @@ module CurationConcerns
       if presenter.contributor.present? && presenter.contributor.length >= 4
         metadata = false if presenter.contributor[0].end_with?(": ")
         metadata = false if presenter.contributor[1].end_with?(": ")
-        metadata = false if presenter.contributor[2].end_with?(": ")
-        metadata = false if presenter.contributor[3].end_with?(": ")
+      # metadata = false if presenter.contributor[2].end_with?(": ")
+      # metadata = false if presenter.contributor[3].end_with?(": ")
       end
       metadata = false if presenter.description.blank?
       metadata = false if presenter.rights.blank?
