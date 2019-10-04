@@ -1,4 +1,5 @@
 require_dependency 'libraetd/lib/serviceclient/auth_token_client'
+require "csv"
 
 class APIBaseController < ApplicationController
 
