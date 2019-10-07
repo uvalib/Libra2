@@ -94,7 +94,36 @@ namespace :libraetd do
           print '.'
         rescue NoMethodError => e
           log.error e
-          put e
+          puts e
+        end
+      end
+    end
+    desc "New Department names in given csv"
+    task(:apply_new_departments, [:csv_path] => :environment ) do |t, args|
+      require 'csv'
+      log = ActiveSupport::Logger.new('hostfs/logs/updated_departments.log')
+
+      CSV.foreach(args.csv_path, headers: true) do |row|
+        begin
+          id, csv_department = row.fields
+          work = GenericWork.where(id: id).first
+          if work
+            if work.department != csv_department
+              old_dept = work.department
+              work.department = csv_department
+              saved = work.save
+              log.info "#{id} - old dept:[#{old_dept}] new dept:[#{csv_department}] - Saved: #{saved}"
+            else
+              log.info "#{id} - Dept unchanged"
+            end
+
+          else
+            log.warn "#{id} - Not found"
+          end
+          print '.'
+        rescue NoMethodError => e
+          log.error e
+          puts e
         end
       end
     end
