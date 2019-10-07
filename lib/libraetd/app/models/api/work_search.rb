@@ -55,12 +55,12 @@ class WorkSearch
      dates = date.split( ':' )
      if dates.size == 2
         date_start = '*'
-        date_start = "#{dates[0]}T00:00:00Z" if convert_date( dates[ 0 ] ) != nil
+        date_start = "#{dates[0]}" if convert_date( dates[ 0 ] ) != nil
         date_end = '*'
-        date_end = "#{dates[1]}T23:59:59Z" if convert_date( dates[ 1 ] ) != nil
+        date_end = "#{dates[1]}" if convert_date( dates[ 1 ] ) != nil
         return "[#{date_start} TO #{date_end}]"
      end
-     return "[#{date}T00:00:00Z TO #{date}T23:59:59Z]"
+     return "[#{date} TO #{date}]"
   end
 
   private
