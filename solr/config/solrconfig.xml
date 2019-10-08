@@ -45,7 +45,7 @@
 
 
   <dataDir>${solr.blacklight-core.data.dir:}</dataDir>
-  
+
   <requestDispatcher handleSelect="true" >
     <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048000" />
   </requestDispatcher>
@@ -185,17 +185,6 @@
       <str name="rows">1</str>
       <str name="q">{!term f=id v=$id}</str> <!-- use id=666 instead of q=id:666 -->
     </lst>
-  </requestHandler>
-
-  <searchComponent name="termsComponent" class="solr.TermsComponent" />
-
-  <requestHandler name="/terms" class="solr.SearchHandler">
-    <lst name="defaults">
-      <bool name="terms">true</bool>
-    </lst>
-    <arr name="components">
-      <str>termsComponent</str>
-    </arr>
   </requestHandler>
 
 <!-- Spell Check
