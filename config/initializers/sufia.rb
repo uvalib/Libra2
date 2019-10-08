@@ -36,7 +36,7 @@ Sufia.config do |config|
   # config.persistent_hostpath = 'http://localhost/files/'
 
   # If you have ffmpeg installed and want to transcode audio and video uncomment this line
-  config.enable_ffmpeg = false
+  config.enable_ffmpeg = true
 
   config.ffmpeg_path = "#{Rails.application.root}/tools/ffmpeg-3.2.3-64bit-static/ffmpeg"
 
