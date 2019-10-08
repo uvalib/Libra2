@@ -355,6 +355,10 @@
    <copyField source="*_tesim" dest="suggest"/>
    <copyField source="*_ssim" dest="suggest"/>
 
+   <!-- Date formatted published and created fields -->
+   <copyField source="date_published_tesim" dest="date_published_ssim"/>
+   <copyField source="date_created_tesim" dest="date_created_ssim"/>
+
  <!-- Similarity is the scoring routine for each document vs. a query.
       A custom similarity may be specified here, but the default is fine
       for most applications.  -->
