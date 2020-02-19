@@ -9,13 +9,16 @@ module VisibilityHelper
     options.map { |value| [ visibility_text(value), value ] }
   end
 
-  def embargo_duration_options( options = nil )
+  def embargo_duration_options( document = nil )
     options = [
         GenericWork::EMBARGO_VALUE_6_MONTH,
         GenericWork::EMBARGO_VALUE_1_YEAR,
         GenericWork::EMBARGO_VALUE_2_YEAR,
         GenericWork::EMBARGO_VALUE_5_YEAR
-    ] if options.nil?
+    ]
+    is_mfa = document && document.department == "Creative Writing - Graduate School of Arts and Sciences" &&
+      document.degree == "MFA (Master of Fine Arts)"
+    options << GenericWork::EMBARGO_VALUE_10_YEAR if is_mfa
 
     options.map { |value| [ duration_text(value), value ] }
   end

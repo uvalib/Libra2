@@ -55,6 +55,7 @@ class GenericWork < ActiveFedora::Base
   EMBARGO_VALUE_1_YEAR = '1_year'.freeze
   EMBARGO_VALUE_2_YEAR = '2_year'.freeze
   EMBARGO_VALUE_5_YEAR = '5_year'.freeze
+  EMBARGO_VALUE_10_YEAR = "10_year".freeze
   EMBARGO_VALUE_FOREVER = 'forever'.freeze
   EMBARGO_VALUE_CUSTOM = 'custom'.freeze
 
@@ -63,6 +64,7 @@ class GenericWork < ActiveFedora::Base
      GenericWork::EMBARGO_VALUE_1_YEAR,
      GenericWork::EMBARGO_VALUE_2_YEAR,
      GenericWork::EMBARGO_VALUE_5_YEAR,
+     GenericWork::EMBARGO_VALUE_10_YEAR,
      GenericWork::EMBARGO_VALUE_FOREVER,
      GenericWork::EMBARGO_VALUE_CUSTOM
     ]

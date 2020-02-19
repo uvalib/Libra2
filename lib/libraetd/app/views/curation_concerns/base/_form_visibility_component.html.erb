@@ -22,7 +22,7 @@
     <div class="collapse" id="collapseEmbargo">
       <div class="form-inline">
         <% if f.object.embargo_period != GenericWork::EMBARGO_VALUE_CUSTOM %>
-          <%= f.input :embargo_period, label: ' For ', wrapper: :inline, collection: embargo_duration_options( ), include_blank: false %>
+          <%= f.input :embargo_period, label: ' For ', wrapper: :inline, collection: embargo_duration_options( f.object ), include_blank: false %>
         <%else #custom embargo period set by admin%>
           Until <em><%= file_date_created(f.object.embargo_end_date.to_date) %></em>
         <%end%>
