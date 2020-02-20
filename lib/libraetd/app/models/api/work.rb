@@ -191,7 +191,7 @@ class Work
 
     @degree = solr_extract_first( solr, 'degree' )
 
-    @url = solr_extract_first( solr, 'permanent_url' )
+    @url = GenericWork.doi_url( @identifier )
 
     if solr_extract_first( solr, 'draft') == 'true'
       if @modified_date.blank? == false
