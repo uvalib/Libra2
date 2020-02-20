@@ -123,7 +123,7 @@ module PublicHelper
       doi = if work.is_draft?
          "Persistent link will appear here after submission."
       elsif work.identifier
-         GenericWork.permanent_url
+         work.permanent_url
       else
          "Still working on assigning a DOI. This is the public URL: #{public_view_url(work.id)}"
       end
