@@ -186,6 +186,9 @@ class GenericWork < ActiveFedora::Base
   property :orcid_put_code, predicate: ::RDF::URI('http://example.org/terms/orcid_put_code'), multiple: false do |index|
     index.as :stored_searchable
   end
+  property :orcid_author_url, predicate: ::RDF::URI('http://example.org/terms/orcid_author_url'), multiple: false do |index|
+    index.as :stored_searchable
+  end
 
 
   # specify the indexer used to create the SOLR document
