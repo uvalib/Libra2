@@ -341,7 +341,12 @@ namespace :libraetd do
       # update the identifier
       puts "Assigned new DOI (#{id})"
       work.identifier = id
-      work.permanent_url = GenericWork.doi_url( id )
+      if id.present?
+        work.permanent_url = GenericWork.doi_url( id )
+      else
+        puts "ERROR: cannot mint DOI (#{status}). Using public view url"
+        w.permanent_url = public_view_url(id)
+      end
       work.save!
 
      if work.is_draft? == false

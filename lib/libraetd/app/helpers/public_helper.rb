@@ -121,7 +121,7 @@ module PublicHelper
 
    def display_doi_link(work)
       doi = "Persistent link will appear here after submission." if work.is_draft?
-      doi = GenericWork.doi_url( work.identifier ) unless work.is_draft?
+      doi = GenericWork.permanent_url unless work.is_draft?
       return( CurationConcerns::Renderers::CustomPublicAttributeRenderer.new("Persistent Link:", doi ).render )
    end
 

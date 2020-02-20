@@ -490,7 +490,9 @@ def create_generic_work( work_type, user, title, description )
        w.permanent_url = GenericWork.doi_url( id )
        puts "done"
     else
-       puts "error"
+      puts "ERROR: cannot mint DOI (#{status}). Using public view"
+      w.identifier = nil
+      w.permanent_url = public_view_url( id )
     end
   end
 

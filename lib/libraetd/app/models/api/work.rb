@@ -190,7 +190,8 @@ class Work
     @sponsoring_agency = solr_extract_all( solr, 'sponsoring_agency' )
 
     @degree = solr_extract_first( solr, 'degree' )
-    @url = GenericWork.doi_url( @identifier )
+
+    @url = solr_extract_first( solr, 'permanent_url' )
 
     if solr_extract_first( solr, 'draft') == 'true'
       if @modified_date.blank? == false

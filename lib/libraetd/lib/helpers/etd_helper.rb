@@ -66,8 +66,9 @@ module Helpers
           w.identifier = id
           w.permanent_url = GenericWork.doi_url( id )
         else
-          puts "ERROR: cannot mint DOI (#{status})"
-          ok = false
+          puts "ERROR: cannot mint DOI (#{status}). Using public view"
+          w.identifier = nil
+          w.permanent_url = public_view_url( id )
         end
 
       end
@@ -123,8 +124,9 @@ module Helpers
            w.identifier = id
            w.permanent_url = GenericWork.doi_url( id )
         else
-          puts "ERROR: cannot mint DOI (#{status})"
-          ok = false
+          puts "ERROR: cannot mint DOI (#{status}). Using public view"
+          w.identifier = nil
+          w.permanent_url = public_view_url( id )
         end
 
       end
