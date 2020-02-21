@@ -289,7 +289,7 @@ class GenericWork < ActiveFedora::Base
   end
 
   def self.doi_url( doi )
-    return '' if doi.nil?
+    return '' if doi.empty?
     return "#{ENV['DOI_BASE_URL']}/#{doi.gsub('doi:', '')}"
   end
 

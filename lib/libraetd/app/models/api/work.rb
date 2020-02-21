@@ -15,6 +15,7 @@ class Work
   attr_accessor :author_last_name
   attr_accessor :author_institution
   attr_accessor :author_department
+  attr_accessor :orcid_author_url
 
   attr_accessor :identifier
   attr_accessor :title
@@ -69,6 +70,7 @@ class Work
     @author_last_name = ''
     @author_institution = ''
     @author_department = ''
+    @orcid_author_url = ''
 
     @identifier = ''
     @title = ''
@@ -162,6 +164,7 @@ class Work
     @author_last_name = solr_extract_first( solr, 'author_last_name' )
     @author_institution = solr_extract_first( solr, 'author_institution' )
     @author_department = solr_extract_first( solr, 'department' )
+    @orcid_author_url = solr_extract_first( solr, 'orcid_author_url' )
 
     @identifier = solr_extract_first( solr, 'identifier' )
     @title = solr_extract_first( solr, 'title' )
