@@ -62,7 +62,7 @@ module Helpers
         w.work_source = work_source
 
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
-        if ServiceClient::EntityIdClient.instance.ok?( status )
+        if ServiceClient::EntityIdClient.instance.ok?( status ) && id.present?
           w.identifier = id
           w.permanent_url = GenericWork.doi_url( id )
         else
@@ -120,12 +120,11 @@ module Helpers
         w.registrar_computing_id = deposit_request.requester unless deposit_request.requester.nil?
 
         status, id = ServiceClient::EntityIdClient.instance.newid( w )
-        if ServiceClient::EntityIdClient.instance.ok?( status )
+        if ServiceClient::EntityIdClient.instance.ok?( status ) && id.present?
            w.identifier = id
            w.permanent_url = GenericWork.doi_url( id )
         else
           puts "ERROR: cannot mint DOI (#{status}). Using public view"
-          w.identifier = nil
           w.permanent_url = public_view_url( id )
         end
 
