@@ -1,7 +1,7 @@
 require_dependency 'libraetd/lib/serviceclient/user_info_client'
 require_dependency 'libraetd/lib/helpers/user_info'
 require_dependency 'libraetd/lib/serviceclient/entity_id_client'
-include Rails.application.routes.url_helpers
+include ActionView::Helpers::UrlHelper
 
 module Helpers
 
