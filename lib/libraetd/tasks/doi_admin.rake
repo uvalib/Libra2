@@ -333,20 +333,15 @@ namespace :libraetd do
 
       # mint a new DOI
       status, id = ServiceClient::EntityIdClient.instance.newid( work )
-      if ServiceClient::EntityIdClient.instance.ok?( status ) == false
-        puts "ERROR: new DOI request returns #{status}, aborting"
-        return false
-      end
-
-      # update the identifier
-      puts "Assigned new DOI (#{id})"
-      work.identifier = id
-      if id.present?
+      if ServiceClient::EntityIdClient.instance.ok?( status ) && id.present?
+        puts "Assigned new DOI (#{id})"
+        work.identifier = id
         work.permanent_url = GenericWork.doi_url( id )
       else
         puts "ERROR: cannot mint DOI (#{status}). Using public view url"
-        w.permanent_url = public_view_url(id)
+        work.permanent_url = Rails.application.routes.url_helpers.public_view_url( work )
       end
+
       work.save!
 
      if work.is_draft? == false

@@ -445,7 +445,7 @@ def create_generic_work( work_type, user, title, description )
         "{'first_name': 'First name', 'last_name': 'Last name'}".to_json )
   end
 
-  work = GenericWork.create!(title: [ title ] ) do |w|
+  w = GenericWork.create!(title: [ title ] ) do |w|
 
     # generic work attributes
     w.apply_depositor_metadata(user)
@@ -482,21 +482,22 @@ def create_generic_work( work_type, user, title, description )
 
     w.rights << 'All rights reserved (no additional license for public reuse)'
     w.license = GenericWork::DEFAULT_LICENSE
-
-    print "getting DOI..."
-    status, id = ServiceClient::EntityIdClient.instance.newid( w )
-    if ServiceClient::EntityIdClient.instance.ok?( status )
-       w.identifier = id
-       w.permanent_url = GenericWork.doi_url( id )
-       puts "done"
-    else
-      puts "ERROR: cannot mint DOI (#{status}). Using public view"
-      w.identifier = nil
-      w.permanent_url = public_view_url( id )
-    end
   end
 
-  return work
+  print "getting DOI..."
+  status, id = ServiceClient::EntityIdClient.instance.newid( w )
+  if ServiceClient::EntityIdClient.instance.ok?( status )
+      w.identifier = id
+      w.permanent_url = GenericWork.doi_url( id )
+      puts "done"
+  else
+    puts "ERROR: cannot mint DOI (#{status}). Using public view"
+    w.identifier = nil
+    w.permanent_url = Rails.application.routes.url_helpers.public_view_url( w )
+  end
+  w.save!
+
+  return w
 end
 
 def copy_sourcefile( source_file )
