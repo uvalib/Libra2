@@ -120,6 +120,10 @@ class Libra2Indexer < CurationConcerns::WorkIndexer
                           'orcid_put_code',
                           object.orcid_put_code,
                           :searchable )
+      Solrizer.set_field( solr_doc,
+                          'orcid_author_url',
+                          object.orcid_author_url,
+                          :searchable )
 
     end
   end

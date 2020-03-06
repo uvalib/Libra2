@@ -55,6 +55,7 @@ class GenericWork < ActiveFedora::Base
   EMBARGO_VALUE_1_YEAR = '1_year'.freeze
   EMBARGO_VALUE_2_YEAR = '2_year'.freeze
   EMBARGO_VALUE_5_YEAR = '5_year'.freeze
+  EMBARGO_VALUE_10_YEAR = "10_year".freeze
   EMBARGO_VALUE_FOREVER = 'forever'.freeze
   EMBARGO_VALUE_CUSTOM = 'custom'.freeze
 
@@ -63,6 +64,7 @@ class GenericWork < ActiveFedora::Base
      GenericWork::EMBARGO_VALUE_1_YEAR,
      GenericWork::EMBARGO_VALUE_2_YEAR,
      GenericWork::EMBARGO_VALUE_5_YEAR,
+     GenericWork::EMBARGO_VALUE_10_YEAR,
      GenericWork::EMBARGO_VALUE_FOREVER,
      GenericWork::EMBARGO_VALUE_CUSTOM
     ]
@@ -184,6 +186,9 @@ class GenericWork < ActiveFedora::Base
   property :orcid_put_code, predicate: ::RDF::URI('http://example.org/terms/orcid_put_code'), multiple: false do |index|
     index.as :stored_searchable
   end
+  property :orcid_author_url, predicate: ::RDF::URI('http://example.org/terms/orcid_author_url'), multiple: false do |index|
+    index.as :stored_searchable
+  end
 
 
   # specify the indexer used to create the SOLR document
@@ -284,7 +289,7 @@ class GenericWork < ActiveFedora::Base
   end
 
   def self.doi_url( doi )
-    return '' if doi.nil?
+    return '' if doi.empty?
     return "#{ENV['DOI_BASE_URL']}/#{doi.gsub('doi:', '')}"
   end
 

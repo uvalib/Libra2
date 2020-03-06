@@ -35,7 +35,7 @@ module Helpers
       end
 
       ok = true
-      GenericWork.create!( title: [ deposit_authorization.title ] ) do |w|
+      w = GenericWork.create!( title: [ deposit_authorization.title ] ) do |w|
 
         # generic work attributes
         w.apply_depositor_metadata( user )
@@ -61,16 +61,18 @@ module Helpers
         # where the authorization comes from
         w.work_source = work_source
 
-        status, id = ServiceClient::EntityIdClient.instance.newid( w )
-        if ServiceClient::EntityIdClient.instance.ok?( status )
-          w.identifier = id
-          w.permanent_url = GenericWork.doi_url( id )
-        else
-          puts "ERROR: cannot mint DOI (#{status})"
-          ok = false
-        end
-
       end
+
+      status, id = ServiceClient::EntityIdClient.instance.newid( w )
+      if ServiceClient::EntityIdClient.instance.ok?( status ) && id.present?
+        w.identifier = id
+        w.permanent_url = GenericWork.doi_url( id )
+      else
+        puts "ERROR: cannot mint DOI (#{status}). Using public view"
+        w.identifier = nil
+        w.permanent_url = Rails.application.routes.url_helpers.public_view_url( w )
+      end
+      ok = w.save
 
       # send the email if necessary
       ThesisMailers.sis_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later if ok
@@ -89,7 +91,7 @@ module Helpers
       default_title = 'Enter your title here'
 
       ok = true
-      GenericWork.create!( title: [ default_title ] ) do |w|
+      w = GenericWork.create!( title: [ default_title ] ) do |w|
 
         # generic work attributes
         w.apply_depositor_metadata( user )
@@ -117,17 +119,17 @@ module Helpers
 
         # who requested it
         w.registrar_computing_id = deposit_request.requester unless deposit_request.requester.nil?
-
-        status, id = ServiceClient::EntityIdClient.instance.newid( w )
-        if ServiceClient::EntityIdClient.instance.ok?( status )
-           w.identifier = id
-           w.permanent_url = GenericWork.doi_url( id )
-        else
-          puts "ERROR: cannot mint DOI (#{status})"
-          ok = false
-        end
-
       end
+
+      status, id = ServiceClient::EntityIdClient.instance.newid( w )
+      if ServiceClient::EntityIdClient.instance.ok?( status ) && id.present?
+          w.identifier = id
+          w.permanent_url = GenericWork.doi_url( id )
+      else
+        puts "ERROR: cannot mint DOI (#{status}). Using public view"
+        w.permanent_url = Rails.application.routes.url_helpers.public_view_url( w )
+      end
+      ok = w.save
       ThesisMailers.optional_thesis_can_be_submitted( user.email, user.display_name, MAIL_SENDER ).deliver_later if ok
       return ok
     end

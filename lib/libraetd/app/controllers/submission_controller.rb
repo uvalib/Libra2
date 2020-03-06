@@ -69,7 +69,13 @@ class SubmissionController < ApplicationController
       send_registrar_email(work)
     end
 
-    redirect_to locally_hosted_work_url( id ), :flash => { :notice => "Thank you for submitting your thesis. Be sure to make note of and refer to the Persistent Link when you refer to this work." }
+    notice = if work.identifier
+      "Thank you for submitting your thesis. Be sure to make note of and refer to the Persistent Link when you refer to this work."
+    else
+      "Thank you for submitting your thesis. The Persistent Link could not be generated at this time. Check back later for the permananent URL."
+    end
+
+    redirect_to locally_hosted_work_url( id ), :flash => { :notice => notice }
   end
 
   def unpublish

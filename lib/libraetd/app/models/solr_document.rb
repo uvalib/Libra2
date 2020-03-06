@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class SolrDocument 
+class SolrDocument
 
   include Blacklight::Solr::Document
   include Blacklight::Gallery::OpenseadragonSolrDocument
@@ -10,10 +10,10 @@ class SolrDocument
   include Sufia::SolrDocumentBehavior
 
   # self.unique_key = 'id'
-  
+
   # Email uses the semantic field mappings below to generate the body of an email.
   SolrDocument.use_extension( Blacklight::Document::Email )
-  
+
   # SMS uses the semantic field mappings below to generate the body of an SMS email.
   SolrDocument.use_extension( Blacklight::Document::Sms )
 
@@ -22,10 +22,10 @@ class SolrDocument
   # single valued. See Blacklight::Document::SemanticFields#field_semantics
   # and Blacklight::Document::SemanticFields#to_semantic_values
   # Recommendation: Use field names from Dublin Core
-  use_extension( Blacklight::Document::DublinCore)    
+  use_extension( Blacklight::Document::DublinCore)
 
 
-  # Do content negotiation for AF models. 
+  # Do content negotiation for AF models.
 
   use_extension( Hydra::ContentNegotiation )
 
@@ -157,7 +157,9 @@ class SolrDocument
     self[Solrizer.solr_name('orcid_put_code')]
   end
 
-
+  def orcid_author_url
+    self[Solrizer.solr_name('orcid_author_url')]
+  end
 
   def is_thesis?
     return false if work_type.nil?

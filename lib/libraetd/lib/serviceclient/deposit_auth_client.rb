@@ -65,13 +65,15 @@ module ServiceClient
      #
      # notify of a deposit
      #
-     def request_fulfilled( work )
-       url = "#{self.url}/#{work.sis_authorization_id}?auth=#{self.authtoken}&deposit=#{work.identifier}"
-       status, _ = rest_put( url, nil )
-       return status
-     end
+      def request_fulfilled( work )
+        # send an id even if identifier service failed
+        deposit_id = work.identifier || "libra-etd:#{work.id}"
+        url = "#{self.url}/#{work.sis_authorization_id}?auth=#{self.authtoken}&deposit=#{}"
+        status, _ = rest_put( url, nil )
+        return status
+      end
 
-     #
+     #T
      # initiate a SIS import
      #
      def import

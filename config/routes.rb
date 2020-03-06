@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   #get 'development_login' => 'dashboard#development_login' # TODO-PER: Temp route to get login working quickly.
   get "/test_exception_notifier" => "dashboard#test_exception_notifier"
   get "/test_email" => "dashboard#test_email"
-  get '/public_view/:id' => 'submission#public_view'
+  get '/public_view/:id' => 'submission#public_view', as: :public_view
   post '/submit/:id' => 'submission#submit'
   get '/public_view/:id/unpublish' => 'submission#unpublish'
   get '/computing_id' => 'dashboard#computing_id'

@@ -39,7 +39,8 @@ class OrcidSyncJob < BaseOrcidJob
       set_activity_by_cid( computing_id, work )
 
     if ServiceClient::OrcidAccessClient.instance.ok?( status )
-      work.update orcid_put_code: update_code, orcid_status: GenericWork.complete_orcid_status
+      work.update orcid_put_code: update_code, orcid_status: GenericWork.complete_orcid_status,
+                  orcid_author_url: normalize_orcid_url(user.orcid)
       puts "==> ORCID Upload OK for #{work_id}, update code [#{update_code}]"
 
     elsif ServiceClient::OrcidAccessClient.instance.retry?( status )

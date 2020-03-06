@@ -92,7 +92,7 @@ module EmbargoHelper
     restricted_area = is_engineering_embargo(work) ? "abstract view only" : "UVA"
     release_date = embargo_release_date(work)
 
-    if release_date > 5.years.from_now
+    if release_date > 10.years.from_now
       "This item is restricted to #{restricted_area}."
     else
       "This item is restricted to #{restricted_area} until #{file_date(release_date)}."
