@@ -19,4 +19,4 @@ nohup scripts/sis_import.sh &
 nohup scripts/sitemap_generator.sh &
 
 # run the server
-rails server -b 0.0.0.0 -p 3000 Puma
+rails server -b 0.0.0.0 -p 8080 Puma

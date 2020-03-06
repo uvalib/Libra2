@@ -27,7 +27,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 # install bundler
-RUN gem install bundler -v 1.17.3 --no-ri --no-rdoc
+RUN gem install bundler -v 1.17.3 --no-document
 
 # create work directory
 ENV APP_HOME /libra2
@@ -49,15 +49,22 @@ RUN chown -R docker $APP_HOME /home/docker && chgrp -R sse $APP_HOME /home/docke
 # freshen the antivirus definitions and update permissions so we can do this again
 RUN freshclam && chmod -R o+w /var/lib/clamav
 
-# Specify the user
-USER docker
-
 # Define port and startup script
-EXPOSE 3000
+EXPOSE 8080
 CMD scripts/entry.sh
 
 # Move in other assets
 COPY data/container_bash_profile /home/docker/.profile
+
+# Ensure permissions are correct
+RUN chown docker:sse /home/docker/.profile $APP_HOME/scripts/entry.sh && chmod 755 /home/docker/.profile $APP_HOME/scripts/entry.sh
+
+# Add the build tag
+ARG BUILD_TAG
+RUN test -n "$BUILD_TAG" && touch $APP_HOME/buildtag.build-$BUILD_TAG || touch $APP_HOME/buildtag.build-0
+
+# Specify the user
+USER docker
 
 #
 # end of file

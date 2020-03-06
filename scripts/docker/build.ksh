@@ -11,11 +11,8 @@ echo "*****************************************"
 INSTANCE=libra-etd
 NAMESPACE=uvadave
 
-# pull base image to ensure we have the latest
-docker pull centos:7
-
 # build the image
-docker build -t $NAMESPACE/$INSTANCE .
+docker build -f package/Dockerfile -t $NAMESPACE/$INSTANCE .
 
 # return status
 exit $?
