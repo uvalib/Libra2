@@ -5,6 +5,8 @@ class APIBaseController < ApplicationController
 
   include ServiceHelper
 
+  include TokenHelper
+
   # disable rails auth behavior and add our own
   #skip_before_action :require_auth
   skip_before_action :verify_authenticity_token
@@ -64,9 +66,8 @@ class APIBaseController < ApplicationController
     render json: API::BaseResponse.new( status, message ), :status => status
   end
 
-  def valid_auth?( auth )
-    status = ServiceClient::AuthTokenClient.instance.auth( 'api', 'access', auth )
-    return ServiceClient::AuthTokenClient.instance.ok?( status )
+  def valid_auth?( token )
+    token_valid?( token )
   end
 
   def valid_user?( user )

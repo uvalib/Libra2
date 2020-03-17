@@ -92,3 +92,6 @@ gem 'prometheus-client'
 #end
 
 gem 'active-fedora', '~> 11.5.2', github: 'uvalib/active_fedora', branch: '11-5-stable'
+
+# service auth
+gem 'jwt'

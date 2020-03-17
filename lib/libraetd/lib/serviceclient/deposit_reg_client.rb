@@ -64,10 +64,6 @@ module ServiceClient
      # helpers
      #
 
-     def authtoken
-       configuration[ :authtoken ]
-     end
-
      def url
        configuration[ :url ]
      end

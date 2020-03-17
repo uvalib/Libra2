@@ -722,6 +722,7 @@ DEPENDENCIES
   hash_at_path
   jbuilder (~> 2.5)
   jquery-rails
+  jwt
   kaminari (< 1.0)
   meta-tags
   mysql2

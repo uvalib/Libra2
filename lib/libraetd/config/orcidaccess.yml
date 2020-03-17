@@ -1,5 +1,5 @@
 default: &default
-  authtoken: <%= ENV['API_TOKEN'] %>
+  secret: <%= ENV['AUTH_SHARED_SECRET'] %>
   url: <%= ENV['ORCIDACCESS_URL'] %>
   timeout: <%= ENV['WEBSERVICE_TIMEOUT'] || 10 %>
 development:

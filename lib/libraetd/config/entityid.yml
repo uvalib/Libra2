@@ -1,6 +1,6 @@
 default: &default
   shoulder: <%= ENV['ID_SERVICE_SHOULDER'] %>
-  authtoken: <%= ENV['API_TOKEN'] %>
+  secret: <%= ENV['AUTH_SHARED_SECRET'] %>
   url: <%= ENV['ENTITYID_URL'] %>
   timeout: <%= ENV['WEBSERVICE_TIMEOUT'] || 10 %>
 development:

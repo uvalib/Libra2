@@ -1,6 +1,5 @@
 default: &default
-  url: <%= ENV['TOKENAUTH_URL'] %>
-  timeout: <%= ENV['WEBSERVICE_TIMEOUT'] || 10 %>
+  secret: <%= ENV['AUTH_SHARED_SECRET'] %>
 development:
   <<: *default
 test:

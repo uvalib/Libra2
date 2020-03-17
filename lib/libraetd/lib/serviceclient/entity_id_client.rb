@@ -135,10 +135,6 @@ module ServiceClient
        configuration[ :shoulder ]
      end
 
-     def authtoken
-       configuration[ :authtoken ]
-     end
-
      def url
        configuration[ :url ]
      end
