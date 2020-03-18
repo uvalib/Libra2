@@ -1,11 +1,11 @@
-require_dependency 'libraetd/lib/serviceclient/auth_token_client'
 require "csv"
+
+require_dependency 'libraetd/app/helpers/token_helper'
+include TokenHelper
 
 class APIBaseController < ApplicationController
 
   include ServiceHelper
-
-  include TokenHelper
 
   # disable rails auth behavior and add our own
   #skip_before_action :require_auth
@@ -67,7 +67,7 @@ class APIBaseController < ApplicationController
   end
 
   def valid_auth?( token )
-    token_valid?( token )
+    TokenHelper.token_valid?( token )
   end
 
   def valid_user?( user )
