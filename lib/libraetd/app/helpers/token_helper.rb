@@ -16,13 +16,14 @@ module TokenHelper
     if @@secret.nil?
       @@secret = get_secret
     end
+
     begin
-       decoded = JWT.decode token, @@secret, true, { algorithm: 'HS256' }
-       puts decoded
+       JWT.decode token, @@secret, true, { algorithm: 'HS256' }
        return true
     rescue JWT::DecodeError
-      return false
+      puts "ERROR: decoding JWT or expired JWT"
     end
+    return false
 
   end
 
