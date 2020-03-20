@@ -5,10 +5,10 @@ class VersionController < ApplicationController
   # the response
   class VersionResponse
 
-    attr_accessor :version
+    attr_accessor :build
 
-    def initialize( version )
-      @version = version
+    def initialize( build )
+      @build = build
     end
   end
 
