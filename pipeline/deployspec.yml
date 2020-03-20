@@ -36,7 +36,7 @@ phases:
       - cd $CODEBUILD_SRC_DIR/terraform-infrastructure/libraetd.lib.virginia.edu/staging/ansible
       - export PATH="$PATH:$(python3 -c 'import site; print(site.USER_BASE)')/bin"
       - ansible-playbook deploy_backend.yml
-      #- ansible-playbook deploy_workerpool.yml
+      - ansible-playbook deploy_workerpool.yml
       - sh $CODEBUILD_SRC_DIR/pipeline/wait_for_version.sh $TC_ENDPOINT $latest_build 300
 
 #  post_build:
