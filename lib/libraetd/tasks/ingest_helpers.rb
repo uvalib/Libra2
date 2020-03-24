@@ -546,6 +546,8 @@ module IngestHelpers
         return dt + 2.years
       when GenericWork::EMBARGO_VALUE_5_YEAR
         return dt + 5.years
+      when GenericWork::EMBARGO_VALUE_10_YEAR
+        return dt + 10.years
       when GenericWork::EMBARGO_VALUE_FOREVER
         return dt + 130.years
     end
