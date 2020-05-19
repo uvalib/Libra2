@@ -9,12 +9,6 @@ nohup scripts/optional_deposit_import.sh &
 # run the SIS deposit importer process
 nohup scripts/sis_deposit_import.sh &
 
-# run the SIS exporter process
-nohup scripts/sis_export.sh &
-
-# run the SIS importer process
-nohup scripts/sis_import.sh &
-
 # run the sitemap generator process
 nohup scripts/sitemap_generator.sh &
 
