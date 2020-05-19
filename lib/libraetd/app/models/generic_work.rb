@@ -323,6 +323,8 @@ class GenericWork < ActiveFedora::Base
       return "2 years"
     when GenericWork::EMBARGO_VALUE_5_YEAR
       return "5 years"
+    when GenericWork::EMBARGO_VALUE_10_YEAR
+      return "10 years"
     when GenericWork::EMBARGO_VALUE_FOREVER
       return "forever"
     when GenericWork::EMBARGO_VALUE_CUSTOM
@@ -341,6 +343,8 @@ class GenericWork < ActiveFedora::Base
       return Time.now( ) + 2.years
     when GenericWork::EMBARGO_VALUE_5_YEAR
       return Time.now( ) + 5.years
+    when GenericWork::EMBARGO_VALUE_10_YEAR
+      return Time.now( ) + 10.years
     when GenericWork::EMBARGO_VALUE_FOREVER
       return Time.now( ) + 130.years
     when GenericWork::EMBARGO_VALUE_CUSTOM

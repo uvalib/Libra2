@@ -68,7 +68,7 @@ module ServiceClient
       def request_fulfilled( work )
         # send an id even if identifier service failed
         deposit_id = work.identifier || "libra-etd:#{work.id}"
-        url = "#{self.url}/#{work.sis_authorization_id}?auth=#{self.authtoken}&deposit=#{}"
+        url = "#{self.url}/#{work.sis_authorization_id}?auth=#{self.authtoken}&deposit=#{deposit_id}"
         status, _ = rest_put( url, nil )
         return status
       end
