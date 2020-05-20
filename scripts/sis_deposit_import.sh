@@ -25,7 +25,7 @@ while true; do
    sleep $SLEEPTIME
 
    # determine if we are the active host... only run on one host even though we may be deployed on many
-   if is_active_host; then
+   #if is_active_host; then
 
       # starting message
       logit "Beginning SIS deposit import sequence"
@@ -36,10 +36,10 @@ while true; do
 
       # ending message
       logit "SIS deposit import sequence completes with status: $res"
-   else
+   #else
       # idle message
-      logit "Not the active host; doing nothing"
-   fi
+   #   logit "Not the active host; doing nothing"
+   #fi
 
 done
 
