@@ -19,7 +19,7 @@ namespace :libraetd do
 
   # keys definitions for state
   default_last_id = "0"
-  statekey_sis = "libra2:#{Rails.env.to_s}:deposit:sis:#{Socket.gethostname}"
+  statekey_sis = "libra-etd:deposit:sis:#{ENV['DOCKER_HOST']}"
 
   #
   #
