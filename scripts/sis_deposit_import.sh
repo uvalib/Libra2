@@ -7,39 +7,35 @@
 DIR=$(dirname $0)
 . $DIR/common.sh
 
-# set the appropriate logger
-export NAME=$(basename $0 .sh)
-export LOGGER=$(logger_name "$NAME.log")
-
 # our sleep time, currently 5 minutes
 export SLEEPTIME=300
 
 # helpful message...
-logit "Starting up..."
+logit "INFO: SIS deposit import starting up..."
 
 # forever...
 while true; do
 
    # sleeping message...
-   logit "Sleeping for $SLEEPTIME seconds..."
+   logit "INFO: Sleeping for $SLEEPTIME seconds..."
    sleep $SLEEPTIME
 
-   # determine if we are the active host... only run on one host even though we may be deployed on many
-   #if is_active_host; then
+   # determine if we are the active instance... only run on one instance even though we may be deployed on many
+   if is_active_instance; then
 
       # starting message
-      logit "Beginning SIS deposit import sequence"
+      logit "INFO: Beginning SIS deposit import sequence"
 
       # do the SIS import
-      rake libraetd:sisetd:ingest_sis_etd_deposits >> $LOGGER 2>&1
+      rake libraetd:sisetd:ingest_sis_etd_deposits
       res=$?
 
       # ending message
-      logit "SIS deposit import sequence completes with status: $res"
-   #else
+      logit "INFO: SIS deposit import sequence completes with status: $res"
+   else
       # idle message
-   #   logit "Not the active host; doing nothing"
-   #fi
+      logit "INFO: Not the active instance; doing nothing"
+   fi
 
 done
 

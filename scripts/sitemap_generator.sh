@@ -6,37 +6,33 @@
 DIR=$(dirname $0)
 . $DIR/common.sh
 
-# set the appropriate logger
-export NAME=$(basename $0 .sh)
-export LOGGER=$(logger_name "$NAME.log")
-
 # the time we want the action to occur
 # this is specified in localtime
 export ACTION_TIME="00:30"
 export ACTION_TIMEZONE="America/New_York"
 
 # helpful message...
-logit "Sitemap generator starting up..."
+logit "INFO: Sitemap generator starting up..."
 
 # forever...
 while true; do
 
    # sleeping message...
-   logit "Sleeping until $ACTION_TIME $ACTION_TIMEZONE..."
+   logit "INFO: Sleeping until $ACTION_TIME $ACTION_TIMEZONE..."
    sleep_until $ACTION_TIME $ACTION_TIMEZONE
 
    # starting message
-   logit "Beginning sitemap generator sequence"
+   logit "INFO: Beginning sitemap generator sequence"
 
    if [ "$ENABLE_TEST_FEATURES" == "n" ]; then
-      rake sitemap:refresh >> $LOGGER 2>&1
+      rake sitemap:refresh 
    else
-      rake sitemap:refresh:no_ping >> $LOGGER 2>&1
+      rake sitemap:refresh:no_ping
    fi
    res=$?
 
    # ending message
-   logit "Sitemap generator completes with status: $res"
+   logit "INFO: Sitemap generator completes with status: $res"
 
    # sleep for another minute
    sleep 60

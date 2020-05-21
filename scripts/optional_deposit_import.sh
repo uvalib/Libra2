@@ -7,39 +7,35 @@
 DIR=$(dirname $0)
 . $DIR/common.sh
 
-# set the appropriate logger
-export NAME=$(basename $0 .sh)
-export LOGGER=$(logger_name "$NAME.log")
-
 # our sleep time, currently 2 minutes
 export SLEEPTIME=120
 
 # helpful message...
-logit "Starting up..."
+logit "INFO: Optional deposit import starting up..."
 
 # forever...
 while true; do
 
    # sleeping message...
-   logit "Sleeping for $SLEEPTIME seconds..."
+   logit "INFO: Sleeping for $SLEEPTIME seconds..."
    sleep $SLEEPTIME
 
-   # determine if we are the active host... only run on one host even though we may be deployed on many
-   #if is_active_host; then
+   # determine if we are the active instance... only run on one instance even though we may be deployed on many
+   if is_active_instance; then
 
       # starting message
-      logit "Beginning optional deposit import sequence"
+      logit "INFO: Beginning optional deposit import sequence"
 
       # do the optional import
-      rake libraetd:optionaletd:ingest_optional_etd_deposits >> $LOGGER 2>&1
+      rake libraetd:optionaletd:ingest_optional_etd_deposits
       res=$?
 
       # ending message
-      logit "Optional deposit import sequence completes with status: $res"
-   #else
+      logit "INFO: Optional deposit import sequence completes with status: $res"
+   else
       # idle message
-   #   logit "Not the active host; doing nothing"
-   #fi
+      logit "INFO: Not the active instance; doing nothing"
+   fi
 
 done
 

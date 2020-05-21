@@ -16,29 +16,11 @@ function dockerized {
 }
 
 #
-# determine the logger name
-#
-function logger_name {
-   local name=$1
-   if dockerized; then
-      DH="unknown"
-      if [ -n "$DOCKER_HOST" ]; then
-         DH=$(echo $DOCKER_HOST|awk -F. '{print $1}')
-      fi
-      echo "$APP_HOME/hostfs/logs/$DH.$name"
-   else
-      echo "/dev/stdout"
-   fi
-}
-
-#
-# log a message with the timestamp
-# assumes that $LOGGER is defined
+# log a message
 #
 function logit {
    local msg=$1
-   TS=$(date "+%Y-%m-%d %H:%M:%S %Z")
-   echo "$TS: $msg" >> $LOGGER
+   echo "$msg"
 }
 
 #
@@ -55,47 +37,14 @@ function sleep_until {
 }
 
 #
-# determine if we are the active host
+# determine if we are the active instance
 #
 # Because we run multiple nodes, we have to have one node as the 'master' in the event that processes
-# cannot be run concurrently on multiple hosts.
+# cannot be run concurrently on multiple instances.
 #
-# For development, the active host is docker1.lib.virginia.edu.
-# For production, the active host is whichever docker host the CNAME librasis.lib.virginia.edu resolves too.
-#
-function is_active_host {
+function is_active_instance {
 
-   # if the docker host variable is not defined
-   if [ -z "$DOCKER_HOST" ]; then
-      # we cannot determine if we are an active host
-      # 1 = false
-      return 1
-   fi
-
-   DH=$(echo $DOCKER_HOST|awk -F. '{print $1}')
-   if [ "$DH" == "docker1" ]; then
-      # docker1 is the dev server
-      # 0 = true
-      return 0
-   fi
-
-   # live means this endpoint resolves to our DOCKER_HOST name
-   local endpoint="librasis.lib.virginia.edu"
-
-   # setup the appropriate commands depending on our environment
-   if dockerized; then
-      HOSTINFO="getent hosts"
-   else
-      HOSTINFO="host"
-   fi
-
-   # pull the hostname from the docker host and see if the endpoint resolves to include this host
-   REFS=$($HOSTINFO $endpoint|grep $DH|wc -l|awk '{print $1}')
-
-   if [ $REFS -eq 0 ]; then
-      # 1 = false
-      return 1
-   fi
+   # will determine this at a later date as apropriate
 
    # 0 = true
    return 0
