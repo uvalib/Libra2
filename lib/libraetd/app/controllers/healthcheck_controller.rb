@@ -51,6 +51,10 @@ class HealthcheckController < ApplicationController
       ok = false
       msg = 'Fedora connection error'
       puts "Fedora connection error during healthcheck"
+    rescue Faraday::ConnectionFailed => ex
+      ok = false
+      msg = 'Connection failed error'
+      puts "Connection failed error during healthcheck"
     rescue => ex
       ok = false
       msg = "Error: #{ex.class}"
