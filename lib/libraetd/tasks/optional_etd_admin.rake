@@ -19,7 +19,7 @@ namespace :libraetd do
 
   # keys definitions for state
   default_last_id = "0"
-  statekey_optional = "libra-etd:deposit:optional:#{ENV['DOCKER_HOST']}"
+  statekey_optional = "libra-etd-deposit-optional-#{ENV['DOCKER_HOST']}"
 
   desc "List new optional ETD deposit requests"
   task list_new_optional_etd_deposits: :environment do |t, args|

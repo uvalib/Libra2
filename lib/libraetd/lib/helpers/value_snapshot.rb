@@ -1,42 +1,35 @@
-require_dependency 'libraetd/lib/helpers/redis_helper'
-
 module Helpers
 
   #
   # a simple abstraction of a persistent value
-  # in this case, using Redis to store the current value
+  # in this case, using the filesystem to store the current value
   #
   class ValueSnapshot
 
-    include RedisHelper
-
      def initialize( key, default_value )
-       @redis = nil
-       @keyname = key
-       return if redis_config( ) == false
-       return if redis_connect( ) == false
-       val = redis_get_value( @keyname )
-       if val.nil?
-         redis_set_value( @keyname, default_value )
+       @state_file = "#{Rails.root}/hostfs/state/#{key}.state"
+
+       # we ensure it exists here and never check again
+       if File.exist?( @state_file ) == false
+         write_value( default_value )
        end
-       redis_close( )
      end
 
      def val
-       return nil if redis_connect( ) == false
-       val = redis_get_value( @keyname )
-       return nil if redis_close( ) == false
-       #puts "READ key => [#{@keyname}], value => [#{val}]"
-       return val
+       return read_value
      end
 
      def val=( val )
-       return if redis_connect( ) == false
-       redis_set_value( @keyname, val )
-       redis_close( )
-       #puts "WRITE key => [#{@keyname}], value => [#{val}]"
+       write_value( val )
      end
 
+     def read_value
+       return IO.binread( @state_file )
+     end
+
+     def write_value( value )
+       return IO.binwrite( @state_file, value )
+     end
   end
 end
 

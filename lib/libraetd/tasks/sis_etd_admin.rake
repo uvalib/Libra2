@@ -19,7 +19,7 @@ namespace :libraetd do
 
   # keys definitions for state
   default_last_id = "0"
-  statekey_sis = "libra-etd:deposit:sis:#{ENV['DOCKER_HOST']}"
+  statekey_sis = "libra-etd-deposit-sis-#{ENV['DOCKER_HOST']}"
 
   #
   #
