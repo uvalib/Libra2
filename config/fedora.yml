@@ -1,18 +1,18 @@
 development:
-  user: <%= ENV['FEDORA_USER'] || "fedoraAdmin" %>
-  password: <%= ENV['FEDORA_PASSWD'] || "fedoraAdmin" %>
-  url: <%= ENV['FEDORA_URL'] || "http://127.0.0.1:#{ENV['FCREPO_DEVELOPMENT_PORT'] || 8984}/rest" %>
+  user: <%= ENV['FEDORA_USER'] %>
+  password: <%= ENV['FEDORA_PASSWD'] %>
+  url: <%= ENV['FEDORA_URL'] %>
   base_path: /libra2/dev
   request: { timeout: 99999, open_timeout: 30}
 test:
-  user: <%= ENV['FEDORA_USER'] || "fedoraAdmin" %>
-  password: <%= ENV['FEDORA_PASSWD'] || "fedoraAdmin" %>
-  url: <%= ENV['FEDORA_URL'] || "http://127.0.0.1:#{ENV['FCREPO_TEST_PORT'] || 8986}/rest" %>
+  user: <%= ENV['FEDORA_USER'] %>
+  password: <%= ENV['FEDORA_PASSWD'] %>
+  url: <%= ENV['FEDORA_URL'] %>
   base_path: /libra2/test
   request: { timeout: 99999, open_timeout: 30}
 production:
-  user: <%= ENV['FEDORA_USER']  || "fedoraAdmin" %>
-  password: <%= ENV['FEDORA_PASSWD']  || "fedoraAdmin" %>
-  url: <%= ENV['FEDORA_URL'] || "http://127.0.0.1:8983/fedora/rest" %>
+  user: <%= ENV['FEDORA_USER'] %>
+  password: <%= ENV['FEDORA_PASSWD'] %>
+  url: <%= ENV['FEDORA_URL'] %>
   base_path: /libra2/prod
   request: { timeout: 99999, open_timeout: 30}
