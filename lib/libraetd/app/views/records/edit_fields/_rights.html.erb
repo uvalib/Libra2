@@ -1,5 +1,7 @@
+<% selected_rights = f.object.rights[0] %>
+<% selected_rights = selected_rights.present? ? [[selected_rights, selected_rights]] : [] %>
 <%= f.input :rights, as: :select,
-    collection: RightsService.select_active_options,
+    collection: RightsService.select_active_options | selected_rights,
     include_blank: true,
     required: f.object.required?(key),
     input_html: { class: 'form-control' } %>

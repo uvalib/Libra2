@@ -38,7 +38,7 @@ class APIV1OptionsController < APIBaseController
   # get rights options
   #
   def rights
-    options = RightsService.select_active_options.map { |op| op[0] }
+    options = RightsService.select_all_options.map { |op| op[0] }
     render_options_response( :ok, options )
   end
 

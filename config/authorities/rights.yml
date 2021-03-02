@@ -3,6 +3,26 @@ terms:
       term: Attribution 4.0 International (CC BY)
       url: http://creativecommons.org/licenses/by/4.0/
       active: true
+    - id: Attribution-NoDerivatives 4.0 International (CC BY-ND)
+      url: http://creativecommons.org/licenses/by-nd/4.0
+      term: Attribution-NoDerivatives 4.0 International (CC BY-ND)
+      active: false
+    - id: Attribution-ShareAlike 4.0 International (CC BY-SA)
+      url: http://creativecommons.org/licenses/by-sa/4.0/
+      term: Attribution-ShareAlike 4.0 International (CC BY-SA)
+      active: false
+    - id: Attribution-NonCommercial 4.0 International (CC BY-NC)
+      url: http://creativecommons.org/licenses/by-nc/4.0/
+      term: Attribution-NonCommercial 4.0 International (CC BY-NC)
+      active: false
+    - id: Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND)
+      url: http://creativecommons.org/licenses/by-nc-nd/4.0/
+      term: Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND)
+      active: false
+    - id: Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)
+      url: http://creativecommons.org/licenses/by-nc-sa/4.0
+      term: Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)
+      active: false
     - id: CC0 (permitting unconditional free use, with or without attribution)
       term: CC0 (permitting unconditional free use, with or without attribution)
       url:
