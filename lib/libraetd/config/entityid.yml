@@ -1,7 +1,9 @@
 default: &default
-  shoulder: <%= ENV['ID_SERVICE_SHOULDER'] %>
-  secret: <%= ENV['AUTH_SHARED_SECRET'] %>
   url: <%= ENV['ENTITYID_URL'] %>
+  shoulder: <%= ENV['ID_SERVICE_SHOULDER'] %>
+  basic_auth_user: <%= ENV['ID_SERVICE_USER'] %>
+  basic_auth_password: <%= ENV['ID_SERVICE_PASSWORD'] %>
+  mime_type: "application/vnd.api+json"
   timeout: <%= ENV['WEBSERVICE_TIMEOUT'] || 10 %>
 development:
   <<: *default

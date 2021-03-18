@@ -293,6 +293,11 @@ class GenericWork < ActiveFedora::Base
     return "#{ENV['DOI_BASE_URL']}/#{doi.gsub('doi:', '')}"
   end
 
+  def bare_doi
+    return '' if identifier.empty?
+    return identifier.gsub('doi:', '')
+  end
+
   def self.sis_thesis?( source )
     return false if source.nil?
     return source.start_with? GenericWork::THESIS_SOURCE_SIS
