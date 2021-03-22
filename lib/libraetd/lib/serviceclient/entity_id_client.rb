@@ -10,6 +10,12 @@ module ServiceClient
 
     RESOURCE_TYPE_DISSERTATION ||= 'Dissertation'
     DC_GENERAL_TYPE_TEXT ||= 'Text'
+    UVA_AFFILIATION = {
+      name: "University of Virginia",
+      schemeUri: "https://ror.org",
+      affiliationIdentifier: "https://ror.org/0153tk833",
+      affiliationIdentifierScheme: "ROR"
+    }
 
     #
     # configure with the appropriate configuration file
@@ -211,9 +217,8 @@ module ServiceClient
          index: index,
          givenName: fn,
          familyName: ln,
-         affiliation: [dept, institution].reject(&:blank?).join(', '),
-         nameIdentifiers: [{nameIdentifier: cid}]
       }
+      person[:affiliation] = UVA_AFFILIATION if cid.present?
       person[:contributorType] = type if type.present?
 
       return person
