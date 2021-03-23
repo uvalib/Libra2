@@ -58,9 +58,9 @@ module ServiceClient
      #
      # set specified user's ORCID attributes
      #
-     def set_attribs_by_cid(id, orcid, oauth_access, oauth_renew, oauth_scope )
+     def set_attribs_by_cid(id, orcid, oauth_access, oauth_renew, oauth_scope, user_types )
        url = "#{self.url}/cid/#{id}?auth=#{self.authtoken}"
-       payload =  self.construct_attribs_payload( orcid, oauth_access, oauth_renew, oauth_scope )
+       payload =  self.construct_attribs_payload( orcid, oauth_access, oauth_renew, oauth_scope, user_types )
        status, _ = rest_put( url, payload )
        return status
      end
@@ -102,13 +102,14 @@ module ServiceClient
      #
      # construct the attributes request payload
      #
-     def construct_attribs_payload( orcid, oauth_access, oauth_renew, oauth_scope )
+     def construct_attribs_payload( orcid, oauth_access, oauth_renew, oauth_scope, user_types )
        h = {}
 
        h['orcid'] = orcid
        h['oauth_access_token'] = oauth_access
        h['oauth_refresh_token'] = oauth_renew
        h['scope'] = oauth_scope
+       h['user_types'] = user_types
 
        #puts "==> #{h.to_json}"
        return h.to_json

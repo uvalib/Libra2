@@ -41,6 +41,8 @@ module UpdateOrcidBehavior
     return if cid.blank?
 
     orcid = orcid_from_orcid_url( user.orcid )
+    status, user_info = ServiceClient::UserInfoClient.instance.get_by_id cid
+    user_types = user_info.present? ? user_info['description'] : []
 
     puts "==> updating ORCID attributes for #{cid} (#{orcid})"
     status = ServiceClient::OrcidAccessClient.instance.set_attribs_by_cid(
@@ -48,7 +50,10 @@ module UpdateOrcidBehavior
       orcid,
       user.orcid_access_token,
       user.orcid_refresh_token,
-      user.orcid_scope )
+      user.orcid_scope,
+      user_types
+
+    )
 
     if ServiceClient::OrcidAccessClient.instance.ok?( status ) == false
       puts "ERROR: ORCID service returns #{status}"
