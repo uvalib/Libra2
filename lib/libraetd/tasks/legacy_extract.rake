@@ -4,7 +4,7 @@
 
 namespace :libraetd do
 
-  namespace :extract do
+  namespace :legacy_extract do
 
   # SOLR extract attributes
   DEFAULT_MAX_SOLR_ROWS = "100"
