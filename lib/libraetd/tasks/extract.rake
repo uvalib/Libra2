@@ -99,7 +99,7 @@ namespace :export do
 
     end
 
-    puts "#{count} work(s) to be exported"
+    puts "#{count} work(s) will be exported"
   end
 
   #
@@ -108,22 +108,22 @@ namespace :export do
 
   def extract_generic_work( export_dir, number, work )
 
-    work_json = work.to_json
     puts "==> extracting work #{number} (id: #{work.id})"
 
-    dir = File.join( export_dir, "extract.#{number}" )
+    dir = File.join( export_dir, "extract.#{work.id}" )
     FileUtils::mkdir_p( dir )
 
+    work_json = work.to_json
     f = File.join( dir, "work.json" )
     File.open( f, 'w') do |file|
       file.write( work_json )
     end
 
-    ac = work.access_control
-    f = File.join( dir, "acl.json" )
-    File.open( f, 'w') do |file|
-      file.write( ac.to_json )
-    end
+    #ac = work.access_control
+    #f = File.join( dir, "acl.json" )
+    #File.open( f, 'w') do |file|
+    #  file.write( ac.to_json )
+    #end
 
     em = work.embargo
     f = File.join( dir, "embargo.json" )
