@@ -2,12 +2,8 @@
 # Some helper tasks to create and delete works
 #
 
-# pull in the helpers
-require_dependency 'libraetd/tasks/task_helpers'
-include TaskHelpers
-
-require_dependency 'libraetd/app/helpers/service_helper'
-include ServiceHelper
+# prefix for the export directories
+EXPORT_DIR_PREFIX = "export"
 
 namespace :libraetd do
 
@@ -110,7 +106,7 @@ namespace :export do
 
     puts "==> extracting work #{number} (id: #{work.id})"
 
-    dir = File.join( export_dir, "extract.#{work.id}" )
+    dir = File.join( export_dir, "#{EXPORT_DIR_PREFIX}-#{work.id}" )
     FileUtils::mkdir_p( dir )
 
     work_json = work.to_json
@@ -176,7 +172,7 @@ namespace :export do
   # get the list of SOLR extract items from the work directory
   #
   def get_extract_list(dirname )
-    el = TaskHelpers.get_directory_list( dirname, /^extract./ )
+    el = TaskHelpers.get_directory_list( dirname, /^#{EXPORT_DIR_PREFIX}/ )
 
     # sort by directory order
     return el.sort { |x, y| TaskHelpers.directory_sort_order( x, y ) }
@@ -195,7 +191,7 @@ namespace :export do
     end
   end
 
-end   # namespace exgtract
+end   # namespace export
 
 end   # namespace libraetd
 
