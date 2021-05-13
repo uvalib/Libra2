@@ -44,7 +44,7 @@ namespace :export do
     errors = 0
 
     # our query constraint
-    constraints = "(date_published_ssim:[#{export_date} TO *])"
+    constraints = "has_model_ssim:GenericWork AND (system_create_dtsi:[#{export_date}T00:00:00Z TO *])"
 
     # batched processing of generic works
     GenericWork.search_in_batches( constraints ) do |group|
@@ -85,7 +85,7 @@ namespace :export do
     count = 0
 
     # our query constraint
-    constraints = "(date_published_ssim:[#{export_date} TO *])"
+    constraints = "has_model_ssim:GenericWork AND (system_create_dtsi:[#{export_date}T00:00:00Z TO *])"
 
     # batched processing of generic works
     GenericWork.search_in_batches( constraints ) do |group|
