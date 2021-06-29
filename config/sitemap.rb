@@ -2,7 +2,7 @@
 SitemapGenerator::Sitemap.default_host = "https://libraetd.lib.virginia.edu"
 
 SitemapGenerator::Sitemap.create do
-  constraints = "embargo_state_tesim:open"
+  constraints = "draft_tesim:false"
   GenericWork.search_in_batches( constraints ) do |group|
     group.each do |work|
       mod_date = work['date_modified_dtsi']
