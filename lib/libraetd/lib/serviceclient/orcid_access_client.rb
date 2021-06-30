@@ -136,7 +136,7 @@ module ServiceClient
 
        type = 'supervised-student-publication'
        if is_phd?(work.degree)
-         type = 'dissertation'
+         type = 'dissertation-thesis'
        end
        h[metadata]['resource_type'] = type
 
