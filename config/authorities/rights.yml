@@ -31,3 +31,7 @@ terms:
       term: All rights reserved (no additional license for public reuse)
       url:
       active: true
+    - id: NoC-US (No Copyright - United States)
+      term: NoC-US (No Copyright - United States)
+      url:
+      active: false
