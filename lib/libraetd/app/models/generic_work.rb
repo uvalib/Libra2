@@ -294,7 +294,7 @@ class GenericWork < ActiveFedora::Base
   end
 
   def bare_doi
-    return '' if identifier.empty?
+    return '' if identifier.blank?
     return identifier.gsub('doi:', '')
   end
 
