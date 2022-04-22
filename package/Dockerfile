@@ -1,20 +1,16 @@
-FROM centos:7
-
-# ruby dependancies
-RUN yum -y update && yum -y install which tar wget make gcc-c++ zlib-devel libyaml-devel autoconf patch readline-devel libffi-devel openssl-devel bzip2 automake libtool bison sqlite-devel
-
-# install ruby
-RUN cd /tmp && wget https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.9.tar.gz
-RUN cd /tmp && tar xzvf ruby-2.4.9.tar.gz
-RUN cd /tmp/ruby-2.4.9 && ./configure && make && make install
-RUN rm -fr /tmp/ruby-2.4.9 && rm /tmp/ruby-2.4.9.tar.gz
+#
+#
+#
+FROM public.ecr.aws/docker/library/ruby:2.6.10-slim-buster
 
 # install application dependancies
-RUN yum -y install file git epel-release java-1.8.0-openjdk-devel ImageMagick mysql-devel
-RUN yum -y install clamav clamav-update clamav-devel
-#&& yum -y install nodejs
-# temp workaround until centos 7.4 (https://bugs.centos.org/view.php?id=13669&nbn=1)
-RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/http-parser/2.7.1/3.el7/x86_64/http-parser-2.7.1-3.el7.x86_64.rpm && yum -y install nodejs
+RUN apt-get update -qq && apt-get install -y file git imagemagick build-essential nodejs libmariadb-dev clamav clamdscan wget software-properties-common
+
+RUN apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' && apt-get update -y
+RUN apt-get -y install openjdk-8-jre
+
+# see https://stackoverflow.com/questions/52998331/imagemagick-security-policy-pdf-blocking-conversion
+RUN cat /etc/ImageMagick-6/policy.xml | egrep -v '"PS"|"PS2"|"PS3"|"EPS"|"PDF"|"XPS"' > /tmp/policy.xml && mv /tmp/policy.xml /etc/ImageMagick-6/policy.xml
 
 # Create the run user and group
 RUN groupadd --gid 18570 sse && useradd --uid 1984 -g sse docker
@@ -27,7 +23,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
 # install bundler
-RUN gem install bundler -v 1.17.3 --no-document
+RUN gem install bundler -v 2.2.20 --no-document
 
 # create work directory
 ENV APP_HOME /libra2
@@ -44,10 +40,11 @@ ADD . $APP_HOME
 RUN RAILS_ENV=production SECRET_KEY_BASE=x rake assets:precompile
 
 # Update permissions
-RUN chown -R docker $APP_HOME /home/docker && chgrp -R sse $APP_HOME /home/docker
+RUN mkdir /home/docker && chown -R docker $APP_HOME /home/docker && chgrp -R sse $APP_HOME /home/docker
 
 # freshen the antivirus definitions and update permissions so we can do this again
-RUN freshclam && chmod -R o+w /var/lib/clamav
+RUN sed -i 's/Example/#Example/' /etc/clamav/freshclam.conf
+RUN freshclam && chmod -R o+rw /var/lib/clamav /etc/clamav/freshclam.conf
 
 # Define port and startup script
 EXPOSE 8080
@@ -64,7 +61,7 @@ ARG BUILD_TAG
 RUN test -n "$BUILD_TAG" && touch $APP_HOME/buildtag.build-$BUILD_TAG || touch $APP_HOME/buildtag.build-0
 
 # Specify the user
-USER docker
+#USER docker
 
 #
 # end of file
