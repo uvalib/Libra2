@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Runner process to generate the sitemap on a nightly basis
 #

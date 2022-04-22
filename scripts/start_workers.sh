@@ -23,7 +23,7 @@ while true; do
    logit "INFO: Starting sidekiq with $WORKER_COUNT workers..."
 
    # start up sidekiq
-   sidekiq $WORKERS_OPT
+   bundle exec sidekiq $WORKERS_OPT
    res=$?
 
    # ending message
