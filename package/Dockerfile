@@ -4,7 +4,7 @@
 FROM public.ecr.aws/docker/library/ruby:2.6.10-slim-buster
 
 # install application dependancies
-RUN apt-get update -qq && apt-get install -y file git imagemagick build-essential nodejs libmariadb-dev clamav clamdscan wget software-properties-common
+RUN apt-get update -qq && apt-get install -y file git imagemagick build-essential nodejs libmariadb-dev clamav clamdscan wget curl software-properties-common
 
 RUN apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' && apt-get update -y
 RUN apt-get -y install openjdk-8-jre
@@ -61,7 +61,7 @@ ARG BUILD_TAG
 RUN test -n "$BUILD_TAG" && touch $APP_HOME/buildtag.build-$BUILD_TAG || touch $APP_HOME/buildtag.build-0
 
 # Specify the user
-#USER docker
+USER docker
 
 #
 # end of file
