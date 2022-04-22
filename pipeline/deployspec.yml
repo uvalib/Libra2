@@ -6,7 +6,7 @@ version: 0.2
 
 env:
   variables:
-    terraform_version: 1.0.6
+    terraform_version: 1.1.9
 
 phases:
   install:
@@ -30,6 +30,7 @@ phases:
       - cd $CODEBUILD_SRC_DIR/terraform-infrastructure/libraetd.lib.virginia.edu/staging/workers
       - terraform init -no-color
       - terraform apply -no-color -auto-approve -var container_tag=$latest_build
+      - sh $CODEBUILD_SRC_DIR/pipeline/wait_for_version.sh $TC_ENDPOINT $latest_build 300
 
 #  post_build:
 #    commands:
