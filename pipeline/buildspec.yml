@@ -11,9 +11,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      docker: 18
-#      ruby: 2.6
-#    commands:
+      golang: 1.x
 
   pre_build:
     commands:
