@@ -15,7 +15,7 @@ phases:
 
   pre_build:
     commands:
-      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $CONTAINER_REGISTRY
       - BUILD_VERSION=$(date --date="@$(echo $CODEBUILD_START_TIME | cut -c1-10)" +"%Y%m%d%H%M%S")
       - COMMIT_TAG=gitcommit-$CODEBUILD_RESOLVED_SOURCE_VERSION
 
