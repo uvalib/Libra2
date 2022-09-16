@@ -475,9 +475,9 @@ def create_generic_work( work_type, user, title, description )
     # there's something about the way suffia handles contributors that messes up the ordering
     # so be explicit
     contributor = []
-    contributor << TaskHelpers.contributor_fields_from_cid( 0, 'sah' )
-    contributor << TaskHelpers.contributor_fields_from_cid( 1, 'ecr2c' )
-    contributor << TaskHelpers.contributor_fields_from_cid( 2, 'naw4t' )
+    #contributor << TaskHelpers.contributor_fields_from_cid( 0, 'sah' )
+    #contributor << TaskHelpers.contributor_fields_from_cid( 1, 'ecr2c' )
+    #contributor << TaskHelpers.contributor_fields_from_cid( 2, 'naw4t' )
     w.contributor = contributor
 
     w.rights << 'All rights reserved (no additional license for public reuse)'

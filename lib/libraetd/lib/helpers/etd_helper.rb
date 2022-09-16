@@ -176,7 +176,7 @@ module Helpers
       user = User.new( email: email,
                        password: default_password, password_confirmation: default_password,
                        display_name: user_info.display_name,
-                       department: user_info.department.first,
+                       department: user_info.department,
                        office: user_info.office,
                        telephone: user_info.phone,
                        title: user_info.description )
