@@ -2,7 +2,7 @@
 <p>Congratulations on successful deposit of your <%= @work.degree %> thesis to Libra, the University of Virginia's scholarly repository.</p>
 <p>The work you have deposited in Libra will be available for <%= @availability %>. You have opted to grant to users of your scholarship the following re-use rights: <%= @work.rights.join(' ') %>.</p>
 <% if @is_sis_thesis %>
-	<p>24 hours after deposit, you may check that your scholarship was successfully added to the Library's collection by searching for your thesis or dissertation in VIRGO, the UVA online library catalog.</p>
+	<p>Approximately 1 hour after deposit, you may check that your scholarship was successfully added to the Library's collection by searching for your thesis or dissertation in VIRGO, the UVA online library catalog.</p>
 	<p>24 hours after deposit, please verify that SIS has been updated to reflect that you have completed this requirement.</p>
 <% else %>
 <p>Your completion of this requirement is being reported to your department by copy of this email. If you have any questions about your degree status, please contact your department.</p>
@@ -10,7 +10,7 @@
 <p>The permanent location for your scholarship is <a href="<%= @doi_link %>"><%= @doi_link %></a>.</p>
 <p>Always provide this exact link when sharing your work with colleagues, collaborators, and on social media for the most accurate metrics on views and downloads.</p>
 <% if !@is_sis_thesis %>
-<p>24 hours after deposit, you may check that your scholarship was successfully added to the Library's collection by searching for your thesis or dissertation in VIRGO, the UVA online library catalog.</p>
+<p>Approximately 1 hour after deposit, you may check that your scholarship was successfully added to the Library's collection by searching for your thesis or dissertation in VIRGO, the UVA online library catalog.</p>
 <% end %>
 <p></p>
 <p>Best Regards,</p>
