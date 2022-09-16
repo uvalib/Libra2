@@ -71,6 +71,7 @@ gem 'rsolr', '~> 1.1.2'
 
 gem 'rest-client'
 gem 'net-scp'
+gem 'httparty'
 
 # email interceptor
 gem 'exception_notification'
