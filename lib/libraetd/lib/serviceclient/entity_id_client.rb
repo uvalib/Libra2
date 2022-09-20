@@ -217,6 +217,7 @@ module ServiceClient
          index: index,
          givenName: fn,
          familyName: ln,
+         nameType: 'Personal'
       }
       person[:affiliation] = UVA_AFFILIATION if cid.present?
       person[:contributorType] = type if type.present?
