@@ -205,7 +205,7 @@ module ServiceClient
                                tokens[ person_cid_index ],
                                tokens[ person_dept_index ],
                                tokens[ person_pub_index ],
-                               'Other'
+                               'RelatedPerson'
                              )
     end
 
