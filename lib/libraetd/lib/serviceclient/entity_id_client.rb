@@ -1,5 +1,6 @@
 require_dependency 'libraetd/lib/serviceclient/base_client'
 require_dependency 'libraetd/app/helpers/url_helper'
+require_dependency 'libraetd/lib/serviceclient/orcid_access_client'
 
 module ServiceClient
 
@@ -221,6 +222,21 @@ module ServiceClient
       }
       person[:affiliation] = UVA_AFFILIATION if cid.present?
       person[:contributorType] = type if type.present?
+
+
+      # if person has a ORCID account
+      orcid_status, orcid_attribs = ServiceClient::OrcidAccessClient.instance.get_attribs_by_cid(cid)
+
+      if orcid_attribs['uri'].present?
+        person[:nameIdentifiers] = {
+          schemeUri: URI(orcid_attribs['uri']),
+          nameIdentifier: orcid_attribs['uri'],
+          nameIdentifierScheme: "ORCID"
+         }
+      elsif orcid_status > 300
+        Rails.logger.error "ORCID Error during DataCite payload #{orcid_attribs}\n#{person}"
+      end
+
 
       return person
 
