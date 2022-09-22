@@ -220,21 +220,23 @@ module ServiceClient
          familyName: ln,
          nameType: 'Personal'
       }
-      person[:affiliation] = UVA_AFFILIATION if cid.present?
       person[:contributorType] = type if type.present?
 
+      if cid.present?
+        person[:affiliation] = UVA_AFFILIATION
 
-      # if person has a ORCID account
-      orcid_status, orcid_attribs = ServiceClient::OrcidAccessClient.instance.get_attribs_by_cid(cid)
+        # if person has a ORCID account
+        orcid_status, orcid_attribs = ServiceClient::OrcidAccessClient.instance.get_attribs_by_cid(cid)
 
-      if orcid_attribs['uri'].present?
-        person[:nameIdentifiers] = {
-          schemeUri: URI(orcid_attribs['uri']),
-          nameIdentifier: orcid_attribs['uri'],
-          nameIdentifierScheme: "ORCID"
-         }
-      elsif orcid_status > 300
-        Rails.logger.error "ORCID Error during DataCite payload #{orcid_attribs}\n#{person}"
+        if orcid_attribs['uri'].present?
+          person[:nameIdentifiers] = {
+            schemeUri: URI(orcid_attribs['uri']),
+            nameIdentifier: orcid_attribs['uri'],
+            nameIdentifierScheme: "ORCID"
+          }
+        elsif orcid_status > 300
+          Rails.logger.error "ORCID Error during DataCite payload #{orcid_attribs}\n#{person}"
+        end
       end
 
 
