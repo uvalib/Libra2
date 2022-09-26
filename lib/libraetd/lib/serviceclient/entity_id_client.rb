@@ -196,7 +196,7 @@ module ServiceClient
       person_pub_index = 5
 
       tokens = person_string.split( "\n" )
-      return nil unless tokens.length == 6
+      return nil if tokens.length < 5
       ix = tokens[ person_index_ix ].to_i
       tokens.each &:chomp!
       return person_construct( ix,
@@ -238,7 +238,7 @@ module ServiceClient
             nameIdentifierScheme: "ORCID"
           }
         elsif orcid_status > 300
-          Rails.logger.error "ORCID Error during DataCite payload #{orcid_attribs}\n#{person}"
+          Rails.logger.warn "#{orcid_status} ORCID response during DataCite payload #{orcid_attribs}"
         end
       end
 
