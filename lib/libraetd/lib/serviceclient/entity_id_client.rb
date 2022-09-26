@@ -221,6 +221,9 @@ module ServiceClient
          nameType: 'Personal'
       }
       person[:contributorType] = type if type.present?
+      if institution.present?
+        person[:affiliation] = {name: institution}
+      end
 
       if cid.present?
         person[:affiliation] = UVA_AFFILIATION
