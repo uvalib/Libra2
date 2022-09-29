@@ -1,5 +1,6 @@
 # Set the host name for URL creation
 SitemapGenerator::Sitemap.default_host = "https://libraetd.lib.virginia.edu"
+SitemapGenerator::Sitemap.include_root = false
 
 SitemapGenerator::Sitemap.create do
   constraints = "draft_tesim:false"
