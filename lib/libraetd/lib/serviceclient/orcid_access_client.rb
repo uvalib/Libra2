@@ -165,7 +165,7 @@ module ServiceClient
      end
 
      def is_phd?(degree)
-       degree ? degree.include?('PHD') : false
+       degree ? degree.include?('Doctor') : false
      end
 
      #
