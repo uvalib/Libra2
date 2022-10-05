@@ -232,8 +232,9 @@ module ServiceClient
         orcid_status, orcid_attribs = ServiceClient::OrcidAccessClient.instance.get_attribs_by_cid(cid)
 
         if orcid_attribs['uri'].present?
+          orcid_uri = URI(orcid_attribs['uri'])
           person[:nameIdentifiers] = {
-            schemeUri: URI(orcid_attribs['uri']),
+            schemeUri: "https://#{orcid_uri.host}",
             nameIdentifier: orcid_attribs['uri'],
             nameIdentifierScheme: "ORCID"
           }
