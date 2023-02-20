@@ -1,7 +1,4 @@
-#
-#
-#
-FROM public.ecr.aws/docker/library/ruby:2.6.10-slim-buster
+FROM public.ecr.aws/docker/library/ruby:2.6.10-slim-bullseye
 
 # install application dependancies
 RUN apt-get update -qq && apt-get install -y file git imagemagick build-essential nodejs libmariadb-dev clamav clamdscan wget curl software-properties-common
