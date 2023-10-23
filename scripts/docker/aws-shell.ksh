@@ -6,7 +6,7 @@
 if [ -z "$DOCKER_HOST" ]; then
    DOCKER_TOOL=docker
 else
-   DOCKER_TOOL=docker-17.04.0
+   DOCKER_TOOL=docker-legacy
 fi
 
 #$(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
