@@ -3,8 +3,10 @@ FROM public.ecr.aws/docker/library/ruby:2.6.10-slim-bullseye
 # install application dependancies
 RUN apt-get update -qq && apt-get install -y file git imagemagick build-essential nodejs libmariadb-dev clamav clamdscan wget curl software-properties-common
 
-RUN apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' && apt-get update -y
-RUN apt-get -y install openjdk-8-jre
+# see https://adoptium.net/installation/linux/
+RUN mkdir -p /etc/apt/keyrings/ && wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public > /etc/apt/keyrings/adoptium.asc
+RUN echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" > /etc/apt/sources.list.d/adoptium.list
+RUN apt-get update -y && apt-get install -y temurin-8-jdk
 
 # see https://stackoverflow.com/questions/52998331/imagemagick-security-policy-pdf-blocking-conversion
 RUN cat /etc/ImageMagick-6/policy.xml | egrep -v '"PS"|"PS2"|"PS3"|"EPS"|"PDF"|"XPS"' > /tmp/policy.xml && mv /tmp/policy.xml /etc/ImageMagick-6/policy.xml
@@ -41,7 +43,7 @@ RUN mkdir /home/docker && chown -R docker $APP_HOME /home/docker && chgrp -R sse
 
 # freshen the antivirus definitions and update permissions so we can do this again
 RUN sed -i 's/Example/#Example/' /etc/clamav/freshclam.conf
-RUN freshclam && chmod -R o+rw /var/lib/clamav /etc/clamav/freshclam.conf
+RUN freshclam && chmod -R o+rw /var/lib/clamav /etc/clamav/freshclam.conf /var/log/clamav/freshclam.log
 
 # Define port and startup script
 EXPOSE 8080
