@@ -14,4 +14,22 @@ class WorkAudit < ActiveRecord::Base
     super( options )
   end
 
+  def to_s
+    return "#{WorkAudit.localtime( created_at )}: #{user_id} updated #{work_id} #{what.squish}"
+  end
+
+  def to_psv
+    return "#{WorkAudit.localtime( created_at )}|#{user_id}|#{work_id}|#{what.squish}"
+  end
+
+  def self.localtime( datetime )
+    return 'unknown' if datetime.blank?
+    begin
+      return datetime.localtime.strftime( '%Y-%m-%d %H:%M:%S %Z' )
+    rescue => ex
+      # do nothing
+    end
+    return datetime
+  end
+
 end
