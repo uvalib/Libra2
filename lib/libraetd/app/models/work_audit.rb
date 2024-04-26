@@ -18,8 +18,8 @@ class WorkAudit < ActiveRecord::Base
     return "#{WorkAudit.localtime( created_at )}: #{user_id} updated #{work_id} #{what.squish}"
   end
 
-  def to_psv
-    return "#{WorkAudit.localtime( created_at )}|#{user_id}|#{work_id}|#{what.squish}"
+  def to_tsv
+    return "#{WorkAudit.localtime( created_at )}\t#{user_id}\t#{work_id}\t#{what.squish}"
   end
 
   def self.localtime( datetime )

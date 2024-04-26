@@ -20,11 +20,15 @@ namespace :audit do
     desc "Export the full audit history"
     task export: :environment do |t, args|
 
+      filename = "etd-audit-export-#{Time.now.strftime("%m-%d-%Y-%H-%M-%S")}.tsv"
       audits = WorkAudit.all.order( created_at: :asc )
-      audits.each do |a|
-        puts a.to_psv
+      File.open( filename, 'wt' ) do |f|
+        audits.each do |a|
+          f.write( "#{a.to_tsv}\n" )
+        end
+        f.close
       end
-      puts "Exported #{audits.length} audit record(s)"
+      puts "Exported #{audits.length} audit record(s) to #{filename}"
 
     end
 
