@@ -6,7 +6,7 @@ version: 0.2
 
 env:
   variables:
-    terraform_version: 1.9.8
+    terraform_version: 1.11.1
 
 phases:
   install:
