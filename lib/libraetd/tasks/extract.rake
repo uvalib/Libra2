@@ -75,7 +75,7 @@ namespace :export do
 
     end
 
-    puts "Exported #{count} work(s), #{errors} error(s) encountered"
+    puts "Exported #{count} work(s), #{errors} error(s) encountered (start: #{start_export_date}, end: #{end_export_date})"
   end
 
   desc "Count works by date; must provide the creation start and end dates (YYYY-MM-DD)"
@@ -123,7 +123,7 @@ namespace :export do
 
     end
 
-    puts "#{count} work(s) will be exported"
+    puts "#{count} work(s) (start: #{start_export_date}, end: #{end_export_date})"
   end
 
   #
