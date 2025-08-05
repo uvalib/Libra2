@@ -9,7 +9,7 @@ namespace :libraetd do
 
 namespace :export do
 
-  desc "Export works by date; must provide the export directory and the publication date (YYYY-MM-DD)"
+  desc "Export works by date; must provide the export directory and the creation start and end dates (YYYY-MM-DD)"
   task export_works: :environment do |t, args|
 
     export_dir = ARGV[ 1 ]
@@ -19,23 +19,37 @@ namespace :export do
     end
     task export_dir.to_sym do ; end
 
-    export_date = ARGV[ 2 ]
-    if export_date.nil?
-      puts "ERROR: no export date specified, aborting"
-      next
-    end
-    task export_date.to_sym do ; end
-
     # validate that the export directory is empty (so we dont overwrite anything important)
     if extract_dir_clean?(export_dir) == false
-      puts "ERROR: extract directory already contains items, aborting"
+      puts "ERROR: export directory already contains items, aborting"
       next
     end
 
-    # validate the supplied date
-    export_dt = convert_date( export_date )
+    start_export_date = ARGV[ 2 ]
+    if start_export_date.nil?
+      puts "ERROR: no start date specified, aborting"
+      next
+    end
+    task start_export_date.to_sym do ; end
+
+    end_export_date = ARGV[ 3 ]
+    if end_export_date.nil?
+      puts "ERROR: no end date specified, aborting"
+      next
+    end
+    task end_export_date.to_sym do ; end
+
+    # validate the start date
+    export_dt = convert_date( start_export_date )
     if export_dt.nil?
-      puts "ERROR: extract date must be in the form YYYY-MM-DD, aborting"
+      puts "ERROR: start date must be in the form YYYY-MM-DD, aborting"
+      next
+    end
+
+    # validate the end date
+    export_dt = convert_date( end_export_date )
+    if export_dt.nil?
+      puts "ERROR: end date must be in the form YYYY-MM-DD, aborting"
       next
     end
 
@@ -44,7 +58,7 @@ namespace :export do
     errors = 0
 
     # our query constraint
-    constraints = "has_model_ssim:GenericWork AND (system_create_dtsi:[#{export_date}T00:00:00Z TO *])"
+    constraints = "has_model_ssim:GenericWork AND (system_create_dtsi:[#{start_export_date}T00:00:00Z TO #{end_export_date}T23:59:59Z])"
 
     # batched processing of generic works
     GenericWork.search_in_batches( constraints ) do |group|
@@ -64,20 +78,34 @@ namespace :export do
     puts "Exported #{count} work(s), #{errors} error(s) encountered"
   end
 
-  desc "Count works by date; must provide the publication date (YYYY-MM-DD)"
+  desc "Count works by date; must provide the creation start and end dates (YYYY-MM-DD)"
   task count_works: :environment do |t, args|
 
-    export_date = ARGV[ 1 ]
-    if export_date.nil?
-      puts "ERROR: no export date specified, aborting"
+    start_export_date = ARGV[ 1 ]
+    if start_export_date.nil?
+      puts "ERROR: no start date specified, aborting"
       next
     end
-    task export_date.to_sym do ; end
+    task start_export_date.to_sym do ; end
 
-    # validate the supplied date
-    export_dt = convert_date( export_date )
+    end_export_date = ARGV[ 2 ]
+    if end_export_date.nil?
+      puts "ERROR: no end date specified, aborting"
+      next
+    end
+    task end_export_date.to_sym do ; end
+
+    # validate the start date
+    export_dt = convert_date( start_export_date )
     if export_dt.nil?
-      puts "ERROR: extract date must be in the form YYYY-MM-DD, aborting"
+      puts "ERROR: start date must be in the form YYYY-MM-DD, aborting"
+      next
+    end
+
+    # validate the end date
+    export_dt = convert_date( end_export_date )
+    if export_dt.nil?
+      puts "ERROR: end date must be in the form YYYY-MM-DD, aborting"
       next
     end
 
@@ -85,7 +113,7 @@ namespace :export do
     count = 0
 
     # our query constraint
-    constraints = "has_model_ssim:GenericWork AND (system_create_dtsi:[#{export_date}T00:00:00Z TO *])"
+    constraints = "has_model_ssim:GenericWork AND (system_create_dtsi:[#{start_export_date}T00:00:00Z TO #{end_export_date}T23:59:59Z])"
 
     # batched processing of generic works
     GenericWork.search_in_batches( constraints ) do |group|
